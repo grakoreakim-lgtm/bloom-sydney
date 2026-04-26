@@ -1974,9 +1974,58 @@ async function loadSettingsFromFirestore() {
     if (s.freeDeliveryThreshold != null) {
       window.SETTINGS.freeDeliveryThreshold = Number(s.freeDeliveryThreshold);
     }
+    if (s.googleMapsApiKey) {
+      window.SETTINGS.googleMapsApiKey = s.googleMapsApiKey;
+      loadGooglePlaces(s.googleMapsApiKey);
+    }
   } catch (err) {
     console.warn('[Firestore] settings fetch failed, using defaults:', err);
   }
+}
+
+/* Load Google Maps Places library + attach autocomplete to checkout address field. */
+function loadGooglePlaces(apiKey) {
+  if (window.__bloomPlacesLoaded) return;
+  window.__bloomPlacesLoaded = true;
+
+  window.__bloomInitPlaces = function() {
+    const attach = () => {
+      const input = document.getElementById('f-addr');
+      if (!input || input.dataset.placesAttached || !window.google?.maps?.places) return;
+      const ac = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'au' },
+        types: ['address'],
+        fields: ['address_components', 'formatted_address'],
+      });
+      ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (!place || !place.address_components) return;
+        let suburb = '', postcode = '', streetNum = '', route = '';
+        for (const c of place.address_components) {
+          if (c.types.includes('locality'))           suburb   = c.long_name;
+          else if (c.types.includes('postal_code'))   postcode = c.long_name;
+          else if (c.types.includes('street_number')) streetNum = c.long_name;
+          else if (c.types.includes('route'))         route    = c.long_name;
+        }
+        if (streetNum && route) input.value = `${streetNum} ${route}`;
+        if (suburb)   document.getElementById('f-suburb').value = suburb;
+        if (postcode) {
+          document.getElementById('f-post').value = postcode;
+          if (typeof window.onPostcode === 'function') window.onPostcode();
+        }
+      });
+      input.dataset.placesAttached = '1';
+    };
+    attach();
+    // Re-attempt on overlay open in case the field hadn't rendered yet
+    document.getElementById('overlay')?.addEventListener('transitionend', attach);
+  };
+
+  const s = document.createElement('script');
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=__bloomInitPlaces`;
+  s.async = true; s.defer = true;
+  s.onerror = () => console.warn('[Places] script failed to load — autocomplete disabled');
+  document.head.appendChild(s);
 }
 
 function init() {

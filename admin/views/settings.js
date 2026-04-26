@@ -90,6 +90,20 @@ export async function render() {
         </div>
       </div>
 
+      <div class="section-card">
+        <h2>Address autocomplete <span class="help">— Google Places API (optional)</span></h2>
+        <div class="field">
+          <label>Google Maps API key</label>
+          <input name="googleMapsApiKey" type="text" placeholder="AIzaSy..." autocomplete="off"/>
+          <div style="margin-top:8px; font-size:12px; color:var(--subtle); line-height:1.6">
+            When set, customers get smart Australian-address autocomplete in checkout (auto-fills suburb &amp; postcode).<br/>
+            Get one at <a href="https://console.cloud.google.com/google/maps-apis" target="_blank" rel="noopener" style="color:var(--accent)">Google Cloud Console</a> →
+            enable <strong>Places API</strong> → restrict the key to your site (HTTP referrer = <code>grakoreakim-lgtm.github.io/*</code>).
+            Free tier covers up to ~28,500 requests/month.
+          </div>
+        </div>
+      </div>
+
       <div class="form-actions">
         <button type="submit" class="btn-primary" id="btn-save-settings">Save settings</button>
       </div>
@@ -134,6 +148,7 @@ function populateForm(s) {
 
   if (s.cutoffTime) f.cutoffTime.value = s.cutoffTime;
   if (s.freeDeliveryThreshold != null) f.freeDeliveryThreshold.value = s.freeDeliveryThreshold;
+  if (s.googleMapsApiKey) f.googleMapsApiKey.value = s.googleMapsApiKey;
 
   // Delivery fees: existing or sensible defaults from current customer code
   const fees = s.deliveryFees && Object.keys(s.deliveryFees).length
@@ -181,6 +196,7 @@ async function onSave(e) {
       cutoffTime:            f.cutoffTime.value,
       freeDeliveryThreshold: f.freeDeliveryThreshold.value !== '' ? Number(f.freeDeliveryThreshold.value) : null,
       deliveryFees,
+      googleMapsApiKey:      f.googleMapsApiKey.value.trim(),
       currency:              'AUD',
       updatedAt:             serverTimestamp(),
     };

@@ -1,8 +1,12 @@
 import { db, $, $$, toast, escapeHtml } from '../admin.js';
 import {
   collection, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, setDoc,
-  query, orderBy, serverTimestamp, increment
+  query, orderBy, serverTimestamp, increment, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+let ordersUnsubscribe = null;
+let knownOrderIds = new Set();
+let realtimeReady = false;
 
 const STATUSES = [
   { key: 'new',              label: 'New' },
@@ -179,17 +183,102 @@ async function loadProductsCache() {
 
 async function loadOrders() {
   const list = $('#orders-list');
-  list.className = 'loading';
-  list.innerHTML = 'Loading…';
+  // First-time render shows loading state. Real-time updates after that won't.
+  if (!realtimeReady) {
+    list.className = 'loading';
+    list.innerHTML = 'Loading…';
+  }
+
+  // Tear down any previous subscription
+  if (ordersUnsubscribe) { try { ordersUnsubscribe(); } catch {} ordersUnsubscribe = null; }
+
+  // Ask for desktop-notification permission once, on user action (clicking a tab counts)
+  requestNotifyPermissionOnce();
+
+  ordersUnsubscribe = onSnapshot(
+    query(collection(db, 'orders'), orderBy('createdAt', 'desc')),
+    (snap) => {
+      const next = [];
+      const newIds = [];
+      snap.forEach(d => {
+        const data = { id: d.id, ...d.data() };
+        next.push(data);
+        if (realtimeReady && !knownOrderIds.has(d.id)) newIds.push(data);
+      });
+      allOrders = next;
+      knownOrderIds = new Set(next.map(o => o.id));
+      list.className = '';
+      renderList();
+
+      // Trigger sync + notifications for genuinely new arrivals (not the initial snapshot)
+      if (realtimeReady) {
+        newIds.forEach(o => { if (o.source === 'web') notifyNewOrder(o); });
+      }
+      realtimeReady = true;
+
+      // Aggregate any unsynced web orders into /customers (idempotent via marker)
+      syncWebOrdersToCustomers(next).catch(err => console.warn('Customer sync failed:', err));
+    },
+    (err) => {
+      list.className = '';
+      list.innerHTML = `<div class="placeholder"><h2>Load failed</h2><p>${escapeHtml(err.message)}</p></div>`;
+      console.error(err);
+    }
+  );
+}
+
+/* ─── Real-time notification for new web orders ─── */
+let notifyAsked = false;
+function requestNotifyPermissionOnce() {
+  if (notifyAsked) return;
+  notifyAsked = true;
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    // Don't await — fire and forget. The first web order after permission gets a notification.
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function playBeep() {
   try {
-    const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
-    allOrders = [];
-    snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
-    renderList();
-  } catch (err) {
-    list.className = '';
-    list.innerHTML = `<div class="placeholder"><h2>Load failed</h2><p>${escapeHtml(err.message)}</p></div>`;
-    console.error(err);
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.5);
+  } catch {}
+}
+
+function notifyNewOrder(order) {
+  playBeep();
+  toast(`🌷 New web order — ${order.customerName} · $${order.total}`);
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification('New Bloom & Vine order', {
+        body: `${order.customerName} · $${order.total} · ${order.deliverySuburb || order.deliveryPostcode || ''}\n${(order.items || []).map(it => it.name).join(', ')}`,
+        tag: 'order-' + order.id,
+      });
+    } catch {}
+  }
+}
+
+/* ─── Sync web orders → /customers (admin-side aggregation) ─── */
+async function syncWebOrdersToCustomers(orders) {
+  const todo = orders.filter(o => o.source === 'web' && !o.customerSyncedAt && o.customerEmail);
+  if (!todo.length) return;
+  for (const o of todo) {
+    try {
+      await upsertCustomerFromOrder(o);
+      await updateDoc(doc(db, 'orders', o.id), { customerSyncedAt: serverTimestamp() });
+    } catch (err) {
+      console.warn('[customer-sync] skipped order', o.id, err.message || err);
+    }
   }
 }
 
