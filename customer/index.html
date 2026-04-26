@@ -346,22 +346,59 @@ nav {
 #shop { background: var(--c-white); }
 
 /* ── Shop tabs ── */
-.shop-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
-.shop-tab {
-  display:flex; flex-direction:column; align-items:center; gap:5px;
-  padding:14px 12px; background:var(--c-bg);
-  border:1.5px solid var(--c-border); border-radius:var(--r-card);
-  cursor:pointer; transition:all .2s; text-align:center;
+.shop-tabs {
+  display:flex;
+  border:1px solid var(--c-border);
+  border-radius:var(--r-btn);
+  overflow:hidden;
+  margin-bottom:28px;
+  background:var(--c-bg);
 }
-.shop-tab:hover { border-color:var(--c-accent); }
-.shop-tab.on { background:var(--c-ink); border-color:var(--c-ink); color:#fff; }
-.shop-tab .tab-icon { font-size:22px; }
-.shop-tab .tab-name { font-size:13px; font-weight:600; }
-.shop-tab .tab-sub  { font-size:11px; color:var(--c-subtle); }
-.shop-tab.on .tab-sub { color:rgba(255,255,255,.6); }
+.shop-tab {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:16px 14px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:center;
+}
+.shop-tab:hover { background:rgba(107,45,32,.08); }
+.shop-tab.on { background:var(--c-ink); color:#fff; }
+.shop-tab .tab-name { font-size:14px; font-weight:700; }
+.shop-tab .tab-sub  { font-size:12px; color:var(--c-subtle); }
+.shop-tab.on .tab-sub { color:rgba(255,255,255,.72); }
 
 .shop-panel { display:none; }
 .shop-panel.on { display:block; }
+
+/* ── Subscription cards (light theme — used inside #shop) ── */
+.freq-toggle-l { background: rgba(0,0,0,.05); border:1px solid var(--c-border); }
+.freq-btn-l {
+  flex:1; padding:12px 18px; background:transparent; border:none;
+  font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--c-mid); cursor:pointer; border-radius:999px; transition:all .25s var(--ease);
+}
+.freq-btn-l:hover { color:var(--c-ink); }
+.freq-btn-l.on { background:var(--c-ink); color:#fff; }
+.sub-grid-l .sub-card { background:#fff; border-color:var(--c-border); }
+.sub-grid-l .sub-card:hover { border-color:var(--c-ink); background:#fff; }
+.sub-grid-l .sub-card.feat { border-color:var(--c-accent); background:#fff; }
+.sub-grid-l .sub-tier { color:var(--c-subtle); }
+.sub-grid-l .sub-name { color:var(--c-ink); }
+.sub-grid-l .sub-price { color:var(--c-ink); }
+.sub-grid-l .sub-price span { color:var(--c-subtle); }
+.sub-grid-l .sub-save { color:var(--c-accent); }
+.sub-grid-l .sub-feats li { color:var(--c-mid); border-color:var(--c-border); }
+.sub-grid-l .sub-feats li::before { color:var(--c-accent); }
+.sub-grid-l .btn-sub { color:var(--c-ink); border-color:var(--c-border); }
+.sub-grid-l .btn-sub:hover { border-color:var(--c-ink); color:var(--c-ink); background:rgba(0,0,0,.03); }
+.sub-grid-l .sub-card.feat .btn-sub { background:var(--c-accent); border-color:var(--c-accent); color:#fff; }
+.sub-grid-l .sub-card.feat .btn-sub:hover { background:var(--c-accent-h); color:#fff; }
 
 /* ── Info banner ── */
 .s-banner {
@@ -489,42 +526,6 @@ nav {
 .story-title em { font-style: italic; font-weight: 400; color: var(--c-blush); }
 .story-p { font-size: var(--t-body); color: rgba(255,255,255,.55); line-height: var(--lh-body); }
 .story-sig { font-size: var(--t-sm); color: rgba(255,255,255,.35); font-style: italic; }
-
-/* ─────────────────────────────────────────
-   INSTAGRAM
-───────────────────────────────────────── */
-#insta { background: var(--c-white); }
-.insta-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin-bottom: 24px;
-}
-@media(min-width: 640px) { .insta-grid { grid-template-columns: repeat(6, 1fr); } }
-.insta-cell {
-  aspect-ratio: 1;
-  overflow: hidden;
-  position: relative;
-  background: var(--c-border);
-  cursor: pointer;
-}
-.insta-cell img { position: absolute; inset: 0; transition: transform .5s ease; }
-.insta-cell:hover img { transform: scale(1.08); }
-.insta-cta { text-align: center; }
-.btn-ig {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: var(--btn-v) var(--btn-h);
-  background: transparent;
-  border: 1.5px solid var(--c-border);
-  border-radius: var(--r-btn);
-  font-size: var(--t-sm);
-  font-weight: 500;
-  color: var(--c-mid);
-  transition: all .2s;
-}
-.btn-ig:hover { border-color: var(--c-ink); color: var(--c-ink); }
 
 /* ─────────────────────────────────────────
    SUBSCRIPTIONS  (dark forest green)
@@ -662,41 +663,6 @@ nav {
 .rev-verified { font-size: 12px; color: var(--c-sage); margin-top: 5px; display: flex; align-items: center; gap: 4px; }
 
 /* ─────────────────────────────────────────
-   FAQ
-───────────────────────────────────────── */
-#faq { background: var(--c-bg); }
-.faq-wrap { max-width: 700px; }
-.faq-item { border-bottom: 1px solid var(--c-border); }
-.faq-q {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 0;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: var(--t-body);
-  font-weight: 500;
-  color: var(--c-ink);
-  cursor: pointer;
-  gap: 16px;
-  transition: color .2s;
-  line-height: var(--lh-head);
-}
-.faq-q:hover { color: var(--c-accent); }
-.faq-icon { font-size: 20px; color: var(--c-accent); flex-shrink: 0; transition: transform .25s var(--ease); font-weight: 300; }
-.faq-item.open .faq-icon { transform: rotate(45deg); }
-.faq-a {
-  display: none;
-  padding: 0 24px 18px 0;
-  font-size: var(--t-body);
-  color: var(--c-mid);
-  line-height: var(--lh-body);
-}
-.faq-item.open .faq-a { display: block; }
-
-/* ─────────────────────────────────────────
    FOOTER
 ───────────────────────────────────────── */
 footer { background: var(--c-hero-bg); color: rgba(255,255,255,.6); padding: var(--sec-pad) 0 0; }
@@ -797,7 +763,6 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
       <li><a href="#why">Our Story</a></li>
       <li><a href="#subscribe">Subscribe</a></li>
       <li><a href="#reviews">Reviews</a></li>
-      <li><a href="#faq">FAQ</a></li>
     </ul>
     <div class="nav-right">
       <div class="cutoff-tag">
@@ -847,17 +812,14 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <!-- Tabs -->
     <div class="shop-tabs">
       <button class="shop-tab on" onclick="switchShop('sameday',this)">
-        <span class="tab-icon">🌸</span>
         <span class="tab-name">Same-Day</span>
         <span class="tab-sub">Order by 1 PM · Today only</span>
       </button>
       <button class="shop-tab" onclick="switchShop('preorder',this)">
-        <span class="tab-icon">📅</span>
         <span class="tab-name">Pre-Order</span>
         <span class="tab-sub">Plan ahead · Save your date</span>
       </button>
       <button class="shop-tab" onclick="switchShop('subscription',this)">
-        <span class="tab-icon">🔁</span>
         <span class="tab-name">Subscription</span>
         <span class="tab-sub">Set &amp; forget · Best value</span>
       </button>
@@ -881,12 +843,15 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
       </div>
     </div>
 
-    <!-- Subscription Panel — links down to subscription section -->
+    <!-- Subscription Panel — inline plan cards -->
     <div class="shop-panel" id="panel-subscription">
       <div class="s-banner" style="border-left-color:var(--c-sage)">🔁&nbsp; <span>Subscribers get <strong>priority stock, free delivery, and up to 18% off</strong> every order. Choose your frequency below.</span></div>
-      <div style="text-align:center;padding:16px 0">
-        <button class="btn-load-more" style="border-color:var(--c-ink);color:var(--c-ink)" onclick="go('subscribe')">구독 플랜 보기 ↓</button>
+      <div class="freq-toggle freq-toggle-l">
+        <button class="freq-btn-l on" onclick="setFreq('weekly',this)">Weekly</button>
+        <button class="freq-btn-l" onclick="setFreq('fortnightly',this)">Fortnightly</button>
+        <button class="freq-btn-l" onclick="setFreq('monthly',this)">Monthly</button>
       </div>
+      <div class="sub-grid sub-grid-l" id="sgrid-shop"></div>
     </div>
   </div>
 </section>
@@ -933,18 +898,6 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
   </div>
 </section>
 
-<!-- ══════════════════ INSTAGRAM ══════════════════ -->
-<section id="insta" class="sec">
-  <div class="wrap" style="margin-bottom: 20px;">
-    <div class="sec-eyebrow">@bloom.sydney.au</div>
-    <h2 class="sec-title">From the <em>Studio</em></h2>
-  </div>
-  <div class="insta-grid" id="igrid"></div>
-  <div class="insta-cta" style="padding-top: 20px; max-width: var(--max); margin: 0 auto; padding-left: var(--px);">
-    <a href="https://instagram.com" target="_blank" class="btn-ig">📷 &nbsp;Follow on Instagram</a>
-  </div>
-</section>
-
 <!-- ══════════════════ SUBSCRIBE ══════════════════ -->
 <section id="subscribe" class="sec">
   <div class="wrap">
@@ -957,15 +910,6 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
       <button class="freq-btn" onclick="setFreq('monthly',this)">Monthly</button>
     </div>
     <div class="sub-grid" id="sgrid"></div>
-  </div>
-</section>
-
-<!-- ══════════════════ FAQ ══════════════════ -->
-<section id="faq" class="sec">
-  <div class="wrap">
-    <div class="sec-eyebrow">Got questions?</div>
-    <h2 class="sec-title">Frequently <em>asked</em></h2>
-    <div class="faq-wrap" id="fwrap"></div>
   </div>
 </section>
 
@@ -1190,16 +1134,29 @@ const REVS = [
   { name:'David L.', suburb:'North Rocks',   date:'January 2025',  stars:4, tag:'Hamper',      txt:'The hamper presentation was very premium — feels like a proper gift, not just flowers in a box. The rosé was a perfect pick.',                    prod:'Tulip + Rosé Hamper Deluxe' },
 ];
 
-const FAQS = [
-  { q:'What time do I need to order for same-day delivery?',     a:'Orders placed before <strong>1:00 PM</strong> Monday–Saturday receive same-day delivery. Orders after 1 PM are automatically scheduled for next day. You'll receive a text when your arrangement leaves our studio.' },
-  { q:'How is the wine delivered with the flowers?',              a:'Wine is packed in a temperature-protected sleeve. We require a signature and photo ID (18+) at delivery. We hold a current NSW Packaged Liquor Licence.' },
-  { q:'What areas do you currently deliver to?',                  a:'North-West Sydney: <strong>Carlingford (free), Epping, Eastwood, Macquarie Park, Ryde</strong> ($8 flat fee). Enter your postcode at checkout for exact pricing.' },
-  { q:'Can I pre-order for a future date?',                       a:'Yes! Our pre-order calendar is published 7 days ahead every morning at 6 AM. Free cancellation up to 48 hours before delivery.' },
-  { q:'Do the photos show the actual flowers being sold?',        a:'Always. Every product photo is taken that same morning of the actual flowers in our Carlingford studio. No stock photography, ever.' },
-  { q:'How does the anniversary reminder service work?',          a:'At checkout, tick "Save this date". We'll WhatsApp you 14, 7, and 2 days before — with what we sent last time and a 10% early-bird discount.' },
-];
-
 const FEES = {'2118':0,'2119':0,'2121':5,'2122':5,'2113':8,'2114':8,'2112':10};
+
+/* ─── PRODUCTS (per shop tab) ─── */
+const PRODUCTS = {
+  sameday: [
+    { type:'TODAY · CARLINGFORD', name:'White Tulip Bunch',     pair:'Hunter Valley Rosé',         price:42, wine:62, stock:8,  hasWine:true,  img:IMG.i1 },
+    { type:'TODAY · LIMITED',     name:'Pink Peony Cluster',    pair:'Margaret River Chardonnay',  price:48, wine:72, stock:5,  hasWine:true,  img:IMG.i2 },
+    { type:'TODAY · 3 LEFT',      name:'Sunflower Bunch',       pair:'Adelaide Sauvignon Blanc',   price:38, wine:58, stock:3,  hasWine:true,  img:IMG.i3 },
+    { type:'TODAY',               name:'Mixed Spring Bouquet',  pair:'',                           price:45,          stock:6,  hasWine:false, img:IMG.i4 },
+    { type:'TODAY · SOLD OUT',    name:'David Austin Rose',     pair:'Tasmanian Pinot Noir',       price:55, wine:82, stock:0,  hasWine:false, sold:true, img:IMG.i5 },
+    { type:'TODAY',               name:'Lavender & Eucalyptus', pair:'',                           price:36,          stock:9,  hasWine:false, img:IMG.i6 },
+  ],
+  preorder: [
+    { type:'PRE-ORDER · TOMORROW', name:'Anemone & Ranunculus', pair:'Hunter Valley Sémillon',     price:52, wine:78, stock:10, hasWine:true,  img:IMG.i2 },
+    { type:'PRE-ORDER · MON',      name:'Garden Rose Bouquet',  pair:'Yarra Valley Pinot',         price:58, wine:88, stock:8,  hasWine:true,  img:IMG.i5 },
+    { type:'PRE-ORDER · TUE',      name:'Hydrangea Statement',  pair:'',                           price:65,          stock:6,  hasWine:false, img:IMG.i1 },
+    { type:'PRE-ORDER · WED',      name:'Spring Wildflowers',   pair:'',                           price:42,          stock:12, hasWine:false, img:IMG.i6 },
+    { type:'PRE-ORDER · THU',      name:'Peony & Eucalyptus',   pair:'Mornington Chardonnay',      price:55, wine:80, stock:9,  hasWine:true,  img:IMG.i2 },
+    { type:'PRE-ORDER · FRI',      name:'Anniversary Premium',  pair:'Champagne Brut NV',          price:88, wine:128,stock:4,  hasWine:true,  img:IMG.i4 },
+  ],
+};
+const PAGE_SIZE = 6;
+const shownCount = { sameday: PAGE_SIZE, preorder: PAGE_SIZE };
 
 /* ─── CHECKOUT STATE ─── */
 let checkoutProduct = null;  // { label, price }
@@ -1209,10 +1166,8 @@ let checkoutFee = 0;
 /* ─── INIT ─── */
 document.addEventListener('DOMContentLoaded', () => {
   buildShopCards();
-  buildInsta();
   renderSubs('weekly');
   buildRevs();
-  buildFAQ();
   updateTimer();
   setInterval(updateTimer, 30000);
   document.getElementById('overlay').addEventListener('click', e => {
@@ -1278,17 +1233,9 @@ function buildShopCards() {
   renderProducts('preorder');
 }
 
-/* ─── INSTAGRAM ─── */
-function buildInsta() {
-  document.getElementById('igrid').innerHTML =
-    [IMG.i1,IMG.i2,IMG.i3,IMG.i4,IMG.i5,IMG.i6].map(src =>
-      `<div class="insta-cell"><img src="${src}" alt="Bloom Sydney studio" loading="lazy"/></div>`
-    ).join('');
-}
-
 /* ─── SUBSCRIPTIONS ─── */
 function renderSubs(freq) {
-  document.getElementById('sgrid').innerHTML = (SUBS[freq]||[]).map(p => `
+  const html = (SUBS[freq]||[]).map(p => `
     <div class="sub-card${p.feat?' feat':''}">
       ${p.feat ? '<div class="sub-badge">Most Popular</div>' : ''}
       <div class="sub-tier">${freq.charAt(0).toUpperCase()+freq.slice(1)}</div>
@@ -1298,10 +1245,15 @@ function renderSubs(freq) {
       <ul class="sub-feats">${p.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
       <button class="btn-sub" onclick="toast('Subscriptions launching soon 🌸')">Subscribe Now</button>
     </div>`).join('');
+  ['sgrid','sgrid-shop'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
 }
 function setFreq(freq, btn) {
-  document.querySelectorAll('.freq-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
+  document.querySelectorAll('.freq-btn, .freq-btn-l').forEach(b => {
+    b.classList.toggle('on', b.textContent.trim().toLowerCase() === freq);
+  });
   renderSubs(freq);
 }
 
@@ -1321,21 +1273,6 @@ function buildRevs() {
       <div class="rev-prod">✦ ${r.prod}</div>
       <div class="rev-verified">✓ Verified purchase</div>
     </div>`).join('');
-}
-
-/* ─── FAQ ─── */
-function buildFAQ() {
-  document.getElementById('fwrap').innerHTML = FAQS.map((f,i) => `
-    <div class="faq-item" id="fi-${i}">
-      <button class="faq-q" onclick="togFAQ(${i})"><span>${f.q}</span><span class="faq-icon">+</span></button>
-      <div class="faq-a">${f.a}</div>
-    </div>`).join('');
-}
-function togFAQ(i) {
-  const el = document.getElementById('fi-'+i);
-  const was = el.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(e=>e.classList.remove('open'));
-  if (!was) el.classList.add('open');
 }
 
 /* ─── ANCHOR NAV ─── */
