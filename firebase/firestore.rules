@@ -32,6 +32,19 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
+    // FAQs: public read, auth-only write.
+    match /faqs/{faqId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Reviews: public read, auth-only write.
+    // (Phase B: customer-side review submission will need a separate /pending_reviews flow.)
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
     // Public read: Instagram feed cache
     match /cache/{doc} {
       allow read: if true;

@@ -637,9 +637,46 @@ nav {
 .rev-stars { display: flex; gap: 3px; margin-bottom: 3px; }
 .star { color: var(--c-warm); font-size: 16px; }
 .rev-count { font-size: var(--t-sm); color: var(--c-subtle); }
-.rev-grid { display: grid; gap: var(--gap-card); }
-@media(min-width: 640px) { .rev-grid { grid-template-columns: 1fr 1fr; } }
-@media(min-width: 900px) { .rev-grid { grid-template-columns: repeat(3, 1fr); } }
+.rev-track-wrap { position: relative; }
+.rev-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.rev-track::-webkit-scrollbar { display: none; }
+.rev-track .rev-card {
+  flex: 0 0 85%;
+  scroll-snap-align: start;
+}
+@media(min-width: 640px) { .rev-track .rev-card { flex-basis: calc(50% - 8px); } }
+@media(min-width: 900px) { .rev-track .rev-card { flex-basis: calc(33.333% - 11px); } }
+.rev-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px; height: 42px;
+  border-radius: 999px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--c-ink);
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  transition: all .2s;
+}
+.rev-arrow:hover { border-color: var(--c-ink); }
+.rev-arrow.left  { left: -20px; }
+.rev-arrow.right { right: -20px; }
+@media(min-width: 900px) { .rev-arrow { display: flex; } }
 .rev-card {
   background: var(--c-bg);
   border: 1px solid var(--c-border);
@@ -955,6 +992,31 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
   </div>
 </section>
 
+<!-- ══════════════════ REVIEWS ══════════════════ -->
+<section id="reviews" class="sec">
+  <div class="wrap">
+    <div class="sec-eyebrow">What Sydney is saying</div>
+    <h2 class="sec-title">Loved by <em>locals</em></h2>
+
+    <div class="rev-summary" id="rev-summary" hidden>
+      <div>
+        <div class="rev-score" id="rev-score">—</div>
+        <div class="rev-stars" id="rev-stars-row"></div>
+        <div class="rev-count" id="rev-count">— reviews</div>
+      </div>
+      <div style="font-size:13px; color:var(--c-mid); max-width: 360px; line-height: 1.5">
+        Real customers, real flowers — every review tied to a verified order from our Carlingford studio.
+      </div>
+    </div>
+
+    <div class="rev-track-wrap">
+      <button class="rev-arrow left"  id="rev-arrow-left"  aria-label="Previous">‹</button>
+      <div class="rev-track" id="rev-track"></div>
+      <button class="rev-arrow right" id="rev-arrow-right" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
 <!-- ══════════════════ FAQ ══════════════════ -->
 <section id="faq" class="sec">
   <div class="wrap">
@@ -1176,14 +1238,7 @@ const SUBS = {
   ],
 };
 
-const REVS = [
-  { name:'Sarah M.', suburb:'Epping',        date:'April 2025',    stars:5, tag:'Same-Day',    txt:'I ordered at 11:30 AM and flowers arrived by 2 PM. Absolutely stunning — they looked exactly like the photo on the website.',                   prod:'White Tulip + Rosé Hamper' },
-  { name:'James W.', suburb:'Carlingford',   date:'March 2025',    stars:5, tag:'Pre-Order',   txt:'Ordered 5 days ahead for our anniversary. The peony and chardonnay pairing was such a thoughtful touch.',                                        prod:'Pink Peony + Chardonnay Hamper' },
-  { name:'Mia C.',   suburb:'Ryde',          date:'April 2025',    stars:5, tag:'Subscription',txt:'Been subscribing for 3 months. Every Friday fresh flowers arrive and I genuinely look forward to it.',                                            prod:'Monthly Pairing Subscription' },
-  { name:'Tom H.',   suburb:'Macquarie Park',date:'February 2025', stars:5, tag:'Gift',        txt:"Sent to my mum for her birthday. She called immediately saying they were the most beautiful flowers she'd ever received.",                        prod:'Sunflower + Sauvignon Blanc' },
-  { name:'Rachel K.',suburb:'Epping',        date:'March 2025',    stars:5, tag:'Same-Day',    txt:'Needed flowers urgently. Ordered at 10 AM, arrived at 1:30 PM beautifully wrapped. So impressed.',                                               prod:'Mixed Spring Bunch' },
-  { name:'David L.', suburb:'North Rocks',   date:'January 2025',  stars:4, tag:'Hamper',      txt:'The hamper presentation was very premium — feels like a proper gift, not just flowers in a box. The rosé was a perfect pick.',                    prod:'Tulip + Rosé Hamper Deluxe' },
-];
+/* Reviews come from Firestore at runtime — see the module script below. */
 
 const FAQS = [
   { q:'What time do I need to order for same-day delivery?',     a:'Orders placed before <strong>1:00 PM</strong> Monday–Saturday receive same-day delivery. Orders after 1 PM are automatically scheduled for next day. You\'ll receive a text when your arrangement leaves our studio.' },
@@ -1228,6 +1283,7 @@ const shownCount = { sameday: PAGE_SIZE, preorder: PAGE_SIZE };
 window.PRODUCTS = PRODUCTS;
 window.shownCount = shownCount;
 window.PAGE_SIZE = PAGE_SIZE;
+window.FAQS = FAQS;
 
 /* ─── CHECKOUT STATE ─── */
 let checkoutProduct = null;  // { label, price }
@@ -1238,7 +1294,6 @@ let checkoutFee = 0;
 document.addEventListener('DOMContentLoaded', () => {
   buildShopCards();
   renderSubs('weekly');
-  buildRevs();
   buildFAQ();
   updateTimer();
   setInterval(updateTimer, 30000);
@@ -1329,23 +1384,7 @@ function setFreq(freq, btn) {
   renderSubs(freq);
 }
 
-/* ─── REVIEWS ─── */
-function buildRevs() {
-  document.getElementById('rgrid').innerHTML = REVS.map(r => `
-    <div class="rev-card">
-      <div class="rev-head">
-        <div>
-          <div class="rev-name">${r.name} <span style="font-weight:400;color:var(--c-subtle)">· ${r.suburb}</span></div>
-          <div class="rev-date">${r.date}</div>
-        </div>
-        <div class="rev-stars-sm">${'<span class="star-sm">★</span>'.repeat(r.stars)}</div>
-      </div>
-      <div class="rev-tag">${r.tag}</div>
-      <p class="rev-txt">"${r.txt}"</p>
-      <div class="rev-prod">✦ ${r.prod}</div>
-      <div class="rev-verified">✓ Verified purchase</div>
-    </div>`).join('');
-}
+/* (Reviews now rendered by the Firestore module below — see #rev-track) */
 
 /* ─── FAQ ─── */
 function buildFAQ() {
@@ -1519,7 +1558,7 @@ function toast(msg) {
 }
 </script>
 
-<!-- ══════════════════ FIRESTORE PRODUCT SYNC ══════════════════ -->
+<!-- ══════════════════ FIRESTORE SYNC (products / faqs / reviews) ══════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
@@ -1527,6 +1566,10 @@ import { firebaseConfig } from "../firebase/web-config.js";
 
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 async function loadProductsFromFirestore() {
   try {
@@ -1560,10 +1603,168 @@ async function loadProductsFromFirestore() {
   }
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadProductsFromFirestore);
-} else {
+async function loadFaqsFromFirestore() {
+  try {
+    const snap = await getDocs(query(collection(db, 'faqs'), orderBy('sortOrder', 'asc')));
+    const items = [];
+    snap.forEach(d => {
+      const f = d.data();
+      if (f.active !== false) items.push({ q: f.question, a: f.answer });
+    });
+    if (!items.length) return;
+    // Override hardcoded fallback
+    if (window.FAQS) window.FAQS.length = 0;
+    items.forEach(it => window.FAQS.push(it));
+    if (typeof window.buildFAQ === 'function') window.buildFAQ();
+    injectFaqSchema(items);
+  } catch (err) {
+    console.warn('[Firestore] faqs fetch failed, using fallback:', err);
+  }
+}
+
+function injectFaqSchema(items) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": items.map(it => ({
+      "@type": "Question",
+      "name": it.q,
+      "acceptedAnswer": { "@type": "Answer", "text": String(it.a || '').replace(/<[^>]+>/g, '') }
+    }))
+  };
+  const old = document.getElementById('faq-jsonld');
+  if (old) old.remove();
+  const s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.id = 'faq-jsonld';
+  s.textContent = JSON.stringify(schema);
+  document.head.appendChild(s);
+}
+
+async function loadReviewsFromFirestore() {
+  try {
+    const snap = await getDocs(query(collection(db, 'reviews'), orderBy('sortOrder', 'asc')));
+    const items = [];
+    snap.forEach(d => {
+      const r = d.data();
+      if (r.active !== false) items.push({
+        name: r.customerName, suburb: r.suburb, date: r.date,
+        stars: r.stars, tag: r.tag, text: r.text,
+        product: r.productName, verified: r.verified !== false
+      });
+    });
+    renderReviewsCarousel(items);
+    if (items.length) injectReviewsSchema(items);
+  } catch (err) {
+    console.warn('[Firestore] reviews fetch failed:', err);
+    renderReviewsCarousel([]);
+  }
+}
+
+function renderReviewsCarousel(items) {
+  const track = document.getElementById('rev-track');
+  if (!track) return;
+
+  if (!items.length) {
+    track.innerHTML = `
+      <div class="rev-card" style="flex-basis:100%; text-align:center; padding:48px 20px">
+        <div style="font-size:36px; margin-bottom:12px">🌱</div>
+        <div style="font-weight:600; font-size:16px; margin-bottom:6px">Be one of our first reviewers</div>
+        <div style="font-size:13px; color:var(--c-mid)">We're a newly-opened studio in Carlingford. Order today and you'll be invited to share an honest review (with a 10% discount on your next order).</div>
+      </div>`;
+    return;
+  }
+
+  track.innerHTML = items.map(r => `
+    <div class="rev-card">
+      <div class="rev-head">
+        <div>
+          <div class="rev-name">${escapeHtml(r.name || '')} ${r.suburb ? `<span style="font-weight:400;color:var(--c-subtle)">· ${escapeHtml(r.suburb)}</span>` : ''}</div>
+          ${r.date ? `<div class="rev-date">${escapeHtml(r.date)}</div>` : ''}
+        </div>
+        <div class="rev-stars-sm">${'<span class="star-sm">★</span>'.repeat(r.stars || 0)}</div>
+      </div>
+      ${r.tag ? `<div class="rev-tag">${escapeHtml(r.tag)}</div>` : ''}
+      <p class="rev-txt">"${escapeHtml(r.text || '')}"</p>
+      ${r.product ? `<div class="rev-prod">✦ ${escapeHtml(r.product)}</div>` : ''}
+      ${r.verified ? '<div class="rev-verified">✓ Verified purchase</div>' : ''}
+    </div>
+  `).join('');
+
+  // Summary (avg + count)
+  const avg = items.reduce((s, r) => s + (r.stars || 0), 0) / items.length;
+  const summary = document.getElementById('rev-summary');
+  if (summary) {
+    summary.hidden = false;
+    document.getElementById('rev-score').textContent = avg.toFixed(1);
+    document.getElementById('rev-count').textContent = `${items.length} review${items.length === 1 ? '' : 's'}`;
+    const fullStars = Math.round(avg);
+    document.getElementById('rev-stars-row').innerHTML =
+      Array.from({length: 5}).map((_, i) => `<span class="star" style="opacity:${i < fullStars ? '1' : '.25'}">★</span>`).join('');
+  }
+
+  // Update top trust badge ("⭐ 4.9 · 127 verified reviews") if present
+  document.querySelectorAll('.trust-item').forEach(el => {
+    if (/verified reviews?/.test(el.textContent)) {
+      el.innerHTML = `⭐ <strong>${avg.toFixed(1)}</strong> · ${items.length} verified review${items.length === 1 ? '' : 's'}`;
+    }
+  });
+
+  // Arrow handlers
+  const left  = document.getElementById('rev-arrow-left');
+  const right = document.getElementById('rev-arrow-right');
+  if (left && right) {
+    const step = () => track.firstElementChild ? track.firstElementChild.getBoundingClientRect().width + 16 : 320;
+    left.onclick  = () => track.scrollBy({ left: -step(), behavior: 'smooth' });
+    right.onclick = () => track.scrollBy({ left:  step(), behavior: 'smooth' });
+  }
+}
+
+function injectReviewsSchema(items) {
+  const avg = (items.reduce((s, r) => s + (r.stars || 0), 0) / items.length).toFixed(1);
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bloom & Vine Sydney",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Carlingford",
+      "addressRegion": "NSW",
+      "addressCountry": "AU"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": avg,
+      "reviewCount": items.length,
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "review": items.slice(0, 10).map(r => ({
+      "@type": "Review",
+      "author": { "@type": "Person", "name": r.name || 'Anonymous' },
+      "reviewRating": { "@type": "Rating", "ratingValue": r.stars || 5, "bestRating": "5" },
+      "reviewBody": r.text || ''
+    }))
+  };
+  const old = document.getElementById('reviews-jsonld');
+  if (old) old.remove();
+  const s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.id = 'reviews-jsonld';
+  s.textContent = JSON.stringify(schema);
+  document.head.appendChild(s);
+}
+
+function init() {
   loadProductsFromFirestore();
+  loadFaqsFromFirestore();
+  loadReviewsFromFirestore();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
 }
 </script>
 
