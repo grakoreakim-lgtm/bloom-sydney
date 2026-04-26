@@ -1224,6 +1224,11 @@ const PRODUCTS = {
 const PAGE_SIZE = 6;
 const shownCount = { sameday: PAGE_SIZE, preorder: PAGE_SIZE };
 
+/* Expose to module scripts (Firestore sync needs to mutate these) */
+window.PRODUCTS = PRODUCTS;
+window.shownCount = shownCount;
+window.PAGE_SIZE = PAGE_SIZE;
+
 /* ─── CHECKOUT STATE ─── */
 let checkoutProduct = null;  // { label, price }
 let checkoutType = null;     // 'today' | 'preorder'
@@ -1511,6 +1516,54 @@ function toast(msg) {
   el.textContent=msg; el.classList.add('on');
   clearTimeout(toastT);
   toastT=setTimeout(()=>el.classList.remove('on'),3500);
+}
+</script>
+
+<!-- ══════════════════ FIRESTORE PRODUCT SYNC ══════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { firebaseConfig } from "../firebase/web-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+async function loadProductsFromFirestore() {
+  try {
+    const snap = await getDocs(query(collection(db, 'products'), orderBy('sortOrder', 'asc')));
+    const buckets = { sameday: [], preorder: [] };
+    snap.forEach(d => {
+      const p = d.data();
+      const tab = p.tab === 'preorder' ? 'preorder' : 'sameday';
+      const item = {
+        type:    p.type || '',
+        name:    p.name || '',
+        pair:    p.pair || '',
+        price:   Number(p.price) || 0,
+        stock:   Number(p.stock) || 0,
+        hasWine: !!p.hasWine,
+        img:     p.imageUrl || ''
+      };
+      if (p.wine != null && p.wine !== '') item.wine = Number(p.wine);
+      if (p.sold) item.sold = true;
+      buckets[tab].push(item);
+    });
+    if (buckets.sameday.length)  window.PRODUCTS.sameday  = buckets.sameday;
+    if (buckets.preorder.length) window.PRODUCTS.preorder = buckets.preorder;
+    if (buckets.sameday.length || buckets.preorder.length) {
+      window.shownCount.sameday  = window.PAGE_SIZE;
+      window.shownCount.preorder = window.PAGE_SIZE;
+      window.buildShopCards();
+    }
+  } catch (err) {
+    console.warn('[Firestore] product fetch failed, using fallback data:', err);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadProductsFromFirestore);
+} else {
+  loadProductsFromFirestore();
 }
 </script>
 

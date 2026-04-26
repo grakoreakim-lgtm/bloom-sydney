@@ -8,6 +8,12 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
 
+    // Customer-facing product catalogue: anyone can read, only signed-in users (= admin) write.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
     // Public read: Instagram feed cache
     match /cache/{doc} {
       allow read: if true;
