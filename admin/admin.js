@@ -62,23 +62,25 @@ $('#btn-logout').addEventListener('click', () => signOut(auth));
 
 /* ─── ROUTER ─── */
 const titles = {
-  dashboard: 'Dashboard',
-  orders:    'Orders',
-  customers: 'Customers',
-  products:  'Products & Inventory',
-  reviews:   'Reviews',
-  faqs:      'FAQs',
-  settings:  'Settings',
+  dashboard:    'Dashboard',
+  orders:       'Orders',
+  customOrders: 'Custom Orders',
+  customers:    'Customers',
+  products:     'Products & Inventory',
+  reviews:      'Reviews',
+  faqs:         'FAQs',
+  settings:     'Settings',
 };
 
 const routes = {
-  dashboard: () => import('./views/dashboard.js'),
-  orders:    () => import('./views/orders.js'),
-  customers: () => import('./views/customers.js'),
-  products:  () => import('./views/products.js'),
-  reviews:   () => import('./views/reviews.js'),
-  faqs:      () => import('./views/faqs.js'),
-  settings:  () => import('./views/settings.js'),
+  dashboard:    () => import('./views/dashboard.js'),
+  orders:       () => import('./views/orders.js'),
+  customOrders: () => import('./views/customOrders.js'),
+  customers:    () => import('./views/customers.js'),
+  products:     () => import('./views/products.js'),
+  reviews:      () => import('./views/reviews.js'),
+  faqs:         () => import('./views/faqs.js'),
+  settings:     () => import('./views/settings.js'),
 };
 
 async function handleRoute() {

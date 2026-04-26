@@ -871,6 +871,113 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 .co-success h3{font-size:20px;margin:0 0 8px;font-weight:700;letter-spacing:-0.01em}
 .co-success p{color:var(--c-mid);font-size:14px;margin:0 0 6px;line-height:1.5}
 .co-success .order-num{font-family:ui-monospace,Menlo,monospace;background:var(--c-bg);padding:6px 12px;border-radius:6px;font-size:13px;display:inline-block;margin-top:6px}
+
+/* Delivery Areas section */
+#delivery-areas { background: var(--c-bg); }
+.da-grid { display: grid; gap: 24px; grid-template-columns: 1fr; }
+@media(min-width: 900px) { .da-grid { grid-template-columns: 1.4fr 1fr; } }
+
+.da-checker {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.da-checker-row { display: flex; gap: 8px; align-items: center; }
+.da-checker input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1.5px solid var(--c-border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  letter-spacing: .04em;
+}
+.da-checker input:focus { outline: none; border-color: var(--c-accent); }
+.da-checker button {
+  padding: 11px 22px;
+  background: var(--c-ink);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.da-checker button:hover { background: var(--c-accent); }
+.da-result { margin-top: 12px; font-size: 14px; padding: 10px 14px; border-radius: 6px; display: none; }
+.da-result.show { display: block; }
+.da-result.zone-a { background: #E5F0E5; color: #2D5A2D; border-left: 3px solid #3D5C3D; }
+.da-result.zone-b { background: #FEF4E5; color: #8E5A1A; border-left: 3px solid #C8A84A; }
+.da-result.zone-c { background: rgba(107,45,32,.06); color: var(--c-accent); border-left: 3px solid var(--c-accent); }
+
+.da-map {
+  width: 100%;
+  height: 360px;
+  border-radius: var(--r-card);
+  background: var(--c-border);
+  border: 1px solid var(--c-border);
+  overflow: hidden;
+  position: relative;
+}
+.da-map-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
+  background: var(--c-bg);
+  color: var(--c-subtle);
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+.da-zones { display: flex; flex-direction: column; gap: 14px; }
+.da-zone {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: 16px 18px;
+  border-left: 4px solid var(--c-border);
+}
+.da-zone.za { border-left-color: #3D5C3D; }
+.da-zone.zb { border-left-color: #C8A84A; }
+.da-zone.zc { border-left-color: var(--c-accent); }
+.da-zone .z-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.da-zone .z-name { font-weight: 700; font-size: 15px; }
+.da-zone .z-radius { font-size: 12px; color: var(--c-subtle); font-weight: 500; }
+.da-zone .z-desc { font-size: 13px; color: var(--c-mid); margin-bottom: 8px; line-height: 1.5; }
+.da-zone .z-suburbs { font-size: 12px; color: var(--c-subtle); line-height: 1.55; }
+.da-zone .z-suburbs strong { color: var(--c-ink); font-weight: 600; }
+
+/* Custom order modal */
+.cof-modal { max-width: 540px; }
+.cof-budget { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.cof-budget label {
+  text-align: center;
+  padding: 10px 6px;
+  border: 1.5px solid var(--c-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.cof-budget label:has(input:checked) { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+.cof-budget input { display: none; }
+
+.cof-occ { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.cof-occ label {
+  text-align: center;
+  padding: 10px 6px;
+  border: 1.5px solid var(--c-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.cof-occ label:has(input:checked) { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+.cof-occ input { display: none; }
+@media(min-width: 480px) { .cof-occ { grid-template-columns: repeat(4, 1fr); } }
 /* ─────────────────────────────────────────
    TOAST
 ───────────────────────────────────────── */
@@ -895,7 +1002,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <div class="nav-right">
       <div class="cutoff-tag">
         <span class="live-dot"></span>
-        Order by 1 PM &nbsp;·&nbsp; <span id="nav-timer">–</span>
+        Order by 2 PM &nbsp;·&nbsp; <span id="nav-timer">–</span>
       </div>
       <button class="btn-nav" onclick="go('shop')">Order Now</button>
     </div>
@@ -922,8 +1029,8 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 <!-- ══════════════════ TRUST BAR ══════════════════ -->
 <div class="trust-bar">
   <div class="trust-inner">
-    <div class="trust-item">🚚 <strong>Same-day</strong> delivery · Order by 1 PM</div>
-    <div class="trust-item">📅 <strong>Pre-order</strong> up to 7 days ahead</div>
+    <div class="trust-item">🚚 <strong>Same-day</strong> delivery · Order by 2 PM</div>
+    <div class="trust-item">📅 <strong>Pre-order</strong> up to 30 days ahead</div>
     <div class="trust-item">🔁 <strong>Flexible</strong> subscriptions</div>
     <div class="trust-item">⭐ <strong>4.9</strong> · 127 verified reviews</div>
     <div class="trust-item">🍷 <strong>Wine</strong> hamper pairings</div>
@@ -941,7 +1048,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <div class="shop-tabs">
       <button class="shop-tab on" onclick="switchShop('sameday',this)">
         <span class="tab-name">Same-Day</span>
-        <span class="tab-sub">Order by 1 PM · Today only</span>
+        <span class="tab-sub">Order by 2 PM · Today only</span>
       </button>
       <button class="shop-tab" onclick="switchShop('preorder',this)">
         <span class="tab-name">Pre-Order</span>
@@ -955,7 +1062,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 
     <!-- Same-Day Panel -->
     <div class="shop-panel on" id="panel-sameday">
-      <div class="s-banner">⏰&nbsp; <span>Today's arrangements are freshly sourced this morning from Flemington Market. <strong>Order before 1:00 PM</strong> for same-day delivery across North-West Sydney. Once sold out, they're gone.</span></div>
+      <div class="s-banner">⏰&nbsp; <span>Today's arrangements are freshly sourced this morning from Flemington Market. <strong>Order before 2:00 PM</strong> for same-day delivery across North-West Sydney. Once sold out, they're gone.</span></div>
       <div class="pgrid" id="grid-sameday"></div>
       <div class="load-more-wrap" id="more-sameday" style="display:none">
         <button class="btn-load-more" onclick="loadMore('sameday')">더보기 ↓</button>
@@ -964,7 +1071,11 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 
     <!-- Pre-Order Panel -->
     <div class="shop-panel" id="panel-preorder">
-      <div class="s-banner">📅&nbsp; <span>Published 7 days in advance every morning at 6 AM. Lock in your arrangement before it sells out. <strong>Free cancellation</strong> up to 48 hours before delivery.</span></div>
+      <div class="s-banner">📅&nbsp; <span>Order up to 30 days ahead. For 14+ day pre-orders, exact flowers may vary based on Flemington Market availability — we'll always match the style and quality you see here. <strong>Free cancellation</strong> up to 48 hours before delivery.</span></div>
+      <div style="margin-bottom:18px; text-align:center; padding:14px 16px; background:rgba(107,45,32,.04); border:1px dashed var(--c-border); border-radius:var(--r-card); font-size:13px; color:var(--c-mid)">
+        Need it for a wedding, corporate event, or 30+ days out?
+        <button onclick="openCustomOrder()" style="background:none;border:none;color:var(--c-accent);font-weight:700;cursor:pointer;padding:0;margin-left:6px;text-decoration:underline">Request a custom order →</button>
+      </div>
       <div class="pgrid" id="grid-preorder"></div>
       <div class="load-more-wrap" id="more-preorder" style="display:none">
         <button class="btn-load-more" onclick="loadMore('preorder')">더보기 ↓</button>
@@ -1041,6 +1152,54 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
   </div>
 </section>
 
+<!-- ══════════════════ DELIVERY AREAS ══════════════════ -->
+<section id="delivery-areas" class="sec">
+  <div class="wrap">
+    <div class="sec-eyebrow">Where we deliver</div>
+    <h2 class="sec-title">Delivery <em>areas</em></h2>
+    <p class="sec-desc">Three coverage zones from our Carlingford studio. Same-day for nearby suburbs, pre-order for greater Sydney, custom for further afield.</p>
+
+    <div class="da-checker">
+      <div class="da-checker-row">
+        <input id="da-postcode-input" type="text" placeholder="Enter your postcode (e.g., 2118)" maxlength="4" inputmode="numeric"/>
+        <button onclick="checkDeliveryPostcode()">Check</button>
+      </div>
+      <div class="da-result" id="da-result"></div>
+    </div>
+
+    <div class="da-grid">
+      <div class="da-map" id="da-map">
+        <div class="da-map-fallback">
+          <div style="font-size:32px">🗺️</div>
+          <div>Map will load when delivery zones are configured</div>
+        </div>
+      </div>
+
+      <div class="da-zones">
+        <div class="da-zone za">
+          <div class="z-head"><span class="z-name">🟢 Same-Day Zone</span><span class="z-radius">~25 km</span></div>
+          <div class="z-desc">Order by 2 PM Mon–Sat for same-day delivery.</div>
+          <div class="z-suburbs"><strong>Carlingford · Epping · Eastwood · Ryde · Macquarie Park · Pennant Hills · Beecroft · West Pennant Hills · Cherrybrook · North Rocks · Castle Hill · Baulkham Hills · Hornsby · Wahroonga · Turramurra · St Ives</strong> &amp; more</div>
+        </div>
+
+        <div class="da-zone zb">
+          <div class="z-head"><span class="z-name">🟡 Pre-Order Zone</span><span class="z-radius">~40 km</span></div>
+          <div class="z-desc">Most of greater Sydney. Pre-order up to 30 days ahead. Same-day not available.</div>
+          <div class="z-suburbs"><strong>Sydney CBD · North Shore · Eastern Suburbs · Inner West · Parramatta · Western Sydney · Sutherland Shire · Northern Beaches</strong></div>
+        </div>
+
+        <div class="da-zone zc">
+          <div class="z-head"><span class="z-name">🟣 Custom Order Zone</span><span class="z-radius">up to 2 hours</span></div>
+          <div class="z-desc">Wollongong, Newcastle outskirts, Central Coast, Blue Mountains. Special-occasion orders only — request a quote.</div>
+          <div style="margin-top:10px">
+            <button onclick="openCustomOrder()" style="background:var(--c-accent);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">Request a custom order →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ══════════════════ REVIEWS ══════════════════ -->
 <section id="reviews" class="sec">
   <div class="wrap">
@@ -1085,16 +1244,16 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <div>
       <h4>Order</h4>
       <div class="f-links">
-        <a href="#shop">Pre-Order This Week</a>
+        <a href="#shop">Pre-Order (up to 30 days)</a>
         <a href="#shop">Today's Collection</a>
         <a href="#subscribe">Subscribe &amp; Save</a>
-        <a href="#">Gift Hampers</a>
+        <a href="javascript:void(0)" onclick="openCustomOrder()">Custom Orders &amp; Weddings</a>
       </div>
     </div>
     <div>
       <h4>Info</h4>
       <div class="f-links">
-        <a href="#">Delivery Areas</a>
+        <a href="#delivery-areas">Delivery Areas</a>
         <a href="#">Cancellation Policy</a>
         <a href="#">Liquor Licence (NSW)</a>
         <a href="#">Contact Us</a>
@@ -1231,6 +1390,96 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <div id="checkout-success" hidden></div>
   </div>
 </div>
+
+<!-- ══════════════════ CUSTOM ORDER MODAL ══════════════════ -->
+<div class="overlay" id="cof-overlay">
+  <div class="modal cof-modal">
+    <div class="modal-drag"></div>
+    <button class="modal-x" onclick="closeCustomOrder()">✕</button>
+
+    <div class="co-header" style="margin-bottom:8px">
+      <div class="co-title">Custom order request</div>
+      <div style="font-size:12px;color:var(--c-subtle);font-weight:500">For weddings, events &amp; 30+ day pre-orders</div>
+    </div>
+
+    <div id="cof-body">
+      <p style="font-size:13px;color:var(--c-mid);line-height:1.6;margin:8px 0 18px">
+        Tell us about your occasion and we'll come back within 24 hours with a quote and proposal. No commitment.
+      </p>
+
+      <form id="cof-form">
+        <div class="co-section" style="padding-top:0">
+          <h3>Occasion</h3>
+          <div class="cof-occ" id="cof-occ-grid">
+            <label><input type="radio" name="occasion" value="wedding" required/> 💒 Wedding</label>
+            <label><input type="radio" name="occasion" value="anniversary"/> 💍 Anniversary</label>
+            <label><input type="radio" name="occasion" value="corporate"/> 🏢 Corporate</label>
+            <label><input type="radio" name="occasion" value="other"/> ✦ Other</label>
+          </div>
+          <div class="f-row" style="margin-top:12px">
+            <label class="co-label">Tell us a little more (optional)</label>
+            <textarea class="co-input" name="details" rows="3" placeholder="Style preferences, colour palette, vibes, anything we should know…" style="resize:vertical"></textarea>
+          </div>
+        </div>
+
+        <div class="co-section">
+          <h3>When &amp; where</h3>
+          <div class="co-grid2">
+            <div class="f-row">
+              <label class="co-label">Event date</label>
+              <input class="co-input" name="eventDate" type="date" required/>
+            </div>
+            <div class="f-row">
+              <label class="co-label">Suburb</label>
+              <input class="co-input" name="suburb" type="text" placeholder="Wollongong"/>
+            </div>
+          </div>
+          <div class="f-row">
+            <label class="co-label">Delivery address (if known)</label>
+            <input class="co-input" name="address" type="text" placeholder="Optional — can finalise later"/>
+          </div>
+        </div>
+
+        <div class="co-section">
+          <h3>Budget</h3>
+          <div class="cof-budget">
+            <label><input type="radio" name="budget" value="100-300" required/> $100–300</label>
+            <label><input type="radio" name="budget" value="300-700"/> $300–700</label>
+            <label><input type="radio" name="budget" value="700-1500"/> $700–1,500</label>
+            <label><input type="radio" name="budget" value="1500-3000"/> $1,500–3,000</label>
+            <label><input type="radio" name="budget" value="3000+"/> $3,000+</label>
+            <label><input type="radio" name="budget" value="unsure"/> Not sure</label>
+          </div>
+        </div>
+
+        <div class="co-section" style="border-bottom:none">
+          <h3>How can we reach you?</h3>
+          <div class="co-grid2">
+            <div class="f-row">
+              <label class="co-label">Your name</label>
+              <input class="co-input" name="customerName" type="text" required placeholder="Jane Smith"/>
+            </div>
+            <div class="f-row">
+              <label class="co-label">Phone</label>
+              <input class="co-input" name="customerPhone" type="tel" required placeholder="04XX XXX XXX"/>
+            </div>
+          </div>
+          <div class="f-row">
+            <label class="co-label">Email</label>
+            <input class="co-input" name="customerEmail" type="email" required placeholder="jane@email.com"/>
+          </div>
+        </div>
+
+        <button type="submit" class="co-btn-pay" id="cof-submit" style="margin-top:18px">
+          <span>Send request</span>
+        </button>
+        <p class="co-payment-note">We'll reply within 24 hours with a tailored quote. No payment now.</p>
+      </form>
+    </div>
+
+    <div id="cof-success" hidden></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1249,8 +1498,8 @@ const IMG = {
 
 /* ─── SHOP CARDS ─── */
 const SHOP_CARDS = [
-  { img:IMG.preorder,    badge:'Pre-Order',  label:'Plan Ahead',   title:'Weekly Pre-Order',     desc:'Published every morning at 6 AM for the next 7 days. Lock in your arrangement before it sells out. Free cancellation up to 48 hours before delivery.', from:42, cta:'Browse Pre-Orders', action:"toast('Pre-order calendar opening soon 📅')" },
-  { img:IMG.sameday,     badge:'Same-Day',   label:'Order by 1 PM',title:"Today's Collection",   desc:"Hand-picked this morning from Flemington Market. Order before 1 PM for same-day delivery across North-West Sydney. Once sold, they're gone.", from:42, cta:'Order Today', action:"openModal()" },
+  { img:IMG.preorder,    badge:'Pre-Order',  label:'Plan Ahead',   title:'Pre-Order',     desc:'Lock in flowers up to 30 days ahead. Free cancellation up to 48 hours before delivery. Need 30+ days for a wedding or event? Request a custom order.', from:42, cta:'Browse Pre-Orders', action:"toast('Pre-order calendar opening soon 📅')" },
+  { img:IMG.sameday,     badge:'Same-Day',   label:'Order by 2 PM',title:"Today's Collection",   desc:"Hand-picked this morning from Flemington Market. Order before 2 PM for same-day delivery across North-West Sydney. Once sold, they're gone.", from:42, cta:'Order Today', action:"openModal()" },
 ];
 
 
@@ -1275,10 +1524,10 @@ const SUBS = {
 /* Reviews come from Firestore at runtime — see the module script below. */
 
 const FAQS = [
-  { q:'What time do I need to order for same-day delivery?',     a:'Orders placed before <strong>1:00 PM</strong> Monday–Saturday receive same-day delivery. Orders after 1 PM are automatically scheduled for next day. You\'ll receive a text when your arrangement leaves our studio.' },
+  { q:'What time do I need to order for same-day delivery?',     a:'Orders placed before <strong>2:00 PM</strong> Monday–Saturday receive same-day delivery within our 25 km same-day zone. Orders after 2 PM are automatically scheduled for the next available day. You\'ll receive a text when your arrangement leaves our studio.' },
   { q:'How is the wine delivered with the flowers?',              a:'Wine is packed in a temperature-protected sleeve. We require a signature and photo ID (18+) at delivery. We hold a current NSW Packaged Liquor Licence.' },
   { q:'What areas do you currently deliver to?',                  a:'North-West Sydney: <strong>Carlingford (free), Epping, Eastwood, Macquarie Park, Ryde</strong> ($8 flat fee). Enter your postcode at checkout for exact pricing.' },
-  { q:'Can I pre-order for a future date?',                       a:'Yes! Our pre-order calendar is published 7 days ahead every morning at 6 AM. Free cancellation up to 48 hours before delivery.' },
+  { q:'Can I pre-order for a future date?',                       a:'Yes — pre-order up to <strong>30 days ahead</strong>. For 14+ day orders, the exact flowers may vary based on Flemington Market availability that morning, but we\'ll always match the style and quality shown. Need 30+ days (weddings, big anniversaries, corporate)? Use our custom order form. Free cancellation up to 48 hours before delivery.' },
   { q:'Do the photos show the actual flowers being sold?',        a:'Always. Every product photo is taken that same morning of the actual flowers in our Carlingford studio. No stock photography, ever.' },
   { q:'How does the anniversary reminder service work?',          a:'At checkout, tick "Save this date". We\'ll WhatsApp you 14, 7, and 2 days before — with what we sent last time and a 10% early-bird discount.' },
 ];
@@ -1738,9 +1987,185 @@ function escapeHtmlInline(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+/* ─────────────────────────────────────────
+   DELIVERY ZONES (postcode checker + Google Map)
+───────────────────────────────────────── */
+window.STORE = window.STORE || { lat: -33.7766, lng: 151.0481, name: 'Bloom & Vine — Carlingford' };
+window.ZONES = window.ZONES || {
+  // Same-day (~25 km radius) — NW Sydney + immediate surrounds
+  zoneA: ['2110','2111','2112','2113','2114','2115','2116','2117','2118','2119','2120','2121','2122','2125','2126','2127','2128',
+          '2151','2152','2153','2154','2155','2069','2070','2071','2072','2073','2074','2075','2076','2077','2079','2080','2081','2082',
+          '2083','2084','2085','2086','2087','2088','2089','2090','2092','2093','2094','2095','2096','2097','2099','2100','2101'],
+  // Pre-order (~40 km radius) — most of greater Sydney
+  zoneB: ['2000','2007','2008','2009','2010','2011','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025','2026',
+          '2027','2028','2029','2030','2031','2032','2033','2034','2035','2036','2037','2038','2039','2040','2041','2042','2043','2044',
+          '2045','2046','2047','2048','2049','2050','2060','2061','2062','2063','2064','2065','2066','2067','2068','2102','2103','2104',
+          '2105','2106','2107','2108','2130','2131','2132','2133','2134','2135','2136','2137','2138','2139','2140','2141','2142','2143',
+          '2144','2145','2146','2147','2148','2149','2150','2156','2157','2158','2159','2160','2161','2162','2163','2164','2165','2166',
+          '2167','2168','2169','2170','2200','2203','2204','2205','2206','2207','2208','2209','2210','2211','2216','2217','2218','2219',
+          '2220','2221','2222','2223','2224','2225','2226','2227','2228','2229','2230','2231','2232','2233','2234'],
+};
+function classifyPostcode(pc) {
+  pc = String(pc || '').trim();
+  if (!/^\d{4}$/.test(pc)) return null;
+  if (window.ZONES.zoneA.includes(pc)) return 'A';
+  if (window.ZONES.zoneB.includes(pc)) return 'B';
+  return 'C'; // Custom only
+}
+
+function checkDeliveryPostcode() {
+  const pc = (document.getElementById('da-postcode-input').value || '').trim();
+  const result = document.getElementById('da-result');
+  if (!/^\d{4}$/.test(pc)) {
+    result.className = 'da-result show zone-c';
+    result.innerHTML = '⚠️ Please enter a valid 4-digit Australian postcode.';
+    return;
+  }
+  const zone = classifyPostcode(pc);
+  if (zone === 'A') {
+    result.className = 'da-result show zone-a';
+    result.innerHTML = `✓ <strong>${pc}</strong> — Same-day delivery available. Order by 2 PM Mon–Sat. <a href="#shop" style="color:inherit;text-decoration:underline">Shop now →</a>`;
+  } else if (zone === 'B') {
+    result.className = 'da-result show zone-b';
+    result.innerHTML = `✓ <strong>${pc}</strong> — Pre-order delivery available (1–30 days ahead). <a href="#shop" style="color:inherit;text-decoration:underline">Browse pre-orders →</a>`;
+  } else {
+    result.className = 'da-result show zone-c';
+    result.innerHTML = `<strong>${pc}</strong> — Outside our standard zones, but we may still be able to deliver as a custom order.<br/>
+      <button onclick="openCustomOrder()" style="margin-top:6px;background:var(--c-accent);color:#fff;border:none;padding:7px 14px;border-radius:6px;font-weight:600;font-size:13px;cursor:pointer">Request a custom order →</button>`;
+  }
+}
+// Allow Enter key in postcode input
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('da-postcode-input');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); checkDeliveryPostcode(); } });
+});
+
+/* Google Maps — initialize when Places library is loaded */
+window.__bloomInitMap = function() {
+  const mapEl = document.getElementById('da-map');
+  if (!mapEl || !window.google?.maps) return;
+  if (mapEl.dataset.mapReady) return;
+
+  // Clear fallback content
+  mapEl.innerHTML = '';
+
+  const map = new google.maps.Map(mapEl, {
+    center: { lat: window.STORE.lat, lng: window.STORE.lng },
+    zoom: 9,
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'cooperative',
+    styles: [
+      { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+    ],
+  });
+
+  // Store marker
+  new google.maps.Marker({
+    position: { lat: window.STORE.lat, lng: window.STORE.lng },
+    map,
+    title: window.STORE.name,
+    label: { text: '🌷', fontSize: '20px' },
+  });
+
+  // Three concentric zones (km → meters)
+  const zones = [
+    { km: 25,  fill: '#3D5C3D', stroke: '#3D5C3D', op: 0.18 }, // Same-day
+    { km: 40,  fill: '#C8A84A', stroke: '#C8A84A', op: 0.10 }, // Pre-order
+    { km: 100, fill: '#6B2D20', stroke: '#6B2D20', op: 0.06 }, // Custom
+  ];
+  zones.forEach(z => {
+    new google.maps.Circle({
+      center: { lat: window.STORE.lat, lng: window.STORE.lng },
+      radius: z.km * 1000,
+      fillColor: z.fill,
+      fillOpacity: z.op,
+      strokeColor: z.stroke,
+      strokeOpacity: 0.6,
+      strokeWeight: 2,
+      map,
+    });
+  });
+
+  mapEl.dataset.mapReady = '1';
+};
+
+/* ─────────────────────────────────────────
+   CUSTOM ORDER MODAL
+───────────────────────────────────────── */
+function openCustomOrder() {
+  const f = document.getElementById('cof-form');
+  if (f) f.reset();
+  document.getElementById('cof-body').hidden = false;
+  document.getElementById('cof-success').hidden = true;
+  document.getElementById('cof-success').innerHTML = '';
+  document.getElementById('cof-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCustomOrder() {
+  document.getElementById('cof-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  // Close custom order overlay on backdrop click
+  const cof = document.getElementById('cof-overlay');
+  if (cof) cof.addEventListener('click', e => { if (e.target === cof) closeCustomOrder(); });
+
+  // Submit handler
+  const form = document.getElementById('cof-form');
+  if (form) form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('cof-submit');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Sending…';
+    try {
+      const data = {
+        occasion:      form.occasion.value,
+        details:       form.details.value.trim(),
+        eventDate:     form.eventDate.value,
+        suburb:        form.suburb.value.trim(),
+        address:       form.address.value.trim(),
+        budget:        form.budget.value,
+        customerName:  form.customerName.value.trim(),
+        customerPhone: form.customerPhone.value.trim(),
+        customerEmail: form.customerEmail.value.trim().toLowerCase(),
+        status:        'new',
+        source:        'web',
+      };
+      if (typeof window.placeCustomOrderToFirestore !== 'function') {
+        throw new Error('Custom-order service is loading — please try again in a moment.');
+      }
+      const id = await window.placeCustomOrderToFirestore(data);
+      showCustomOrderSuccess(id, data);
+    } catch (err) {
+      console.error(err);
+      toast('Could not send: ' + (err.message || err.code));
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Send request';
+    }
+  });
+});
+
+function showCustomOrderSuccess(id, data) {
+  document.getElementById('cof-body').hidden = true;
+  const el = document.getElementById('cof-success');
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="co-success">
+      <div class="check">✓</div>
+      <h3>Request sent!</h3>
+      <p>Thanks ${escapeHtmlInline(data.customerName.split(' ')[0])}. We've received your custom order request.</p>
+      <p>We'll reply to <strong>${escapeHtmlInline(data.customerEmail)}</strong> within 24 hours with a tailored quote.</p>
+      <div class="order-num">Request #${(id || '').slice(-6).toUpperCase()}</div>
+      <button class="co-btn-pay" style="margin-top:22px" onclick="closeCustomOrder()"><span>Done</span></button>
+    </div>
+  `;
+}
+
 /* ─── COUNTDOWN ─── */
 function updateTimer() {
-  const now=new Date(), cut=new Date(); cut.setHours(13,0,0,0);
+  const now=new Date(), cut=new Date(); cut.setHours(14,0,0,0);
   if (now>=cut) cut.setDate(cut.getDate()+1);
   const diff=cut-now, el=document.getElementById('nav-timer');
   if (!el) return;
@@ -1771,6 +2196,12 @@ const db  = getFirestore(app);
 window.placeOrderToFirestore = async function(order) {
   const data = { ...order, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
   const ref = await addDoc(collection(db, 'orders'), data);
+  return ref.id;
+};
+
+window.placeCustomOrderToFirestore = async function(req) {
+  const data = { ...req, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+  const ref = await addDoc(collection(db, 'customOrders'), data);
   return ref.id;
 };
 
@@ -2019,6 +2450,9 @@ function loadGooglePlaces(apiKey) {
     attach();
     // Re-attempt on overlay open in case the field hadn't rendered yet
     document.getElementById('overlay')?.addEventListener('transitionend', attach);
+
+    // Also initialise the delivery-areas map (same JS API)
+    if (typeof window.__bloomInitMap === 'function') window.__bloomInitMap();
   };
 
   const s = document.createElement('script');

@@ -45,6 +45,13 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // Custom order requests: public CREATE (so customer site form works),
+    // admin-only read/update/delete.
+    match /customOrders/{reqId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
     // Public read: Instagram feed cache
     match /cache/{doc} {
       allow read: if true;
