@@ -21,6 +21,17 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // Orders: customer site may CREATE (for future Stripe checkout). Read/update/delete admin-only.
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Customers: admin-only (auto-created by admin when an order is saved).
+    match /customers/{email} {
+      allow read, write: if request.auth != null;
+    }
+
     // Public read: Instagram feed cache
     match /cache/{doc} {
       allow read: if true;
