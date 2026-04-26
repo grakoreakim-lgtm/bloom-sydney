@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Stories &amp; Guides · Bloom &amp; Vine</title>
+<meta name="description" content="Sydney florist stories — flower care tips, wine pairings, gift guides, and behind-the-scenes from our Carlingford studio."/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Stories &amp; Guides · Bloom &amp; Vine"/>
+<meta property="og:description" content="Flower care tips, wine pairings, gift guides, and behind-the-scenes from our Sydney studio."/>
+<meta property="og:image" content="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://grakoreakim-lgtm.github.io/bloom-sydney/blog/"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --c-bg:        #F9F6F2;
+  --c-white:     #ffffff;
+  --c-ink:       #1A1A1A;
+  --c-mid:       #4A4A4A;
+  --c-subtle:    #767676;
+  --c-border:    #E0DBD4;
+  --c-accent:    #6B2D20;
+  --c-accent-h:  #7E3525;
+  --c-sage:      #3D5C3D;
+  --c-gold:      #C8A84A;
+  --r-card:      10px;
+  --r-pill:      999px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ── Nav ── */
+.bnav {
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 50;
+}
+.bnav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bnav-logo { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.bnav-links { display: none; gap: 28px; font-size: 14px; }
+.bnav-links a { color: var(--c-mid); transition: color .2s; }
+.bnav-links a:hover { color: var(--c-accent); }
+.bnav-cta {
+  padding: 9px 18px;
+  background: var(--c-accent);
+  color: #fff;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .2s;
+}
+.bnav-cta:hover { background: var(--c-accent-h); }
+@media(min-width: 768px) { .bnav-links { display: flex; } }
+
+/* ── Page wrap ── */
+.bwrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 22px 80px;
+}
+
+/* ── Hero ── */
+.bhero {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.bhero .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--c-subtle);
+  margin-bottom: 10px;
+}
+.bhero h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: clamp(34px, 6vw, 56px);
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.bhero h1 em { font-style: italic; color: var(--c-accent); }
+.bhero p {
+  color: var(--c-mid);
+  font-size: 16px;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ── Category filters ── */
+.bcat-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.bcat {
+  padding: 8px 16px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-mid);
+  background: var(--c-white);
+  cursor: pointer;
+  transition: all .15s;
+}
+.bcat:hover { border-color: var(--c-ink); color: var(--c-ink); }
+.bcat.on { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+
+/* ── Grid ── */
+.bgrid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+@media(min-width: 640px) { .bgrid { grid-template-columns: repeat(2, 1fr); } }
+@media(min-width: 1000px) { .bgrid { grid-template-columns: repeat(3, 1fr); } }
+
+.bcard {
+  background: var(--c-white);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+  cursor: pointer;
+}
+.bcard:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,.08); }
+.bcard-img {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--c-border);
+}
+.bcard-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.bcard:hover .bcard-img img { transform: scale(1.04); }
+.bcard-body { padding: 22px 22px 24px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.bcard-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.bcard-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+}
+.bcard-excerpt {
+  color: var(--c-mid);
+  font-size: 14px;
+  line-height: 1.55;
+  flex: 1;
+}
+.bcard-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--c-subtle);
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-border);
+}
+.bcard-meta .read-more { color: var(--c-accent); font-weight: 600; }
+
+.bempty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--c-subtle);
+  background: var(--c-white);
+  border: 1px dashed var(--c-border);
+  border-radius: var(--r-card);
+}
+
+/* ── Article (detail view) ── */
+.barticle .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--c-subtle);
+  margin-bottom: 30px;
+  transition: color .2s;
+}
+.barticle .back-link:hover { color: var(--c-accent); }
+
+.barticle .cover {
+  aspect-ratio: 16 / 8;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  margin-bottom: 36px;
+  background: var(--c-border);
+}
+.barticle .cover img { width: 100%; height: 100%; object-fit: cover; }
+
+.barticle header {
+  text-align: center;
+  margin-bottom: 36px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.barticle .meta-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-subtle);
+  margin-bottom: 16px;
+}
+.barticle .meta-row .tag { color: var(--c-accent); }
+.barticle h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 44px);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 18px;
+}
+.barticle h1 em { font-style: italic; color: var(--c-accent); }
+.barticle .author {
+  font-size: 13px;
+  color: var(--c-mid);
+  margin-top: 6px;
+}
+.barticle .author strong { color: var(--c-ink); }
+
+.barticle .body {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--c-ink);
+}
+.barticle .body h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: 26px;
+  margin: 38px 0 14px;
+  letter-spacing: -0.01em;
+}
+.barticle .body h3 { font-size: 18px; margin: 28px 0 8px; font-weight: 700; }
+.barticle .body p { margin: 0 0 18px; color: var(--c-mid); }
+.barticle .body ul, .barticle .body ol { padding-left: 22px; margin: 0 0 22px; color: var(--c-mid); }
+.barticle .body li { margin-bottom: 8px; }
+.barticle .body strong { color: var(--c-ink); }
+.barticle .body em { font-style: italic; color: var(--c-accent); }
+.barticle .body a { color: var(--c-accent); text-decoration: underline; }
+.barticle .body blockquote {
+  border-left: 3px solid var(--c-accent);
+  padding: 8px 18px;
+  margin: 24px 0;
+  font-style: italic;
+  color: var(--c-mid);
+  background: rgba(107,45,32,.04);
+}
+.barticle .body img { border-radius: 8px; margin: 24px 0; }
+
+.barticle .cta-card {
+  max-width: 700px;
+  margin: 60px auto 0;
+  padding: 32px 28px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  text-align: center;
+}
+.barticle .cta-card h3 { font-size: 22px; margin: 0 0 8px; font-weight: 600; }
+.barticle .cta-card p { color: var(--c-mid); font-size: 14px; margin: 0 0 18px; }
+.barticle .cta-card .cta-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--c-accent);
+  color: #fff;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background .2s;
+}
+.barticle .cta-card .cta-btn:hover { background: var(--c-accent-h); }
+
+.barticle .related {
+  max-width: 1000px;
+  margin: 60px auto 0;
+}
+.barticle .related h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-subtle);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* ── Footer ── */
+.bfoot {
+  background: #2D3D2D;
+  color: rgba(255,255,255,.65);
+  padding: 36px 22px 22px;
+  margin-top: 80px;
+  text-align: center;
+  font-size: 13px;
+}
+.bfoot a { color: var(--c-gold); }
+
+.loading { text-align: center; padding: 60px; color: var(--c-subtle); }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="bnav">
+  <div class="bnav-inner">
+    <a class="bnav-logo" href="../customer/">Bloom &amp; Vine</a>
+    <div class="bnav-links">
+      <a href="../customer/#shop">Shop</a>
+      <a href="../customer/#why">Our Story</a>
+      <a href="./">Stories</a>
+      <a href="../customer/#delivery-areas">Delivery</a>
+    </div>
+    <a class="bnav-cta" href="../customer/#shop">Order flowers →</a>
+  </div>
+</nav>
+
+<!-- Main content (list view OR article view) -->
+<main class="bwrap">
+  <div id="blog-list">
+    <div class="bhero">
+      <div class="eyebrow">Stories from our studio</div>
+      <h1>Flowers, wine, &amp; <em>everything between</em></h1>
+      <p>Care tips, gift guides, and the small obsessions that go into every Bloom &amp; Vine arrangement.</p>
+    </div>
+
+    <div class="bcat-row" id="bcat-row">
+      <button class="bcat on" data-cat="all">All stories</button>
+      <button class="bcat" data-cat="care">Flower care</button>
+      <button class="bcat" data-cat="pairing">Wine pairing</button>
+      <button class="bcat" data-cat="gift-guide">Gift guides</button>
+      <button class="bcat" data-cat="story">Behind the scenes</button>
+      <button class="bcat" data-cat="wedding">Weddings &amp; events</button>
+    </div>
+
+    <div class="bgrid" id="bgrid">
+      <div class="loading">Loading stories…</div>
+    </div>
+  </div>
+
+  <article class="barticle" id="blog-article" hidden></article>
+</main>
+
+<footer class="bfoot">
+  <p>© 2025 Daily Bloom &amp; Vine · Carlingford NSW · NSW Packaged Liquor Licence</p>
+  <p style="margin-top:6px"><a href="../customer/">Back to shop →</a></p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getFirestore, collection, query, orderBy, where, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { firebaseConfig } from "../firebase/web-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const CAT_LABEL = {
+  'care':       'Flower Care',
+  'pairing':    'Wine Pairing',
+  'gift-guide': 'Gift Guide',
+  'story':      'Behind the Scenes',
+  'wedding':    'Weddings',
+  'other':      'Other',
+};
+
+let allPosts = [];
+let currentCat = 'all';
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-AU', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function readingTime(content) {
+  const text = String(content || '').replace(/<[^>]+>/g, '');
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(2, Math.round(words / 220)) + ' min read';
+}
+
+async function loadPosts() {
+  try {
+    const snap = await getDocs(query(collection(db, 'blog'), orderBy('publishedAt', 'desc')));
+    allPosts = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.active !== false) allPosts.push({ id: d.id, ...data });
+    });
+    routeFromUrl();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('bgrid').innerHTML = `<div class="bempty"><h3>Could not load stories</h3><p>${escapeHtml(err.message)}</p></div>`;
+  }
+}
+
+function routeFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('slug');
+  if (slug) {
+    showArticle(slug);
+  } else {
+    showList();
+  }
+}
+
+function showList() {
+  document.getElementById('blog-article').hidden = true;
+  document.getElementById('blog-list').hidden = false;
+  // Update document head for list page
+  document.title = 'Stories &amp; Guides · Bloom & Vine';
+  removeTag('article-jsonld');
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('bgrid');
+  const filtered = currentCat === 'all' ? allPosts : allPosts.filter(p => p.category === currentCat);
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="bempty" style="grid-column:1/-1">
+      <h3 style="margin:0 0 8px; color:var(--c-ink); font-size:18px">No stories ${currentCat === 'all' ? 'yet' : 'in this category'}</h3>
+      <p>${currentCat === 'all' ? 'Check back soon — fresh stories from our studio every week.' : 'Try another category.'}</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(p => `
+    <a class="bcard" href="?slug=${encodeURIComponent(p.slug)}" data-slug="${escapeHtml(p.slug)}">
+      <div class="bcard-img"><img src="${escapeHtml(p.coverImage || '')}" alt="${escapeHtml(p.title)}" loading="lazy"/></div>
+      <div class="bcard-body">
+        <div class="bcard-tag">${escapeHtml(CAT_LABEL[p.category] || p.category || 'Story')}</div>
+        <h2 class="bcard-title">${escapeHtml(p.title)}</h2>
+        <p class="bcard-excerpt">${escapeHtml(p.excerpt || '')}</p>
+        <div class="bcard-meta">
+          <span>${formatDate(p.publishedAt)}</span>
+          <span class="read-more">Read story →</span>
+        </div>
+      </div>
+    </a>
+  `).join('');
+  // Intercept clicks for SPA-feel
+  grid.querySelectorAll('.bcard').forEach(card =>
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const slug = card.dataset.slug;
+      history.pushState({}, '', '?slug=' + encodeURIComponent(slug));
+      showArticle(slug);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+  );
+}
+
+function showArticle(slug) {
+  const post = allPosts.find(p => p.slug === slug);
+  if (!post) {
+    document.getElementById('blog-article').hidden = false;
+    document.getElementById('blog-list').hidden = true;
+    document.getElementById('blog-article').innerHTML = `
+      <a class="back-link" href="./" onclick="event.preventDefault(); history.pushState({},'','./'); window.__blogRoute && window.__blogRoute();">← All stories</a>
+      <div class="bempty"><h3 style="margin:0 0 8px">Story not found</h3><p>The link may be broken. <a href="./" style="color:var(--c-accent)">Back to all stories →</a></p></div>
+    `;
+    return;
+  }
+
+  document.getElementById('blog-list').hidden = true;
+  const el = document.getElementById('blog-article');
+  el.hidden = false;
+  el.innerHTML = `
+    <a class="back-link" href="./" data-back>← All stories</a>
+    ${post.coverImage ? `<div class="cover"><img src="${escapeHtml(post.coverImage)}" alt="${escapeHtml(post.title)}"/></div>` : ''}
+    <header>
+      <div class="meta-row">
+        <span class="tag">${escapeHtml(CAT_LABEL[post.category] || post.category || 'Story')}</span>
+        <span>${formatDate(post.publishedAt)}</span>
+        <span>${readingTime(post.content)}</span>
+      </div>
+      <h1>${formatTitle(post.title)}</h1>
+      <div class="author">By <strong>${escapeHtml(post.author || 'Bloom & Vine')}</strong></div>
+    </header>
+    <div class="body">${post.content || ''}</div>
+    <div class="cta-card">
+      <h3>Make it real</h3>
+      <p>Browse our daily Sydney flowers — same-day delivery if you order by 2 PM.</p>
+      <a class="cta-btn" href="../customer/#shop">Shop today's collection →</a>
+    </div>
+    ${renderRelated(post)}
+  `;
+
+  // Wire up back link to use SPA routing
+  el.querySelector('[data-back]').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, '', './');
+    showList();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+
+  // Set head metadata for SEO
+  document.title = `${stripHtml(post.title)} · Bloom & Vine`;
+  setMeta('description', post.metaDescription || post.excerpt || '');
+  setMeta('og:title', post.title, true);
+  setMeta('og:description', post.metaDescription || post.excerpt || '', true);
+  setMeta('og:image', post.coverImage || '', true);
+  setMeta('og:type', 'article', true);
+  setLink('canonical', location.origin + location.pathname + '?slug=' + post.slug);
+
+  // JSON-LD Article schema
+  injectJsonLd('article-jsonld', {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": stripHtml(post.title),
+    "image": post.coverImage,
+    "datePublished": post.publishedAt?.toDate ? post.publishedAt.toDate().toISOString() : new Date().toISOString(),
+    "author": { "@type": "Person", "name": post.author || 'Bloom & Vine' },
+    "publisher": { "@type": "Organization", "name": "Bloom & Vine Sydney" },
+    "description": post.metaDescription || post.excerpt,
+  });
+}
+
+function formatTitle(t) {
+  // Allow <em> in title via simple bracket-tag replacement: "Word [em]italic[/em]"
+  return escapeHtml(t || '').replace(/\[em\]/g, '<em>').replace(/\[\/em\]/g, '</em>');
+}
+function stripHtml(s) { return String(s || '').replace(/<[^>]+>/g, '').replace(/\[\/?em\]/g, ''); }
+
+function renderRelated(post) {
+  const others = allPosts.filter(p => p.id !== post.id).slice(0, 3);
+  if (!others.length) return '';
+  return `
+    <div class="related">
+      <h3>More stories</h3>
+      <div class="bgrid">
+        ${others.map(p => `
+          <a class="bcard" href="?slug=${encodeURIComponent(p.slug)}" data-slug="${escapeHtml(p.slug)}">
+            <div class="bcard-img"><img src="${escapeHtml(p.coverImage || '')}" alt="${escapeHtml(p.title)}" loading="lazy"/></div>
+            <div class="bcard-body">
+              <div class="bcard-tag">${escapeHtml(CAT_LABEL[p.category] || p.category)}</div>
+              <h2 class="bcard-title">${escapeHtml(p.title)}</h2>
+              <div class="bcard-meta"><span>${formatDate(p.publishedAt)}</span><span class="read-more">Read →</span></div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function setMeta(name, content, og = false) {
+  const attr = og ? 'property' : 'name';
+  let el = document.head.querySelector(`meta[${attr}="${name}"]`);
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute('content', content);
+}
+function setLink(rel, href) {
+  let el = document.head.querySelector(`link[rel="${rel}"]`);
+  if (!el) { el = document.createElement('link'); el.setAttribute('rel', rel); document.head.appendChild(el); }
+  el.setAttribute('href', href);
+}
+function removeTag(id) { const el = document.getElementById(id); if (el) el.remove(); }
+function injectJsonLd(id, obj) {
+  removeTag(id);
+  const s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.id = id;
+  s.textContent = JSON.stringify(obj);
+  document.head.appendChild(s);
+}
+
+// Category buttons
+document.getElementById('bcat-row').addEventListener('click', (e) => {
+  const btn = e.target.closest('.bcat');
+  if (!btn) return;
+  currentCat = btn.dataset.cat;
+  document.querySelectorAll('.bcat').forEach(b => b.classList.toggle('on', b === btn));
+  renderGrid();
+});
+
+// Back/forward navigation
+window.addEventListener('popstate', () => routeFromUrl());
+
+// Helper for missing-post back-link
+window.__blogRoute = routeFromUrl;
+
+loadPosts();
+</script>
+</body>
+</html>
