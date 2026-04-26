@@ -372,6 +372,12 @@ nav {
 .shop-tab .tab-name { font-size:14px; font-weight:700; }
 .shop-tab .tab-sub  { font-size:12px; color:var(--c-subtle); }
 .shop-tab.on .tab-sub { color:rgba(255,255,255,.72); }
+@media(max-width:480px){
+  .shop-tab { padding:12px 6px; gap:2px; }
+  .shop-tab .tab-name { font-size:13px; }
+  .shop-tab .tab-sub  { display:none; }
+  .freq-btn-l { padding:10px 8px; font-size:11px; letter-spacing:.05em; }
+}
 
 .shop-panel { display:none; }
 .shop-panel.on { display:block; }
@@ -663,6 +669,41 @@ nav {
 .rev-verified { font-size: 12px; color: var(--c-sage); margin-top: 5px; display: flex; align-items: center; gap: 4px; }
 
 /* ─────────────────────────────────────────
+   FAQ
+───────────────────────────────────────── */
+#faq { background: var(--c-bg); }
+.faq-wrap { max-width: 700px; }
+.faq-item { border-bottom: 1px solid var(--c-border); }
+.faq-q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--c-ink);
+  cursor: pointer;
+  gap: 16px;
+  transition: color .2s;
+  line-height: var(--lh-head);
+}
+.faq-q:hover { color: var(--c-accent); }
+.faq-icon { font-size: 20px; color: var(--c-accent); flex-shrink: 0; transition: transform .25s var(--ease); font-weight: 300; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  display: none;
+  padding: 0 24px 18px 0;
+  font-size: var(--t-body);
+  color: var(--c-mid);
+  line-height: var(--lh-body);
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ─────────────────────────────────────────
    FOOTER
 ───────────────────────────────────────── */
 footer { background: var(--c-hero-bg); color: rgba(255,255,255,.6); padding: var(--sec-pad) 0 0; }
@@ -763,6 +804,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
       <li><a href="#why">Our Story</a></li>
       <li><a href="#subscribe">Subscribe</a></li>
       <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#faq">FAQ</a></li>
     </ul>
     <div class="nav-right">
       <div class="cutoff-tag">
@@ -910,6 +952,15 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
       <button class="freq-btn" onclick="setFreq('monthly',this)">Monthly</button>
     </div>
     <div class="sub-grid" id="sgrid"></div>
+  </div>
+</section>
+
+<!-- ══════════════════ FAQ ══════════════════ -->
+<section id="faq" class="sec">
+  <div class="wrap">
+    <div class="sec-eyebrow">Got questions?</div>
+    <h2 class="sec-title">Frequently <em>asked</em></h2>
+    <div class="faq-wrap" id="fwrap"></div>
   </div>
 </section>
 
@@ -1134,6 +1185,15 @@ const REVS = [
   { name:'David L.', suburb:'North Rocks',   date:'January 2025',  stars:4, tag:'Hamper',      txt:'The hamper presentation was very premium — feels like a proper gift, not just flowers in a box. The rosé was a perfect pick.',                    prod:'Tulip + Rosé Hamper Deluxe' },
 ];
 
+const FAQS = [
+  { q:'What time do I need to order for same-day delivery?',     a:'Orders placed before <strong>1:00 PM</strong> Monday–Saturday receive same-day delivery. Orders after 1 PM are automatically scheduled for next day. You\'ll receive a text when your arrangement leaves our studio.' },
+  { q:'How is the wine delivered with the flowers?',              a:'Wine is packed in a temperature-protected sleeve. We require a signature and photo ID (18+) at delivery. We hold a current NSW Packaged Liquor Licence.' },
+  { q:'What areas do you currently deliver to?',                  a:'North-West Sydney: <strong>Carlingford (free), Epping, Eastwood, Macquarie Park, Ryde</strong> ($8 flat fee). Enter your postcode at checkout for exact pricing.' },
+  { q:'Can I pre-order for a future date?',                       a:'Yes! Our pre-order calendar is published 7 days ahead every morning at 6 AM. Free cancellation up to 48 hours before delivery.' },
+  { q:'Do the photos show the actual flowers being sold?',        a:'Always. Every product photo is taken that same morning of the actual flowers in our Carlingford studio. No stock photography, ever.' },
+  { q:'How does the anniversary reminder service work?',          a:'At checkout, tick "Save this date". We\'ll WhatsApp you 14, 7, and 2 days before — with what we sent last time and a 10% early-bird discount.' },
+];
+
 const FEES = {'2118':0,'2119':0,'2121':5,'2122':5,'2113':8,'2114':8,'2112':10};
 
 /* ─── PRODUCTS (per shop tab) ─── */
@@ -1145,6 +1205,9 @@ const PRODUCTS = {
     { type:'TODAY',               name:'Mixed Spring Bouquet',  pair:'',                           price:45,          stock:6,  hasWine:false, img:IMG.i4 },
     { type:'TODAY · SOLD OUT',    name:'David Austin Rose',     pair:'Tasmanian Pinot Noir',       price:55, wine:82, stock:0,  hasWine:false, sold:true, img:IMG.i5 },
     { type:'TODAY',               name:'Lavender & Eucalyptus', pair:'',                           price:36,          stock:9,  hasWine:false, img:IMG.i6 },
+    { type:'TODAY · LIMITED',     name:'Native Wattle Bunch',   pair:'McLaren Vale Shiraz',        price:44, wine:68, stock:4,  hasWine:true,  img:IMG.i3 },
+    { type:'TODAY',               name:'Daisy Garden Mix',      pair:'',                           price:34,          stock:11, hasWine:false, img:IMG.i4 },
+    { type:'TODAY · 2 LEFT',      name:'Premium Rose Heart',    pair:'Champagne Brut',             price:78, wine:118,stock:2,  hasWine:true,  img:IMG.i5 },
   ],
   preorder: [
     { type:'PRE-ORDER · TOMORROW', name:'Anemone & Ranunculus', pair:'Hunter Valley Sémillon',     price:52, wine:78, stock:10, hasWine:true,  img:IMG.i2 },
@@ -1153,6 +1216,9 @@ const PRODUCTS = {
     { type:'PRE-ORDER · WED',      name:'Spring Wildflowers',   pair:'',                           price:42,          stock:12, hasWine:false, img:IMG.i6 },
     { type:'PRE-ORDER · THU',      name:'Peony & Eucalyptus',   pair:'Mornington Chardonnay',      price:55, wine:80, stock:9,  hasWine:true,  img:IMG.i2 },
     { type:'PRE-ORDER · FRI',      name:'Anniversary Premium',  pair:'Champagne Brut NV',          price:88, wine:128,stock:4,  hasWine:true,  img:IMG.i4 },
+    { type:'PRE-ORDER · SAT',      name:'Weekend Bloom Box',    pair:'Barossa Grenache',           price:62, wine:92, stock:7,  hasWine:true,  img:IMG.i3 },
+    { type:'PRE-ORDER · NEXT WK',  name:"Mother's Day Special", pair:'Rosé Champagne',             price:95, wine:135,stock:15, hasWine:true,  img:IMG.i5 },
+    { type:'PRE-ORDER',            name:'Build-Your-Own Bunch', pair:'',                           price:48,          stock:20, hasWine:false, img:IMG.i6 },
   ],
 };
 const PAGE_SIZE = 6;
@@ -1168,6 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildShopCards();
   renderSubs('weekly');
   buildRevs();
+  buildFAQ();
   updateTimer();
   setInterval(updateTimer, 30000);
   document.getElementById('overlay').addEventListener('click', e => {
@@ -1273,6 +1340,21 @@ function buildRevs() {
       <div class="rev-prod">✦ ${r.prod}</div>
       <div class="rev-verified">✓ Verified purchase</div>
     </div>`).join('');
+}
+
+/* ─── FAQ ─── */
+function buildFAQ() {
+  document.getElementById('fwrap').innerHTML = FAQS.map((f,i) => `
+    <div class="faq-item" id="fi-${i}">
+      <button class="faq-q" onclick="togFAQ(${i})"><span>${f.q}</span><span class="faq-icon">+</span></button>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('');
+}
+function togFAQ(i) {
+  const el = document.getElementById('fi-'+i);
+  const was = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(e=>e.classList.remove('open'));
+  if (!was) el.classList.add('open');
 }
 
 /* ─── ANCHOR NAV ─── */
