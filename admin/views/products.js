@@ -7,6 +7,11 @@ import { ref, uploadBytes, getDownloadURL, deleteObject }
 let currentTab  = 'sameday';
 let editingId   = null;
 let pendingFile = null;
+// Gallery state — additional photos beyond the main product image
+let existingGallery = [];   // [{ url, path }] already saved on the doc
+let pendingGallery  = [];   // [{ file, previewUrl }] selected but not yet uploaded
+let removedGallery  = [];   // [{ url, path }] removed during this edit, to clean up Storage on save
+const MAX_GALLERY = 4;
 
 export async function render() {
   const container = $('#view-container');
@@ -75,12 +80,24 @@ export async function render() {
           </div>
 
           <div class="field">
-            <label>Photo</label>
+            <label>Main photo *</label>
             <label class="image-drop" id="image-drop">
               <input name="image" type="file" accept="image/*"/>
-              <div class="hint">Click to choose a photo (or drag &amp; drop)<br/>JPG / PNG, under 1 MB recommended</div>
+              <div class="hint">Click to choose the main photo (or drag &amp; drop)<br/>JPG / PNG, under 5 MB</div>
               <div class="image-preview" id="image-preview" hidden></div>
             </label>
+          </div>
+
+          <div class="field">
+            <label>Additional photos <span style="font-size:12px; color:var(--subtle); text-transform:none; letter-spacing:0">— up to ${MAX_GALLERY}, shown as thumbnails on the detail page</span></label>
+            <div class="gallery-strip" id="gallery-strip"></div>
+            <input type="file" id="gallery-input" accept="image/*" multiple hidden/>
+            <div style="margin-top:6px; font-size:12px; color:var(--subtle)">Lifestyle shots (people holding the bouquet, in a vase at home) build trust 2× more than studio shots alone.</div>
+          </div>
+
+          <div class="field">
+            <label>Description <span style="font-size:12px; color:var(--subtle); text-transform:none; letter-spacing:0">— 2–4 sentences shown on the detail page</span></label>
+            <textarea name="description" rows="4" placeholder="Hand-tied this morning at Flemington Market. Soft pinks balanced with crisp white tulips and a touch of eucalyptus. Pairs beautifully with a chilled Hunter Valley rosé." style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-family:inherit; font-size:14px; line-height:1.5"></textarea>
           </div>
 
           <div class="modal-footer">
@@ -104,7 +121,7 @@ export async function render() {
   $('#btn-add').addEventListener('click', () => openForm(null));
   $('#btn-cancel').addEventListener('click', () => $('#form-modal').hidden = true);
 
-  // Image upload UX
+  // Main image upload UX
   const drop = $('#image-drop');
   const fileInput = drop.querySelector('input[type=file]');
   fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
@@ -117,9 +134,76 @@ export async function render() {
     if (f) handleFile(f);
   });
 
+  // Gallery (additional photos) upload UX
+  $('#gallery-input').addEventListener('change', (e) => {
+    Array.from(e.target.files).forEach(handleGalleryFile);
+    e.target.value = ''; // allow re-selecting same file
+  });
+
   $('#product-form').addEventListener('submit', onSubmit);
 
   await loadProducts();
+}
+
+function handleGalleryFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Only image files allowed.', true); return; }
+  if (file.size > 5 * 1024 * 1024)     { toast('File too large (max 5 MB).', true); return; }
+  if (existingGallery.length + pendingGallery.length >= MAX_GALLERY) {
+    toast(`Max ${MAX_GALLERY} additional photos.`, true);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    pendingGallery.push({ file, previewUrl: ev.target.result });
+    renderGalleryStrip();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderGalleryStrip() {
+  const strip = $('#gallery-strip');
+  if (!strip) return;
+  const total = existingGallery.length + pendingGallery.length;
+  const tiles = [
+    ...existingGallery.map((g, i) => `
+      <div class="gtile" data-kind="existing" data-i="${i}">
+        <img src="${escapeHtml(g.url)}" alt=""/>
+        <button type="button" class="gtile-x" aria-label="Remove">×</button>
+      </div>`),
+    ...pendingGallery.map((g, i) => `
+      <div class="gtile" data-kind="pending" data-i="${i}">
+        <img src="${g.previewUrl}" alt=""/>
+        <span class="gtile-new">NEW</span>
+        <button type="button" class="gtile-x" aria-label="Remove">×</button>
+      </div>`),
+  ];
+  if (total < MAX_GALLERY) {
+    tiles.push(`
+      <button type="button" class="gtile-add" id="gtile-add">
+        <span>+</span><span class="gtile-add-label">Add photo</span>
+      </button>`);
+  }
+  strip.innerHTML = tiles.join('');
+
+  strip.querySelectorAll('.gtile-x').forEach(b => {
+    b.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tile = e.target.closest('.gtile');
+      const kind = tile.dataset.kind;
+      const i    = Number(tile.dataset.i);
+      if (kind === 'existing') {
+        // Mark for Storage cleanup on save
+        const removed = existingGallery.splice(i, 1)[0];
+        if (removed) removedGallery.push(removed);
+      } else {
+        pendingGallery.splice(i, 1);
+      }
+      renderGalleryStrip();
+    });
+  });
+  const addBtn = $('#gtile-add');
+  if (addBtn) addBtn.addEventListener('click', () => $('#gallery-input').click());
 }
 
 async function loadProducts() {
@@ -178,6 +262,10 @@ async function editProduct(id) {
 function openForm(product) {
   editingId   = product?.id || null;
   pendingFile = null;
+  pendingGallery  = [];
+  removedGallery  = [];
+  existingGallery = Array.isArray(product?.gallery) ? product.gallery.map(g => ({ url: g.url, path: g.path })) : [];
+
   const form  = $('#product-form');
   form.reset();
   $('#form-title').textContent = product ? 'Edit product' : 'New product';
@@ -194,6 +282,7 @@ function openForm(product) {
     form.stock.value = product.stock ?? 0;
     form.hasWine.checked = !!product.hasWine;
     form.sold.checked    = !!product.sold;
+    form.description.value = product.description || '';
     if (product.imageUrl) {
       preview.hidden = false;
       preview.innerHTML = `<img src="${product.imageUrl}"/><span class="ipname">Current photo (upload to replace)</span>`;
@@ -207,6 +296,7 @@ function openForm(product) {
     form.dataset.imagePath = '';
     form.dataset.sortOrder = '';
   }
+  renderGalleryStrip();
   $('#form-modal').hidden = false;
 }
 
@@ -247,9 +337,31 @@ async function onSubmit(e) {
     }
 
     if (!imageUrl) {
-      toast('Please add a photo.', true);
+      toast('Please add a main photo.', true);
       saveBtn.disabled = false; saveBtn.textContent = 'Save';
       return;
+    }
+
+    // Upload pending gallery photos
+    if (pendingGallery.length) {
+      saveBtn.textContent = `Uploading ${pendingGallery.length} photo${pendingGallery.length > 1 ? 's' : ''}…`;
+      for (const g of pendingGallery) {
+        const safeName = g.file.name.replace(/[^\w.-]/g, '_');
+        const newPath = `products/gallery_${Date.now()}_${safeName}`;
+        const r = ref(storage, newPath);
+        await uploadBytes(r, g.file);
+        const url = await getDownloadURL(r);
+        existingGallery.push({ url, path: newPath });
+      }
+      pendingGallery = [];
+    }
+
+    // Delete photos that were removed during this edit session
+    if (removedGallery.length) {
+      await Promise.all(removedGallery.map(g =>
+        g.path ? deleteObject(ref(storage, g.path)).catch(() => {}) : null
+      ));
+      removedGallery = [];
     }
 
     const data = {
@@ -263,6 +375,8 @@ async function onSubmit(e) {
       sold:    form.sold.checked,
       imageUrl,
       imagePath,
+      gallery: existingGallery,
+      description: form.description.value.trim(),
       sortOrder: form.dataset.sortOrder !== '' ? Number(form.dataset.sortOrder) : Date.now(),
       updatedAt: serverTimestamp(),
     };
@@ -290,10 +404,20 @@ async function onSubmit(e) {
 async function deleteProduct(id, imagePath) {
   if (!confirm('Delete this product? This cannot be undone.')) return;
   try {
+    // Read the doc first so we can clean up gallery photos in Storage too
+    let gallery = [];
+    try {
+      const snap = await getDoc(doc(db, 'products', id));
+      if (snap.exists()) gallery = Array.isArray(snap.data().gallery) ? snap.data().gallery : [];
+    } catch { /* non-fatal */ }
+
     await deleteDoc(doc(db, 'products', id));
     if (imagePath) {
       try { await deleteObject(ref(storage, imagePath)); } catch (err) { /* ignore */ }
     }
+    await Promise.all(gallery.map(g =>
+      g.path ? deleteObject(ref(storage, g.path)).catch(() => {}) : null
+    ));
     toast('Deleted');
     loadProducts();
   } catch (err) {

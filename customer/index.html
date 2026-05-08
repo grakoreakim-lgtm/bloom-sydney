@@ -798,7 +798,127 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 @media(min-width:640px){.modal{border-radius:16px}}
 .modal-drag{width:36px;height:4px;background:var(--c-border);border-radius:2px;margin:0 auto 16px}
 @media(min-width:640px){.modal-drag{display:none}}
-.modal-x{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:var(--c-subtle);cursor:pointer}
+.modal-x{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:var(--c-subtle);cursor:pointer;z-index:5}
+
+/* ─────────────────────────────────────────
+   PRODUCT DETAIL MODAL
+───────────────────────────────────────── */
+.detail-modal { max-width: 920px; padding: 0; overflow: hidden; }
+.detail-grid { display: grid; grid-template-columns: 1fr; }
+@media (min-width: 768px) {
+  .detail-grid { grid-template-columns: 1fr 1fr; min-height: 540px; }
+}
+
+/* Gallery (left) */
+.dm-gallery { background: #F5F0EA; display: flex; flex-direction: column; }
+.dm-main-wrap { position: relative; aspect-ratio: 1; overflow: hidden; }
+.dm-main-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .25s; }
+.dm-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.92); border: none;
+  font-size: 20px; line-height: 1; color: var(--c-ink);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s; z-index: 2;
+}
+.dm-nav:hover { background: #fff; }
+.dm-prev { left: 12px; } .dm-next { right: 12px; }
+.dm-count {
+  position: absolute; bottom: 12px; right: 12px;
+  background: rgba(0,0,0,.6); color: #fff;
+  font-size: 11px; padding: 4px 9px; border-radius: 999px;
+}
+.dm-thumbs {
+  display: flex; gap: 8px; padding: 12px;
+  overflow-x: auto; scrollbar-width: thin;
+}
+.dm-thumb {
+  width: 60px; height: 60px; flex-shrink: 0;
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  border: 2px solid transparent; opacity: .65; transition: all .15s;
+}
+.dm-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.dm-thumb:hover { opacity: 1; }
+.dm-thumb.on { border-color: var(--c-accent); opacity: 1; }
+
+/* Info (right) */
+.dm-info { padding: 28px 26px 26px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+@media (min-width: 768px) { .dm-info { padding: 36px 32px; } }
+.dm-rating { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.dm-stars { color: var(--c-gold, #E8B83F); letter-spacing: 1px; font-size: 14px; }
+.dm-rating-text { color: var(--c-mid); }
+.dm-type { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c-subtle); }
+.dm-name { font-size: 24px; font-weight: 700; line-height: 1.2; margin: 0; letter-spacing: -0.02em; color: var(--c-ink); }
+@media (min-width: 768px) { .dm-name { font-size: 28px; } }
+.dm-price-row { display: flex; align-items: baseline; gap: 12px; }
+.dm-price { font-size: 26px; font-weight: 700; color: var(--c-ink); letter-spacing: -0.02em; }
+.dm-stock { font-size: 12px; color: var(--c-sage); font-weight: 500; }
+.dm-stock.low  { color: #C97825; }
+.dm-stock.sold { color: #B5413B; }
+.dm-desc {
+  font-size: 14px; color: var(--c-mid); line-height: 1.6;
+  margin: 4px 0 6px; white-space: pre-wrap;
+}
+
+/* Wine pairing options */
+.dm-options {
+  border-top: 1px solid var(--c-border);
+  padding-top: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.dm-options-label { font-size: 13px; font-weight: 600; color: var(--c-ink); margin-bottom: 4px; }
+.dm-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--c-border); border-radius: 10px;
+  cursor: pointer; transition: all .15s;
+}
+.dm-opt:has(input:checked) { border-color: var(--c-accent); background: #FDF7F4; }
+.dm-opt input { accent-color: var(--c-accent); }
+.dm-opt-label { flex: 1; font-size: 14px; color: var(--c-ink); }
+.dm-opt-price { font-size: 14px; font-weight: 600; color: var(--c-mid); }
+
+/* Cutoff countdown */
+.dm-cutoff {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: #FDF4E8; border: 1px solid #F2D9B0;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: #8B5A1B;
+}
+.dm-cutoff.urgent { background: #FCE8E1; border-color: #F0BFAF; color: #A53A2A; }
+.dm-cutoff.closed { background: #F0F0F0; border-color: #DDD; color: #777; }
+.dm-cutoff-icon { font-size: 14px; }
+
+/* CTA */
+.dm-cta {
+  margin-top: 6px;
+  padding: 16px 20px;
+  background: var(--c-ink); color: #fff;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.dm-cta:hover { background: var(--c-accent); }
+.dm-cta:disabled { background: var(--c-border); color: var(--c-subtle); cursor: not-allowed; }
+
+.dm-trust {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-top: 8px;
+  font-size: 12px; color: var(--c-mid);
+}
+
+/* Photo count badge on card */
+.badge.b-photos {
+  background: rgba(0,0,0,.55); color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+/* Make pcard fully clickable look */
+.pcard[role="button"] { cursor: pointer; }
+.pcard.pcard-sold { cursor: default; opacity: 0.75; }
+.pcard.pcard-sold .pcard-img img { filter: grayscale(0.3); }
 .co-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .co-title{font-size:18px;font-weight:700;letter-spacing:-0.02em}
 .co-steps{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--c-subtle)}
@@ -1285,6 +1405,72 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
   </div>
 </footer>
 
+<!-- ══════════════════ PRODUCT DETAIL MODAL ══════════════════ -->
+<div class="overlay" id="detail-overlay">
+  <div class="modal detail-modal">
+    <button class="modal-x" onclick="closeDetailModal()">✕</button>
+
+    <div class="detail-grid">
+      <!-- Left: gallery -->
+      <div class="dm-gallery">
+        <div class="dm-main-wrap">
+          <img class="dm-main-img" id="dm-main-img" src="" alt=""/>
+          <button class="dm-nav dm-prev" onclick="dmNav(-1)" aria-label="Previous">‹</button>
+          <button class="dm-nav dm-next" onclick="dmNav(1)" aria-label="Next">›</button>
+          <span class="dm-count" id="dm-count">1 / 1</span>
+        </div>
+        <div class="dm-thumbs" id="dm-thumbs"></div>
+      </div>
+
+      <!-- Right: info -->
+      <div class="dm-info">
+        <div class="dm-rating" id="dm-rating" hidden>
+          <span class="dm-stars" id="dm-stars"></span>
+          <span class="dm-rating-text" id="dm-rating-text"></span>
+        </div>
+        <div class="dm-type" id="dm-type"></div>
+        <h2 class="dm-name" id="dm-name"></h2>
+        <div class="dm-price-row">
+          <span class="dm-price" id="dm-price"></span>
+          <span class="dm-stock" id="dm-stock"></span>
+        </div>
+
+        <p class="dm-desc" id="dm-desc"></p>
+
+        <!-- Wine pairing options (only shown if product has a wine option) -->
+        <div class="dm-options" id="dm-options" hidden>
+          <div class="dm-options-label">Pair with wine?</div>
+          <label class="dm-opt">
+            <input type="radio" name="dm-wine" value="0" checked/>
+            <span class="dm-opt-label">No wine</span>
+            <span class="dm-opt-price" id="dm-opt-no-price"></span>
+          </label>
+          <label class="dm-opt">
+            <input type="radio" name="dm-wine" value="1"/>
+            <span class="dm-opt-label" id="dm-opt-wine-label">+ Wine pairing</span>
+            <span class="dm-opt-price" id="dm-opt-wine-price"></span>
+          </label>
+        </div>
+
+        <!-- Cutoff countdown -->
+        <div class="dm-cutoff" id="dm-cutoff" hidden>
+          <span class="dm-cutoff-icon">⏰</span>
+          <span id="dm-cutoff-text">—</span>
+        </div>
+
+        <button class="dm-cta" id="dm-cta" onclick="addToCartFromDetail()">
+          Add to Cart — <span id="dm-cta-price">$0</span>
+        </button>
+
+        <div class="dm-trust">
+          <div>🌸 Hand-tied this morning at Flemington Market</div>
+          <div>✓ 6-day vase life — or full refund</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════ CHECKOUT MODAL ══════════════════ -->
 <div class="overlay" id="overlay">
   <div class="modal">
@@ -1614,12 +1800,14 @@ function renderProducts(tab) {
   grid.innerHTML = visible.map(p => {
     const sold = p.sold || p.stock === 0;
     const low  = !sold && p.stock <= 5;
-    return `<div class="pcard">
+    const idx  = visible.indexOf(p);
+    return `<div class="pcard ${sold ? 'pcard-sold' : ''}" ${!sold ? `onclick="openDetailForCard('${tab}', ${idx})"` : ''} role="button" tabindex="0">
       <div class="pcard-img">
         <img src="${p.img}" alt="${p.name}" loading="lazy"/>
         <div class="pcard-badges">
           ${p.hasWine && !sold ? '<span class="badge b-wine">🍷 Wine Pairing</span>' : ''}
           ${sold ? '<span class="badge b-sold">Sold Out</span>' : ''}
+          ${p.gallery && p.gallery.length ? `<span class="badge b-photos">📷 ${p.gallery.length + 1}</span>` : ''}
         </div>
       </div>
       <div class="pcard-body">
@@ -1631,8 +1819,8 @@ function renderProducts(tab) {
           ${p.wine ? `<span class="p-wine">with wine <strong>$${p.wine}</strong></span>` : ''}
         </div>
         ${!sold ? `<div class="pcard-avail">${low ? p.stock + ' left' : p.stock + ' available'}</div>` : ''}
-        <button class="btn-add" ${sold ? 'disabled' : ''} onclick="openModalForCard('${tab}', ${visible.indexOf(p)})">
-          ${sold ? 'Sold Out' : 'Add to Order'}
+        <button class="btn-add" ${sold ? 'disabled' : ''} onclick="event.stopPropagation(); openDetailForCard('${tab}', ${idx})">
+          ${sold ? 'Sold Out' : 'View Details'}
         </button>
       </div>
     </div>`;
@@ -1720,6 +1908,209 @@ window.openModalForCard = function(tab, idx) {
   const p = (window.PRODUCTS && window.PRODUCTS[tab] && window.PRODUCTS[tab][idx]) || null;
   openModal(p);
 };
+
+/* ─────────────────────────────────────────
+   PRODUCT DETAIL MODAL — gallery, options, cutoff, CTA
+───────────────────────────────────────── */
+let detailProduct = null;
+let detailIsPreorder = false;
+let detailImages = [];
+let detailIdx = 0;
+
+window.openDetailForCard = function(tab, idx) {
+  const p = (window.PRODUCTS && window.PRODUCTS[tab] && window.PRODUCTS[tab][idx]) || null;
+  if (!p) return;
+  if (p.sold || p.stock === 0) return;
+  openDetail(p, tab === 'preorder');
+};
+
+function openDetail(p, isPreorder) {
+  detailProduct = p;
+  detailIsPreorder = !!isPreorder;
+  detailImages = [p.img, ...(Array.isArray(p.gallery) ? p.gallery : [])].filter(Boolean);
+  if (!detailImages.length) detailImages = ['']; // safety
+  detailIdx = 0;
+
+  // Type label + name
+  document.getElementById('dm-type').textContent = p.type || '';
+  document.getElementById('dm-name').textContent = p.name || '';
+
+  // Price + stock indicator
+  const priceEl = document.getElementById('dm-price');
+  priceEl.textContent = '$' + p.price;
+  const stockEl = document.getElementById('dm-stock');
+  stockEl.className = 'dm-stock';
+  if (p.stock <= 0) { stockEl.textContent = 'Sold out'; stockEl.classList.add('sold'); }
+  else if (p.stock <= 3) { stockEl.textContent = `Only ${p.stock} left — order soon`; stockEl.classList.add('low'); }
+  else if (p.stock <= 10) { stockEl.textContent = `${p.stock} in stock`; }
+  else { stockEl.textContent = 'In stock'; }
+
+  // Description (fallback if empty)
+  const descEl = document.getElementById('dm-desc');
+  descEl.textContent = p.description ||
+    `Hand-tied this morning at Flemington Market. ${p.pair ? 'Pairs beautifully with ' + p.pair + '.' : 'A studio-curated arrangement.'}`;
+
+  // Wine option block (only if a wine-included price exists)
+  const opts = document.getElementById('dm-options');
+  if (p.wine && p.wine > p.price) {
+    opts.hidden = false;
+    const premium = p.wine - p.price;
+    document.getElementById('dm-opt-no-price').textContent = '$' + p.price;
+    document.getElementById('dm-opt-wine-label').textContent = '+ ' + (p.pair || 'Wine pairing');
+    document.getElementById('dm-opt-wine-price').textContent = '+$' + premium;
+    // Reset to "no wine" each open
+    opts.querySelectorAll('input[name="dm-wine"]').forEach(r => r.checked = (r.value === '0'));
+  } else {
+    opts.hidden = true;
+  }
+
+  // Rating — filter reviews matching this product (best-effort partial match)
+  renderDetailRating(p);
+
+  // Gallery
+  renderDetailGallery();
+
+  // Cutoff
+  renderDetailCutoff();
+
+  // CTA price
+  updateDetailCTA();
+
+  // Disable CTA if sold out / stock 0
+  const cta = document.getElementById('dm-cta');
+  cta.disabled = !!(p.sold || p.stock === 0);
+
+  // Open
+  document.getElementById('detail-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+window.closeDetailModal = function() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  // Stop the cutoff interval if any
+  if (detailCutoffTimer) { clearInterval(detailCutoffTimer); detailCutoffTimer = null; }
+};
+
+function renderDetailGallery() {
+  document.getElementById('dm-main-img').src = detailImages[detailIdx] || '';
+  document.getElementById('dm-count').textContent = `${detailIdx + 1} / ${detailImages.length}`;
+  const thumbs = document.getElementById('dm-thumbs');
+  thumbs.innerHTML = detailImages.map((src, i) => `
+    <div class="dm-thumb ${i === detailIdx ? 'on' : ''}" data-i="${i}">
+      <img src="${src}" alt="" loading="lazy"/>
+    </div>
+  `).join('');
+  thumbs.querySelectorAll('.dm-thumb').forEach(t => {
+    t.addEventListener('click', () => { detailIdx = Number(t.dataset.i); renderDetailGallery(); });
+  });
+  // Hide nav arrows if only one image
+  const single = detailImages.length <= 1;
+  document.querySelector('.dm-prev').style.display = single ? 'none' : '';
+  document.querySelector('.dm-next').style.display = single ? 'none' : '';
+  document.getElementById('dm-count').style.display = single ? 'none' : '';
+}
+
+window.dmNav = function(delta) {
+  const n = detailImages.length;
+  detailIdx = (detailIdx + delta + n) % n;
+  renderDetailGallery();
+};
+
+function renderDetailRating(p) {
+  const reviews = (window.__lastReviews || []).filter(r => {
+    if (!r.product || !p.name) return false;
+    const a = String(r.product).toLowerCase();
+    const b = String(p.name).toLowerCase();
+    return a === b || a.includes(b) || b.includes(a);
+  });
+  const ratingEl = document.getElementById('dm-rating');
+  if (!reviews.length) { ratingEl.hidden = true; return; }
+  const avg = reviews.reduce((s, r) => s + (r.stars || 0), 0) / reviews.length;
+  document.getElementById('dm-stars').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+  document.getElementById('dm-rating-text').textContent =
+    `${avg.toFixed(1)} (${reviews.length} review${reviews.length === 1 ? '' : 's'})`;
+  ratingEl.hidden = false;
+}
+
+let detailCutoffTimer = null;
+function renderDetailCutoff() {
+  const el = document.getElementById('dm-cutoff');
+  if (detailIsPreorder) { el.hidden = true; return; }
+  el.hidden = false;
+
+  const update = () => {
+    // Cutoff time from settings (default 14:00)
+    const cutoffStr = (window.SETTINGS && window.SETTINGS.cutoffTime) || '14:00';
+    const [hh, mm] = cutoffStr.split(':').map(Number);
+    const now = new Date();
+    const cut = new Date(); cut.setHours(hh || 14, mm || 0, 0, 0);
+    const text = document.getElementById('dm-cutoff-text');
+    el.classList.remove('urgent', 'closed');
+    if (now >= cut) {
+      el.classList.add('closed');
+      text.textContent = `Today's cutoff has passed — earliest delivery: tomorrow`;
+      return;
+    }
+    const diff = cut - now;
+    const hours   = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const human = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+    text.textContent = `Order in ${human} for same-day delivery`;
+    if (diff < 30 * 60 * 1000) el.classList.add('urgent');
+  };
+
+  update();
+  if (detailCutoffTimer) clearInterval(detailCutoffTimer);
+  detailCutoffTimer = setInterval(update, 30000);
+}
+
+function updateDetailCTA() {
+  if (!detailProduct) return;
+  const checked = document.querySelector('input[name="dm-wine"]:checked');
+  const wineSelected = !!(checked && checked.value === '1');
+  const price = wineSelected && detailProduct.wine ? detailProduct.wine : detailProduct.price;
+  document.getElementById('dm-cta-price').textContent = '$' + price;
+}
+
+window.addToCartFromDetail = function() {
+  if (!detailProduct) return;
+  // Determine if user picked the wine option
+  const wineSelected = document.querySelector('input[name="dm-wine"]:checked')?.value === '1';
+  // Hand off to the existing checkout modal — pre-toggle the wine add-on if selected
+  closeDetailModal();
+  openModal(detailProduct);
+  // Pre-select wine pairing add-on after the checkout modal has populated
+  if (wineSelected) {
+    setTimeout(() => {
+      const wineRow = document.querySelector('.addon-row[data-key="wine"] input');
+      if (wineRow && !wineRow.checked) { wineRow.checked = true; wineRow.dispatchEvent(new Event('change')); }
+    }, 50);
+  }
+};
+
+// Close on backdrop click
+document.addEventListener('click', (e) => {
+  const ov = document.getElementById('detail-overlay');
+  if (e.target === ov) closeDetailModal();
+});
+// Close on Esc
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('detail-overlay')?.classList.contains('open')) {
+    closeDetailModal();
+  }
+});
+// One-time wire-up of wine option radios (buttons live in static markup)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[name="dm-wine"]').forEach(r =>
+    r.addEventListener('change', updateDetailCTA));
+  // Keyboard support: Enter on a card opens detail
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const card = e.target.closest?.('.pcard[role="button"]');
+    if (card && typeof card.onclick === 'function') card.onclick();
+  });
+});
 
 function openModal(product) {
   // Resolve a default product if none passed
@@ -2242,7 +2633,9 @@ async function loadProductsFromFirestore() {
         price:   Number(p.price) || 0,
         stock:   Number(p.stock) || 0,
         hasWine: !!p.hasWine,
-        img:     p.imageUrl || ''
+        img:     p.imageUrl || '',
+        description: p.description || '',
+        gallery:  Array.isArray(p.gallery) ? p.gallery.filter(g => g && g.url).map(g => g.url) : []
       };
       if (p.wine != null && p.wine !== '') item.wine = Number(p.wine);
       if (p.sold) item.sold = true;
@@ -2311,6 +2704,8 @@ async function loadReviewsFromFirestore() {
         photo: r.photoUrl || ''
       });
     });
+    // Cache for product-detail-modal star-rating matching (by productName)
+    window.__lastReviews = items;
     renderReviewsCarousel(items);
     if (items.length) injectReviewsSchema(items);
   } catch (err) {
