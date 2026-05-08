@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable icons need full-bleed background and important content within central 80% safe zone -->
+  <rect width="512" height="512" fill="#6B2D20"/>
+  <g transform="translate(256 256)">
+    <g fill="#FDF7F4">
+      <ellipse cx="0" cy="-72" rx="42" ry="62"/>
+      <ellipse cx="0" cy="-72" rx="42" ry="62" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-72" rx="42" ry="62" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-72" rx="42" ry="62" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-72" rx="42" ry="62" transform="rotate(288)"/>
+    </g>
+    <circle r="32" fill="#E8B83F"/>
+  </g>
+</svg>

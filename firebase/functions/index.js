@@ -273,6 +273,89 @@ async function sendWhatsAppReminder(customer, anniversary, daysLeft) {
 }
 
 // ─────────────────────────────────────────────────────
+// PUSH — Notify admin devices when a new order arrives
+// ─────────────────────────────────────────────────────
+//
+// Triggered on every new doc in /orders. Reads admin_devices/{token} for the
+// list of registered admin phones/desktops and fan-outs an FCM push.
+// Stale tokens are auto-pruned when FCM rejects them.
+exports.notifyAdminOnNewOrder = functions.firestore
+  .document("orders/{orderId}")
+  .onCreate(async (snap, context) => {
+    const order = snap.data() || {};
+    const orderId = context.params.orderId;
+
+    const itemSummary = Array.isArray(order.items) && order.items.length
+      ? order.items.map(i => `${i.qty || 1}× ${i.name || i.productName || 'item'}`).join(", ")
+      : (order.productName || "1 item");
+    const total = typeof order.totalAmount === "number"
+      ? `$${order.totalAmount.toFixed(2)}`
+      : (order.totalAmount ? `$${order.totalAmount}` : "");
+
+    const title = `🌸 New order — ${order.customerName || "customer"}`;
+    const body  = [
+      itemSummary,
+      total,
+      order.suburb ? `· ${order.suburb}` : (order.postcode ? `· ${order.postcode}` : ""),
+      order.hasAlcohol ? "🍷" : ""
+    ].filter(Boolean).join(" ").trim();
+
+    return sendPushToAdmins({ title, body, route: "/orders", orderId });
+  });
+
+exports.notifyAdminOnNewCustomOrder = functions.firestore
+  .document("customOrders/{reqId}")
+  .onCreate(async (snap, context) => {
+    const r = snap.data() || {};
+    const title = `📞 Custom request — ${r.customerName || r.contact || "customer"}`;
+    const body = [
+      r.eventDate || r.deliveryDate || "",
+      r.budget ? `· budget ${r.budget}` : "",
+      r.brief ? `· ${String(r.brief).slice(0, 80)}` : ""
+    ].filter(Boolean).join(" ").trim();
+
+    return sendPushToAdmins({ title, body, route: "/customOrders", orderId: context.params.reqId });
+  });
+
+async function sendPushToAdmins({ title, body, route, orderId }) {
+  const devicesSnap = await db.collection("admin_devices").get();
+  if (devicesSnap.empty) { console.log("[push] no admin devices registered"); return; }
+
+  const tokens = devicesSnap.docs.map(d => d.id); // doc id == FCM token
+  if (!tokens.length) return;
+
+  const message = {
+    notification: { title, body },
+    data: { route, orderId: String(orderId || ""), title, body, click_action: "/admin/" },
+    webpush: {
+      fcmOptions: { link: `/admin/#${route}` },
+      notification: { icon: "/admin/icon-192.svg", badge: "/admin/icon-192.svg", requireInteraction: true }
+    },
+    tokens,
+  };
+
+  const resp = await admin.messaging().sendEachForMulticast(message);
+  console.log(`[push] sent ${resp.successCount}/${tokens.length} (failed: ${resp.failureCount})`);
+
+  // Prune stale / unregistered tokens
+  const stale = [];
+  resp.responses.forEach((r, i) => {
+    if (!r.success) {
+      const code = r.error?.code || "";
+      if (code.includes("registration-token-not-registered") ||
+          code.includes("invalid-argument") ||
+          code.includes("invalid-registration-token")) {
+        stale.push(tokens[i]);
+      } else {
+        console.warn("[push] send error:", code, r.error?.message);
+      }
+    }
+  });
+  await Promise.all(stale.map(t => db.collection("admin_devices").doc(t).delete().catch(() => {})));
+  if (stale.length) console.log(`[push] pruned ${stale.length} stale tokens`);
+}
+
+// ─────────────────────────────────────────────────────
 // DAILY CLEANUP — Archive yesterday's orders at midnight
 // ─────────────────────────────────────────────────────
 exports.dailyCleanup = functions.pubsub

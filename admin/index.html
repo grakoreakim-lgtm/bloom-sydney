@@ -2,8 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Bloom Admin</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#6B2D20"/>
+<link rel="icon" type="image/svg+xml" href="icon-192.svg"/>
+
+<!-- iOS "Add to Home Screen" support -->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Bloom Admin"/>
+<link rel="apple-touch-icon" href="icon-192.svg"/>
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="admin.css"/>
@@ -54,6 +66,7 @@
     <header class="topbar">
       <button class="btn-menu" id="btn-menu" aria-label="Open menu">☰</button>
       <h1 class="view-title" id="view-title">Dashboard</h1>
+      <button class="btn-push" id="btn-push" hidden type="button"></button>
     </header>
     <div class="view-container" id="view-container"></div>
   </main>

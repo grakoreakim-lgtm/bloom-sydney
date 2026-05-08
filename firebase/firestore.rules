@@ -64,29 +64,22 @@ service cloud.firestore {
       allow write: if false; // Functions only
     }
 
-    // Orders: create by anyone, read/update by admin only
-    match /orders/{orderId} {
-      allow create: if true;
-      allow read, update: if request.auth != null && request.auth.token.admin == true;
+    // Admin push-notification devices: each doc id is an FCM token.
+    // Any signed-in admin can register/refresh their own token, and read the list.
+    // Cloud Functions read this list with the admin SDK, bypassing rules.
+    match /admin_devices/{token} {
+      allow read, write: if request.auth != null;
     }
 
-    // Customers: own data only, or admin
-    match /customers/{email} {
-      allow read, write: if request.auth != null &&
-        (request.auth.token.email == email || request.auth.token.admin == true);
-
-      match /anniversaries/{annivId} {
-        allow read, write: if request.auth != null &&
-          (request.auth.token.email == email || request.auth.token.admin == true);
-      }
+    // Customer anniversaries (sub-collection of customers)
+    match /customers/{email}/anniversaries/{annivId} {
+      allow read, write: if request.auth != null;
     }
 
-    // Subscriptions: own data only, or admin
+    // Subscriptions: signed-in users (= admin) only
     match /subscriptions/{subId} {
-      allow read: if request.auth != null &&
-        (request.auth.uid == resource.data.uid || request.auth.token.admin == true);
       allow create: if request.auth != null;
-      allow update, delete: if request.auth != null && request.auth.token.admin == true;
+      allow read, update, delete: if request.auth != null;
     }
   }
 }

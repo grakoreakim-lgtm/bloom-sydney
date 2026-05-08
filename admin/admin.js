@@ -1,14 +1,25 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 import { getStorage }   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+import { getMessaging, getToken, onMessage, isSupported as isMessagingSupported }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
 import { firebaseConfig } from "../firebase/web-config.js";
 
 const app = initializeApp(firebaseConfig);
 export const auth    = getAuth(app);
 export const db      = getFirestore(app);
 export const storage = getStorage(app);
+
+// ─── FCM (push notifications) — VAPID key set in /admin/push-config.js ───
+// See README → "Push notifications setup" for how to generate this key.
+let _vapidKey = null;
+try {
+  const cfg = await import('./push-config.js').catch(() => null);
+  _vapidKey = cfg?.VAPID_KEY || null;
+} catch { /* push-config.js is optional */ }
 
 export const $  = (s, root = document) => root.querySelector(s);
 export const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
@@ -36,11 +47,87 @@ onAuthStateChanged(auth, user => {
     $('#signed-in-as').textContent = user.email;
     if (!location.hash) location.hash = '#/dashboard';
     else handleRoute();
+    // Once signed in, set up push notifications (no-op if not supported / already done)
+    setupPushNotifications(user).catch(err => console.warn('[push] setup failed:', err));
   } else {
     $('#login-screen').hidden = false;
     $('#admin-app').hidden = true;
   }
 });
+
+/* ─── PUSH NOTIFICATIONS (FCM) ─── */
+async function setupPushNotifications(user) {
+  if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+  if (!await isMessagingSupported()) return;
+  if (!_vapidKey) {
+    console.info('[push] VAPID key not configured — see admin/push-config.js.example');
+    updatePushButton('not-configured');
+    return;
+  }
+
+  // Register the FCM service worker (must live at /admin/firebase-messaging-sw.js)
+  let reg;
+  try {
+    reg = await navigator.serviceWorker.register('./firebase-messaging-sw.js', { scope: './' });
+  } catch (err) {
+    console.warn('[push] SW register failed:', err);
+    return;
+  }
+
+  const messaging = getMessaging(app);
+
+  // Foreground messages: show an in-app toast (browser doesn't fire system notification when tab is open)
+  onMessage(messaging, (payload) => {
+    const t = payload?.notification?.title || payload?.data?.title || 'New order';
+    const b = payload?.notification?.body  || payload?.data?.body  || '';
+    toast(`🔔 ${t}${b ? ' — ' + b : ''}`);
+    // Optional: re-load the orders view if the user is on it
+    if (location.hash.includes('/orders')) handleRoute();
+  });
+
+  updatePushButton(Notification.permission, async () => requestAndSaveToken(user, reg, messaging));
+
+  // Auto-refresh token if already granted (in case it rotated)
+  if (Notification.permission === 'granted') {
+    requestAndSaveToken(user, reg, messaging).catch(err => console.warn('[push] token refresh failed:', err));
+  }
+}
+
+async function requestAndSaveToken(user, reg, messaging) {
+  if (Notification.permission === 'denied') {
+    toast('Notifications were blocked. Enable them in your browser settings.', true);
+    return;
+  }
+  if (Notification.permission !== 'granted') {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { updatePushButton(perm); return; }
+  }
+
+  const token = await getToken(messaging, { vapidKey: _vapidKey, serviceWorkerRegistration: reg });
+  if (!token) { toast('Could not get notification token.', true); return; }
+
+  // Save token under admin_devices/{token} so the Cloud Function can fan-out pushes.
+  await setDoc(doc(db, 'admin_devices', token), {
+    uid:       user.uid,
+    email:     user.email,
+    userAgent: navigator.userAgent,
+    createdAt: serverTimestamp(),
+    lastSeen:  serverTimestamp(),
+  }, { merge: true });
+
+  updatePushButton('granted');
+  toast('🔔 Notifications enabled — you’ll be alerted on new orders');
+}
+
+function updatePushButton(state, onClick) {
+  const btn = $('#btn-push');
+  if (!btn) return;
+  btn.hidden = false;
+  if (state === 'granted')         { btn.textContent = '🔔 Alerts on';   btn.disabled = true;  btn.title = 'You will be notified of new orders'; btn.onclick = null; }
+  else if (state === 'denied')     { btn.textContent = '🔕 Blocked';     btn.disabled = true;  btn.title = 'Enable notifications in browser settings'; btn.onclick = null; }
+  else if (state === 'not-configured') { btn.hidden = true; }
+  else                             { btn.textContent = '🔔 Enable alerts'; btn.disabled = false; btn.title = 'Tap to receive new-order push notifications'; btn.onclick = onClick || null; }
+}
 
 $('#login-form').addEventListener('submit', async (e) => {
   e.preventDefault();

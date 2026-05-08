@@ -1,6 +1,10 @@
-import { db, $, $$, toast, escapeHtml } from '../admin.js';
+import { db, storage, $, $$, toast, escapeHtml } from '../admin.js';
 import { collection, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, serverTimestamp, Timestamp }
   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL, deleteObject }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+
+let pendingFile = null;
 
 const CATEGORIES = [
   { key: 'care',       label: 'Flower care' },
@@ -57,8 +61,16 @@ export async function render() {
           </div>
 
           <div class="field">
-            <label>Cover image URL</label>
-            <input name="coverImage" type="url" placeholder="https://images.unsplash.com/..."/>
+            <label>Cover image</label>
+            <label class="image-drop" id="blog-image-drop">
+              <input name="image" type="file" accept="image/*"/>
+              <div class="hint">Click to upload a cover image (or drag &amp; drop)<br/>JPG / PNG, under 5 MB</div>
+              <div class="image-preview" id="blog-image-preview" hidden></div>
+            </label>
+            <div style="margin-top:8px">
+              <input name="coverImage" type="url" placeholder="…or paste an image URL (e.g. https://images.unsplash.com/...)" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-family:inherit; font-size:13px"/>
+              <div style="margin-top:4px; font-size:12px; color:var(--subtle)">Uploading a file overrides this URL.</div>
+            </div>
           </div>
 
           <div class="field-row">
@@ -100,6 +112,19 @@ export async function render() {
   $('#btn-seed-blog').addEventListener('click', seedDefaults);
   $('#btn-blog-cancel').addEventListener('click', () => $('#blog-modal').hidden = true);
   $('#blog-form').addEventListener('submit', onSubmit);
+
+  // Cover-image upload (drag & drop + click)
+  const drop = $('#blog-image-drop');
+  const fileInput = drop.querySelector('input[type=file]');
+  fileInput.addEventListener('change', (e) => handleBlogFile(e.target.files[0]));
+  ['dragenter','dragover'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => {
+    const f = e.dataTransfer.files[0];
+    if (f) handleBlogFile(f);
+  });
 
   // Auto-slug from title when slug field is empty
   $('#blog-form [name=title]').addEventListener('input', (e) => {
@@ -145,23 +170,23 @@ async function loadPosts() {
     }
     list.innerHTML = '<div class="olist">' + items.map(p => `
       <div class="orow" data-id="${p.id}">
-        <div class="o-num" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">${escapeHtml(CAT_LABEL[p.category] || p.category || '')}</div>
+        ${p.coverImage ? `<img src="${escapeHtml(p.coverImage)}" alt="" style="width:64px; height:64px; object-fit:cover; border-radius:6px; border:1px solid var(--border); flex-shrink:0"/>` : `<div class="o-num" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">${escapeHtml(CAT_LABEL[p.category] || p.category || '')}</div>`}
         <div class="o-main">
           <div class="o-cust">${escapeHtml(p.title || 'Untitled')} ${p.active === false ? '<span class="payment-pill p-pending" style="margin-left:8px">DRAFT</span>' : ''}</div>
           <div class="o-meta" style="margin-top:4px">${escapeHtml(p.excerpt || '').slice(0,140)}${(p.excerpt || '').length > 140 ? '…' : ''}</div>
-          <div class="o-meta" style="margin-top:4px; font-size:12px; color:var(--subtle)">/blog/?slug=${escapeHtml(p.slug || '')} · ${formatDate(p.publishedAt)}</div>
+          <div class="o-meta" style="margin-top:4px; font-size:12px; color:var(--subtle)">${escapeHtml(CAT_LABEL[p.category] || p.category || '')} · /blog/?slug=${escapeHtml(p.slug || '')} · ${formatDate(p.publishedAt)}</div>
         </div>
         <div style="display:flex; gap:6px; align-items:center">
           <a class="btn-secondary" href="../../blog/?slug=${encodeURIComponent(p.slug || '')}" target="_blank">View</a>
           <button class="btn-secondary btn-edit-post" data-id="${p.id}">Edit</button>
-          <button class="btn-danger btn-del-post"  data-id="${p.id}">Delete</button>
+          <button class="btn-danger btn-del-post"  data-id="${p.id}" data-path="${p.coverImagePath || ''}">Delete</button>
         </div>
       </div>
     `).join('') + '</div>';
     list.querySelectorAll('.btn-edit-post').forEach(b =>
       b.addEventListener('click', () => editPost(b.dataset.id)));
     list.querySelectorAll('.btn-del-post').forEach(b =>
-      b.addEventListener('click', () => deletePost(b.dataset.id)));
+      b.addEventListener('click', () => deletePost(b.dataset.id, b.dataset.path)));
   } catch (err) {
     list.className = '';
     list.innerHTML = `<div class="placeholder"><h2>Load failed</h2><p>${escapeHtml(err.message)}</p></div>`;
@@ -182,13 +207,31 @@ async function editPost(id) {
   } catch (err) { toast('Load failed: ' + err.message, true); }
 }
 
+function handleBlogFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Only image files allowed.', true); return; }
+  if (file.size > 5 * 1024 * 1024)     { toast('File too large (max 5 MB).', true); return; }
+  pendingFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const preview = $('#blog-image-preview');
+    preview.hidden = false;
+    preview.innerHTML = `<img src="${ev.target.result}"/><span class="ipname">${escapeHtml(file.name)} (${(file.size/1024).toFixed(0)} KB)</span>`;
+  };
+  reader.readAsDataURL(file);
+}
+
 function openForm(p) {
   editingId = p?.id || null;
+  pendingFile = null;
   const form = $('#blog-form');
   form.reset();
   $('#blog-form-title').textContent = p ? 'Edit post' : 'New post';
   const slugField = form.slug;
   slugField.dataset.touched = p ? '1' : '';
+
+  const preview = $('#blog-image-preview');
+  preview.hidden = true; preview.innerHTML = '';
 
   if (p) {
     form.title.value           = p.title || '';
@@ -200,6 +243,11 @@ function openForm(p) {
     form.content.value         = p.content || '';
     form.metaDescription.value = p.metaDescription || '';
     form.active.checked        = p.active !== false;
+    if (p.coverImage) {
+      preview.hidden = false;
+      preview.innerHTML = `<img src="${escapeHtml(p.coverImage)}"/><span class="ipname">Current cover (upload to replace)</span>`;
+    }
+    form.dataset.coverImagePath = p.coverImagePath || '';
     if (p.publishedAt) {
       const d = p.publishedAt.toDate ? p.publishedAt.toDate() : new Date(p.publishedAt);
       form.publishedDate.value = d.toISOString().slice(0, 10);
@@ -210,6 +258,7 @@ function openForm(p) {
   } else {
     form.author.value = 'Ji-sun, Founder';
     form.publishedDate.value = new Date().toISOString().slice(0, 10);
+    form.dataset.coverImagePath = '';
     $('#btn-blog-preview').style.display = 'none';
   }
   $('#blog-modal').hidden = false;
@@ -226,12 +275,37 @@ async function onSubmit(e) {
       ? new Date(f.publishedDate.value + 'T09:00:00')
       : new Date();
 
+    let coverImage     = f.coverImage.value.trim();
+    let coverImagePath = f.dataset.coverImagePath || '';
+
+    // Upload new file → overrides URL
+    if (pendingFile) {
+      btn.textContent = 'Uploading image…';
+      const safeName = pendingFile.name.replace(/[^\w.-]/g, '_');
+      const newPath  = `blog/${Date.now()}_${safeName}`;
+      const r = ref(storage, newPath);
+      await uploadBytes(r, pendingFile);
+      const newUrl = await getDownloadURL(r);
+      // Delete previous storage file (if any) once new one uploaded
+      if (coverImagePath && coverImagePath !== newPath) {
+        try { await deleteObject(ref(storage, coverImagePath)); } catch (err) { /* ignore */ }
+      }
+      coverImage     = newUrl;
+      coverImagePath = newPath;
+      btn.textContent = 'Saving…';
+    } else if (coverImagePath && coverImage && !coverImage.includes(coverImagePath.split('/').pop())) {
+      // User replaced the file URL with an external one → previous storage file is now orphaned
+      try { await deleteObject(ref(storage, coverImagePath)); } catch (err) { /* ignore */ }
+      coverImagePath = '';
+    }
+
     const data = {
       title:           f.title.value.trim(),
       slug,
       category:        f.category.value,
       excerpt:         f.excerpt.value.trim(),
-      coverImage:      f.coverImage.value.trim(),
+      coverImage,
+      coverImagePath,
       author:          f.author.value.trim() || 'Bloom & Vine',
       content:         f.content.value,
       metaDescription: f.metaDescription.value.trim(),
@@ -249,6 +323,7 @@ async function onSubmit(e) {
       toast('Post published');
     }
     $('#blog-modal').hidden = true;
+    pendingFile = null;
     loadPosts();
   } catch (err) {
     console.error(err);
@@ -258,10 +333,13 @@ async function onSubmit(e) {
   }
 }
 
-async function deletePost(id) {
+async function deletePost(id, imagePath) {
   if (!confirm('Delete this post? Cannot be undone.')) return;
   try {
     await deleteDoc(doc(db, 'blog', id));
+    if (imagePath) {
+      try { await deleteObject(ref(storage, imagePath)); } catch (err) { /* ignore */ }
+    }
     toast('Deleted');
     loadPosts();
   } catch (err) { toast('Delete failed: ' + err.message, true); }

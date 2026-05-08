@@ -418,6 +418,17 @@ nav {
 .pgrid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
 @media(min-width:900px){ .pgrid { grid-template-columns:repeat(3,1fr); gap:20px; } }
 
+/* Same-Day: typically 1–3 products → stacked on mobile, up to 3 per row on PC */
+#grid-sameday { grid-template-columns: 1fr; gap: 18px; }
+@media(min-width: 900px){
+  #grid-sameday { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+/* When 1 or 2 products only, keep the card width similar to the 3-up layout
+   so a lone product doesn't stretch awkwardly across the whole row */
+@media(min-width: 900px){
+  #grid-sameday > .pcard { max-width: 380px; }
+}
+
 .pcard {
   background:var(--c-bg); border-radius:var(--r-card); overflow:hidden;
   border:1px solid var(--c-border); transition:transform .2s, box-shadow .2s;
@@ -704,6 +715,12 @@ nav {
 .rev-txt { font-size: var(--t-body); color: var(--c-mid); line-height: var(--lh-body); }
 .rev-prod { font-size: 12px; color: var(--c-accent); font-weight: 500; margin-top: 10px; }
 .rev-verified { font-size: 12px; color: var(--c-sage); margin-top: 5px; display: flex; align-items: center; gap: 4px; }
+.rev-photo { margin: 6px 0 12px; border-radius: 8px; overflow: hidden; }
+.rev-photo img {
+  width: 100%; max-height: 220px; object-fit: cover; display: block;
+  transition: transform .35s ease;
+}
+.rev-photo:hover img { transform: scale(1.04); }
 
 /* ─────────────────────────────────────────
    FAQ
@@ -2290,7 +2307,8 @@ async function loadReviewsFromFirestore() {
       if (r.active !== false) items.push({
         name: r.customerName, suburb: r.suburb, date: r.date,
         stars: r.stars, tag: r.tag, text: r.text,
-        product: r.productName, verified: r.verified !== false
+        product: r.productName, verified: r.verified !== false,
+        photo: r.photoUrl || ''
       });
     });
     renderReviewsCarousel(items);
@@ -2325,6 +2343,7 @@ function renderReviewsCarousel(items) {
         <div class="rev-stars-sm">${'<span class="star-sm">★</span>'.repeat(r.stars || 0)}</div>
       </div>
       ${r.tag ? `<div class="rev-tag">${escapeHtml(r.tag)}</div>` : ''}
+      ${r.photo ? `<div class="rev-photo"><img src="${escapeHtml(r.photo)}" alt="${escapeHtml(r.name || '')}'s photo" loading="lazy"/></div>` : ''}
       <p class="rev-txt">"${escapeHtml(r.text || '')}"</p>
       ${r.product ? `<div class="rev-prod">✦ ${escapeHtml(r.product)}</div>` : ''}
       ${r.verified ? '<div class="rev-verified">✓ Verified purchase</div>' : ''}

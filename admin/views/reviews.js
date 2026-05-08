@@ -1,9 +1,12 @@
-import { db, $, $$, toast, escapeHtml } from '../admin.js';
+import { db, storage, $, $$, toast, escapeHtml } from '../admin.js';
 import { collection, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, orderBy, where, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL, deleteObject }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
 
 const TAGS = ['Same-Day', 'Pre-Order', 'Subscription', 'Gift', 'Hamper', 'Wedding', 'Other'];
 let editingId = null;
+let pendingFile = null;
 
 export async function render() {
   const container = $('#view-container');
@@ -66,6 +69,16 @@ export async function render() {
             <div class="field"><label>Date (text, e.g., April 2025)</label><input name="date" type="text" placeholder="April 2025"/></div>
           </div>
 
+          <div class="field">
+            <label>Photo (optional)</label>
+            <label class="image-drop" id="rev-image-drop">
+              <input name="image" type="file" accept="image/*"/>
+              <div class="hint">Click to upload a photo from the customer (or drag &amp; drop)<br/>JPG / PNG, under 5 MB</div>
+              <div class="image-preview" id="rev-image-preview" hidden></div>
+            </label>
+            <div style="margin-top:4px; font-size:12px; color:var(--subtle)">Customer-supplied photos make reviews 2× more trustworthy. Always get permission before posting.</div>
+          </div>
+
           <div class="field" style="display:flex; gap:18px">
             <label class="field-check"><input name="verified" type="checkbox" checked/> Verified purchase</label>
             <label class="field-check"><input name="active" type="checkbox" checked/> Show on customer site</label>
@@ -86,7 +99,34 @@ export async function render() {
   $('#btn-rev-cancel').addEventListener('click', () => $('#rev-modal').hidden = true);
   $('#rev-form').addEventListener('submit', onSubmit);
 
+  // Photo upload
+  const drop = $('#rev-image-drop');
+  const fileInput = drop.querySelector('input[type=file]');
+  fileInput.addEventListener('change', (e) => handleRevFile(e.target.files[0]));
+  ['dragenter','dragover'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => {
+    const f = e.dataTransfer.files[0];
+    if (f) handleRevFile(f);
+  });
+
   await loadReviews();
+}
+
+function handleRevFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Only image files allowed.', true); return; }
+  if (file.size > 5 * 1024 * 1024)     { toast('File too large (max 5 MB).', true); return; }
+  pendingFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const preview = $('#rev-image-preview');
+    preview.hidden = false;
+    preview.innerHTML = `<img src="${ev.target.result}"/><span class="ipname">${escapeHtml(file.name)} (${(file.size/1024).toFixed(0)} KB)</span>`;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function loadReviews() {
@@ -132,11 +172,14 @@ function renderList(items) {
   }
   list.innerHTML = '<div class="olist">' + items.map(r => `
     <div class="orow" data-id="${r.id}">
-      <div class="o-num" style="color:${r.stars >= 4 ? 'var(--gold)' : 'var(--subtle)'}">${'★'.repeat(r.stars || 0)}${'☆'.repeat(5 - (r.stars || 0))}</div>
+      ${r.photoUrl
+        ? `<img src="${escapeHtml(r.photoUrl)}" alt="" style="width:64px; height:64px; object-fit:cover; border-radius:6px; border:1px solid var(--border); flex-shrink:0"/>`
+        : `<div class="o-num" style="color:${r.stars >= 4 ? 'var(--gold)' : 'var(--subtle)'}">${'★'.repeat(r.stars || 0)}${'☆'.repeat(5 - (r.stars || 0))}</div>`}
       <div class="o-main">
         <div class="o-cust">
           ${escapeHtml(r.customerName || 'Anonymous')}
           ${r.suburb ? `<span style="font-weight:400; color:var(--subtle); font-size:13px">· ${escapeHtml(r.suburb)}</span>` : ''}
+          ${r.photoUrl ? `<span style="margin-left:6px; color:var(--gold)">${'★'.repeat(r.stars || 0)}</span>` : ''}
           ${r.isSample ? '<span class="payment-pill p-pending" style="margin-left:8px">SAMPLE</span>' : ''}
           ${r.active === false ? '<span class="payment-pill p-pending" style="margin-left:8px">HIDDEN</span>' : ''}
         </div>
@@ -148,18 +191,19 @@ function renderList(items) {
           ${r.productName ? `<span class="dot">·</span> ${escapeHtml(r.productName)}` : ''}
           ${r.date ? `<span class="dot">·</span> ${escapeHtml(r.date)}` : ''}
           ${r.verified ? '<span class="dot">·</span> ✓ verified' : ''}
+          ${r.photoUrl ? '<span class="dot">·</span> 📷 photo' : ''}
         </div>
       </div>
       <div style="display:flex; gap:6px">
         <button class="btn-secondary btn-edit-rev" data-id="${r.id}">Edit</button>
-        <button class="btn-danger btn-del-rev" data-id="${r.id}">Delete</button>
+        <button class="btn-danger btn-del-rev" data-id="${r.id}" data-path="${r.photoPath || ''}">Delete</button>
       </div>
     </div>
   `).join('') + '</div>';
   list.querySelectorAll('.btn-edit-rev').forEach(b =>
     b.addEventListener('click', () => editReview(b.dataset.id)));
   list.querySelectorAll('.btn-del-rev').forEach(b =>
-    b.addEventListener('click', () => deleteReview(b.dataset.id)));
+    b.addEventListener('click', () => deleteReview(b.dataset.id, b.dataset.path)));
 }
 
 async function editReview(id) {
@@ -171,9 +215,14 @@ async function editReview(id) {
 
 function openForm(r) {
   editingId = r?.id || null;
+  pendingFile = null;
   const f = $('#rev-form');
   f.reset();
   $('#rev-form-title').textContent = r ? 'Edit review' : 'New review';
+
+  const preview = $('#rev-image-preview');
+  preview.hidden = true; preview.innerHTML = '';
+
   if (r) {
     f.customerName.value = r.customerName || '';
     f.suburb.value       = r.suburb || '';
@@ -186,9 +235,17 @@ function openForm(r) {
     f.active.checked     = r.active !== false;
     f.dataset.sortOrder  = r.sortOrder ?? '';
     f.dataset.isSample   = r.isSample ? '1' : '';
+    f.dataset.photoUrl   = r.photoUrl  || '';
+    f.dataset.photoPath  = r.photoPath || '';
+    if (r.photoUrl) {
+      preview.hidden = false;
+      preview.innerHTML = `<img src="${escapeHtml(r.photoUrl)}"/><span class="ipname">Current photo (upload to replace)</span>`;
+    }
   } else {
     f.dataset.sortOrder = '';
     f.dataset.isSample  = '';
+    f.dataset.photoUrl  = '';
+    f.dataset.photoPath = '';
   }
   $('#rev-modal').hidden = false;
 }
@@ -199,6 +256,24 @@ async function onSubmit(e) {
   const btn = $('#btn-rev-save');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
+    let photoUrl  = f.dataset.photoUrl  || '';
+    let photoPath = f.dataset.photoPath || '';
+
+    if (pendingFile) {
+      btn.textContent = 'Uploading photo…';
+      const safeName = pendingFile.name.replace(/[^\w.-]/g, '_');
+      const newPath  = `reviews/${Date.now()}_${safeName}`;
+      const r = ref(storage, newPath);
+      await uploadBytes(r, pendingFile);
+      const newUrl = await getDownloadURL(r);
+      if (photoPath && photoPath !== newPath) {
+        try { await deleteObject(ref(storage, photoPath)); } catch (err) { /* ignore */ }
+      }
+      photoUrl  = newUrl;
+      photoPath = newPath;
+      btn.textContent = 'Saving…';
+    }
+
     const data = {
       customerName: f.customerName.value.trim(),
       suburb:       f.suburb.value.trim(),
@@ -209,6 +284,8 @@ async function onSubmit(e) {
       date:         f.date.value.trim(),
       verified:     f.verified.checked,
       active:       f.active.checked,
+      photoUrl,
+      photoPath,
       sortOrder:    f.dataset.sortOrder !== '' ? Number(f.dataset.sortOrder) : Date.now(),
       isSample:     f.dataset.isSample === '1' ? true : false,
       updatedAt:    serverTimestamp(),
@@ -222,6 +299,7 @@ async function onSubmit(e) {
       toast('Review added');
     }
     $('#rev-modal').hidden = true;
+    pendingFile = null;
     loadReviews();
   } catch (err) {
     toast('Save failed: ' + (err.code || err.message), true);
@@ -230,10 +308,13 @@ async function onSubmit(e) {
   }
 }
 
-async function deleteReview(id) {
+async function deleteReview(id, photoPath) {
   if (!confirm('Delete this review?')) return;
   try {
     await deleteDoc(doc(db, 'reviews', id));
+    if (photoPath) {
+      try { await deleteObject(ref(storage, photoPath)); } catch (err) { /* ignore */ }
+    }
     toast('Deleted');
     loadReviews();
   } catch (err) { toast('Delete failed: ' + err.message, true); }

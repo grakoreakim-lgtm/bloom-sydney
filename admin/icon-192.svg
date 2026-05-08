@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#6B2D20"/>
+  <g transform="translate(96 96)">
+    <!-- Petals -->
+    <g fill="#FDF7F4">
+      <ellipse cx="0" cy="-32" rx="18" ry="28"/>
+      <ellipse cx="0" cy="-32" rx="18" ry="28" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-32" rx="18" ry="28" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-32" rx="18" ry="28" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-32" rx="18" ry="28" transform="rotate(288)"/>
+    </g>
+    <!-- Center -->
+    <circle r="14" fill="#E8B83F"/>
+  </g>
+  <!-- Subtle B mark -->
+  <text x="96" y="174" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="14" fill="#FDF7F4" opacity="0.85" letter-spacing="2">BLOOM</text>
+</svg>
