@@ -549,6 +549,20 @@ nav {
 }
 .pcard-body .btn-add:hover { background:var(--c-accent); }
 .pcard-body .btn-add:disabled { background:var(--c-border); color:var(--c-subtle); cursor:not-allowed; }
+.btn-view-details {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--c-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 4px 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color .15s;
+  text-align: center;
+}
+.btn-view-details:hover { color: var(--c-accent); }
 
 /* ── Load more ── */
 .load-more-wrap { text-align:center; margin-top:28px; }
@@ -2032,9 +2046,10 @@ function renderProducts(tab) {
           ${p.wine ? `<span class="p-wine">with wine <strong>$${p.wine}</strong></span>` : ''}
         </div>
         ${!sold ? `<div class="pcard-avail">${low ? p.stock + ' left' : p.stock + ' available'}</div>` : ''}
-        <button class="btn-add" ${sold ? 'disabled' : ''} onclick="event.stopPropagation(); openDetailForCard('${tab}', ${idx})">
-          ${sold ? 'Sold Out' : 'View Details'}
+        <button class="btn-add" ${sold ? 'disabled' : ''} onclick="event.stopPropagation(); addToCartFromCard('${tab}', ${idx})">
+          ${sold ? 'Sold Out' : 'Add to Cart'}
         </button>
+        ${!sold ? `<button class="btn-view-details" type="button" onclick="event.stopPropagation(); openDetailForCard('${tab}', ${idx})">View details &rarr;</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -2129,6 +2144,18 @@ let detailProduct = null;
 let detailIsPreorder = false;
 let detailImages = [];
 let detailIdx = 0;
+
+// Skip the detail modal — open the checkout drawer directly with the product.
+// Card click (image / name / price area) still opens the detail modal for buyers
+// who want to see photos / description / wine pairing options first.
+window.addToCartFromCard = function(tab, idx) {
+  const p = (window.PRODUCTS && window.PRODUCTS[tab] && window.PRODUCTS[tab][idx]) || null;
+  if (!p) return;
+  if (p.sold || p.stock === 0) return;
+  // Reset any pending add-on state from previous detail-modal interactions
+  window.__pendingAddons = null;
+  openModal(p);
+};
 
 window.openDetailForCard = function(tab, idx) {
   const p = (window.PRODUCTS && window.PRODUCTS[tab] && window.PRODUCTS[tab][idx]) || null;
