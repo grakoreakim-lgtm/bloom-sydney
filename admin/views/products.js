@@ -52,31 +52,24 @@ export async function render() {
             <input name="name" type="text" placeholder="White Tulip Bunch" required/>
           </div>
 
-          <div class="field">
-            <label>Wine pairing (optional)</label>
-            <input name="pair" type="text" placeholder="Hunter Valley Rosé"/>
-          </div>
-
           <div class="field-row">
             <div class="field">
               <label>Price (AUD)</label>
               <input name="price" type="number" min="0" step="1" required/>
             </div>
             <div class="field">
-              <label>Wine-included price (optional)</label>
-              <input name="wine" type="number" min="0" step="1"/>
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
               <label>Stock</label>
               <input name="stock" type="number" min="0" step="1" required value="0"/>
             </div>
-            <div class="field" style="display:flex; flex-direction:column; gap:6px; padding-top:18px;">
-              <label class="field-check"><input name="hasWine" type="checkbox"/> Show wine-pairing badge</label>
-              <label class="field-check"><input name="sold"    type="checkbox"/> Mark as sold out</label>
-            </div>
+          </div>
+
+          <div class="field" style="display:flex; gap:18px">
+            <label class="field-check"><input name="sold" type="checkbox"/> Mark as sold out</label>
+          </div>
+
+          <div class="field" style="background:#FDF7F4; border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--mid); line-height:1.5">
+            🍷 Want to offer wine pairing or other extras? Add them once in
+            <a href="#/addons" style="color:var(--accent); font-weight:600">Add-ons</a> — they show up on every product automatically.
           </div>
 
           <div class="field">
@@ -229,7 +222,7 @@ async function loadProducts() {
           <div class="pname">${escapeHtml(p.name)}</div>
           <div class="ptype">${escapeHtml(p.type || '')}</div>
           <div class="pmeta">
-            $${p.price}${p.wine ? ' · with wine $' + p.wine : ''}
+            $${p.price}
             · ${p.sold ? '<span class="sold-tag">SOLD OUT</span>' : (p.stock + ' in stock')}
           </div>
         </div>
@@ -276,11 +269,8 @@ function openForm(product) {
     form.tab.value   = product.tab || 'sameday';
     form.type.value  = product.type || '';
     form.name.value  = product.name || '';
-    form.pair.value  = product.pair || '';
     form.price.value = product.price ?? '';
-    form.wine.value  = product.wine  ?? '';
     form.stock.value = product.stock ?? 0;
-    form.hasWine.checked = !!product.hasWine;
     form.sold.checked    = !!product.sold;
     form.description.value = product.description || '';
     if (product.imageUrl) {
@@ -368,10 +358,8 @@ async function onSubmit(e) {
       tab:     form.tab.value,
       type:    form.type.value.trim(),
       name:    form.name.value.trim(),
-      pair:    form.pair.value.trim(),
       price:   Number(form.price.value),
       stock:   Number(form.stock.value),
-      hasWine: form.hasWine.checked,
       sold:    form.sold.checked,
       imageUrl,
       imagePath,
@@ -380,7 +368,6 @@ async function onSubmit(e) {
       sortOrder: form.dataset.sortOrder !== '' ? Number(form.dataset.sortOrder) : Date.now(),
       updatedAt: serverTimestamp(),
     };
-    if (form.wine.value !== '') data.wine = Number(form.wine.value);
 
     saveBtn.textContent = 'Saving…';
     if (editingId) {

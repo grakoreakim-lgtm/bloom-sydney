@@ -5,9 +5,10 @@ import { collection, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, 
 let editingId = null;
 
 const DEFAULTS = [
-  { icon: '🍫', name: 'Chocolate Box',     description: '12 hand-made truffles from a Carlingford bakery', price: 15, sortOrder: 1 },
-  { icon: '💌', name: 'Premium Card',      description: 'Hand-written on quality paper, sealed in an envelope', price: 5,  sortOrder: 2 },
-  { icon: '🎁', name: 'Premium Gift Wrap', description: 'Hand-tied with paper & ribbon',                       price: 8,  sortOrder: 3 },
+  { icon: '🍷', name: 'Wine Pairing',      description: 'Curated Australian wine, hand-selected by us (changes weekly)', price: 25, sortOrder: 1 },
+  { icon: '🍫', name: 'Chocolate Box',     description: '12 hand-made truffles from a Carlingford bakery',               price: 15, sortOrder: 2 },
+  { icon: '💌', name: 'Premium Card',      description: 'Hand-written on quality paper, sealed in an envelope',          price: 5,  sortOrder: 3 },
+  { icon: '🎁', name: 'Premium Gift Wrap', description: 'Hand-tied with paper & ribbon',                                 price: 8,  sortOrder: 4 },
 ];
 
 export async function render() {

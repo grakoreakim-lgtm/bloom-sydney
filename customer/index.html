@@ -1963,29 +1963,23 @@ const FAQS = [
 ];
 
 
-/* ─── PRODUCTS (per shop tab) ─── */
+/* ─── PRODUCTS (per shop tab) — fallback only, real data comes from Firestore ─── */
 const PRODUCTS = {
   sameday: [
-    { type:'TODAY · CARLINGFORD', name:'White Tulip Bunch',     pair:'Hunter Valley Rosé',         price:42, wine:62, stock:8,  hasWine:true,  img:IMG.i1 },
-    { type:'TODAY · LIMITED',     name:'Pink Peony Cluster',    pair:'Margaret River Chardonnay',  price:48, wine:72, stock:5,  hasWine:true,  img:IMG.i2 },
-    { type:'TODAY · 3 LEFT',      name:'Sunflower Bunch',       pair:'Adelaide Sauvignon Blanc',   price:38, wine:58, stock:3,  hasWine:true,  img:IMG.i3 },
-    { type:'TODAY',               name:'Mixed Spring Bouquet',  pair:'',                           price:45,          stock:6,  hasWine:false, img:IMG.i4 },
-    { type:'TODAY · SOLD OUT',    name:'David Austin Rose',     pair:'Tasmanian Pinot Noir',       price:55, wine:82, stock:0,  hasWine:false, sold:true, img:IMG.i5 },
-    { type:'TODAY',               name:'Lavender & Eucalyptus', pair:'',                           price:36,          stock:9,  hasWine:false, img:IMG.i6 },
-    { type:'TODAY · LIMITED',     name:'Native Wattle Bunch',   pair:'McLaren Vale Shiraz',        price:44, wine:68, stock:4,  hasWine:true,  img:IMG.i3 },
-    { type:'TODAY',               name:'Daisy Garden Mix',      pair:'',                           price:34,          stock:11, hasWine:false, img:IMG.i4 },
-    { type:'TODAY · 2 LEFT',      name:'Premium Rose Heart',    pair:'Champagne Brut',             price:78, wine:118,stock:2,  hasWine:true,  img:IMG.i5 },
+    { type:'TODAY · CARLINGFORD', name:'White Tulip Bunch',     price:42, stock:8,  img:IMG.i1 },
+    { type:'TODAY · LIMITED',     name:'Pink Peony Cluster',    price:48, stock:5,  img:IMG.i2 },
+    { type:'TODAY · 3 LEFT',      name:'Sunflower Bunch',       price:38, stock:3,  img:IMG.i3 },
+    { type:'TODAY',               name:'Mixed Spring Bouquet',  price:45, stock:6,  img:IMG.i4 },
+    { type:'TODAY · SOLD OUT',    name:'David Austin Rose',     price:55, stock:0,  sold:true, img:IMG.i5 },
+    { type:'TODAY',               name:'Lavender & Eucalyptus', price:36, stock:9,  img:IMG.i6 },
   ],
   preorder: [
-    { type:'PRE-ORDER · TOMORROW', name:'Anemone & Ranunculus', pair:'Hunter Valley Sémillon',     price:52, wine:78, stock:10, hasWine:true,  img:IMG.i2 },
-    { type:'PRE-ORDER · MON',      name:'Garden Rose Bouquet',  pair:'Yarra Valley Pinot',         price:58, wine:88, stock:8,  hasWine:true,  img:IMG.i5 },
-    { type:'PRE-ORDER · TUE',      name:'Hydrangea Statement',  pair:'',                           price:65,          stock:6,  hasWine:false, img:IMG.i1 },
-    { type:'PRE-ORDER · WED',      name:'Spring Wildflowers',   pair:'',                           price:42,          stock:12, hasWine:false, img:IMG.i6 },
-    { type:'PRE-ORDER · THU',      name:'Peony & Eucalyptus',   pair:'Mornington Chardonnay',      price:55, wine:80, stock:9,  hasWine:true,  img:IMG.i2 },
-    { type:'PRE-ORDER · FRI',      name:'Anniversary Premium',  pair:'Champagne Brut NV',          price:88, wine:128,stock:4,  hasWine:true,  img:IMG.i4 },
-    { type:'PRE-ORDER · SAT',      name:'Weekend Bloom Box',    pair:'Barossa Grenache',           price:62, wine:92, stock:7,  hasWine:true,  img:IMG.i3 },
-    { type:'PRE-ORDER · NEXT WK',  name:"Mother's Day Special", pair:'Rosé Champagne',             price:95, wine:135,stock:15, hasWine:true,  img:IMG.i5 },
-    { type:'PRE-ORDER',            name:'Build-Your-Own Bunch', pair:'',                           price:48,          stock:20, hasWine:false, img:IMG.i6 },
+    { type:'PRE-ORDER · TOMORROW', name:'Anemone & Ranunculus', price:52, stock:10, img:IMG.i2 },
+    { type:'PRE-ORDER · MON',      name:'Garden Rose Bouquet',  price:58, stock:8,  img:IMG.i5 },
+    { type:'PRE-ORDER · TUE',      name:'Hydrangea Statement',  price:65, stock:6,  img:IMG.i1 },
+    { type:'PRE-ORDER · WED',      name:'Spring Wildflowers',   price:42, stock:12, img:IMG.i6 },
+    { type:'PRE-ORDER · THU',      name:'Peony & Eucalyptus',   price:55, stock:9,  img:IMG.i2 },
+    { type:'PRE-ORDER · FRI',      name:'Anniversary Premium',  price:88, stock:4,  img:IMG.i4 },
   ],
 };
 const PAGE_SIZE = 6;
@@ -2030,7 +2024,6 @@ function renderProducts(tab) {
       <div class="pcard-img">
         <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async"/>
         <div class="pcard-badges">
-          ${p.hasWine && !sold ? '<span class="badge b-wine">🍷 Wine Pairing</span>' : ''}
           ${sold ? '<span class="badge b-sold">Sold Out</span>' : ''}
           ${p.gallery && p.gallery.length ? `<span class="badge b-photos">📷 ${p.gallery.length + 1}</span>` : ''}
         </div>
@@ -2038,11 +2031,9 @@ function renderProducts(tab) {
       <div class="pcard-body">
         <div class="pcard-type">${p.type}</div>
         <div class="pcard-name">${p.name}</div>
-        <div class="pcard-pair">${p.pair ? '✦ ' + p.pair : '&nbsp;'}</div>
         ${p.description ? `<div class="pcard-desc">${p.description.replace(/\s+/g, ' ').trim()}</div>` : ''}
         <div class="pcard-price">
           <span class="p-main">$${p.price}</span>
-          ${p.wine ? `<span class="p-wine">with wine <strong>$${p.wine}</strong></span>` : ''}
         </div>
         ${!sold ? `<div class="pcard-avail">${low ? p.stock + ' left' : p.stock + ' available'}</div>` : ''}
         <button class="btn-add" ${sold ? 'disabled' : ''} onclick="event.stopPropagation(); addToCartFromCard('${tab}', ${idx})">
@@ -2186,7 +2177,7 @@ function openDetail(p, isPreorder) {
   // Description (fallback if empty)
   const descEl = document.getElementById('dm-desc');
   descEl.textContent = p.description ||
-    `Hand-tied this morning at Flemington Market. ${p.pair ? 'Pairs beautifully with ' + p.pair + '.' : 'A studio-curated arrangement.'}`;
+    `Hand-tied this morning at Flemington Market. A studio-curated arrangement, ready for same-day delivery.`;
 
   // Build the unified options list: wine pairing (if applicable) + global add-ons.
   renderDetailOptions(p);
@@ -2293,34 +2284,20 @@ function renderDetailCutoff() {
 }
 
 // Detail-modal options state — shared with the checkout modal via window.__pendingAddons
-let detailSelectedWine = false;
 let detailSelectedAddons = new Set(); // addon ids
 
 function renderDetailOptions(p) {
   const opts = document.getElementById('dm-options');
   const listEl = document.getElementById('dm-options-list');
-  const items = [];
-
-  // Wine pairing (per-product)
-  if (p.wine && p.wine > p.price) {
-    items.push({
-      key: 'wine',
-      icon: '🍷',
-      name: p.pair || 'Wine pairing',
-      description: 'Curated Australian wine, hand-selected for this bouquet',
-      price: p.wine - p.price,
-    });
-  }
-  // Global add-ons
-  (window.ADDONS || []).forEach(a => {
-    items.push({ key: 'addon-' + a.id, icon: a.icon, name: a.name, description: a.description, price: a.price, addonId: a.id });
-  });
+  const items = (window.ADDONS || []).map(a => ({
+    key: 'addon-' + a.id, icon: a.icon, name: a.name,
+    description: a.description, price: a.price, addonId: a.id,
+  }));
 
   if (!items.length) { opts.hidden = true; return; }
   opts.hidden = false;
 
   // Reset selection on each open
-  detailSelectedWine = false;
   detailSelectedAddons = new Set();
 
   listEl.innerHTML = items.map(it => `
@@ -2340,12 +2317,8 @@ function renderDetailOptions(p) {
     cb.addEventListener('change', () => {
       row.classList.toggle('on', cb.checked);
       const it = items[i];
-      if (it.key === 'wine') {
-        detailSelectedWine = cb.checked;
-      } else {
-        if (cb.checked) detailSelectedAddons.add(it.addonId);
-        else            detailSelectedAddons.delete(it.addonId);
-      }
+      if (cb.checked) detailSelectedAddons.add(it.addonId);
+      else            detailSelectedAddons.delete(it.addonId);
       updateDetailCTA();
     });
   });
@@ -2354,9 +2327,6 @@ function renderDetailOptions(p) {
 function updateDetailCTA() {
   if (!detailProduct) return;
   let price = detailProduct.price;
-  if (detailSelectedWine && detailProduct.wine) {
-    price = detailProduct.wine;
-  }
   (window.ADDONS || []).forEach(a => {
     if (detailSelectedAddons.has(a.id)) price += a.price;
   });
@@ -2367,7 +2337,6 @@ window.addToCartFromDetail = function() {
   if (!detailProduct) return;
   // Hand off the user's selections to the checkout modal via a one-shot global.
   window.__pendingAddons = {
-    wine:   detailSelectedWine,
     addons: Array.from(detailSelectedAddons),
   };
   closeDetailModal();
@@ -2406,18 +2375,14 @@ function openModal(product) {
   window.__pendingAddons = null;
   const initialAddons = {};
   if (pending) {
-    if (pending.wine) initialAddons.wine = true;
     (pending.addons || []).forEach(id => { initialAddons['addon-' + id] = true; });
   }
 
   checkoutProduct = {
     name:    product.name,
     type:    product.type || '',
-    pair:    product.pair || '',
     price:   Number(product.price) || 0,
-    wine:    product.wine != null ? Number(product.wine) : null,
     img:     product.img || '',
-    hasWine: !!product.hasWine,
     qty:     1,
     addons:  initialAddons,
     addonsMeta: {},
@@ -2435,10 +2400,7 @@ function openModal(product) {
   else { img.style.display = 'none'; }
   document.getElementById('co-prod-name').textContent = checkoutProduct.name;
   const pairEl = document.getElementById('co-prod-pair');
-  if (checkoutProduct.pair) {
-    pairEl.textContent = '✦ ' + checkoutProduct.pair;
-    pairEl.hidden = false;
-  } else {
+  if (pairEl) {
     pairEl.hidden = true;
   }
   document.getElementById('co-prod-type').textContent = checkoutProduct.type;
@@ -2491,17 +2453,7 @@ function buildAddons() {
   const container = document.getElementById('co-addons');
   const items = [];
 
-  // Wine pairing — only if the product has a wine-included price
-  if (checkoutProduct.wine && checkoutProduct.wine > checkoutProduct.price) {
-    items.push({
-      key:   'wine',
-      icon:  '🍷',
-      label: 'Add wine pairing',
-      sub:   checkoutProduct.pair || 'Curated Australian wine',
-      price: checkoutProduct.wine - checkoutProduct.price,
-    });
-  }
-  // Global add-ons from Firestore (chocolate, card, gift wrap, etc.)
+  // Global add-ons from Firestore (wine pairing, chocolate, card, gift wrap, etc.)
   (window.ADDONS || []).forEach(a => {
     items.push({
       key:   'addon-' + a.id,
@@ -2562,12 +2514,8 @@ function onPostcode() {
 
 function recalcTotals() {
   if (!checkoutProduct) return;
-  // Subtotal
+  // Subtotal: base item × qty + selected add-ons (one-time)
   let subtotal = checkoutProduct.price * checkoutProduct.qty;
-  if (checkoutProduct.addons.wine && checkoutProduct.wine) {
-    subtotal += (checkoutProduct.wine - checkoutProduct.price) * checkoutProduct.qty;
-  }
-  // Sum every selected global add-on (one-time, not per qty)
   if (checkoutProduct.addonsMeta) {
     Object.values(checkoutProduct.addonsMeta).forEach(meta => {
       if (checkoutProduct.addons[`addon-${meta.id}`]) subtotal += Number(meta.price) || 0;
@@ -2832,14 +2780,17 @@ function buildOrderPayload() {
     name:     checkoutProduct.name,
     price:    checkoutProduct.price,
     quantity: checkoutProduct.qty,
-    hasWine:  !!checkoutProduct.addons.wine,
     type:     checkoutProduct.type,
   }];
-  if (checkoutProduct.addons.wine && checkoutProduct.wine) items[0].price = checkoutProduct.wine;
+  // Each selected add-on becomes its own line. Add-ons whose name implies alcohol
+  // (wine, champagne, etc.) flip the order's NSW Liquor compliance flag.
+  let hasAlcohol = false;
+  const ALCOHOL_RE = /\b(wine|champagne|prosecco|rosé|rose|sparkling|liquor|bottle)\b/i;
   if (checkoutProduct.addonsMeta) {
     Object.values(checkoutProduct.addonsMeta).forEach(meta => {
       if (checkoutProduct.addons[`addon-${meta.id}`]) {
-        items.push({ name: meta.name, price: Number(meta.price) || 0, quantity: 1, hasWine: false, type: 'add-on' });
+        items.push({ name: meta.name, price: Number(meta.price) || 0, quantity: 1, type: 'add-on' });
+        if (ALCOHOL_RE.test(meta.name || '')) hasAlcohol = true;
       }
     });
   }
@@ -2861,7 +2812,7 @@ function buildOrderPayload() {
     cardMessage:      document.getElementById('f-msg').value.trim(),
     items, subtotal, deliveryFee: delivery, total,
     currency: 'AUD',
-    hasAlcohol: !!checkoutProduct.addons.wine,
+    hasAlcohol,
     source: 'web',
   };
 }
@@ -2924,46 +2875,10 @@ async function placeOrder() {
   btn.disabled = true;
   btn.querySelector('span').textContent = 'Saving order…';
 
-  const items = [{
-    name:     checkoutProduct.name,
-    price:    checkoutProduct.price,
-    quantity: checkoutProduct.qty,
-    hasWine:  !!checkoutProduct.addons.wine,
-    type:     checkoutProduct.type,
-  }];
-  // Wine pairing — upgrade base item price
-  if (checkoutProduct.addons.wine && checkoutProduct.wine) {
-    items[0].price = checkoutProduct.wine;
-  }
-  // Selected global add-ons → push each as its own line item
-  if (checkoutProduct.addonsMeta) {
-    Object.values(checkoutProduct.addonsMeta).forEach(meta => {
-      if (checkoutProduct.addons[`addon-${meta.id}`]) {
-        items.push({ name: meta.name, price: Number(meta.price) || 0, quantity: 1, hasWine: false, type: 'add-on' });
-      }
-    });
-  }
-
-  const subtotal = items.reduce((s, it) => s + it.price * it.quantity, 0);
-  const threshold = window.SETTINGS && Number(window.SETTINGS.freeDeliveryThreshold);
-  let delivery = checkoutFee;
-  if (threshold && subtotal >= threshold) delivery = 0;
-  const total = subtotal + delivery;
-
   const order = {
-    customerName:     document.getElementById('f-name').value.trim(),
-    customerPhone:    document.getElementById('f-phone').value.trim(),
-    customerEmail:    document.getElementById('f-email').value.trim().toLowerCase(),
-    deliveryAddress:  document.getElementById('f-addr').value.trim(),
-    deliverySuburb:   document.getElementById('f-suburb').value.trim(),
-    deliveryPostcode: document.getElementById('f-post').value.trim(),
-    deliveryDate:     document.getElementById('f-date').value,
-    deliverySlot:     document.getElementById('f-slot').value,
-    cardMessage:      document.getElementById('f-msg').value.trim(),
-    items, subtotal, deliveryFee: delivery, total,
-    paymentStatus:    'pending',
-    status:           'new',
-    source:           'web',
+    ...buildOrderPayload(),
+    paymentStatus: 'pending',
+    status:        'new',
   };
 
   try {
@@ -3243,15 +3158,12 @@ async function loadProductsFromFirestore() {
       const item = {
         type:    p.type || '',
         name:    p.name || '',
-        pair:    p.pair || '',
         price:   Number(p.price) || 0,
         stock:   Number(p.stock) || 0,
-        hasWine: !!p.hasWine,
         img:     p.imageUrl || '',
         description: p.description || '',
         gallery:  Array.isArray(p.gallery) ? p.gallery.filter(g => g && g.url).map(g => g.url) : []
       };
-      if (p.wine != null && p.wine !== '') item.wine = Number(p.wine);
       if (p.sold) item.sold = true;
       buckets[tab].push(item);
     });
