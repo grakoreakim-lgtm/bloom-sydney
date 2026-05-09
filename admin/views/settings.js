@@ -91,6 +91,52 @@ export async function render() {
       </div>
 
       <div class="section-card">
+        <h2>Payment <span class="help">— Stripe + PayPal keys (test → live)</span></h2>
+        <div class="field-row">
+          <div class="field" style="flex:1">
+            <label>Stripe publishable key</label>
+            <input name="stripePublishableKey" type="text" placeholder="pk_test_..." autocomplete="off"/>
+            <div style="margin-top:4px; font-size:12px; color:var(--subtle)">From Stripe Dashboard → Developers → API keys. Public key — safe to expose to browser.</div>
+          </div>
+          <div class="field" style="max-width:160px">
+            <label>Stripe mode</label>
+            <select name="stripeMode">
+              <option value="test">Test</option>
+              <option value="live">Live</option>
+            </select>
+            <div style="margin-top:4px; font-size:12px; color:var(--subtle)">Match the key prefix: <code>pk_test_</code> ↔ Test, <code>pk_live_</code> ↔ Live</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field" style="flex:1">
+            <label>PayPal client ID</label>
+            <input name="paypalClientId" type="text" placeholder="A...long-string..." autocomplete="off"/>
+            <div style="margin-top:4px; font-size:12px; color:var(--subtle)">From <a href="https://developer.paypal.com" target="_blank" rel="noopener" style="color:var(--accent)">developer.paypal.com</a> → Apps & Credentials. Choose Sandbox tab for testing.</div>
+          </div>
+          <div class="field" style="max-width:160px">
+            <label>PayPal mode</label>
+            <select name="paypalMode">
+              <option value="sandbox">Sandbox</option>
+              <option value="live">Live</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="background:#FDF7F4; border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:6px">
+          <div style="font-size:13px; line-height:1.6; color:var(--mid)">
+            <strong style="color:var(--ink)">⚙ Server-side secret keys</strong> — these go to Cloud Functions config, not here. Run once in your terminal:
+            <pre style="background:var(--bg); padding:10px 12px; border-radius:6px; margin:8px 0 4px; font-size:12px; overflow-x:auto; line-height:1.5">firebase functions:config:set \
+  stripe.secret_key="sk_test_..." \
+  stripe.webhook_secret="whsec_..." \
+  paypal.client_id="..." \
+  paypal.secret="..." \
+  paypal.mode="sandbox"
+firebase deploy --only functions</pre>
+            See <a href="../../docs/PAYMENT_SETUP.md" target="_blank" style="color:var(--accent)">docs/PAYMENT_SETUP.md</a> for the full step-by-step guide.
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
         <h2>Address autocomplete <span class="help">— Google Places API (optional)</span></h2>
         <div class="field">
           <label>Google Maps API key</label>
@@ -150,6 +196,12 @@ function populateForm(s) {
   if (s.freeDeliveryThreshold != null) f.freeDeliveryThreshold.value = s.freeDeliveryThreshold;
   if (s.googleMapsApiKey) f.googleMapsApiKey.value = s.googleMapsApiKey;
 
+  // Payment
+  if (s.stripePublishableKey) f.stripePublishableKey.value = s.stripePublishableKey;
+  if (s.stripeMode)           f.stripeMode.value           = s.stripeMode;
+  if (s.paypalClientId)       f.paypalClientId.value       = s.paypalClientId;
+  if (s.paypalMode)           f.paypalMode.value           = s.paypalMode;
+
   // Delivery fees: existing or sensible defaults from current customer code
   const fees = s.deliveryFees && Object.keys(s.deliveryFees).length
     ? s.deliveryFees
@@ -197,6 +249,10 @@ async function onSave(e) {
       freeDeliveryThreshold: f.freeDeliveryThreshold.value !== '' ? Number(f.freeDeliveryThreshold.value) : null,
       deliveryFees,
       googleMapsApiKey:      f.googleMapsApiKey.value.trim(),
+      stripePublishableKey:  f.stripePublishableKey.value.trim(),
+      stripeMode:            f.stripeMode.value,
+      paypalClientId:        f.paypalClientId.value.trim(),
+      paypalMode:            f.paypalMode.value,
       currency:              'AUD',
       updatedAt:             serverTimestamp(),
     };

@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Bloom & Vine · Sydney Florist · Same-Day Delivery</title>
 <meta name="description" content="Sydney's daily flower & wine pairing service. Hand-picked every morning from Flemington Market. Same-day delivery across North-West Sydney."/>
+
+<!-- Performance: preload critical hero image so it starts downloading before CSS/JS parse -->
+<link rel="preload" as="image" href="hero.jpg" fetchpriority="high"/>
+
+<!-- Performance: warm up TLS to Firebase + Google Fonts before the SDK + CSS need them -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin/>
+<link rel="dns-prefetch" href="https://firebasestorage.googleapis.com"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 /* ─────────────────────────────────────────
@@ -278,6 +288,82 @@ nav {
     flex-shrink: 0;
     padding: 40px 44px;
   }
+}
+
+/* ─────────────────────────────────────────
+   TODAY'S PREP RIBBON — slim band right below Hero
+───────────────────────────────────────── */
+.prep-ribbon {
+  display: block;
+  background: linear-gradient(90deg, #FDF7F4 0%, #F5EBE2 50%, #FDF7F4 100%);
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+  text-decoration: none;
+  color: var(--c-ink);
+  transition: background .2s;
+}
+.prep-ribbon:hover { background: linear-gradient(90deg, #F5EBE2 0%, #EFE0D2 50%, #F5EBE2 100%); }
+.prep-ribbon-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.prep-ribbon-thumb {
+  width: 56px; height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg);
+}
+.prep-ribbon-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prep-ribbon-text { flex: 1; min-width: 0; line-height: 1.35; }
+.prep-ribbon-line1 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.prep-ribbon-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #C5453B;
+  box-shadow: 0 0 0 0 rgba(197,69,59,.6);
+  animation: prep-pulse 2.4s ease-in-out infinite;
+}
+@keyframes prep-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197,69,59,.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(197,69,59,0); }
+}
+.prep-ribbon-line2 {
+  font-size: 14px;
+  color: var(--c-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prep-ribbon-cta {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-accent);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .prep-ribbon-inner { padding: 10px 16px; gap: 10px; }
+  .prep-ribbon-thumb { width: 44px; height: 44px; }
+  .prep-ribbon-line1 { font-size: 10px; }
+  .prep-ribbon-line2 { font-size: 12px; }
+  .prep-ribbon-cta { font-size: 12px; }
+  .prep-ribbon-cta span { display: none; } /* hide arrow text on mobile */
 }
 
 /* ─────────────────────────────────────────
@@ -801,6 +887,54 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 .modal-x{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:var(--c-subtle);cursor:pointer;z-index:5}
 
 /* ─────────────────────────────────────────
+   CHECKOUT — side-drawer on tablet+
+   (mobile keeps the bottom-sheet feel)
+───────────────────────────────────────── */
+@media (min-width: 640px) {
+  #overlay {
+    align-items: stretch;
+    justify-content: flex-end;
+    background: rgba(0,0,0,.45);
+  }
+  #overlay > .modal {
+    width: 520px;
+    max-width: 520px;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    padding: 22px 24px 110px;       /* extra bottom padding so sticky CTA never overlaps form */
+    box-shadow: -8px 0 32px rgba(0,0,0,.18);
+    animation: bv-slideInRight .28s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  /* Sticky CTA at the bottom of the drawer (uses existing .co-btn-pay) */
+  #overlay > .modal #btn-place-order {
+    position: sticky;
+    bottom: 16px;
+    z-index: 3;
+    box-shadow: 0 6px 22px -6px rgba(107,45,32,.35), 0 0 0 8px var(--c-white);
+  }
+  /* Sticky drawer header so user always sees "Your order" + close while scrolling */
+  #overlay > .modal .co-header {
+    position: sticky;
+    top: -22px;
+    margin: -22px -24px 8px;
+    padding: 22px 24px 14px;
+    background: var(--c-white);
+    border-bottom: 1px solid var(--c-border);
+    z-index: 4;
+  }
+  /* The hand-drag pill is meaningless on desktop — already hidden via @media(min-width:640px) above */
+}
+@media (min-width: 1024px) {
+  #overlay > .modal { width: 540px; max-width: 540px; padding: 26px 28px 110px; }
+}
+@keyframes bv-slideInRight {
+  from { transform: translateX(100%); opacity: .85; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ─────────────────────────────────────────
    PRODUCT DETAIL MODAL
 ───────────────────────────────────────── */
 .detail-modal { max-width: 920px; padding: 0; overflow: hidden; }
@@ -860,23 +994,28 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
   margin: 4px 0 6px; white-space: pre-wrap;
 }
 
-/* Wine pairing options */
+/* Make-it-special options (wine + global add-ons) */
 .dm-options {
   border-top: 1px solid var(--c-border);
   padding-top: 14px;
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; flex-direction: column; gap: 6px;
 }
 .dm-options-label { font-size: 13px; font-weight: 600; color: var(--c-ink); margin-bottom: 4px; }
+#dm-options-list { display: flex; flex-direction: column; gap: 8px; }
 .dm-opt {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
   border: 1.5px solid var(--c-border); border-radius: 10px;
   cursor: pointer; transition: all .15s;
 }
-.dm-opt:has(input:checked) { border-color: var(--c-accent); background: #FDF7F4; }
-.dm-opt input { accent-color: var(--c-accent); }
-.dm-opt-label { flex: 1; font-size: 14px; color: var(--c-ink); }
-.dm-opt-price { font-size: 14px; font-weight: 600; color: var(--c-mid); }
+.dm-opt:hover { border-color: var(--c-accent); }
+.dm-opt.on { border-color: var(--c-accent); background: #FDF7F4; }
+.dm-opt input { accent-color: var(--c-accent); flex-shrink: 0; }
+.dm-opt-icon { font-size: 20px; line-height: 1; flex-shrink: 0; width: 24px; text-align: center; }
+.dm-opt-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.dm-opt-label { font-size: 14px; font-weight: 500; color: var(--c-ink); }
+.dm-opt-sub { font-size: 12px; color: var(--c-mid); line-height: 1.4; }
+.dm-opt-price { font-size: 14px; font-weight: 600; color: var(--c-ink); flex-shrink: 0; }
 
 /* Cutoff countdown */
 .dm-cutoff {
@@ -960,6 +1099,53 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 .co-btn-pay{width:100%;padding:15px 24px;background:var(--c-accent);color:#fff;border:none;border-radius:var(--r-btn);font-size:17px;font-weight:700;transition:background .2s;letter-spacing:-0.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .co-btn-pay:hover{background:var(--c-accent-h)}
 .co-btn-pay:disabled{opacity:.55;cursor:not-allowed}
+
+/* ── Payment block (Stripe Element + PayPal button) ── */
+.co-pay-block { margin-top: 6px; }
+#stripe-payment-element {
+  margin: 6px 0 14px;
+  padding: 4px;
+  min-height: 0;
+  transition: min-height .2s;
+}
+#stripe-payment-element:not(:empty) { min-height: 56px; }
+.co-pay-error {
+  background: #FCE8E1;
+  border: 1px solid #F0BFAF;
+  color: #A53A2A;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin: 8px 0 12px;
+}
+.co-pay-or {
+  text-align: center;
+  margin: 16px 0 12px;
+  position: relative;
+  color: var(--c-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.co-pay-or::before, .co-pay-or::after {
+  content: ""; position: absolute; top: 50%;
+  width: calc(50% - 28px); height: 1px; background: var(--c-border);
+}
+.co-pay-or::before { left: 0; }
+.co-pay-or::after  { right: 0; }
+.co-pay-or span { background: var(--c-white); padding: 0 8px; position: relative; }
+#paypal-button-container { margin-top: 4px; min-height: 0; }
+#paypal-button-container:not(:empty) { min-height: 50px; }
+.co-pay-secure {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--c-subtle);
+  letter-spacing: .02em;
+}
+.co-pay-fallback { display: block; }
+.btn-pay-amt-alt { font-size: 14px; opacity: .9; }
 .btn-pay-amt{font-size:17px;font-weight:800}
 
 /* Single-page checkout sections */
@@ -989,6 +1175,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 .addon-row .addon-label{font-size:14px;font-weight:500;color:var(--c-ink)}
 .addon-row .addon-sub{font-size:12px;color:var(--c-subtle);margin-top:2px}
 .addon-row .addon-price{font-weight:700;font-size:14px;color:var(--c-accent);flex-shrink:0;margin-left:10px}
+.addon-row .addon-icon{font-size:18px;line-height:1;flex-shrink:0;margin-right:10px;width:22px;text-align:center}
 
 .co-progress{margin:14px 0 12px}
 .co-progress-bar{height:6px;background:var(--c-border);border-radius:999px;overflow:hidden}
@@ -1150,7 +1337,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 <!-- ══════════════════ HERO ══════════════════ -->
 <div class="hero" id="home">
   <div class="hero-img">
-    <img src="hero.jpg" alt="Fresh white flower arrangement"/>
+    <img src="hero.jpg" alt="Fresh white flower arrangement" fetchpriority="high" decoding="async"/>
     <div class="hero-img-scrim"></div>
   </div>
   <div class="hero-panel">
@@ -1163,6 +1350,18 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     </div>
   </div>
 </div>
+
+<!-- ══════════════════ TODAY'S PREP RIBBON ══════════════════ -->
+<a class="prep-ribbon" id="prep-ribbon" href="../today/" hidden>
+  <div class="prep-ribbon-inner">
+    <div class="prep-ribbon-thumb"><img id="prep-ribbon-img" src="" alt="" loading="lazy" decoding="async"/></div>
+    <div class="prep-ribbon-text">
+      <div class="prep-ribbon-line1"><span class="prep-ribbon-dot"></span> <span id="prep-ribbon-when">just now</span> at <span id="prep-ribbon-loc">Flemington</span></div>
+      <div class="prep-ribbon-line2" id="prep-ribbon-snippet">See this morning's hand-picked flowers</div>
+    </div>
+    <div class="prep-ribbon-cta">See today's prep <span aria-hidden="true">→</span></div>
+  </div>
+</a>
 
 <!-- ══════════════════ TRUST BAR ══════════════════ -->
 <div class="trust-bar">
@@ -1437,19 +1636,10 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
 
         <p class="dm-desc" id="dm-desc"></p>
 
-        <!-- Wine pairing options (only shown if product has a wine option) -->
+        <!-- Optional extras: wine pairing (if product has it) + global add-ons -->
         <div class="dm-options" id="dm-options" hidden>
-          <div class="dm-options-label">Pair with wine?</div>
-          <label class="dm-opt">
-            <input type="radio" name="dm-wine" value="0" checked/>
-            <span class="dm-opt-label">No wine</span>
-            <span class="dm-opt-price" id="dm-opt-no-price"></span>
-          </label>
-          <label class="dm-opt">
-            <input type="radio" name="dm-wine" value="1"/>
-            <span class="dm-opt-label" id="dm-opt-wine-label">+ Wine pairing</span>
-            <span class="dm-opt-price" id="dm-opt-wine-price"></span>
-          </label>
+          <div class="dm-options-label">Make it special</div>
+          <div id="dm-options-list"></div>
         </div>
 
         <!-- Cutoff countdown -->
@@ -1478,7 +1668,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <button class="modal-x" onclick="closeModal()">✕</button>
 
     <div class="co-header" style="margin-bottom:8px">
-      <div class="co-title">Checkout</div>
+      <div class="co-title">Your order</div>
       <div style="font-size:12px;color:var(--c-subtle);font-weight:500">Bloom &amp; Vine · Sydney</div>
     </div>
 
@@ -1486,8 +1676,7 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
     <div id="checkout-body">
 
       <!-- ORDER -->
-      <section class="co-section">
-        <h3>Your order</h3>
+      <section class="co-section" style="padding-top:8px">
         <div class="co-product-row">
           <img class="co-prod-img" id="co-prod-img" src="" alt=""/>
           <div class="co-prod-info">
@@ -1579,14 +1768,38 @@ footer h4 { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-trans
           <div class="co-progress-text" id="progress-text"></div>
         </div>
 
-        <button class="co-btn-pay" id="btn-place-order" onclick="placeOrder()">
-          <span>Place order</span><span class="btn-pay-amt" id="btn-pay-amt">$0.00</span>
-        </button>
-        <p class="co-payment-note">
-          We'll text you a secure payment link within 30 minutes.<br/>
-          <span class="co-payment-icons">
-            <span>💳 Card</span><span>🍎 Apple Pay</span><span>🤖 Google Pay</span><span>💜 Afterpay</span>
-          </span>
+        <!-- ── PAYMENT (Stripe Payment Element + PayPal button) ── -->
+        <div class="co-pay-block" id="co-pay-block">
+          <!-- Stripe Payment Element (Card / Apple Pay / Google Pay / Afterpay / Link) -->
+          <div id="stripe-payment-element"></div>
+          <div id="stripe-error" class="co-pay-error" hidden></div>
+
+          <button class="co-btn-pay" id="btn-stripe-pay" type="button" onclick="payWithStripe()" hidden>
+            <span>Pay</span><span class="btn-pay-amt" id="btn-pay-amt">$0.00</span>
+          </button>
+
+          <!-- Visual divider before alt payment -->
+          <div class="co-pay-or" id="co-pay-or" hidden><span>or</span></div>
+
+          <!-- PayPal button (its own auto-rendered widget) -->
+          <div id="paypal-button-container"></div>
+        </div>
+
+        <!-- ── FALLBACK: shown when payment isn't configured yet ── -->
+        <div class="co-pay-fallback" id="co-pay-fallback" hidden>
+          <button class="co-btn-pay" id="btn-place-order" onclick="placeOrder()">
+            <span>Place order</span><span class="btn-pay-amt-alt">—</span>
+          </button>
+          <p class="co-payment-note">
+            We'll text you a secure payment link within 30 minutes.<br/>
+            <span class="co-payment-icons">
+              <span>💳 Card</span><span>🍎 Apple Pay</span><span>🤖 Google Pay</span><span>💜 Afterpay</span>
+            </span>
+          </p>
+        </div>
+
+        <p class="co-pay-secure">
+          🔒 Secure checkout · payments encrypted by Stripe &amp; PayPal
         </p>
       </section>
     </div>
@@ -1803,7 +2016,7 @@ function renderProducts(tab) {
     const idx  = visible.indexOf(p);
     return `<div class="pcard ${sold ? 'pcard-sold' : ''}" ${!sold ? `onclick="openDetailForCard('${tab}', ${idx})"` : ''} role="button" tabindex="0">
       <div class="pcard-img">
-        <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+        <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async"/>
         <div class="pcard-badges">
           ${p.hasWine && !sold ? '<span class="badge b-wine">🍷 Wine Pairing</span>' : ''}
           ${sold ? '<span class="badge b-sold">Sold Out</span>' : ''}
@@ -1950,19 +2163,8 @@ function openDetail(p, isPreorder) {
   descEl.textContent = p.description ||
     `Hand-tied this morning at Flemington Market. ${p.pair ? 'Pairs beautifully with ' + p.pair + '.' : 'A studio-curated arrangement.'}`;
 
-  // Wine option block (only if a wine-included price exists)
-  const opts = document.getElementById('dm-options');
-  if (p.wine && p.wine > p.price) {
-    opts.hidden = false;
-    const premium = p.wine - p.price;
-    document.getElementById('dm-opt-no-price').textContent = '$' + p.price;
-    document.getElementById('dm-opt-wine-label').textContent = '+ ' + (p.pair || 'Wine pairing');
-    document.getElementById('dm-opt-wine-price').textContent = '+$' + premium;
-    // Reset to "no wine" each open
-    opts.querySelectorAll('input[name="dm-wine"]').forEach(r => r.checked = (r.value === '0'));
-  } else {
-    opts.hidden = true;
-  }
+  // Build the unified options list: wine pairing (if applicable) + global add-ons.
+  renderDetailOptions(p);
 
   // Rating — filter reviews matching this product (best-effort partial match)
   renderDetailRating(p);
@@ -1998,7 +2200,7 @@ function renderDetailGallery() {
   const thumbs = document.getElementById('dm-thumbs');
   thumbs.innerHTML = detailImages.map((src, i) => `
     <div class="dm-thumb ${i === detailIdx ? 'on' : ''}" data-i="${i}">
-      <img src="${src}" alt="" loading="lazy"/>
+      <img src="${src}" alt="" loading="lazy" decoding="async"/>
     </div>
   `).join('');
   thumbs.querySelectorAll('.dm-thumb').forEach(t => {
@@ -2065,28 +2267,86 @@ function renderDetailCutoff() {
   detailCutoffTimer = setInterval(update, 30000);
 }
 
+// Detail-modal options state — shared with the checkout modal via window.__pendingAddons
+let detailSelectedWine = false;
+let detailSelectedAddons = new Set(); // addon ids
+
+function renderDetailOptions(p) {
+  const opts = document.getElementById('dm-options');
+  const listEl = document.getElementById('dm-options-list');
+  const items = [];
+
+  // Wine pairing (per-product)
+  if (p.wine && p.wine > p.price) {
+    items.push({
+      key: 'wine',
+      icon: '🍷',
+      name: p.pair || 'Wine pairing',
+      description: 'Curated Australian wine, hand-selected for this bouquet',
+      price: p.wine - p.price,
+    });
+  }
+  // Global add-ons
+  (window.ADDONS || []).forEach(a => {
+    items.push({ key: 'addon-' + a.id, icon: a.icon, name: a.name, description: a.description, price: a.price, addonId: a.id });
+  });
+
+  if (!items.length) { opts.hidden = true; return; }
+  opts.hidden = false;
+
+  // Reset selection on each open
+  detailSelectedWine = false;
+  detailSelectedAddons = new Set();
+
+  listEl.innerHTML = items.map(it => `
+    <label class="dm-opt" data-key="${it.key}">
+      <input type="checkbox"/>
+      <span class="dm-opt-icon">${escapeHtml(it.icon || '✦')}</span>
+      <span class="dm-opt-text">
+        <span class="dm-opt-label">${escapeHtml(it.name)}</span>
+        ${it.description ? `<span class="dm-opt-sub">${escapeHtml(it.description)}</span>` : ''}
+      </span>
+      <span class="dm-opt-price">+$${it.price}</span>
+    </label>
+  `).join('');
+
+  listEl.querySelectorAll('.dm-opt').forEach((row, i) => {
+    const cb = row.querySelector('input');
+    cb.addEventListener('change', () => {
+      row.classList.toggle('on', cb.checked);
+      const it = items[i];
+      if (it.key === 'wine') {
+        detailSelectedWine = cb.checked;
+      } else {
+        if (cb.checked) detailSelectedAddons.add(it.addonId);
+        else            detailSelectedAddons.delete(it.addonId);
+      }
+      updateDetailCTA();
+    });
+  });
+}
+
 function updateDetailCTA() {
   if (!detailProduct) return;
-  const checked = document.querySelector('input[name="dm-wine"]:checked');
-  const wineSelected = !!(checked && checked.value === '1');
-  const price = wineSelected && detailProduct.wine ? detailProduct.wine : detailProduct.price;
+  let price = detailProduct.price;
+  if (detailSelectedWine && detailProduct.wine) {
+    price = detailProduct.wine;
+  }
+  (window.ADDONS || []).forEach(a => {
+    if (detailSelectedAddons.has(a.id)) price += a.price;
+  });
   document.getElementById('dm-cta-price').textContent = '$' + price;
 }
 
 window.addToCartFromDetail = function() {
   if (!detailProduct) return;
-  // Determine if user picked the wine option
-  const wineSelected = document.querySelector('input[name="dm-wine"]:checked')?.value === '1';
-  // Hand off to the existing checkout modal — pre-toggle the wine add-on if selected
+  // Hand off the user's selections to the checkout modal via a one-shot global.
+  window.__pendingAddons = {
+    wine:   detailSelectedWine,
+    addons: Array.from(detailSelectedAddons),
+  };
   closeDetailModal();
   openModal(detailProduct);
-  // Pre-select wine pairing add-on after the checkout modal has populated
-  if (wineSelected) {
-    setTimeout(() => {
-      const wineRow = document.querySelector('.addon-row[data-key="wine"] input');
-      if (wineRow && !wineRow.checked) { wineRow.checked = true; wineRow.dispatchEvent(new Event('change')); }
-    }, 50);
-  }
 };
 
 // Close on backdrop click
@@ -2100,16 +2360,11 @@ document.addEventListener('keydown', (e) => {
     closeDetailModal();
   }
 });
-// One-time wire-up of wine option radios (buttons live in static markup)
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('input[name="dm-wine"]').forEach(r =>
-    r.addEventListener('change', updateDetailCTA));
-  // Keyboard support: Enter on a card opens detail
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
-    const card = e.target.closest?.('.pcard[role="button"]');
-    if (card && typeof card.onclick === 'function') card.onclick();
-  });
+// Keyboard support: Enter on a focused product card opens detail
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const card = e.target.closest?.('.pcard[role="button"]');
+  if (card && typeof card.onclick === 'function') card.onclick();
 });
 
 function openModal(product) {
@@ -2121,6 +2376,15 @@ function openModal(product) {
   }
   if (!product) { toast('No products available right now — please check back later.'); return; }
 
+  // Pre-select add-ons that the user picked in the detail modal (one-shot handoff)
+  const pending = window.__pendingAddons || null;
+  window.__pendingAddons = null;
+  const initialAddons = {};
+  if (pending) {
+    if (pending.wine) initialAddons.wine = true;
+    (pending.addons || []).forEach(id => { initialAddons['addon-' + id] = true; });
+  }
+
   checkoutProduct = {
     name:    product.name,
     type:    product.type || '',
@@ -2130,7 +2394,8 @@ function openModal(product) {
     img:     product.img || '',
     hasWine: !!product.hasWine,
     qty:     1,
-    addons:  { wine: false, giftWrap: false },
+    addons:  initialAddons,
+    addonsMeta: {},
   };
   checkoutFee = 0;
 
@@ -2179,6 +2444,10 @@ function openModal(product) {
 
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Show / mount payment widgets based on current SETTINGS (no-op if keys missing)
+  refreshPaymentBlock();
+  clearPayError();
 }
 
 function closeModal() {
@@ -2196,34 +2465,57 @@ function changeQty(delta) {
 function buildAddons() {
   const container = document.getElementById('co-addons');
   const items = [];
-  // Wine pairing — only if product has a wine-included price
+
+  // Wine pairing — only if the product has a wine-included price
   if (checkoutProduct.wine && checkoutProduct.wine > checkoutProduct.price) {
-    const premium = checkoutProduct.wine - checkoutProduct.price;
     items.push({
-      key: 'wine',
+      key:   'wine',
+      icon:  '🍷',
       label: 'Add wine pairing',
-      sub: checkoutProduct.pair || 'Curated Australian wine',
-      price: premium,
+      sub:   checkoutProduct.pair || 'Curated Australian wine',
+      price: checkoutProduct.wine - checkoutProduct.price,
     });
   }
-  items.push({ key: 'giftWrap', label: 'Premium gift wrap', sub: 'Hand-tied with paper & ribbon', price: 8 });
+  // Global add-ons from Firestore (chocolate, card, gift wrap, etc.)
+  (window.ADDONS || []).forEach(a => {
+    items.push({
+      key:   'addon-' + a.id,
+      icon:  a.icon || '✦',
+      label: a.name,
+      sub:   a.description,
+      price: a.price,
+      addonId: a.id,
+      addonName: a.name,
+    });
+  });
+
+  if (!items.length) { container.innerHTML = ''; container.hidden = true; return; }
+  container.hidden = false;
 
   container.innerHTML = items.map(it => `
     <label class="addon-row" data-key="${it.key}">
       <input type="checkbox" ${checkoutProduct.addons[it.key] ? 'checked' : ''}/>
+      <span class="addon-icon">${it.icon}</span>
       <div class="addon-info">
-        <div class="addon-label">${it.label}</div>
-        <div class="addon-sub">${it.sub}</div>
+        <div class="addon-label">${it.label || ''}</div>
+        ${it.sub ? `<div class="addon-sub">${it.sub}</div>` : ''}
       </div>
       <div class="addon-price">+$${it.price}</div>
     </label>
   `).join('');
 
-  container.querySelectorAll('.addon-row').forEach(row => {
-    const key = row.dataset.key;
-    const cb  = row.querySelector('input');
+  container.querySelectorAll('.addon-row').forEach((row, i) => {
+    const it = items[i];
+    const cb = row.querySelector('input');
     const sync = () => {
-      checkoutProduct.addons[key] = cb.checked;
+      checkoutProduct.addons[it.key] = cb.checked;
+      // Mirror the addon metadata so placeOrder can read name/price without re-lookup
+      if (cb.checked && it.addonId) {
+        checkoutProduct.addonsMeta = checkoutProduct.addonsMeta || {};
+        checkoutProduct.addonsMeta[it.key] = { id: it.addonId, name: it.addonName, price: it.price };
+      } else if (checkoutProduct.addonsMeta) {
+        delete checkoutProduct.addonsMeta[it.key];
+      }
       row.classList.toggle('on', cb.checked);
       recalcTotals();
     };
@@ -2250,7 +2542,12 @@ function recalcTotals() {
   if (checkoutProduct.addons.wine && checkoutProduct.wine) {
     subtotal += (checkoutProduct.wine - checkoutProduct.price) * checkoutProduct.qty;
   }
-  if (checkoutProduct.addons.giftWrap) subtotal += 8;
+  // Sum every selected global add-on (one-time, not per qty)
+  if (checkoutProduct.addonsMeta) {
+    Object.values(checkoutProduct.addonsMeta).forEach(meta => {
+      if (checkoutProduct.addons[`addon-${meta.id}`]) subtotal += Number(meta.price) || 0;
+    });
+  }
 
   // Delivery (free if threshold met)
   let delivery = checkoutFee;
@@ -2265,7 +2562,10 @@ function recalcTotals() {
     ? (delivery === 0 ? 'FREE' : '$' + delivery.toFixed(2))
     : 'enter postcode';
   document.getElementById('t-total').textContent    = '$' + total.toFixed(2);
-  document.getElementById('btn-pay-amt').textContent = '$' + total.toFixed(2);
+  const payAmt = document.getElementById('btn-pay-amt');
+  if (payAmt) payAmt.textContent = '$' + total.toFixed(2);
+  // Sync amount with Stripe Element (PayPal pulls from order on click)
+  syncStripeAmount();
 
   // Free-delivery progress bar
   const prog = document.getElementById('co-progress');
@@ -2318,6 +2618,279 @@ function validateOrder() {
   return true;
 }
 
+/* ─────────────────────────────────────────
+   PAYMENT — Stripe Payment Element + PayPal button
+───────────────────────────────────────── */
+let stripeInstance = null;     // Stripe.js instance
+let stripeElements = null;     // mounted Elements group
+let stripePaymentElement = null; // the actual payment <div> element
+let paypalRendered = false;
+
+// Cloud Functions base URL — lazy because firebaseConfig is set by the module script
+// and may not be available at the moment this regular script is parsed.
+function fnBase() {
+  const projectId = (window.firebaseConfig && window.firebaseConfig.projectId) || 'bloom-sydney';
+  return `https://us-central1-${projectId}.cloudfunctions.net`;
+}
+
+function paymentMode() {
+  // Returns 'stripe-paypal' | 'stripe-only' | 'paypal-only' | 'manual'
+  const hasStripe = !!(window.SETTINGS?.stripePublishableKey);
+  const hasPayPal = !!(window.SETTINGS?.paypalClientId);
+  if (hasStripe && hasPayPal) return 'stripe-paypal';
+  if (hasStripe) return 'stripe-only';
+  if (hasPayPal) return 'paypal-only';
+  return 'manual';
+}
+
+function refreshPaymentBlock() {
+  const mode = paymentMode();
+  const stripeBlock   = document.getElementById('btn-stripe-pay');
+  const stripeMount   = document.getElementById('stripe-payment-element');
+  const orDivider     = document.getElementById('co-pay-or');
+  const paypalMount   = document.getElementById('paypal-button-container');
+  const fallbackBlock = document.getElementById('co-pay-fallback');
+  const payBlock      = document.getElementById('co-pay-block');
+
+  if (mode === 'manual') {
+    if (payBlock) payBlock.hidden = true;
+    if (fallbackBlock) fallbackBlock.hidden = false;
+    return;
+  }
+  if (payBlock) payBlock.hidden = false;
+  if (fallbackBlock) fallbackBlock.hidden = true;
+
+  // Stripe visibility
+  const showStripe = mode === 'stripe-paypal' || mode === 'stripe-only';
+  if (stripeMount) stripeMount.style.display = showStripe ? '' : 'none';
+  if (stripeBlock) stripeBlock.hidden = !showStripe;
+
+  // PayPal visibility
+  const showPayPal = mode === 'stripe-paypal' || mode === 'paypal-only';
+  if (paypalMount) paypalMount.style.display = showPayPal ? '' : 'none';
+
+  // "or" divider only when both present
+  if (orDivider) orDivider.hidden = mode !== 'stripe-paypal';
+
+  // Initialise widgets if SDKs are ready
+  if (showStripe) initStripeIfReady();
+  if (showPayPal) initPayPalIfReady();
+}
+
+function initStripeIfReady() {
+  const pk = window.SETTINGS?.stripePublishableKey;
+  if (!pk) return;
+  if (!window.Stripe) {
+    document.addEventListener('stripe:ready', () => initStripeIfReady(), { once: true });
+    return;
+  }
+  if (stripeInstance) {
+    // Already created — just sync the amount
+    syncStripeAmount();
+    return;
+  }
+  stripeInstance = window.Stripe(pk);
+
+  const totalCents = currentTotalCents();
+  stripeElements = stripeInstance.elements({
+    mode: 'payment',
+    amount: totalCents,
+    currency: 'aud',
+    appearance: {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#6B2D20',
+        colorText: '#1A1A1A',
+        colorBackground: '#FFFFFF',
+        borderRadius: '8px',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        spacingUnit: '4px',
+      },
+    },
+    paymentMethodCreation: 'manual',
+  });
+  stripePaymentElement = stripeElements.create('payment', {
+    layout: { type: 'tabs', defaultCollapsed: false },
+    wallets: { applePay: 'auto', googlePay: 'auto' },
+  });
+  stripePaymentElement.mount('#stripe-payment-element');
+
+  // Show the Pay button only after the element is ready
+  stripePaymentElement.on('ready', () => {
+    document.getElementById('btn-stripe-pay').hidden = false;
+  });
+}
+
+function syncStripeAmount() {
+  if (!stripeElements) return;
+  const cents = currentTotalCents();
+  if (cents > 0) {
+    try { stripeElements.update({ amount: cents }); } catch (err) { /* ignore */ }
+  }
+}
+
+function initPayPalIfReady() {
+  if (!window.SETTINGS?.paypalClientId) return;
+  if (!window.paypal) {
+    document.addEventListener('paypal:ready', () => initPayPalIfReady(), { once: true });
+    return;
+  }
+  if (paypalRendered) return;
+  const container = document.getElementById('paypal-button-container');
+  if (!container) return;
+  container.innerHTML = '';
+  window.paypal.Buttons({
+    style: { layout: 'horizontal', color: 'gold', shape: 'rect', label: 'paypal', height: 44, tagline: false },
+    onClick: (data, actions) => {
+      if (!validateOrder()) return actions.reject();
+      return actions.resolve();
+    },
+    createOrder: async () => {
+      const order = buildOrderPayload();
+      const res = await fetch(`${fnBase()}/createPayPalOrder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'PayPal order creation failed');
+      }
+      const data = await res.json();
+      window.__lastPayPalLocalOrderId = data.orderId;
+      return data.paypalOrderId;
+    },
+    onApprove: async (data) => {
+      const res = await fetch(`${fnBase()}/capturePayPalOrder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paypalOrderId: data.orderID }),
+      });
+      const result = await res.json();
+      if (result.ok) {
+        showOrderSuccess(window.__lastPayPalLocalOrderId, buildOrderPayload());
+      } else {
+        showPayError(result.error || 'PayPal capture failed');
+      }
+    },
+    onError: (err) => {
+      console.error('[PayPal]', err);
+      showPayError('PayPal payment could not be completed. Please try again or use card.');
+    },
+  }).render('#paypal-button-container').then(() => { paypalRendered = true; });
+}
+
+function currentTotalCents() {
+  const totalEl = document.getElementById('t-total');
+  if (!totalEl) return 0;
+  const dollars = parseFloat(totalEl.textContent.replace(/[^\d.]/g, '')) || 0;
+  return Math.round(dollars * 100);
+}
+
+function showPayError(msg) {
+  const el = document.getElementById('stripe-error');
+  if (el) {
+    el.textContent = msg;
+    el.hidden = false;
+  } else {
+    toast(msg);
+  }
+}
+
+function clearPayError() {
+  const el = document.getElementById('stripe-error');
+  if (el) el.hidden = true;
+}
+
+function buildOrderPayload() {
+  const items = [{
+    name:     checkoutProduct.name,
+    price:    checkoutProduct.price,
+    quantity: checkoutProduct.qty,
+    hasWine:  !!checkoutProduct.addons.wine,
+    type:     checkoutProduct.type,
+  }];
+  if (checkoutProduct.addons.wine && checkoutProduct.wine) items[0].price = checkoutProduct.wine;
+  if (checkoutProduct.addonsMeta) {
+    Object.values(checkoutProduct.addonsMeta).forEach(meta => {
+      if (checkoutProduct.addons[`addon-${meta.id}`]) {
+        items.push({ name: meta.name, price: Number(meta.price) || 0, quantity: 1, hasWine: false, type: 'add-on' });
+      }
+    });
+  }
+  const subtotal = items.reduce((s, it) => s + it.price * it.quantity, 0);
+  const threshold = window.SETTINGS && Number(window.SETTINGS.freeDeliveryThreshold);
+  let delivery = checkoutFee;
+  if (threshold && subtotal >= threshold) delivery = 0;
+  const total = subtotal + delivery;
+
+  return {
+    customerName:     document.getElementById('f-name').value.trim(),
+    customerPhone:    document.getElementById('f-phone').value.trim(),
+    customerEmail:    document.getElementById('f-email').value.trim().toLowerCase(),
+    deliveryAddress:  document.getElementById('f-addr').value.trim(),
+    deliverySuburb:   document.getElementById('f-suburb').value.trim(),
+    deliveryPostcode: document.getElementById('f-post').value.trim(),
+    deliveryDate:     document.getElementById('f-date').value,
+    deliverySlot:     document.getElementById('f-slot').value,
+    cardMessage:      document.getElementById('f-msg').value.trim(),
+    items, subtotal, deliveryFee: delivery, total,
+    currency: 'AUD',
+    hasAlcohol: !!checkoutProduct.addons.wine,
+    source: 'web',
+  };
+}
+
+window.payWithStripe = async function() {
+  if (!stripeInstance || !stripeElements) { showPayError('Stripe is not ready yet.'); return; }
+  if (!validateOrder()) return;
+
+  const btn = document.getElementById('btn-stripe-pay');
+  btn.disabled = true; btn.querySelector('span').textContent = 'Processing…';
+  clearPayError();
+
+  try {
+    // 1. Validate the Element
+    const { error: submitErr } = await stripeElements.submit();
+    if (submitErr) throw submitErr;
+
+    // 2. Create the PaymentIntent (and our draft order) on the server
+    const order = buildOrderPayload();
+    const res = await fetch(`${fnBase()}/createPaymentIntent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order }),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.error || 'Payment setup failed');
+    }
+    const { clientSecret, orderId } = await res.json();
+
+    // 3. Confirm with Stripe — handles 3DS / Apple Pay / Afterpay redirect
+    const { error: confirmErr, paymentIntent } = await stripeInstance.confirmPayment({
+      elements: stripeElements,
+      clientSecret,
+      confirmParams: { return_url: location.href.split('#')[0] + '?payment=success' },
+      redirect: 'if_required',
+    });
+
+    if (confirmErr) throw confirmErr;
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+      showOrderSuccess(orderId, order);
+    } else if (paymentIntent && (paymentIntent.status === 'processing' || paymentIntent.status === 'requires_capture')) {
+      showOrderSuccess(orderId, order);
+    } else {
+      throw new Error('Payment not completed. Status: ' + (paymentIntent?.status || 'unknown'));
+    }
+  } catch (err) {
+    console.error('[stripe pay]', err);
+    showPayError(err.message || 'Payment failed. Please try a different card or PayPal.');
+    btn.disabled = false; btn.querySelector('span').textContent = 'Pay';
+  }
+};
+
 async function placeOrder() {
   if (!checkoutProduct) return;
   if (!validateOrder()) return;
@@ -2333,12 +2906,17 @@ async function placeOrder() {
     hasWine:  !!checkoutProduct.addons.wine,
     type:     checkoutProduct.type,
   }];
-  if (checkoutProduct.addons.giftWrap) {
-    items.push({ name: 'Premium gift wrap', price: 8, quantity: 1, hasWine: false, type: 'add-on' });
-  }
+  // Wine pairing — upgrade base item price
   if (checkoutProduct.addons.wine && checkoutProduct.wine) {
-    // Reflect upgrade to wine-included price
     items[0].price = checkoutProduct.wine;
+  }
+  // Selected global add-ons → push each as its own line item
+  if (checkoutProduct.addonsMeta) {
+    Object.values(checkoutProduct.addonsMeta).forEach(meta => {
+      if (checkoutProduct.addons[`addon-${meta.id}`]) {
+        items.push({ name: meta.name, price: Number(meta.price) || 0, quantity: 1, hasWine: false, type: 'add-on' });
+      }
+    });
   }
 
   const subtotal = items.reduce((s, it) => s + it.price * it.quantity, 0);
@@ -2596,11 +3174,22 @@ function toast(msg) {
 <!-- ══════════════════ FIRESTORE SYNC (products / faqs / reviews) ══════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, query, orderBy, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import {
+  initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, getDoc, query, orderBy, limit, getDocs, addDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 import { firebaseConfig } from "../firebase/web-config.js";
 
+// Expose to non-module scripts (used by the payment helper to derive the Cloud Functions URL)
+window.firebaseConfig = firebaseConfig;
+
 const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+// Persistent IndexedDB cache so repeat visits show products / reviews / faqs instantly,
+// even before the network round-trip completes. multipleTabManager handles users with
+// the site open in two tabs without IndexedDB lock contention.
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+});
 
 // Expose order placement to the regular checkout script
 window.placeOrderToFirestore = async function(order) {
@@ -2738,7 +3327,7 @@ function renderReviewsCarousel(items) {
         <div class="rev-stars-sm">${'<span class="star-sm">★</span>'.repeat(r.stars || 0)}</div>
       </div>
       ${r.tag ? `<div class="rev-tag">${escapeHtml(r.tag)}</div>` : ''}
-      ${r.photo ? `<div class="rev-photo"><img src="${escapeHtml(r.photo)}" alt="${escapeHtml(r.name || '')}'s photo" loading="lazy"/></div>` : ''}
+      ${r.photo ? `<div class="rev-photo"><img src="${escapeHtml(r.photo)}" alt="${escapeHtml(r.name || '')}'s photo" loading="lazy" decoding="async"/></div>` : ''}
       <p class="rev-txt">"${escapeHtml(r.text || '')}"</p>
       ${r.product ? `<div class="rev-prod">✦ ${escapeHtml(r.product)}</div>` : ''}
       ${r.verified ? '<div class="rev-verified">✓ Verified purchase</div>' : ''}
@@ -2821,13 +3410,47 @@ async function loadSettingsFromFirestore() {
     if (s.freeDeliveryThreshold != null) {
       window.SETTINGS.freeDeliveryThreshold = Number(s.freeDeliveryThreshold);
     }
+    if (s.cutoffTime) window.SETTINGS.cutoffTime = s.cutoffTime;
     if (s.googleMapsApiKey) {
       window.SETTINGS.googleMapsApiKey = s.googleMapsApiKey;
       loadGooglePlaces(s.googleMapsApiKey);
     }
+    // Payment config — keys are public (publishable / client ID), safe to expose.
+    if (s.stripePublishableKey) window.SETTINGS.stripePublishableKey = s.stripePublishableKey;
+    if (s.stripeMode)           window.SETTINGS.stripeMode           = s.stripeMode;
+    if (s.paypalClientId)       window.SETTINGS.paypalClientId       = s.paypalClientId;
+    if (s.paypalMode)           window.SETTINGS.paypalMode           = s.paypalMode;
+    // Lazy-load Stripe.js + PayPal SDK once we know the keys
+    if (s.stripePublishableKey) loadStripeLib();
+    if (s.paypalClientId)       loadPayPalLib(s.paypalClientId, s.paypalMode || 'sandbox');
   } catch (err) {
     console.warn('[Firestore] settings fetch failed, using defaults:', err);
   }
+}
+
+/* Lazy-load Stripe.js (only if we have a key) */
+function loadStripeLib() {
+  if (window.__stripeLoading || window.Stripe) return;
+  window.__stripeLoading = true;
+  const s = document.createElement('script');
+  s.src = 'https://js.stripe.com/v3/';
+  s.async = true;
+  s.onload = () => { window.__stripeReady = true; document.dispatchEvent(new Event('stripe:ready')); };
+  s.onerror = () => console.warn('[Stripe] script failed to load');
+  document.head.appendChild(s);
+}
+
+/* Lazy-load PayPal SDK with the right client ID + mode */
+function loadPayPalLib(clientId, mode) {
+  if (window.__paypalLoading || window.paypal) return;
+  window.__paypalLoading = true;
+  const s = document.createElement('script');
+  // PayPal SDK URL: same for sandbox & live — the client ID is what differs.
+  s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=AUD&intent=capture&commit=true&components=buttons`;
+  s.async = true;
+  s.onload = () => { window.__paypalReady = true; document.dispatchEvent(new Event('paypal:ready')); };
+  s.onerror = () => console.warn('[PayPal] script failed to load');
+  document.head.appendChild(s);
 }
 
 /* Load Google Maps Places library + attach autocomplete to checkout address field. */
@@ -2878,11 +3501,69 @@ function loadGooglePlaces(apiKey) {
   document.head.appendChild(s);
 }
 
+async function loadDailyPrepRibbon() {
+  try {
+    const snap = await getDocs(query(collection(db, 'daily_prep'), orderBy('date', 'desc'), limit(3)));
+    let prep = null;
+    snap.forEach(d => {
+      const p = d.data();
+      if (!prep && p.active !== false && Array.isArray(p.photos) && p.photos.length) {
+        prep = { id: d.id, ...p };
+      }
+    });
+    if (!prep) return; // ribbon stays hidden
+
+    const ribbon = document.getElementById('prep-ribbon');
+    document.getElementById('prep-ribbon-img').src = prep.photos[0].url;
+    document.getElementById('prep-ribbon-loc').textContent = prep.location || 'Flemington';
+    document.getElementById('prep-ribbon-when').textContent = prep.marketTime || relativeDate(prep.id);
+    const snippet = (prep.bodyText || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+    if (snippet) document.getElementById('prep-ribbon-snippet').textContent = snippet + (prep.bodyText.length > 80 ? '…' : '');
+    ribbon.hidden = false;
+  } catch (err) {
+    console.warn('[Firestore] daily_prep fetch failed:', err);
+  }
+}
+
+function relativeDate(yyyymmdd) {
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
+  if (yyyymmdd === today) return 'this morning';
+  // Calculate yesterday in Sydney TZ
+  const y = new Date(); y.setUTCDate(y.getUTCDate() - 1);
+  const yest = y.toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
+  if (yyyymmdd === yest) return 'yesterday';
+  return new Date(yyyymmdd + 'T00:00:00').toLocaleDateString('en-AU', { weekday: 'long' });
+}
+
+async function loadAddonsFromFirestore() {
+  try {
+    const snap = await getDocs(query(collection(db, 'addons'), orderBy('sortOrder', 'asc')));
+    const items = [];
+    snap.forEach(d => {
+      const a = d.data();
+      if (a.active === false) return;
+      items.push({
+        id:          d.id,
+        icon:        a.icon || '✦',
+        name:        a.name || '',
+        description: a.description || '',
+        price:       Number(a.price) || 0,
+      });
+    });
+    window.ADDONS = items;
+  } catch (err) {
+    console.warn('[Firestore] addons fetch failed:', err);
+    window.ADDONS = [];
+  }
+}
+
 function init() {
   loadProductsFromFirestore();
   loadFaqsFromFirestore();
   loadReviewsFromFirestore();
   loadSettingsFromFirestore();
+  loadAddonsFromFirestore();
+  loadDailyPrepRibbon();
 }
 
 if (document.readyState === 'loading') {

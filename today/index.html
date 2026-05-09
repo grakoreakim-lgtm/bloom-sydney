@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!-- Default meta — replaced after Firestore loads with the day's specifics -->
+<title>Today's Prep · Bloom &amp; Vine — Sydney's Freshest Flowers</title>
+<meta name="description" content="A daily journal from our Carlingford studio: what we picked at Flemington Markets this morning, and how it became today's bouquet."/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="Today's Prep · Bloom &amp; Vine"/>
+<meta property="og:description" content="What we picked at Flemington Markets this morning."/>
+<meta property="og:locale" content="en_AU"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="geo.region" content="AU-NSW"/>
+<meta name="geo.placename" content="Sydney, Carlingford"/>
+<link rel="canonical" id="canonical" href="https://grakoreakim-lgtm.github.io/bloom-sydney/today/"/>
+
+<!-- Performance hints -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin/>
+<link rel="dns-prefetch" href="https://firebasestorage.googleapis.com"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --c-bg:        #F9F6F2;
+  --c-white:     #ffffff;
+  --c-ink:       #1A1A1A;
+  --c-mid:       #4A4A4A;
+  --c-subtle:    #767676;
+  --c-border:    #E0DBD4;
+  --c-accent:    #6B2D20;
+  --c-accent-h:  #7E3525;
+  --c-sage:      #3D5C3D;
+  --r-card:      10px;
+  --r-pill:      999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--c-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Top nav (lightweight, links back home) */
+.tnav {
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 50;
+}
+.tnav-inner {
+  max-width: 980px; margin: 0 auto;
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tnav-logo { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-ink); }
+.tnav-cta {
+  font-size: 13px; font-weight: 600;
+  background: var(--c-ink); color: #fff;
+  padding: 8px 16px; border-radius: var(--r-pill);
+  transition: background .15s;
+}
+.tnav-cta:hover { background: var(--c-accent); text-decoration: none; }
+
+/* Article container */
+.tw {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 30px 20px 80px;
+}
+
+.t-eyebrow {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.t-eyebrow .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #C5453B;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197,69,59,.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(197,69,59,0); }
+}
+
+.t-h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 6px;
+}
+@media (min-width: 768px) { .t-h1 { font-size: 40px; } }
+.t-meta {
+  color: var(--c-subtle);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.t-cover {
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--c-bg);
+  aspect-ratio: 4/3;
+  margin-bottom: 24px;
+}
+.t-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+.t-body {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--c-mid);
+  white-space: pre-wrap;
+  margin-bottom: 32px;
+}
+.t-body p { margin: 0 0 16px; }
+
+.t-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+@media (min-width: 640px) { .t-gallery { grid-template-columns: repeat(3, 1fr); } }
+.t-gallery .item {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--c-bg);
+  cursor: pointer;
+}
+.t-gallery img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .35s ease;
+}
+.t-gallery .item:hover img { transform: scale(1.04); }
+
+/* Shop CTA card */
+.t-shop {
+  background: linear-gradient(135deg, #FDF7F4 0%, #F5EBE2 100%);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  padding: 24px 22px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.t-shop-text { flex: 1; min-width: 0; }
+.t-shop-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 4px;
+}
+.t-shop-h { font-size: 17px; font-weight: 700; margin: 0 0 2px; }
+.t-shop-p { font-size: 14px; color: var(--c-mid); margin: 0; }
+.t-shop-btn {
+  flex-shrink: 0;
+  background: var(--c-accent);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.t-shop-btn:hover { background: var(--c-accent-h); text-decoration: none; }
+@media (max-width: 640px) {
+  .t-shop { flex-direction: column; align-items: flex-start; }
+  .t-shop-btn { width: 100%; text-align: center; }
+}
+
+/* Other days teaser */
+.t-archive { margin-top: 36px; }
+.t-archive h3 {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-subtle);
+  margin: 0 0 12px;
+}
+.t-archive ul { list-style: none; padding: 0; margin: 0; }
+.t-archive li { padding: 10px 0; border-bottom: 1px solid var(--c-border); }
+.t-archive li:last-child { border-bottom: none; }
+.t-archive a {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--c-ink);
+}
+.t-archive .thumb {
+  width: 48px; height: 48px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--c-bg);
+}
+.t-archive .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.t-archive .meta { flex: 1; min-width: 0; }
+.t-archive .date { font-weight: 600; font-size: 14px; }
+.t-archive .snippet { font-size: 13px; color: var(--c-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Empty state */
+.t-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+.t-empty h2 { font-size: 22px; font-weight: 600; margin: 0 0 8px; }
+.t-empty p  { color: var(--c-subtle); margin: 0 0 20px; }
+
+/* Footer */
+.tfoot {
+  border-top: 1px solid var(--c-border);
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--c-subtle);
+}
+
+/* Loading skeleton */
+.t-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--c-subtle);
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<nav class="tnav">
+  <div class="tnav-inner">
+    <a class="tnav-logo" href="../customer/">Bloom &amp; Vine</a>
+    <a class="tnav-cta" href="../customer/#shop">Shop today's collection</a>
+  </div>
+</nav>
+
+<main class="tw" id="article-root">
+  <div class="t-loading">Loading today's prep…</div>
+</main>
+
+<footer class="tfoot">
+  Bloom &amp; Vine · Carlingford NSW 2118 · Hand-picked every morning at Flemington Market.<br/>
+  <a href="../customer/">Back to shop</a> · <a href="../blog/">Stories &amp; guides</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, getDoc, query, orderBy, limit, getDocs
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { firebaseConfig } from "../firebase/web-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+});
+
+const SITE_BASE = 'https://grakoreakim-lgtm.github.io/bloom-sydney';
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g,
+    c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function humanDate(yyyymmdd) {
+  const [y, m, d] = yyyymmdd.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-AU',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+
+function todayStr() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
+}
+
+function relativeLabel(yyyymmdd) {
+  if (yyyymmdd === todayStr()) return 'this morning';
+  const y = new Date(); y.setUTCDate(y.getUTCDate() - 1);
+  const yest = y.toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
+  if (yyyymmdd === yest) return 'yesterday';
+  return null;
+}
+
+async function loadAndRender() {
+  // ?date=YYYY-MM-DD or default to latest
+  const params = new URLSearchParams(location.search);
+  const targetDate = params.get('date');
+
+  let prep = null;
+
+  try {
+    if (targetDate) {
+      const snap = await getDoc(doc(db, 'daily_prep', targetDate));
+      if (snap.exists()) prep = { id: snap.id, ...snap.data() };
+    } else {
+      // Fetch the latest 5 and pick the most recent active one with photos
+      const snap = await getDocs(query(collection(db, 'daily_prep'), orderBy('date', 'desc'), limit(5)));
+      snap.forEach(d => {
+        const data = d.data();
+        if (!prep && data.active !== false && Array.isArray(data.photos) && data.photos.length) {
+          prep = { id: d.id, ...data };
+        }
+      });
+    }
+  } catch (err) {
+    console.error('[today] load failed:', err);
+  }
+
+  const root = document.getElementById('article-root');
+  if (!prep) {
+    root.innerHTML = `
+      <div class="t-empty">
+        <h2>No prep journal yet</h2>
+        <p>We'll post the next entry first thing tomorrow morning.<br/>For now, see what's available today:</p>
+        <a class="t-shop-btn" href="../customer/#shop">Shop today's flowers</a>
+      </div>`;
+    return;
+  }
+
+  // Render the article
+  const isToday = prep.id === todayStr();
+  const rel = relativeLabel(prep.id);
+  const titleLabel = prep.marketTime || (isToday ? 'This morning' : `${rel || humanDate(prep.id)}`);
+  const cover = prep.photos[0];
+  const restPhotos = prep.photos.slice(1);
+
+  root.innerHTML = `
+    <div class="t-eyebrow">${isToday ? '<span class="dot"></span> ' : ''}${rel ? rel.toUpperCase() : 'JOURNAL'} · ${escapeHtml(prep.location || 'Flemington Markets')}</div>
+    <h1 class="t-h1">${escapeHtml(titleLabel)} at ${escapeHtml(prep.location || 'Flemington Markets')}</h1>
+    <div class="t-meta">${humanDate(prep.id)}${prep.marketTime ? ' · ' + escapeHtml(prep.marketTime) : ''}</div>
+
+    <div class="t-cover"><img src="${escapeHtml(cover.url)}" alt="${escapeHtml(prep.location || 'Flemington')} — ${humanDate(prep.id)}" fetchpriority="high" decoding="async"/></div>
+
+    ${prep.bodyText ? `<div class="t-body">${escapeHtml(prep.bodyText).split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('')}</div>` : ''}
+
+    ${restPhotos.length ? `
+      <div class="t-gallery">
+        ${restPhotos.map(p => `<div class="item"><img src="${escapeHtml(p.url)}" alt="" loading="lazy" decoding="async"/></div>`).join('')}
+      </div>` : ''}
+
+    <a class="t-shop" href="../customer/#shop">
+      <div class="t-shop-text">
+        <div class="t-shop-eyebrow">${isToday ? 'Available today only' : 'Order this week'}</div>
+        <h3 class="t-shop-h">These flowers are in our shop</h3>
+        <p class="t-shop-p">${isToday ? 'Order before 2 PM for same-day delivery across North-West Sydney.' : 'Browse this week\\'s collection.'}</p>
+      </div>
+      <span class="t-shop-btn">Shop now →</span>
+    </a>
+
+    <section class="t-archive" id="t-archive">
+      <h3>More from the studio</h3>
+      <ul id="t-archive-list"><li style="color:var(--c-subtle);font-size:13px">Loading…</li></ul>
+    </section>
+  `;
+
+  // Update SEO meta
+  updateSEO(prep, isToday, rel);
+
+  // Load 4 most recent OTHER entries for archive
+  loadArchiveTeaser(prep.id);
+}
+
+function updateSEO(prep, isToday, rel) {
+  const titleLabel = prep.marketTime || (isToday ? 'This morning' : (rel || humanDate(prep.id)));
+  const seoTitle = `${titleLabel} at ${prep.location || 'Flemington Markets'} — Bloom & Vine Sydney`;
+  document.title = seoTitle;
+
+  const desc = (prep.bodyText || `Today's flower picks from ${prep.location || 'Flemington Markets'}, prepared at our Carlingford studio.`).replace(/\s+/g, ' ').trim().slice(0, 158);
+
+  setMeta('description', desc);
+  setMeta('og:title', seoTitle, true);
+  setMeta('og:description', desc, true);
+  setMeta('og:image', prep.photos[0]?.url || '', true);
+  setMeta('og:url', `${SITE_BASE}/today/?date=${prep.id}`, true);
+  setMeta('twitter:title', seoTitle);
+  setMeta('twitter:description', desc);
+  setMeta('twitter:image', prep.photos[0]?.url || '');
+
+  // Update canonical
+  const canonical = document.getElementById('canonical');
+  if (canonical) canonical.href = `${SITE_BASE}/today/?date=${prep.id}`;
+
+  // JSON-LD: BlogPosting + LocalBusiness reference
+  const oldLD = document.getElementById('bv-ld-json');
+  if (oldLD) oldLD.remove();
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.id = 'bv-ld-json';
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": seoTitle,
+    "description": desc,
+    "image": prep.photos.map(p => p.url),
+    "datePublished": new Date(prep.id + 'T08:00:00+10:00').toISOString(),
+    "dateModified": new Date(prep.id + 'T08:00:00+10:00').toISOString(),
+    "author": { "@type": "Organization", "name": "Bloom & Vine" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Bloom & Vine",
+      "logo": { "@type": "ImageObject", "url": `${SITE_BASE}/customer/hero.jpg` },
+    },
+    "mainEntityOfPage": `${SITE_BASE}/today/?date=${prep.id}`,
+    "about": [
+      {
+        "@type": "Place",
+        "name": prep.location || "Flemington Markets",
+        "address": { "@type": "PostalAddress", "addressLocality": "Sydney", "addressRegion": "NSW", "addressCountry": "AU" }
+      }
+    ],
+    "isPartOf": {
+      "@type": "Blog",
+      "name": "Bloom & Vine — Daily Prep Journal",
+      "url": `${SITE_BASE}/today/`
+    }
+  });
+  document.head.appendChild(ld);
+}
+
+function setMeta(name, content, isProperty = false) {
+  const attr = isProperty ? 'property' : 'name';
+  let el = document.querySelector(`meta[${attr}="${name}"]`);
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute('content', content);
+}
+
+async function loadArchiveTeaser(currentId) {
+  try {
+    const snap = await getDocs(query(collection(db, 'daily_prep'), orderBy('date', 'desc'), limit(8)));
+    const items = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (d.id !== currentId && data.active !== false && data.photos?.length) {
+        items.push({ id: d.id, ...data });
+      }
+    });
+    const list = document.getElementById('t-archive-list');
+    if (!list) return;
+    if (!items.length) { list.innerHTML = '<li style="color:var(--c-subtle);font-size:13px">More entries coming.</li>'; return; }
+
+    list.innerHTML = items.slice(0, 4).map(p => `
+      <li>
+        <a href="?date=${encodeURIComponent(p.id)}">
+          <div class="thumb"><img src="${escapeHtml(p.photos[0].url)}" alt="" loading="lazy"/></div>
+          <div class="meta">
+            <div class="date">${humanDate(p.id)}</div>
+            <div class="snippet">${escapeHtml((p.bodyText || '').replace(/\s+/g, ' ').slice(0, 80))}</div>
+          </div>
+        </a>
+      </li>
+    `).join('');
+  } catch (err) {
+    console.warn('[archive] load failed', err);
+  }
+}
+
+loadAndRender();
+</script>
+
+</body>
+</html>
