@@ -549,20 +549,18 @@ nav {
 }
 .pcard-body .btn-add:hover { background:var(--c-accent); }
 .pcard-body .btn-add:disabled { background:var(--c-border); color:var(--c-subtle); cursor:not-allowed; }
-.btn-view-details {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: var(--c-subtle);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 8px 4px 0;
-  cursor: pointer;
-  font-family: inherit;
-  transition: color .15s;
-  text-align: center;
+.pcard-desc {
+  font-size: 13px;
+  color: var(--c-mid);
+  line-height: 1.5;
+  margin: 4px 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.btn-view-details:hover { color: var(--c-accent); }
 
 /* ── Load more ── */
 .load-more-wrap { text-align:center; margin-top:28px; }
@@ -2041,6 +2039,7 @@ function renderProducts(tab) {
         <div class="pcard-type">${p.type}</div>
         <div class="pcard-name">${p.name}</div>
         <div class="pcard-pair">${p.pair ? '✦ ' + p.pair : '&nbsp;'}</div>
+        ${p.description ? `<div class="pcard-desc">${p.description.replace(/\s+/g, ' ').trim()}</div>` : ''}
         <div class="pcard-price">
           <span class="p-main">$${p.price}</span>
           ${p.wine ? `<span class="p-wine">with wine <strong>$${p.wine}</strong></span>` : ''}
@@ -2049,7 +2048,6 @@ function renderProducts(tab) {
         <button class="btn-add" ${sold ? 'disabled' : ''} onclick="event.stopPropagation(); addToCartFromCard('${tab}', ${idx})">
           ${sold ? 'Sold Out' : 'Add to Cart'}
         </button>
-        ${!sold ? `<button class="btn-view-details" type="button" onclick="event.stopPropagation(); openDetailForCard('${tab}', ${idx})">View details &rarr;</button>` : ''}
       </div>
     </div>`;
   }).join('');
