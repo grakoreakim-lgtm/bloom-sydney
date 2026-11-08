@@ -9,6 +9,6 @@
     "mdac:fast": "node record.js mdac --speed 0.4"
   },
   "dependencies": {
-    "playwright": "^1.50.0"
+    "googleapis": "^144.0.0"
   }
 }

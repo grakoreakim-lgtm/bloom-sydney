@@ -1,3 +1,5 @@
+upload/secrets/
+upload/config.json
 out/
 node_modules/
 vocab/out/

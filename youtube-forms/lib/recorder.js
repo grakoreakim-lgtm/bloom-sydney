@@ -27,9 +27,16 @@ class Recorder {
     this.stepIndex = 0;
     this.totalSteps = form.steps.filter((s) => s.type !== 'card').length;
     this.shots = [];
+    // narration: { [cueId]: durationMs } — when present, each cue holds at least that long
+    this.narration = opts.narration || {};
+    this.cues = [];            // [{ id, t }]  t = ms since recording start
+    this.t0 = null;
   }
 
   wait(ms) { return sleep(ms * this.speed); }
+  cue(id) { if (this.t0 == null) this.t0 = Date.now(); this.cues.push({ id, t: Date.now() - this.t0 }); }
+  // hold for the longer of the designed pause and the narration clip (+ a beat)
+  holdFor(id, designedMs) { const n = this.narration[id]; return this.wait(n ? Math.max(designedMs, n / this.speed + 400) : designedMs); }
 
   async start() {
     fs.mkdirSync(this.outDir, { recursive: true });
@@ -42,6 +49,7 @@ class Recorder {
     });
     await this.context.addInitScript(overlay.bundle);
     this.page = await this.context.newPage();
+    this.t0 = Date.now();                       // video recording starts with the page
     await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
     await this.page.evaluate(() => window.__ytOverlay.install());
   }
@@ -53,8 +61,9 @@ class Recorder {
 
   async card(c, holdMs = 3000) {
     await this.ov('card', c);
+    this.cue(`card-${c.id || this.stepIndex}`);
     await this.shot(`card-${c.id || this.stepIndex}`);
-    await this.wait(holdMs);
+    await this.holdFor(`card-${c.id || this.stepIndex}`, holdMs);
     await this.ov('hideCard');
   }
 
@@ -89,7 +98,8 @@ class Recorder {
     // 1) explain the field (tip) before touching it
     if (text.tip) {
       await this.ov('callout', sel, { kind: 'tip', title: text.label, body: text.tip });
-      await this.wait(step.tipHold ?? 2200);
+      this.cue(`s${this.stepIndex}-tip`);
+      await this.holdFor(`s${this.stepIndex}-tip`, step.tipHold ?? 2200);
     }
 
     // 2) do the action, slowly, so viewers can follow
@@ -100,8 +110,9 @@ class Recorder {
     // 3) common mistake callout (if any) — shown AFTER the correct value is in
     if (text.mistake) {
       await this.ov('callout', sel, { kind: 'warn', title: this.t.mistakeTitle, body: text.mistake, bad: text.bad, good: text.good });
+      this.cue(`s${this.stepIndex}-mistake`);
       await this.shot(`step${this.stepIndex}-${step.field}`);
-      await this.wait(step.mistakeHold ?? 3800);
+      await this.holdFor(`s${this.stepIndex}-mistake`, step.mistakeHold ?? 3800);
     } else {
       await this.shot(`step${this.stepIndex}-${step.field}`);
       await this.wait(400);
@@ -162,7 +173,14 @@ class Recorder {
       mp4 = path.join(this.outDir, `${base}.mp4`);
       execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
     } catch (e) { mp4 = null; }
-    return { webm: finalWebm, mp4, shots: this.shots };
+    // cue timeline (for narration muxing + chapter timestamps)
+    const steps = this.form.steps.filter((s) => s.type !== 'card');
+    const chapters = this.cues.filter((c) => /^s\d+-tip$/.test(c.id)).map((c) => {
+      const i = Number(c.id.match(/^s(\d+)-/)[1]); return { t: c.t, label: steps[i - 1].text[this.lang].label };
+    });
+    const timeline = { cues: this.cues, chapters };
+    fs.writeFileSync(path.join(this.outDir, `${base}.timeline.json`), JSON.stringify(timeline, null, 1));
+    return { webm: finalWebm, mp4, shots: this.shots, timeline };
   }
 }
 

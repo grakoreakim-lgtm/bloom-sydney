@@ -1,0 +1,49 @@
+{
+  "_comment": "Copy to config.json and fill in. Secrets (client_secret.json, token-*.json, GOOGLE_TTS_API_KEY) never go in this file or in git.",
+  "calendar": "upload-calendar-2027.csv",
+  "target": "mock",
+  "_target": "mock = local practice form (safe for tests). live = real site — verify selectors in forms/<id>.js first; never submits, never fills CAPTCHA.",
+
+  "channels": { "ko": "ko", "en": "en", "hi": "en", "es": "en", "id": "en", "ja": "en" },
+  "_channels": "language → token file suffix (upload/secrets/token-<suffix>.json). Non-EN/KO languages start on the EN channel.",
+
+  "timezone": { "ko": "Asia/Seoul", "en": "America/New_York", "hi": "Asia/Kolkata", "es": "America/Mexico_City", "id": "Asia/Jakarta", "ja": "Asia/Tokyo", "default": "Asia/Seoul" },
+  "publishHours": { "ko": [7, 12, 18, 20, 22], "en": [7, 11, 15, 18, 21], "default": [7, 11, 15, 18, 21] },
+
+  "tts": {
+    "speakingRate": 1.0,
+    "voices": {
+      "ko": { "languageCode": "ko-KR", "name": "ko-KR-Neural2-C" },
+      "en": { "languageCode": "en-US", "name": "en-US-Neural2-F" },
+      "hi": { "languageCode": "hi-IN", "name": "hi-IN-Neural2-A" },
+      "es": { "languageCode": "es-ES", "name": "es-ES-Neural2-A" },
+      "id": { "languageCode": "id-ID", "name": "id-ID-Wavenet-A" },
+      "ja": { "languageCode": "ja-JP", "name": "ja-JP-Neural2-B" }
+    }
+  },
+  "bgm": null,
+
+  "formMap": {
+    "MDAC 디지털 입국카드": "mdac"
+  },
+  "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
+
+  "affiliate": {
+    "fallback": { "esim": "https://airalo.tpo.lv/REPLACE", "hotel": "https://agoda.tpo.lv/REPLACE" },
+    "default": {
+      "말레이시아": { "esim": "https://airalo.tpo.lv/REPLACE-my", "pickup": "https://klook.tpo.lv/REPLACE-klia", "hotel": "https://agoda.tpo.lv/REPLACE-kl" },
+      "싱가포르":   { "esim": "https://airalo.tpo.lv/REPLACE-sg", "pickup": "https://klook.tpo.lv/REPLACE-sin", "hotel": "https://agoda.tpo.lv/REPLACE-sg" },
+      "일본":       { "esim": "https://airalo.tpo.lv/REPLACE-jp", "pickup": "https://klook.tpo.lv/REPLACE-nrt", "hotel": "https://agoda.tpo.lv/REPLACE-tokyo" }
+    }
+  },
+  "_affiliate": "Travelpayouts / Impact tracking links per country. Keys are the 국가 column without the flag.",
+
+  "hashtags": {
+    "ko": ["입국신고서", "전자비자", "해외여행준비", "따라하면끝"],
+    "en": ["arrivalcard", "evisa", "travelprep", "copymyscreen"]
+  },
+  "tags": {
+    "ko": ["입국신고서", "전자입국카드", "비자 신청", "해외여행 준비", "공항 입국심사", "따라하기"],
+    "en": ["arrival card", "digital arrival card", "e-visa", "how to fill", "step by step", "travel documents", "immigration"]
+  }
+}
