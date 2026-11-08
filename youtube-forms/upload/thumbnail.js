@@ -1,5 +1,6 @@
 // Thumbnail: 1280x720 PNG rendered from an HTML template with Playwright.
 const { chromium } = require('playwright');
+const fs = require('fs');
 
 const BRAND = { ko: '따라하면 끝', en: 'Copy My Screen', hi: 'Copy My Screen', es: 'Copy My Screen', id: 'Copy My Screen', ja: 'Copy My Screen' };
 const BADGE = { ko: ['무료', '5분', '따라하기'], en: ['FREE', '5 MIN', 'STEP BY STEP'], hi: ['FREE', '5 MIN', 'हिंदी'], es: ['GRATIS', '5 MIN', 'PASO A PASO'], id: ['GRATIS', '5 MENIT', 'MUDAH'], ja: ['無料', '5分', '手順'] };
@@ -20,7 +21,7 @@ function html({ flag, country, form, lang, year, shot }) {
   .brand{position:absolute;left:56px;bottom:44px;font-size:30px;font-weight:800;opacity:.85}
   .year{position:absolute;right:48px;bottom:40px;background:#fff;color:#111;font-weight:900;font-size:34px;padding:8px 18px;border-radius:12px;transform:rotate(-4deg)}
   </style></head><body>
-  ${shot ? `<div class="shot"><img src="file://${shot}"></div>` : ''}<div class="shade"></div>
+  ${shot ? `<div class="shot"><img src="data:image/png;base64,${fs.readFileSync(shot).toString('base64')}"></div>` : ''}<div class="shade"></div>
   <div class="flag">${flag}</div><div class="country">${country}</div>
   <div class="form">${form}</div>
   <div class="chips">${chips.map((c, i) => `<span class="chip ${i === 0 ? 'red' : ''}">${c}</span>`).join('')}</div>
