@@ -6,6 +6,7 @@
 //   node upload/run-day.js --date 2027-01-12 --dry        # build everything, upload nothing
 //   node upload/run-day.js --date 2027-01-12 --dry --fake-tts   # also skip the TTS API (silent clips) — pipeline test
 //   node upload/run-day.js --row 3              # only slot 3 of that day
+//   node upload/run-day.js --config upload/config.ci.json --target live   # CI: committed config, real sites
 //
 // Rows whose 서식 has no definition in forms/ are listed and skipped (add forms/<id>.js first).
 
@@ -23,7 +24,9 @@ const ROOT = path.join(__dirname, '..');
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
 const flag = (k) => argv.includes(`--${k}`);
-const cfg = JSON.parse(fs.readFileSync(fs.existsSync(path.join(__dirname, 'config.json')) ? path.join(__dirname, 'config.json') : path.join(__dirname, 'config.example.json'), 'utf8'));
+const cfgPath = opt('config') || (fs.existsSync(path.join(__dirname, 'config.json')) ? path.join(__dirname, 'config.json') : path.join(__dirname, 'config.example.json'));
+const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+if (opt('target')) cfg.target = opt('target');
 const date = opt('date') || new Date().toISOString().slice(0, 10);
 const onlyRow = opt('row') ? Number(opt('row')) : null;
 const dry = flag('dry'), fakeTts = flag('fake-tts');

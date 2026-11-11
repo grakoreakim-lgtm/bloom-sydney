@@ -1,0 +1,63 @@
+# Daily video factory: records, narrates, muxes, thumbnails and schedules today's calendar rows on YouTube.
+# Runs at 06:00 KST every day; can also be started by hand (any date, dry run).
+name: daily-videos
+
+on:
+  schedule:
+    - cron: '0 21 * * *'          # 21:00 UTC = 06:00 KST
+  workflow_dispatch:
+    inputs:
+      date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
+      dry: { description: 'Dry run (build everything, upload nothing)', type: boolean, default: false }
+      target: { description: 'mock (practice form) or live (real site)', required: false, default: 'mock' }
+
+concurrency: { group: daily-videos, cancel-in-progress: false }
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk > /dev/null
+
+      - name: Write secrets
+        env:
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_TOKEN_KO_JSON: ${{ secrets.YT_TOKEN_KO_JSON }}
+          YT_TOKEN_EN_JSON: ${{ secrets.YT_TOKEN_EN_JSON }}
+        run: node upload/secrets-from-env.js
+
+      - name: Produce & schedule uploads
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          TZ: Asia/Seoul
+        run: |
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date +%F)
+          DRY=""; [ "${{ github.event.inputs.dry }}" = "true" ] && DRY="--dry"
+          FAKE=""; [ -z "$GOOGLE_TTS_API_KEY" ] && FAKE="--fake-tts"
+          TARGET="${{ github.event.inputs.target }}"; [ -z "$TARGET" ] && TARGET=mock
+          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE | tee run.log
+          echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Keep outputs for 7 days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ github.run_id }}
+          path: |
+            youtube-forms/out/days/**/*.mp4
+            youtube-forms/out/days/**/*.png
+            youtube-forms/out/days/**/*.json
+          retention-days: 7
+          if-no-files-found: ignore
