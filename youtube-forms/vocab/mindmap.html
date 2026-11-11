@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Vocab Mind Map</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 720px; overflow: hidden; background: #f6f3ea; font-family: "Pretendard", "Noto Sans KR", "Segoe UI", system-ui, sans-serif; color: #1b1b1b; }
+  #paper { position: absolute; inset: 0; background-image: radial-gradient(#ddd6c4 1px, transparent 1px); background-size: 26px 26px; }
+  svg { position: absolute; left: 0; top: 0; }
+
+  /* branches grow with stroke-dashoffset */
+  .branch { fill: none; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+  .branch.on { animation: grow .9s ease forwards; }
+  .twig { fill: none; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; }
+  .twig.on { animation: grow .6s ease forwards; }
+  @keyframes grow { to { stroke-dashoffset: 0; } }
+
+  .node { position: absolute; transform: translate(-50%, -50%) scale(0); transition: transform .45s cubic-bezier(.3,1.6,.4,1); }
+  .node.on { transform: translate(-50%, -50%) scale(1); }
+  #center { width: 250px; height: 250px; border-radius: 50%; background: #fff; border: 8px solid #333; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 900; padding: 20px; line-height: 1.2; box-shadow: 0 12px 30px rgba(0,0,0,.18); }
+  .hub { padding: 12px 20px; border-radius: 14px; color: #fff; font-weight: 900; font-size: 20px; letter-spacing: .5px; box-shadow: 0 8px 20px rgba(0,0,0,.18); white-space: nowrap; }
+  .leaf { background: #fff; border: 3px solid #333; border-radius: 12px; padding: 8px 14px; font-weight: 800; font-size: 22px; white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,.12); display: flex; align-items: center; gap: 10px; }
+  .leaf .thumb { width: 44px; height: 44px; border-radius: 8px; background-image: url(assets/comic.jpg); background-size: 400% 212%; border: 2px solid #333; }
+  .leaf small { display: block; font-size: 14px; font-weight: 500; color: #555; }
+  .leaf.hot { border-color: #ff3b3b; box-shadow: 0 0 0 6px rgba(255,59,59,.3), 0 10px 24px rgba(0,0,0,.2); transform: translate(-50%, -50%) scale(1.18); z-index: 3; }
+  .leaf.dimmed { opacity: .35; }
+  .hub.dimmed { opacity: .35; }
+
+  /* popup card that explains the hot word */
+  #card { position: absolute; width: 420px; background: #fff; border-radius: 18px; padding: 20px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.3); border-left: 8px solid #ff3b3b; display: none; z-index: 5; }
+  #card.on { display: block; animation: pop .4s ease; }
+  @keyframes pop { from { transform: scale(.9); opacity: 0; } }
+  #card .step { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: #ff3b3b; }
+  #card .word { font-size: 40px; font-weight: 900; line-height: 1.05; }
+  #card .ipa { font-size: 16px; color: #666; margin: 2px 0 10px; }
+  #card .meaning { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+  #card .row { font-size: 16px; line-height: 1.45; margin: 6px 0; padding: 9px 12px; border-radius: 10px; background: #f4f1e8; }
+  #card .row b { color: #c62828; }
+  #card .sent { font-size: 18px; font-weight: 600; margin-top: 10px; padding: 10px 12px; background: #fff8d6; border-radius: 10px; }
+  #card .sent .hl { background: #ffd400; padding: 0 5px; border-radius: 5px; }
+  #card .sent .blank { display: inline-block; min-width: 120px; border-bottom: 4px solid #ff3b3b; color: #ff3b3b; text-align: center; }
+  #card .panel { width: 100%; height: 190px; border-radius: 10px; background-image: url(assets/comic.jpg); background-size: 400% 212%; border: 2px solid #333; margin-bottom: 10px; }
+
+  #badge { position: absolute; left: 24px; top: 20px; background: #111; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 20px; font-weight: 800; z-index: 6; display: flex; gap: 10px; align-items: center; }
+  #badge .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff3b3b; }
+  #pill { position: absolute; right: 24px; top: 20px; background: #0b7a3b; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 17px; font-weight: 700; z-index: 6; }
+  #progress { position: absolute; left: 0; bottom: 0; height: 8px; background: #ff3b3b; width: 0; transition: width .6s ease; z-index: 6; }
+
+  #fs { position: absolute; inset: 0; background: radial-gradient(1200px 600px at 20% 10%, #1e3a8a 0%, #0b1220 60%); color: #fff; display: none; align-items: center; justify-content: center; text-align: center; padding: 60px; z-index: 10; }
+  #fs.on { display: flex; }
+  #fs h1 { font-size: 62px; margin: 0 0 14px; }
+  #fs h2 { font-size: 28px; font-weight: 500; opacity: .9; margin: 0 0 26px; white-space: pre-line; }
+  #fs .big { font-size: 100px; font-weight: 900; color: #7CFF9B; }
+  #fs .chips { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  #fs .chip { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.3); padding: 10px 18px; border-radius: 999px; font-size: 22px; }
+</style>
+</head>
+<body>
+  <div id="paper"></div>
+  <svg id="lines" width="1280" height="720"></svg>
+  <div id="nodes"></div>
+  <div id="card"></div>
+  <div id="badge"><span class="dot"></span><span class="txt"></span></div>
+  <div id="pill">🌿 가지를 따라 상황 → 뜻 → 떠올리기</div>
+  <div id="progress"></div>
+  <div id="fs"></div>
+
+<script src="data/new-school.js"></script>
+<script>
+  const V = window.VOCAB;
+  const $ = (s) => document.querySelector(s);
+  const C = { x: 640, y: 375 };
+
+  // layout: 4 hubs at the corners, 2 leaves each fanning outward
+  const HUB = [ { x: 300, y: 165 }, { x: 980, y: 165 }, { x: 300, y: 590 }, { x: 980, y: 590 } ];
+  const LEAF = [
+    [ { x: 175, y: 100 },  { x: 165, y: 290 } ],
+    [ { x: 1105, y: 100 }, { x: 1115, y: 290 } ],
+    [ { x: 175, y: 465 },  { x: 165, y: 650 } ],
+    [ { x: 1105, y: 465 }, { x: 1115, y: 650 } ],
+  ];
+
+  const svg = $('#lines'), nodes = $('#nodes');
+  const path = (a, b, cls, color) => {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const mx = (a.x + b.x) / 2;
+    p.setAttribute('d', `M${a.x},${a.y} C${mx},${a.y} ${mx},${b.y} ${b.x},${b.y}`);
+    p.setAttribute('class', cls); p.setAttribute('stroke', color); svg.appendChild(p); return p;
+  };
+  const thumbPos = (n) => { const i = n - 1, col = i % 4, row = Math.floor(i / 4); return `${col * 33.33}% ${row === 0 ? 8 : 100}%`; };
+
+  // build
+  const center = document.createElement('div'); center.id = 'center'; center.className = 'node';
+  center.style.left = C.x + 'px'; center.style.top = C.y + 'px'; center.textContent = V.title.en; nodes.appendChild(center);
+
+  const branchEls = [], hubEls = [], leafEls = {}, twigEls = {};
+  V.branches.forEach((b, i) => {
+    branchEls.push(path(C, HUB[i], 'branch', b.color));
+    const h = document.createElement('div'); h.className = 'node hub'; h.style.background = b.color;
+    h.style.left = HUB[i].x + 'px'; h.style.top = HUB[i].y + 'px'; h.textContent = b.label.en; nodes.appendChild(h); hubEls.push(h);
+    b.panels.forEach((n, j) => {
+      twigEls[n] = path(HUB[i], LEAF[i][j], 'twig', b.color);
+      const P = V.panels[n - 1];
+      const l = document.createElement('div'); l.className = 'node leaf';
+      l.style.left = LEAF[i][j].x + 'px'; l.style.top = LEAF[i][j].y + 'px';
+      l.innerHTML = `<div class="thumb" style="background-position:${thumbPos(n)}"></div><div>${P.target}<small>${P.meaning}</small></div>`;
+      nodes.appendChild(l); leafEls[n] = l;
+    });
+  });
+
+  const api = {
+    badge(t) { $('#badge .txt').textContent = t; },
+    progress(p) { $('#progress').style.width = (p * 100) + '%'; },
+    reset() { document.querySelectorAll('.node').forEach(n => n.classList.remove('on', 'hot', 'dimmed')); document.querySelectorAll('path').forEach(p => p.classList.remove('on')); $('#card').className = ''; },
+    showCenter() { center.classList.add('on'); },
+    growBranch(i) { branchEls[i].classList.add('on'); setTimeout(() => hubEls[i].classList.add('on'), 700); },
+    growLeaf(n) { twigEls[n].classList.add('on'); setTimeout(() => leafEls[n].classList.add('on'), 450); },
+    // focus one leaf: dim others, enlarge, open card near it
+    focus(n) {
+      Object.values(leafEls).forEach(l => { l.classList.remove('hot'); l.classList.add('dimmed'); });
+      hubEls.forEach(h => h.classList.add('dimmed'));
+      const l = leafEls[n]; l.classList.remove('dimmed'); l.classList.add('hot');
+      const bi = V.branches.findIndex(b => b.panels.includes(n)); hubEls[bi].classList.remove('dimmed');
+    },
+    unfocus() { Object.values(leafEls).forEach(l => l.classList.remove('hot', 'dimmed')); hubEls.forEach(h => h.classList.remove('dimmed')); $('#card').className = ''; },
+    cardAt(n, mode, count) {
+      const P = V.panels[n - 1];
+      const re = new RegExp(`(${P.target})`, 'i');
+      const left = 430;                       // always centred; the focused leaf stays visible at the edge
+      const top = n <= 4 ? 170 : 60;
+      const c = $('#card'); c.style.left = left + 'px'; c.style.top = top + 'px';
+      if (mode === 'context') {
+        c.innerHTML = `<div class="step">STEP 1 · 상황</div><div class="panel" style="background-position:${thumbPos(n)}"></div><div class="sent">${P.bubble.replace(re, '<span class="hl">$1</span>')}</div>`;
+      } else if (mode === 'meaning') {
+        c.innerHTML = `<div class="step">STEP 2 · 뜻과 뉘앙스</div><div class="word">${P.target}</div><div class="ipa">${P.ipa} · ${P.pos}</div><div class="meaning">${P.meaning}</div>` +
+          `<div class="row"><b>뉘앙스</b> ${P.nuance}</div><div class="row"><b>이럴 때</b> ${P.situation}</div>` +
+          (P.bonus ? `<div class="row"><b>+ ${P.bonus.word}</b> ${P.bonus.meaning}</div>` : '');
+      } else if (mode === 'quiz') {
+        c.innerHTML = `<div class="step">STEP 3 · 떠올리기 ${count ?? ''}</div><div class="sent">${P.quiz.blank.replace('______', '<span class="blank">?</span>')}</div><div class="row">힌트: ${P.quiz.hint}</div>`;
+      } else if (mode === 'reveal') {
+        c.innerHTML = `<div class="step">STEP 3 · 정답</div><div class="sent">${P.quiz.blank.replace('______', `<span class="hl">${P.target}</span>`)}</div><div class="row">✅ ${P.meaning}</div>`;
+      }
+      c.className = 'on';
+    },
+    card({ big, title, subtitle, chips = [] }) {
+      $('#fs').innerHTML = (big ? `<div class="big">${big}</div>` : '') + `<div><h1>${title}</h1>` + (subtitle ? `<h2>${subtitle}</h2>` : '') +
+        (chips.length ? `<div class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '') + '</div>';
+      $('#fs').className = 'on';
+    },
+    hideCard() { $('#fs').className = ''; },
+  };
+  window.api = api;
+  api.reset();
+</script>
+</body>
+</html>
