@@ -35,7 +35,11 @@ const S = {
 
 module.exports = {
   id: 'mdac',
+  pack: 'arrival-card',                       // topic pack (see forms/_packs.js)
+  country: { ko: '말레이시아', en: 'Malaysia' }, flag: '🇲🇾',
+  fee: '무료', when: '도착 3일 전', captcha: true,
   title: { ko: '말레이시아 전자 입국신고서 (MDAC)', en: 'Malaysia Digital Arrival Card (MDAC)' },
+  videoTitle: { ko: '말레이시아 입국신고서 MDAC 작성법 {year} | 5분 따라하기', en: 'Malaysia Digital Arrival Card (MDAC) Step-by-Step {year} | Copy My Screen' },
 
   url: {
     mock: 'file://' + path.join(__dirname, '..', 'mock', 'mdac-form.html'),

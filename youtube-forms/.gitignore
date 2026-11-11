@@ -1,5 +1,6 @@
 upload/secrets/
 upload/config.json
+studio/data/
 out/
 node_modules/
 vocab/out/
