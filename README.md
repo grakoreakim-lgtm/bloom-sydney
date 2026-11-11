@@ -3,6 +3,8 @@
 > A daily flower + wine hamper delivery service based in Carlingford, Sydney.
 > Customer shop, admin dashboard, public blog, and Firebase backend — all running serverless.
 
+> **New — Bloom & Vine for Business:** weekly / fortnightly lobby & reception flower subscriptions for clinics, hotels, hospitals and offices (first service 50% off, no contract). Plan, pricing, competitor comparison and marketing playbook: [docs/B2B_PLAN.md](docs/B2B_PLAN.md).
+
 ---
 
 ## Stack at a glance
@@ -50,6 +52,12 @@ bloom-sydney/
 │       ├── reviews.js                Customer review CRUD + photo upload + sample seed
 │       ├── faqs.js                   FAQ CRUD + default-content seed
 │       └── settings.js               Delivery fees, cutoff time, store config
+│
+├── business/                       ← 🏢 B2B lobby/reception subscriptions
+│   ├── index.html                    Landing: industries, plans (weekly/fortnightly), comparison, FAQ, lead form → b2bLeads
+│   ├── proposal.html                 ?id={token}: client approves with one click (card / invoice / pay on site),
+│   │                                 then self-manages (keep going · pause · resume · cancel). ?demo=1 = sample
+│   └── tiers.js                      Single source of truth for plans, prices, 50% trial
 │
 ├── blog/                           ← 📝 Public blog (SEO)
 │   └── index.html                    Slug-based reader (?slug=...) + index page
@@ -110,6 +118,9 @@ Vanilla-JS SPA with a hash-based router ([admin/admin.js:88-107](admin/admin.js#
 | `#/reviews` | Star ratings, optional customer photo upload, verified flag, "🌱 Seed samples" |
 | `#/faqs` | FAQ CRUD with default-content seeder |
 | `#/settings` | Delivery fees per postcode, cutoff time, liquor licence number, etc. |
+| `#/b2bLeads` | B2B CRM: website enquiries + CSV-imported targets, pipeline status, one-click outreach email by industry |
+| `#/b2bProposals` | Build a proposal (plan, price, concept photo, message) → send approval link |
+| `#/b2bAccounts` | MRR / trial-conversion KPIs, upcoming route by day (Google Maps), visits: complete with photos → charge card / send invoice / record terminal payment / send SumUp-Zeller link |
 
 **Auth:** Firebase Auth email/password. The login screen lives at the top of [admin/index.html](admin/index.html); auth state is observed in [admin/admin.js:32-43](admin/admin.js#L32-L43). Anyone signed in is treated as admin (rules enforce `request.auth != null`).
 
@@ -202,6 +213,11 @@ cache/instagram_feed               ← Refreshed hourly by Cloud Function
   └── updatedAt
 
 subscriptions/{id}                 ← Reserved for future subscription product
+
+b2bLeads/{id}                      ← B2B CRM (public create from /business/ form only)
+b2bProposals/{token}               ← Public GET by link; client may only approve/decline + post customerRequest
+b2bAccounts/{token}                ← Contract (same id as proposal), admin only
+  └── visits/{id}                    visitNumber, date, amount, discountPct, status, paymentStatus, photos[]
 ```
 
 Security: see [firebase/firestore.rules](firebase/firestore.rules). General pattern is **public read** for catalogue/blog/reviews/faqs, **public create** for orders + customOrders (so the customer site can submit without auth), **authenticated write** for everything else.

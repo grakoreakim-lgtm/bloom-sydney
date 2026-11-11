@@ -92,6 +92,9 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   }
 
   try {
+    // B2B subscription events (card-on-file, visit charges, invoices) — see B2B section below.
+    await handleB2BStripeEvent(stripe, event);
+
     if (event.type === "payment_intent.succeeded") {
       const pi = event.data.object;
       const orderId = pi.metadata?.orderId;
@@ -790,3 +793,452 @@ exports.dailyCleanup = functions.pubsub
     }
     console.log(`✅ Archived ${ordersSnap.size} orders from ${yStr}`);
   });
+
+// ═════════════════════════════════════════════════════
+// B2B — Lobby & reception flower subscriptions
+// ═════════════════════════════════════════════════════
+//
+// Collections (see docs/B2B_PLAN.md):
+//   b2bLeads/{id}                      website enquiries + outreach targets (admin CRM)
+//   b2bProposals/{token}               proposal shown at /business/proposal.html?id={token}
+//                                      (public get by unguessable id; customer may only flip
+//                                       status SENT→APPROVED/DECLINED and post customerRequest)
+//   b2bAccounts/{token}                active contract — SAME id as its proposal (admin only)
+//   b2bAccounts/{token}/visits/{id}    one doc per visit: amount, status, payment
+//
+// Payment methods per account:
+//   CARD     — card saved with a Stripe SetupIntent; each visit charged off-session by admin
+//   INVOICE  — Stripe-hosted tax invoice emailed per visit (card or BECS, 14 days)
+//   TERMINAL — paid on our card machine during the visit; admin records it (no API needed)
+
+const FieldValue = admin.firestore.FieldValue;
+const B2B_INVOICE_DAYS = 14;
+const FREQ_DAYS = { weekly: 7, fortnightly: 14 };
+
+async function siteUrl() {
+  const fromCfg = cfg().site?.url;
+  if (fromCfg) return fromCfg.replace(/\/$/, "");
+  try {
+    const s = await db.collection("settings").doc("business").get();
+    if (s.exists && s.data().siteUrl) return String(s.data().siteUrl).replace(/\/$/, "");
+  } catch { /* ignore */ }
+  return "https://grakoreakim-lgtm.github.io/bloom-sydney";
+}
+
+async function adminEmailAddress() {
+  try {
+    const s = await db.collection("settings").doc("business").get();
+    return s.exists ? (s.data().email || null) : null;
+  } catch { return null; }
+}
+
+function addDaysISO(iso, days) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function escHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+}
+
+function emailShell(inner) {
+  return `<div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1A1A1A;line-height:1.55">
+    <div style="padding:14px 0 18px;border-bottom:2px solid #6B2D20">
+      <div style="font-size:20px;font-weight:600;color:#6B2D20">Bloom &amp; Vine <span style="font-size:11px;color:#767676;letter-spacing:.12em;text-transform:uppercase">for Business</span></div>
+    </div>${inner}
+    <p style="margin-top:28px;font-size:12px;color:#767676">Bloom &amp; Vine · Carlingford NSW · Reply to this email to reach your florist directly.</p>
+  </div>`;
+}
+
+function btn(href, label, bg = "#6B2D20") {
+  return `<a href="${href}" style="display:inline-block;background:${bg};color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:8px;margin:4px 6px 4px 0">${label}</a>`;
+}
+
+// Create the account (+ first visit) from an approved proposal. Idempotent.
+async function ensureAccountFromProposal(proposalId, p) {
+  const accRef = db.collection("b2bAccounts").doc(proposalId);
+  return db.runTransaction(async (tx) => {
+    const existing = await tx.get(accRef);
+    if (existing.exists) return { ref: accRef, data: existing.data(), created: false };
+
+    const ap = p.approval || {};
+    const price = Number(p.pricePerVisit) || 0;
+    const pct = Number(p.trialDiscountPct ?? 50);
+    const account = {
+      proposalId,
+      leadId: p.leadId || null,
+      company: p.company || "",
+      contactName: ap.name || p.contactName || "",
+      contactTitle: ap.title || "",
+      email: p.email || "",
+      billingEmail: ap.billingEmail || p.email || "",
+      phone: p.phone || "",
+      address: p.address || "",
+      abn: p.abn || "",
+      poNumber: ap.poNumber || "",
+      industry: p.industry || "",
+      tier: p.tier || "",
+      tierName: p.tierName || p.tier || "",
+      frequency: p.frequency || "weekly",
+      pricePerVisit: price,
+      trialDiscountPct: pct,
+      visitDay: p.visitDay || "",
+      startDate: p.startDate || null,
+      paymentMethod: ap.paymentMethod || "TERMINAL",
+      status: "PENDING_SETUP",
+      cardOnFile: false,
+      visitsCompleted: 0,
+      notes: p.internalNotes || "",
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+    tx.set(accRef, account);
+    tx.set(accRef.collection("visits").doc(), {
+      visitNumber: 1,
+      date: p.startDate || null,
+      regularPrice: price,
+      discountPct: pct,
+      amount: Math.round(price * (100 - pct)) / 100,
+      status: "SCHEDULED",
+      paymentStatus: "UNPAID",
+      paymentMethod: account.paymentMethod,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+    return { ref: accRef, data: account, created: true };
+  });
+}
+
+async function ensureStripeCustomer(stripe, accRef, acc) {
+  if (acc.stripeCustomerId) return acc.stripeCustomerId;
+  const customer = await stripe.customers.create({
+    name: acc.company,
+    email: acc.billingEmail || acc.email,
+    phone: acc.phone || undefined,
+    address: acc.address ? { line1: acc.address, country: "AU" } : undefined,
+    metadata: { b2bAccountId: accRef.id, abn: acc.abn || "" },
+  });
+  await accRef.update({ stripeCustomerId: customer.id, updatedAt: FieldValue.serverTimestamp() });
+  return customer.id;
+}
+
+// ─── Proposal approved / declined / customer self-service request ───
+exports.onB2BProposalUpdate = functions.firestore
+  .document("b2bProposals/{proposalId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data() || {};
+    const after  = change.after.data()  || {};
+    const id = context.params.proposalId;
+    const base = await siteUrl();
+
+    // 1. Approved
+    if (before.status !== "APPROVED" && after.status === "APPROVED") {
+      const { data: acc, created } = await ensureAccountFromProposal(id, after);
+      if (!created) return;
+      await change.after.ref.update({ accountStatus: "PENDING_SETUP" });
+      if (after.leadId) {
+        await db.collection("b2bLeads").doc(after.leadId).update({ status: "WON", updatedAt: FieldValue.serverTimestamp() }).catch(() => {});
+      }
+      const payLabel = { CARD: "card on file (charged after each visit)", INVOICE: `tax invoice (${B2B_INVOICE_DAYS} days)`, TERMINAL: "card on our terminal at the visit" }[acc.paymentMethod] || acc.paymentMethod;
+
+      await sendPushToAdmins({
+        title: `✅ Proposal approved — ${acc.company}`,
+        body: `${acc.tierName} · ${acc.frequency} · ${fmtAUD(acc.pricePerVisit)}/visit · ${acc.paymentMethod}`,
+        route: "/b2bAccounts", orderId: id,
+      }).catch(e => console.warn("[b2b] push failed", e));
+
+      const adminTo = await adminEmailAddress();
+      if (adminTo) {
+        await db.collection("mail").add({
+          to: adminTo,
+          message: {
+            subject: `✅ B2B approved: ${acc.company} (${acc.tierName}, ${acc.frequency})`,
+            html: emailShell(`<h2 style="font-size:18px">${escHtml(acc.company)} approved their proposal</h2>
+              <p>${escHtml(acc.contactName)} ${acc.contactTitle ? "(" + escHtml(acc.contactTitle) + ")" : ""} · ${escHtml(acc.email)} · ${escHtml(acc.phone)}</p>
+              <p>${escHtml(acc.address)}</p>
+              <p>Plan: <b>${escHtml(acc.tierName)}</b>, ${escHtml(acc.frequency)}, ${fmtAUD(acc.pricePerVisit)}/visit — first visit ${acc.trialDiscountPct}% off<br/>
+                 Payment: <b>${escHtml(payLabel)}</b>${acc.poNumber ? " · PO " + escHtml(acc.poNumber) : ""}<br/>
+                 Requested start: ${escHtml(acc.startDate || "to confirm")} ${acc.visitDay ? "(" + escHtml(acc.visitDay) + ")" : ""}</p>
+              <p>${btn(`${base}/admin/#/b2bAccounts`, "Open in admin")}</p>`),
+          },
+        });
+      }
+      if (acc.email) {
+        await db.collection("mail").add({
+          to: acc.email,
+          message: {
+            subject: `You're booked in — Bloom & Vine first setup for ${acc.company}`,
+            html: emailShell(`<h2 style="font-size:18px">Thank you, ${escHtml(acc.contactName || "there")}.</h2>
+              <p>We've received your approval for the <b>${escHtml(acc.tierName)}</b> plan (${escHtml(acc.frequency)}). Your florist will call within one business day to confirm your first setup${acc.startDate ? " around <b>" + escHtml(acc.startDate) + "</b>" : ""}.</p>
+              <p>Your first visit is <b>${acc.trialDiscountPct}% off (${fmtAUD(Math.round(acc.pricePerVisit * (100 - acc.trialDiscountPct)) / 100)})</b> and is only charged after the setup is done. Payment: ${escHtml(payLabel)}.</p>
+              <p>No contract — you can pause or cancel any time here:<br/>${btn(`${base}/business/proposal.html?id=${id}`, "Manage my subscription", "#3D5C3D")}</p>`),
+          },
+        });
+      }
+      return;
+    }
+
+    // 2. Declined
+    if (before.status !== "DECLINED" && after.status === "DECLINED") {
+      if (after.leadId) await db.collection("b2bLeads").doc(after.leadId).update({ status: "LOST", updatedAt: FieldValue.serverTimestamp() }).catch(() => {});
+      await sendPushToAdmins({ title: `Proposal declined — ${after.company || ""}`, body: after.approval?.declineReason || "", route: "/b2bProposals", orderId: id }).catch(() => {});
+      return;
+    }
+
+    // 3. Customer self-service: continue / pause / resume / cancel
+    const req = after.customerRequest;
+    if (req && JSON.stringify(req) !== JSON.stringify(before.customerRequest || null)) {
+      const accRef = db.collection("b2bAccounts").doc(id);
+      const accSnap = await accRef.get();
+      if (!accSnap.exists) return;
+      const acc = accSnap.data();
+      // CONTINUE only confirms a trial; RESUME re-opens a paused or cancelled plan
+      // (admin then books the next visit from the B2B Accounts screen).
+      const next = {
+        CONTINUE: acc.status === "TRIAL" ? "ACTIVE" : acc.status,
+        PAUSE: "PAUSED",
+        RESUME: (acc.visitsCompleted || 0) >= 1 ? "ACTIVE" : "PENDING_SETUP",
+        CANCEL: "CANCELLED",
+      }[req.action];
+      if (!next) return;
+      await accRef.update({
+        status: next,
+        lastCustomerRequest: { action: req.action, note: String(req.note || "").slice(0, 500), at: FieldValue.serverTimestamp() },
+        ...(req.action === "CANCEL" ? { cancelledAt: FieldValue.serverTimestamp() } : {}),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      await change.after.ref.update({ accountStatus: next });
+
+      // Skip any scheduled visits when paused / cancelled
+      if (next === "PAUSED" || next === "CANCELLED") {
+        const sched = await accRef.collection("visits").where("status", "==", "SCHEDULED").get();
+        await Promise.all(sched.docs.map(d => d.ref.update({ status: "SKIPPED", skippedReason: req.action })));
+      }
+      const emoji = { CONTINUE: "💚", PAUSE: "⏸️", RESUME: "▶️", CANCEL: "🛑" }[req.action];
+      await sendPushToAdmins({
+        title: `${emoji} ${acc.company}: ${req.action.toLowerCase()}`,
+        body: String(req.note || "").slice(0, 120) || `Account is now ${next}`,
+        route: "/b2bAccounts", orderId: id,
+      }).catch(() => {});
+    }
+  });
+
+// ─── Visit lifecycle: on DONE → bump counters, schedule next, email photo report ───
+exports.onB2BVisitUpdate = functions.firestore
+  .document("b2bAccounts/{accountId}/visits/{visitId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data() || {};
+    const v = change.after.data() || {};
+    if (before.status === "DONE" || v.status !== "DONE") return;
+
+    const accRef = db.collection("b2bAccounts").doc(context.params.accountId);
+    const accSnap = await accRef.get();
+    if (!accSnap.exists) return;
+    const acc = accSnap.data();
+    const completed = (acc.visitsCompleted || 0) + 1;
+
+    let status = acc.status;
+    if (status === "PENDING_SETUP") status = "TRIAL";
+    else if (status === "TRIAL" && completed >= 2) status = "ACTIVE";
+
+    await accRef.update({
+      visitsCompleted: completed,
+      lastVisitDate: v.date || null,
+      status,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    await db.collection("b2bProposals").doc(context.params.accountId).update({ accountStatus: status }).catch(() => {});
+
+    // Schedule the next visit at the regular price
+    if (status !== "PAUSED" && status !== "CANCELLED" && v.date) {
+      const nextDate = addDaysISO(v.date, FREQ_DAYS[acc.frequency] || 7);
+      const dup = await accRef.collection("visits").where("date", "==", nextDate).limit(1).get();
+      if (dup.empty) {
+        await accRef.collection("visits").add({
+          visitNumber: (v.visitNumber || completed) + 1,
+          date: nextDate,
+          regularPrice: acc.pricePerVisit,
+          discountPct: 0,
+          amount: acc.pricePerVisit,
+          status: "SCHEDULED",
+          paymentStatus: "UNPAID",
+          paymentMethod: acc.paymentMethod,
+          createdAt: FieldValue.serverTimestamp(),
+        });
+        await accRef.update({ nextVisitDate: nextDate });
+      }
+    }
+
+    // Photo report email (and the keep/pause/cancel choice after the trial visit)
+    if (!acc.email) return;
+    const base = await siteUrl();
+    const manage = `${base}/business/proposal.html?id=${context.params.accountId}`;
+    const photos = (v.photos || []).slice(0, 3).map(u =>
+      `<img src="${escHtml(u)}" alt="" style="width:100%;max-width:512px;border-radius:8px;margin:8px 0"/>`).join("");
+    const isTrial = (v.visitNumber || completed) === 1;
+    const html = emailShell(`
+      <h2 style="font-size:18px">${isTrial ? "Your first arrangement is in 🌷" : "This week's flowers are in 🌷"}</h2>
+      <p>Hi ${escHtml(acc.contactName || "there")}, we've just finished at ${escHtml(acc.company)}${v.notes ? " — " + escHtml(v.notes) : "."}</p>
+      ${photos}
+      ${isTrial ? `
+        <p><b>How did we do?</b> If you'd like us to keep coming, you don't need to do anything — your next visit is ${escHtml(acc.frequency === "fortnightly" ? "in two weeks" : "next week")} at the regular ${fmtAUD(acc.pricePerVisit)}.</p>
+        <p>${btn(`${manage}&action=CONTINUE`, "Keep going 💚", "#3D5C3D")}${btn(`${manage}&action=PAUSE`, "Pause", "#767676")}${btn(`${manage}&action=CANCEL`, "Cancel", "#4A3828")}</p>`
+      : `<p style="font-size:13px;color:#767676"><a href="${manage}" style="color:#6B2D20">Pause or manage your subscription</a></p>`}
+    `);
+    await db.collection("mail").add({
+      to: acc.email,
+      message: { subject: isTrial ? `Your first Bloom & Vine setup — keep going?` : `This week's flowers at ${acc.company}`, html },
+    });
+  });
+
+// ─── Card-on-file: SetupIntent for an approved proposal (called by proposal.html) ───
+exports.createB2BSetupIntent = functions.https.onRequest(async (req, res) => {
+  corsHeaders(res);
+  if (req.method === "OPTIONS") return res.status(204).send("");
+  if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
+  const secret = cfg().stripe?.secret_key;
+  if (!secret) return res.status(503).json({ error: "Online card payments are not set up yet — we'll take payment on our card machine instead." });
+
+  try {
+    const proposalId = String(req.body?.proposalId || "");
+    if (!/^[A-Za-z0-9]{15,40}$/.test(proposalId)) return res.status(400).json({ error: "Invalid proposal" });
+    const pSnap = await db.collection("b2bProposals").doc(proposalId).get();
+    if (!pSnap.exists) return res.status(404).json({ error: "Proposal not found" });
+    const p = pSnap.data();
+    if (p.status !== "APPROVED") return res.status(409).json({ error: "Proposal is not approved yet" });
+
+    const { ref: accRef } = await ensureAccountFromProposal(proposalId, p);
+    const acc = (await accRef.get()).data();
+    if (acc.status === "CANCELLED") return res.status(409).json({ error: "This subscription has been cancelled" });
+
+    const stripe = new Stripe(secret);
+    const customerId = await ensureStripeCustomer(stripe, accRef, acc);
+    const si = await stripe.setupIntents.create({
+      customer: customerId,
+      usage: "off_session",
+      payment_method_types: ["card"],
+      metadata: { b2bAccountId: proposalId },
+      description: `Bloom & Vine for Business — ${acc.company}`,
+    });
+    res.json({ clientSecret: si.client_secret });
+  } catch (err) {
+    console.error("[b2b] createB2BSetupIntent error:", err);
+    res.status(500).json({ error: "Could not start card setup. Please try again." });
+  }
+});
+
+// ─── Admin: charge a completed visit (card off-session, or send Stripe invoice) ───
+exports.chargeB2BVisit = functions.https.onCall(async (data, context) => {
+  if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "Admin sign-in required");
+  const secret = cfg().stripe?.secret_key;
+  if (!secret) throw new functions.https.HttpsError("failed-precondition", "Stripe is not configured (stripe.secret_key)");
+
+  const { accountId, visitId, mode } = data || {};
+  const accRef = db.collection("b2bAccounts").doc(String(accountId || ""));
+  const visitRef = accRef.collection("visits").doc(String(visitId || ""));
+  const [accSnap, visitSnap] = await Promise.all([accRef.get(), visitRef.get()]);
+  if (!accSnap.exists || !visitSnap.exists) throw new functions.https.HttpsError("not-found", "Account or visit not found");
+  const acc = accSnap.data();
+  const v = visitSnap.data();
+  if (v.paymentStatus === "PAID") return { status: "already_paid" };
+  if (v.paymentStatus === "INVOICED" && v.stripeInvoiceId) return { status: "already_invoiced", invoiceUrl: v.invoiceUrl || null };
+
+  const amountCents = Math.round(Number(v.amount) * 100);
+  if (!(amountCents > 0)) throw new functions.https.HttpsError("invalid-argument", "Visit amount must be above $0");
+
+  const stripe = new Stripe(secret);
+  const customerId = await ensureStripeCustomer(stripe, accRef, acc);
+  const visitPath = visitRef.path;
+  const description = `${acc.tierName || "Flower"} service — visit #${v.visitNumber || ""} ${v.date || ""}${v.discountPct ? ` (${v.discountPct}% first-service discount)` : ""}`;
+  const useMode = mode || (acc.paymentMethod === "INVOICE" ? "INVOICE" : "CARD");
+
+  if (useMode === "CARD") {
+    if (!acc.stripePaymentMethodId) throw new functions.https.HttpsError("failed-precondition", "No card on file for this account yet");
+    try {
+      const pi = await stripe.paymentIntents.create({
+        amount: amountCents,
+        currency: "aud",
+        customer: customerId,
+        payment_method: acc.stripePaymentMethodId,
+        off_session: true,
+        confirm: true,
+        description,
+        receipt_email: acc.billingEmail || acc.email || undefined,
+        metadata: { b2bAccountId: accRef.id, b2bVisitPath: visitPath },
+      }, { idempotencyKey: `b2b-visit-${accRef.id}-${visitRef.id}` });
+      const paid = pi.status === "succeeded";
+      await visitRef.update({
+        paymentStatus: paid ? "PAID" : "PROCESSING",
+        paymentMethod: "CARD",
+        stripePaymentIntentId: pi.id,
+        ...(paid ? { paidAt: FieldValue.serverTimestamp() } : {}),
+      });
+      return { status: pi.status };
+    } catch (err) {
+      await visitRef.update({ paymentStatus: "FAILED", paymentFailureReason: err.message || "card declined" });
+      throw new functions.https.HttpsError("aborted", `Card charge failed: ${err.message}`);
+    }
+  }
+
+  // INVOICE
+  const invoice = await stripe.invoices.create({
+    customer: customerId,
+    collection_method: "send_invoice",
+    days_until_due: B2B_INVOICE_DAYS,
+    auto_advance: true,
+    description: acc.poNumber ? `PO ${acc.poNumber}` : undefined,
+    custom_fields: acc.abn ? [{ name: "Customer ABN", value: String(acc.abn).slice(0, 30) }] : undefined,
+    metadata: { b2bAccountId: accRef.id, b2bVisitPath: visitPath },
+  });
+  await stripe.invoiceItems.create({
+    customer: customerId,
+    invoice: invoice.id,
+    amount: amountCents,
+    currency: "aud",
+    description,
+  });
+  const finalized = await stripe.invoices.finalizeInvoice(invoice.id);
+  await stripe.invoices.sendInvoice(finalized.id);
+  await visitRef.update({
+    paymentStatus: "INVOICED",
+    paymentMethod: "INVOICE",
+    stripeInvoiceId: finalized.id,
+    invoiceUrl: finalized.hosted_invoice_url || null,
+    invoicedAt: FieldValue.serverTimestamp(),
+  });
+  return { status: "invoiced", invoiceUrl: finalized.hosted_invoice_url || null };
+});
+
+// ─── Stripe webhook helper for B2B objects (called from stripeWebhook) ───
+async function handleB2BStripeEvent(stripe, event) {
+  const obj = event.data.object || {};
+  const md = obj.metadata || {};
+
+  if (event.type === "setup_intent.succeeded" && md.b2bAccountId) {
+    const pmId = obj.payment_method;
+    let last4 = null, brand = null;
+    try {
+      const pm = await stripe.paymentMethods.retrieve(pmId);
+      last4 = pm.card?.last4 || null; brand = pm.card?.brand || null;
+      if (obj.customer) await stripe.customers.update(obj.customer, { invoice_settings: { default_payment_method: pmId } });
+    } catch (e) { console.warn("[b2b] pm lookup failed", e.message); }
+    await db.collection("b2bAccounts").doc(md.b2bAccountId).update({
+      stripePaymentMethodId: pmId, cardOnFile: true, cardLast4: last4, cardBrand: brand,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    await db.collection("b2bProposals").doc(md.b2bAccountId).update({ cardOnFile: true }).catch(() => {});
+    console.log(`[b2b] card saved for ${md.b2bAccountId}`);
+    return;
+  }
+
+  if (!md.b2bVisitPath || !md.b2bVisitPath.startsWith("b2bAccounts/")) return;
+  const visitRef = db.doc(md.b2bVisitPath);
+
+  if (event.type === "payment_intent.succeeded" || event.type === "invoice.paid") {
+    await visitRef.update({ paymentStatus: "PAID", paidAt: FieldValue.serverTimestamp() });
+  } else if (event.type === "payment_intent.payment_failed" || event.type === "invoice.payment_failed") {
+    const reason = obj.last_payment_error?.message || "payment failed";
+    await visitRef.update({ paymentStatus: "FAILED", paymentFailureReason: reason });
+    await sendPushToAdmins({ title: "⚠️ B2B payment failed", body: reason, route: "/b2bAccounts", orderId: md.b2bAccountId || "" }).catch(() => {});
+  }
+}

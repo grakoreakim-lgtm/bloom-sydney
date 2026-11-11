@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Your Flower Proposal · Bloom & Vine for Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --c-bg:#F9F6F2;--c-white:#fff;--c-ink:#1A1A1A;--c-mid:#4A4A4A;--c-subtle:#767676;--c-border:#E0DBD4;
+  --c-accent:#6B2D20;--c-accent-h:#7E3525;--c-sage:#3D5C3D;--c-warm:#A07830;--c-blush:#F0D0BE;--c-err:#B3261E;
+  --ff:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--r-card:12px;--r-btn:8px;--r-pill:100px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--ff);font-size:15px;line-height:1.55;color:var(--c-ink);background:var(--c-bg);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer}
+.top{background:var(--c-white);border-bottom:1px solid var(--c-border)}
+.top-inner{max-width:880px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-weight:600;font-size:18px;color:var(--c-accent);text-decoration:none}
+.logo small{font-size:11px;font-weight:500;color:var(--c-subtle);letter-spacing:.12em;text-transform:uppercase;margin-left:6px}
+.top a.help{font-size:13px;color:var(--c-mid)}
+main{max-width:880px;margin:0 auto;padding:28px 16px 64px}
+.card{background:var(--c-white);border:1px solid var(--c-border);border-radius:var(--r-card);padding:clamp(18px,3vw,30px);margin-bottom:18px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--c-warm);margin-bottom:8px}
+h1{font-size:clamp(24px,3.6vw,34px);line-height:1.15;letter-spacing:-.02em;margin-bottom:10px}
+h2{font-size:18px;margin-bottom:12px}
+.muted{color:var(--c-subtle);font-size:13px}
+.lead{color:var(--c-mid);white-space:pre-line}
+.cover{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:var(--r-card);margin-bottom:18px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.sum{background:var(--c-bg);border-radius:10px;padding:12px 14px}
+.sum .k{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-subtle);font-weight:600}
+.sum .v{font-weight:600;font-size:17px;margin-top:2px}
+.sum.hl{background:#E7EFE5}
+.sum.hl .v{color:var(--c-sage)}
+@media(max-width:640px){.summary{grid-template-columns:1fr 1fr}}
+ul.inc{list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--c-mid)}
+ul.inc li::before{content:"✓";color:var(--c-sage);font-weight:700;margin-right:8px}
+.terms{font-size:13px;color:var(--c-mid);display:flex;flex-direction:column;gap:6px;margin-top:14px}
+form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:560px){form .row{grid-template-columns:1fr}}
+label.f{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-subtle);margin-bottom:6px}
+input[type=text],input[type=email],textarea{width:100%;padding:11px 12px;border:1px solid var(--c-border);border-radius:var(--r-btn);font:inherit;font-size:15px;background:#fff}
+input:focus,textarea:focus{outline:2px solid var(--c-accent);outline-offset:1px}
+.pay-opts{display:grid;gap:10px;margin:6px 0 16px}
+.pay-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--c-border);border-radius:10px;padding:14px;cursor:pointer;background:#fff}
+.pay-opt:has(input:checked){border-color:var(--c-accent);background:#FDF7F4}
+.pay-opt input{margin-top:3px;accent-color:var(--c-accent)}
+.pay-opt b{display:block}
+.pay-opt span{font-size:13px;color:var(--c-subtle)}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--c-mid);margin:12px 0 18px}
+.agree input{margin-top:4px;accent-color:var(--c-accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--r-btn);font-weight:600;font-size:15px;border:1.5px solid transparent;text-decoration:none}
+.btn-primary{background:var(--c-accent);color:#fff;width:100%}
+.btn-primary:hover{background:var(--c-accent-h)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.btn-line{background:#fff;border-color:var(--c-border);color:var(--c-ink)}
+.btn-sage{background:var(--c-sage);color:#fff}
+.btn-dark{background:#4A3828;color:#fff}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.link-btn{background:none;border:0;color:var(--c-subtle);text-decoration:underline;font-size:13px;margin-top:14px}
+.msg{font-size:14px;margin-top:12px}
+.msg.err{color:var(--c-err)}
+.msg.ok{color:var(--c-sage);font-weight:600}
+.status-pill{display:inline-block;font-size:12px;font-weight:600;padding:4px 12px;border-radius:var(--r-pill);background:var(--c-bg);color:var(--c-mid)}
+.status-pill.ok{background:#E7EFE5;color:var(--c-sage)}
+.status-pill.warn{background:#FBEBD4;color:#8A5A10}
+.status-pill.off{background:#F3E0DC;color:var(--c-accent)}
+#card-element{border:1px solid var(--c-border);border-radius:var(--r-btn);padding:14px;background:#fff;margin:10px 0 14px}
+.center{text-align:center;padding:60px 0;color:var(--c-subtle)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="logo" href="./">Bloom &amp; Vine<small>for Business</small></a>
+    <a class="help" id="help-link" href="./#faq">Questions?</a>
+  </div>
+</header>
+<main id="app"><div class="center">Loading your proposal…</div></main>
+
+<script type="module">
+import { tierById, trialPrice, monthlyEstimate, fmtAUD, FREQUENCIES, INVOICE_DAYS_DUE } from './tiers.js';
+
+const app = document.getElementById('app');
+const qs  = new URLSearchParams(location.search);
+const id  = qs.get('id') || '';
+const isDemo = qs.get('demo') === '1';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+let fb = null;          // { db, fs } once Firebase is loaded
+let proposal = null;
+let settings = {};
+
+async function loadFirebase() {
+  const [{ initializeApp }, fs, { firebaseConfig }] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js'),
+    import('../firebase/web-config.js'),
+  ]);
+  window.firebaseConfig = firebaseConfig;
+  return { db: fs.getFirestore(initializeApp(firebaseConfig)), fs, projectId: firebaseConfig.projectId };
+}
+
+const DEMO = {
+  company: 'Harbourview Dental', contactName: 'Sarah', industry: 'Clinic / dental / medical',
+  tier: 'signature', tierName: 'Signature', frequency: 'weekly', pricePerVisit: 189, trialDiscountPct: 50,
+  visitDay: 'Monday, 7–8 AM', startDate: '2026-11-23', validUntil: '2026-12-05', status: 'SENT',
+  message: "Hi Sarah,\n\nThanks for showing me around on Tuesday. For your reception and waiting room I'd recommend our Signature plan with our low-pollen line — soft whites and greens to match your new fit-out.",
+  items: ['1 lobby statement piece (approx. 70 cm) — waiting room', '1 reception-desk arrangement', 'Low-pollen, scent-free stems', 'Photo report after every visit'],
+};
+
+async function boot() {
+  if (isDemo) { proposal = { ...DEMO }; return render(); }
+  if (!/^[A-Za-z0-9]{15,40}$/.test(id)) return renderError('This proposal link looks incomplete. Please use the full link from your email.');
+  try {
+    fb = await loadFirebase();
+    const [pSnap, sSnap] = await Promise.all([
+      fb.fs.getDoc(fb.fs.doc(fb.db, 'b2bProposals', id)),
+      fb.fs.getDoc(fb.fs.doc(fb.db, 'settings', 'business')).catch(() => null),
+    ]);
+    if (!pSnap.exists()) return renderError('We couldn’t find this proposal. It may have been replaced — please check your latest email from us.');
+    proposal = pSnap.data();
+    settings = sSnap?.exists?.() ? sSnap.data() : {};
+    if (settings.phone) document.getElementById('help-link').outerHTML = `<a class="help" href="tel:${esc(settings.phone)}">Questions? ${esc(settings.phone)}</a>`;
+    render();
+  } catch (err) {
+    console.error(err);
+    renderError('Sorry — we couldn’t load your proposal. Please refresh the page or reply to our email.');
+  }
+}
+
+function renderError(text) {
+  app.innerHTML = `<div class="card"><h1>Hmm.</h1><p class="lead">${esc(text)}</p><div class="btn-row"><a class="btn btn-line" href="./">Visit Bloom &amp; Vine for Business</a></div></div>`;
+}
+
+function summaryBlock(p) {
+  const tier = tierById(p.tier);
+  const price = Number(p.pricePerVisit) || 0;
+  const pct = Number(p.trialDiscountPct ?? 50);
+  const items = (p.items && p.items.length) ? p.items : (tier?.includes || []);
+  const freqLabel = FREQUENCIES[p.frequency]?.label || p.frequency;
+  return `
+    ${p.coverImage ? `<img class="cover" src="${esc(p.coverImage)}" alt="Arrangement concept for ${esc(p.company)}"/>` : ''}
+    <div class="eyebrow">Proposal for ${esc(p.company)}</div>
+    <h1>${esc(p.tierName || tier?.name || 'Flower')} plan · ${esc(freqLabel)}</h1>
+    ${p.message ? `<p class="lead">${esc(p.message)}</p>` : ''}
+    <div class="summary">
+      <div class="sum hl"><div class="k">First visit</div><div class="v">${fmtAUD(trialPrice(price, pct))}</div><div class="muted">${pct}% off</div></div>
+      <div class="sum"><div class="k">Then per visit</div><div class="v">${fmtAUD(price)}</div><div class="muted">incl. GST</div></div>
+      <div class="sum"><div class="k">Approx. monthly</div><div class="v">${fmtAUD(monthlyEstimate(price, p.frequency))}</div><div class="muted">${esc(freqLabel.toLowerCase())}</div></div>
+      <div class="sum"><div class="k">Visits</div><div class="v" style="font-size:15px">${esc(p.visitDay || 'To agree')}</div><div class="muted">${p.startDate ? 'from ' + esc(p.startDate) : 'start date to confirm'}</div></div>
+    </div>
+    <h2>What's included</h2>
+    <ul class="inc">${items.map(i => `<li>${esc(i)}</li>`).join('')}<li>Vessels supplied, washed &amp; collected</li><li>Delivery &amp; installation</li></ul>
+    <div class="terms">
+      <div>• No contract. The first visit is charged only after the setup is done.</div>
+      <div>• After the first visit we'll email you a one-click keep going / pause / cancel link.</div>
+      <div>• Pause for holidays any time. You're never charged for a visit we don't make.</div>
+      ${p.validUntil ? `<div>• This pricing is held until ${esc(p.validUntil)}.</div>` : ''}
+    </div>`;
+}
+
+function render() {
+  const p = proposal;
+  if (p.status === 'DRAFT') return renderError('This proposal is still being prepared. We’ll email you as soon as it’s ready.');
+  if (p.status === 'DECLINED') {
+    app.innerHTML = `<div class="card">${summaryBlock(p)}</div>
+      <div class="card"><h2>You declined this proposal</h2><p class="lead">No problem at all — thanks for letting us know. If anything changes, just reply to our email and we'll put a fresh one together.</p></div>`;
+    return;
+  }
+  if (p.status === 'APPROVED') return renderManage();
+  renderApprove();
+}
+
+/* ─────────── APPROVE ─────────── */
+function renderApprove() {
+  const p = proposal;
+  app.innerHTML = `
+    <div class="card">${summaryBlock(p)}</div>
+    <div class="card">
+      <h2>Approve &amp; book your first setup</h2>
+      <form id="approve-form" novalidate>
+        <div class="row">
+          <div><label class="f" for="a-name">Your name *</label><input type="text" id="a-name" required value="${esc(p.contactName || '')}" autocomplete="name"/></div>
+          <div><label class="f" for="a-title">Role</label><input type="text" id="a-title" placeholder="Practice manager" autocomplete="organization-title"/></div>
+        </div>
+        <label class="f">How would you like to pay?</label>
+        <div class="pay-opts">
+          <label class="pay-opt"><input type="radio" name="pay" value="CARD" checked/><div><b>Card on file</b><span>Save a card now — nothing is charged until after each visit. Easiest option.</span></div></label>
+          <label class="pay-opt"><input type="radio" name="pay" value="INVOICE"/><div><b>Tax invoice</b><span>Emailed after each visit, ${INVOICE_DAYS_DUE}-day terms. Pay by card or bank transfer.</span></div></label>
+          <label class="pay-opt"><input type="radio" name="pay" value="TERMINAL"/><div><b>Pay on site</b><span>Tap your card on our terminal when we visit.</span></div></label>
+        </div>
+        <div class="row" id="invoice-fields" hidden>
+          <div><label class="f" for="a-billing">Accounts email</label><input type="email" id="a-billing" placeholder="accounts@company.com.au" value="${esc(p.email || '')}"/></div>
+          <div><label class="f" for="a-po">PO number (optional)</label><input type="text" id="a-po"/></div>
+        </div>
+        <label class="agree"><input type="checkbox" id="a-agree"/> <span>I approve the ${esc(p.tierName || 'proposed')} plan on behalf of ${esc(p.company)}, at ${fmtAUD(p.pricePerVisit)} per visit after a ${Number(p.trialDiscountPct ?? 50)}%-off first visit. I can pause or cancel at any time.</span></label>
+        <button class="btn btn-primary" type="submit" id="a-submit">Approve proposal</button>
+        <p class="msg" id="a-msg" role="status"></p>
+      </form>
+      <button class="link-btn" id="decline-btn" type="button">Not right for us — decline</button>
+    </div>`;
+
+  const form = document.getElementById('approve-form');
+  form.querySelectorAll('input[name=pay]').forEach(r => r.addEventListener('change', () => {
+    document.getElementById('invoice-fields').hidden = form.pay.value !== 'INVOICE';
+  }));
+  form.addEventListener('submit', onApprove);
+  document.getElementById('decline-btn').addEventListener('click', onDecline);
+}
+
+async function onApprove(e) {
+  e.preventDefault();
+  const msg = document.getElementById('a-msg');
+  const name = document.getElementById('a-name').value.trim();
+  if (!name) { msg.className = 'msg err'; msg.textContent = 'Please enter your name.'; return; }
+  if (!document.getElementById('a-agree').checked) { msg.className = 'msg err'; msg.textContent = 'Please tick the box to confirm your approval.'; return; }
+  const form = e.target;
+  const approval = {
+    name: name.slice(0, 120),
+    title: document.getElementById('a-title').value.trim().slice(0, 120),
+    paymentMethod: form.pay.value,
+    billingEmail: document.getElementById('a-billing').value.trim().slice(0, 200),
+    poNumber: document.getElementById('a-po').value.trim().slice(0, 60),
+    agreedAtClient: new Date().toISOString(),
+    userAgent: navigator.userAgent.slice(0, 200),
+  };
+  const btn = document.getElementById('a-submit');
+  btn.disabled = true; btn.textContent = 'Approving…';
+  try {
+    if (!isDemo) {
+      await fb.fs.updateDoc(fb.fs.doc(fb.db, 'b2bProposals', id), {
+        status: 'APPROVED',
+        approval: { ...approval, approvedAt: fb.fs.serverTimestamp() },
+      });
+    }
+    proposal = { ...proposal, status: 'APPROVED', approval, accountStatus: 'PENDING_SETUP' };
+    renderManage(true);
+  } catch (err) {
+    console.error(err);
+    msg.className = 'msg err';
+    msg.textContent = 'Sorry, that didn’t go through. Please refresh and try again, or reply to our email.';
+    btn.disabled = false; btn.textContent = 'Approve proposal';
+  }
+}
+
+async function onDecline() {
+  const reason = prompt('Sorry to hear that. Anything we could do differently? (optional)');
+  if (reason === null) return;
+  try {
+    if (!isDemo) {
+      await fb.fs.updateDoc(fb.fs.doc(fb.db, 'b2bProposals', id), {
+        status: 'DECLINED',
+        approval: { declineReason: String(reason).slice(0, 500), declinedAt: fb.fs.serverTimestamp() },
+      });
+    }
+    proposal.status = 'DECLINED';
+    render();
+  } catch (err) { console.error(err); alert('Could not save — please reply to our email instead.'); }
+}
+
+/* ─────────── MANAGE (after approval) ─────────── */
+const STATUS = {
+  PENDING_SETUP: ['Booked — first setup coming up', 'warn'],
+  TRIAL:         ['First visit done', 'ok'],
+  ACTIVE:        ['Active', 'ok'],
+  PAUSED:        ['Paused', 'warn'],
+  CANCELLED:     ['Cancelled', 'off'],
+};
+
+function renderManage(justApproved = false) {
+  const p = proposal;
+  const st = p.accountStatus || 'PENDING_SETUP';
+  const [label, cls] = STATUS[st] || [st, ''];
+  const pay = p.approval?.paymentMethod;
+  const needsCard = pay === 'CARD' && !p.cardOnFile;
+  const action = qs.get('action');
+
+  const actions = [];
+  if (st === 'TRIAL' || st === 'PENDING_SETUP' || st === 'ACTIVE') {
+    if (st === 'TRIAL') actions.push(`<button class="btn btn-sage" data-act="CONTINUE">Keep going 💚</button>`);
+    actions.push(`<button class="btn btn-line" data-act="PAUSE">Pause visits</button>`);
+    actions.push(`<button class="btn btn-dark" data-act="CANCEL">Cancel</button>`);
+  } else if (st === 'PAUSED' || st === 'CANCELLED') {
+    actions.push(`<button class="btn btn-sage" data-act="RESUME">${st === 'PAUSED' ? 'Resume visits' : 'Restart my plan'}</button>`);
+    if (st === 'PAUSED') actions.push(`<button class="btn btn-dark" data-act="CANCEL">Cancel</button>`);
+  }
+
+  app.innerHTML = `
+    ${justApproved ? `<div class="card" style="border-color:var(--c-sage)"><div class="eyebrow" style="color:var(--c-sage)">Approved ✓</div><h1>Thank you${p.approval?.name ? ', ' + esc(p.approval.name.split(' ')[0]) : ''}!</h1><p class="lead">We'll call within one business day to confirm your first setup${p.startDate ? ' around ' + esc(p.startDate) : ''}. A confirmation email is on its way.</p></div>` : ''}
+    ${needsCard ? `
+      <div class="card" id="card-card">
+        <h2>Save your card</h2>
+        <p class="muted">Nothing is charged now. Your first visit (${fmtAUD(trialPrice(Number(p.pricePerVisit) || 0, Number(p.trialDiscountPct ?? 50)))}) is charged after the setup is done. Secured by Stripe.</p>
+        <div id="card-element"></div>
+        <button class="btn btn-primary" id="card-save" disabled>Save card</button>
+        <p class="msg" id="card-msg" role="status"></p>
+      </div>` : ''}
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h2 style="margin:0">Your subscription</h2>
+        <span class="status-pill ${cls}">${esc(label)}</span>
+      </div>
+      <p class="muted" style="margin-top:8px">${esc(p.company)} · ${esc(p.tierName || '')} · ${esc(FREQUENCIES[p.frequency]?.label || p.frequency)} · ${fmtAUD(p.pricePerVisit)}/visit${pay === 'CARD' && p.cardOnFile ? ' · card saved ✓' : ''}</p>
+      ${actions.length ? `<div class="btn-row">${actions.join('')}</div>` : ''}
+      <div id="req-box" hidden style="margin-top:16px">
+        <label class="f" for="req-note" id="req-label">Anything you'd like us to know? (optional)</label>
+        <textarea id="req-note" rows="2"></textarea>
+        <div class="btn-row"><button class="btn btn-primary" id="req-confirm" style="width:auto">Confirm</button><button class="btn btn-line" id="req-cancel">Back</button></div>
+      </div>
+      <p class="msg" id="req-msg" role="status"></p>
+    </div>
+    <details class="card"><summary style="cursor:pointer;font-weight:600">View proposal details</summary><div style="margin-top:16px">${summaryBlock(p)}</div></details>`;
+
+  let pending = null;
+  const box = document.getElementById('req-box');
+  const labels = { CONTINUE: 'Great! Any feedback on the first arrangement? (optional)', PAUSE: 'Until when should we pause? (optional)', CANCEL: 'Sorry to see you go — what could we have done better? (optional)', RESUME: 'Any changes for your next visit? (optional)' };
+  const open = act => { pending = act; document.getElementById('req-label').textContent = labels[act]; box.hidden = false; document.getElementById('req-note').focus(); };
+  app.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => open(b.dataset.act)));
+  document.getElementById('req-cancel').addEventListener('click', () => { box.hidden = true; pending = null; });
+  document.getElementById('req-confirm').addEventListener('click', async () => {
+    if (!pending) return;
+    const m = document.getElementById('req-msg');
+    try {
+      if (!isDemo) {
+        await fb.fs.updateDoc(fb.fs.doc(fb.db, 'b2bProposals', id), {
+          customerRequest: { action: pending, note: document.getElementById('req-note').value.trim().slice(0, 500), at: new Date().toISOString() },
+        });
+      }
+      const nextSt = { CONTINUE: st === 'TRIAL' ? 'ACTIVE' : st, PAUSE: 'PAUSED', CANCEL: 'CANCELLED', RESUME: 'ACTIVE' }[pending];
+      const done = { CONTINUE: 'Wonderful — see you at the next visit! 🌷', PAUSE: 'Visits paused. Resume any time from this page.', CANCEL: 'Your plan is cancelled. We’ll collect our vessels on a day that suits you.', RESUME: 'Welcome back! We’ll call to book your next visit.' }[pending];
+      proposal.accountStatus = nextSt;
+      renderManage();
+      const m2 = document.getElementById('req-msg'); m2.className = 'msg ok'; m2.textContent = done;
+    } catch (err) {
+      console.error(err);
+      m.className = 'msg err'; m.textContent = 'Sorry, that didn’t save. Please reply to our email and we’ll sort it out.';
+    }
+  });
+
+  if (action && STATUS[st] && app.querySelector(`[data-act="${action}"]`)) open(action);
+  if (needsCard) setupCard();
+}
+
+/* ─────────── Stripe card-on-file ─────────── */
+function loadStripeJs() {
+  if (window.Stripe) return Promise.resolve();
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://js.stripe.com/v3/'; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function setupCard() {
+  const msg = document.getElementById('card-msg');
+  const btn = document.getElementById('card-save');
+  const fallback = text => { msg.className = 'msg'; msg.textContent = text; btn.hidden = true; document.getElementById('card-element').hidden = true; };
+  if (isDemo) return fallback('Demo mode — the secure Stripe card form appears here.');
+  if (!settings.stripePublishableKey) return fallback('Online card setup isn’t available right now — no problem, we’ll take your card on our terminal at the first visit.');
+  try {
+    await loadStripeJs();
+    const res = await fetch(`https://us-central1-${fb.projectId}.cloudfunctions.net/createB2BSetupIntent`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ proposalId: id }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.clientSecret) throw new Error(data.error || 'setup failed');
+    const stripe = window.Stripe(settings.stripePublishableKey);
+    const elements = stripe.elements({ fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500' }] });
+    const card = elements.create('card', { hidePostalCode: true, style: { base: { fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#1A1A1A' } } });
+    card.mount('#card-element');
+    btn.disabled = false;
+    btn.addEventListener('click', async () => {
+      btn.disabled = true; btn.textContent = 'Saving…';
+      const { error, setupIntent } = await stripe.confirmCardSetup(data.clientSecret, {
+        payment_method: { card, billing_details: { name: proposal.approval?.name || proposal.contactName || '', email: proposal.approval?.billingEmail || proposal.email || undefined } },
+      });
+      if (error) {
+        msg.className = 'msg err'; msg.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Save card';
+        return;
+      }
+      if (setupIntent?.status === 'succeeded') {
+        proposal.cardOnFile = true;
+        document.getElementById('card-card').innerHTML = '<h2>Card saved ✓</h2><p class="muted">Nothing has been charged. We’ll charge your first (discounted) visit after the setup.</p>';
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    fallback(err.message && !/fetch/i.test(err.message) ? err.message : 'Online card setup isn’t available right now — we’ll take your card on our terminal at the first visit.');
+  }
+}
+
+boot();
+</script>
+</body>
+</html>

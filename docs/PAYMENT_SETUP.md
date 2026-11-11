@@ -249,3 +249,35 @@ firebase deploy --only firestore:rules
 ---
 
 질문 있으시면 알려주세요. 셋업 진행하시는 동안 코드는 제가 미리 만들어둘게요.
+
+
+---
+
+## 🏢 B2B 구독 결제 (Bloom & Vine for Business)
+
+자세한 사업 계획은 [B2B_PLAN.md](B2B_PLAN.md) 참고. 위 Stripe 설정이 끝났다면 추가로 아래만 하면 됩니다.
+
+1. **Webhook 이벤트 추가** (Developers → Webhooks → 기존 endpoint 편집)
+   - `setup_intent.succeeded` (카드 등록 완료)
+   - `invoice.paid`, `invoice.payment_failed` (인보이스)
+   - `payment_intent.succeeded` / `payment_intent.payment_failed` 는 이미 등록됨 (B2B 방문 청구도 같이 처리)
+2. **Settings → Payment methods → BECS Direct Debit** 활성화 (인보이스 계좌이체용, 선택)
+3. **Settings → Invoices**: 사업자명·ABN·로고 입력 → Stripe 인보이스가 호주 Tax Invoice 형식으로 발행됨
+4. 배포: `firebase deploy --only firestore:rules,storage,functions`
+
+### 결제 방식별 운영
+| 방식 | 고객 | 사장님 (관리자 → B2B Accounts) |
+|---|---|---|
+| 카드 자동결제 | 제안서 승인 후 카드 저장 (결제 없음) | 방문 완료 → "Charge saved card now" → 자동 청구 (첫 회 50%) |
+| 인보이스 | 이메일로 Stripe 인보이스 수신, 14일 내 결제 | 방문 완료 → "Send Stripe tax invoice" |
+| 현장 단말기 | 방문 시 단말기에 카드 태그 | 방문 완료 → "Paid on our card terminal ✓" (기록만) |
+| 결제링크 | 이메일 링크로 결제 | SumUp/Zeller 앱에서 링크 생성 → "Send payment link"에 붙여넣기 |
+
+> 단말기(Zeller/SumUp 등)는 API 연동 없이 바로 사용할 수 있도록 "기록" 방식입니다. 단말기 매출과 Stripe 매출은 각각의 정산 리포트로 확인하세요.
+
+### 테스트 (Stripe Test mode)
+1. 관리자 → B2B Proposals → 새 제안서 → ✉️ Send (상태 SENT)
+2. 👁 View 로 고객 페이지 열기 → Card on file 선택 → Approve → 카드 `4242 4242 4242 4242` 저장
+3. B2B Accounts 에 계정 생성 확인 → 첫 방문 ✓ Done → Charge → Stripe 대시보드에 50% 금액 결제 확인
+4. 고객 이메일(사진 리포트 + Keep going/Pause/Cancel 버튼) 확인 → 버튼 클릭 시 계정 상태 변경 확인
+5. 결제 실패 테스트 카드: `4000 0000 0000 0341` (등록은 되지만 청구 시 거절)

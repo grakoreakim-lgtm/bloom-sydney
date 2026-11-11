@@ -160,6 +160,9 @@ const titles = {
   reviews:      'Reviews',
   faqs:         'FAQs',
   settings:     'Settings',
+  b2bLeads:     'B2B Leads',
+  b2bProposals: 'B2B Proposals',
+  b2bAccounts:  'B2B Accounts & Visits',
 };
 
 const routes = {
@@ -174,6 +177,9 @@ const routes = {
   reviews:      () => import('./views/reviews.js'),
   faqs:         () => import('./views/faqs.js'),
   settings:     () => import('./views/settings.js'),
+  b2bLeads:     () => import('./views/b2bLeads.js'),
+  b2bProposals: () => import('./views/b2bProposals.js'),
+  b2bAccounts:  () => import('./views/b2bAccounts.js'),
 };
 
 async function handleRoute() {
