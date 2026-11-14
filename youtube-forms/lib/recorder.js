@@ -68,6 +68,7 @@ class Recorder {
   }
 
   async shot(name) {
+    await new Promise((r) => setTimeout(r, 450));   // let entrance animations finish
     const file = path.join(this.outDir, `${String(this.shots.length + 1).padStart(2, '0')}-${name}.png`);
     await this.page.screenshot({ path: file });
     this.shots.push(file);
@@ -90,7 +91,7 @@ class Recorder {
     if (!sel) throw new Error(`No selector for field "${step.field}" on target "${this.target}"`);
 
     await this.ov('setStep', this.stepIndex, this.totalSteps, text.label);
-    await this.ov('setEasyPill', this.t.easyPill);
+    await this.ov('setStrings', this.t.easyPill, this.t.mistakeTitle);
     await this.ov('moveCursor', sel);
     await this.ov('highlight', sel, true);
     await this.wait(700);
@@ -118,6 +119,10 @@ class Recorder {
       await this.wait(400);
     }
     await this.ov('clearHighlight');
+    // pause card: give the viewer time to type the same thing
+    if (!['manual', 'stop'].includes(step.type) && this.t.pause) {
+      await this.ov('pause', this.t.pause, this.t.pauseSub); await this.wait(step.pauseHold ?? 1800); await this.ov('hidePause');
+    }
   }
 
   async act(step, sel) {

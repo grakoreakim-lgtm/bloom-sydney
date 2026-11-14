@@ -68,28 +68,28 @@ module.exports = {
   },
 
   strings: {
-    ko: { easyPill: '👀 보이는 대로 따라만 하세요', mistakeTitle: '여기서 많이 틀려요' },
-    en: { easyPill: '👀 Just copy what you see', mistakeTitle: 'Common mistake here' },
+    ko: { easyPill: '👀 화면 그대로 따라만 하세요', mistakeTitle: '⚠ 많이 틀리는 곳', pause: '⏸ 여기까지 입력하세요', pauseSub: '다 치고 나서 재생' },
+    en: { easyPill: '👀 Just copy the screen', mistakeTitle: '⚠ Common mistake', pause: '⏸ Type this, then press play', pauseSub: '' },
   },
 
   steps: [
-    // ---------- INTRO CARD ----------
-    { type: 'card', hold: 4200, card: {
-      ko: { id: 'intro', big: '5분', title: '말레이시아 입국신고서 MDAC', subtitle: '화면 그대로 따라 하면 끝납니다\n무료 · 도착 3일 전부터 · 공식 사이트만 사용',
-            chips: ['📋 준비물: 여권 · 항공편 · 호텔 주소', '🆓 돈 내라는 사이트는 전부 가짜', '⏱ 도착 3일 이내 제출'] },
-      en: { id: 'intro', big: '5 min', title: 'Malaysia Digital Arrival Card (MDAC)', subtitle: 'Just copy the screen — that is all\nFree · within 3 days of arrival · official site only',
-            chips: ['📋 Need: passport · flight · hotel address', '🆓 Any site asking for money is fake', '⏱ Submit within 3 days of arrival'] },
+    // ---------- INTRO CARD (ticket) ----------
+    { type: 'card', hold: 4500, card: {
+      ko: { id: 'intro', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: '입국신고서 MDAC,\n**화면 그대로 따라 하면 끝**', subtitle: '실제 신청 화면 그대로. 틀리기 쉬운 5곳에서 멈춥니다.',
+            meta: [{ k: '소요', v: '5분' }, { k: '비용', v: '무료' }, { k: '제출', v: '도착 3일 전' }, { k: '기준', v: '2026' }], stamp: '따라\n하면\n끝', flag: '🇲🇾', rightTitle: 'Malaysia Digital Arrival Card', rightText: '준비물: 여권 · 항공편 · 호텔 주소\n돈 내라는 사이트는 전부 가짜', brand: '▶ 따라하면 끝 · 입국신고서·비자' },
+      en: { id: 'intro', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: 'Malaysia Arrival Card,\n**copy the screen and you are done**', subtitle: 'The real application page, step by step. We stop at the 5 spots people get wrong.',
+            meta: [{ k: 'TIME', v: '5 min' }, { k: 'FEE', v: 'Free' }, { k: 'WHEN', v: '3 days before' }, { k: 'YEAR', v: '2026' }], stamp: 'COPY\nMY\nSCREEN', flag: '🇲🇾', rightTitle: 'Malaysia Digital Arrival Card', rightText: 'Need: passport · flight · hotel address\nAny site asking for money is fake', brand: '▶ Copy My Screen · Arrival Cards & Visas' },
     }},
 
     // ---------- PERSONAL ----------
     { type: 'type', field: 'name', value: S.name, text: {
-      ko: { label: '이름', tip: '여권 아래쪽 기계판독 줄(MRZ)에 있는 순서 그대로, 영문 대문자로 입력합니다.',
+      ko: { label: '이름', tip: '여권 아래 줄 순서대로, **전부 대문자**로 입력하세요',
             mistake: '성과 이름 순서를 바꾸거나, 하이픈·마침표를 넣으면 입국 심사에서 불일치가 납니다.', bad: 'Gildong, Hong', good: 'HONG GILDONG' },
       en: { label: 'Full name', tip: 'Type it exactly as the machine-readable zone (MRZ) at the bottom of your passport, in CAPITALS.',
             mistake: 'Swapping surname/given name or adding hyphens and dots causes a mismatch at immigration.', bad: 'Gildong, Hong', good: 'HONG GILDONG' },
     }},
     { type: 'type', field: 'passport', value: S.passport, text: {
-      ko: { label: '여권번호', tip: '띄어쓰기 없이 영문·숫자만 입력합니다.',
+      ko: { label: '여권번호', tip: '**띄어쓰기 없이** 영문·숫자만',
             mistake: '숫자 0과 영문 O를 혼동하기 쉽습니다. 여권 MRZ 줄을 확대해서 확인하세요.', bad: 'M 1234 5678', good: 'M12345678' },
       en: { label: 'Passport number', tip: 'Letters and digits only, no spaces.',
             mistake: 'Digit 0 and letter O are easy to mix up — zoom in on the MRZ line of your passport.', bad: 'M 1234 5678', good: 'M12345678' },
@@ -117,7 +117,7 @@ module.exports = {
 
     // ---------- CONTACT ----------
     { type: 'type', field: 'email', value: S.email, text: {
-      ko: { label: '이메일', tip: '제출 확인 PDF가 이 주소로 옵니다. 공항에서 열어볼 수 있는 이메일을 쓰세요.',
+      ko: { label: '이메일', tip: '확인 PDF가 여기로 옵니다. **공항에서 열 수 있는 메일**로',
             mistake: '오타가 나면 확인증을 못 받습니다. 다음 칸에서 한 번 더 입력하게 되어 있으니 복사-붙여넣기 하지 말고 직접 치세요.' },
       en: { label: 'Email', tip: 'The confirmation PDF is sent here. Use an inbox you can open at the airport.',
             mistake: 'A typo means no confirmation. The next box asks you to type it again — do not paste, type it.' },
@@ -127,7 +127,7 @@ module.exports = {
       en: { label: 'Confirm email', tip: 'Type it again, exactly the same.' },
     }},
     { type: 'type', field: 'phone', value: S.phone, text: {
-      ko: { label: '휴대폰 번호', tip: '국가번호를 포함해 숫자만 입력합니다.',
+      ko: { label: '휴대폰 번호', tip: '국가번호 포함, **숫자만**',
             mistake: '+ 기호나 맨 앞의 0을 넣으면 오류가 납니다. 한국은 82 뒤에 0을 뺀 번호를 붙입니다.', bad: '+82-010-1234-5678', good: '821012345678' },
       en: { label: 'Mobile number', tip: 'Digits only, including country code.',
             mistake: 'A "+" sign or the leading 0 of your number causes an error. Country code, then the number without its leading 0.', bad: '+82-010-1234-5678', good: '821012345678' },
@@ -135,11 +135,11 @@ module.exports = {
 
     // ---------- TRAVEL ----------
     { type: 'card', hold: 2600, card: {
-      ko: { id: 'travel', title: '여행 정보', subtitle: '항공권 예약 확인서를 옆에 두고 보면서 입력하세요' },
-      en: { id: 'travel', title: 'Travel details', subtitle: 'Keep your flight confirmation next to you while you type' },
+      ko: { id: 'travel', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: '여행 정보', subtitle: '항공권 예약 확인서를 옆에 두고 보면서 입력하세요', flag: '✈️', rightTitle: '2 / 4', rightText: '도착일 · 출국일 · 교통수단\n항공편 · 마지막 출발지' },
+      en: { id: 'travel', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: 'Travel details', subtitle: 'Keep your flight confirmation next to you', flag: '✈️', rightTitle: '2 / 4', rightText: 'Arrival · departure · mode\nflight · last port' },
     }},
     { type: 'type', field: 'arrival', value: S.arrival, text: {
-      ko: { label: '말레이시아 도착일', tip: '말레이시아 공항에 내리는 현지 날짜입니다.',
+      ko: { label: '말레이시아 도착일', tip: '말레이시아에 **내리는 날짜** (출발일 아님)',
             mistake: '야간 비행이면 출발일이 아니라 도착일입니다. 도착일 기준 3일 이내에만 제출할 수 있습니다.', bad: '출발일', good: '현지 도착일' },
       en: { label: 'Arrival date', tip: 'The local date you land in Malaysia.',
             mistake: 'For overnight flights use the ARRIVAL date, not departure. You can only submit within 3 days before arrival.', bad: 'departure date', good: 'local arrival date' },
@@ -153,7 +153,7 @@ module.exports = {
       en: { label: 'Mode of travel', tip: 'AIR for flights; LAND if you cross from Singapore by bus or car.' },
     }},
     { type: 'type', field: 'flight', value: S.flight, text: {
-      ko: { label: '항공편명', tip: '항공사 코드 + 번호를 붙여서 씁니다.',
+      ko: { label: '항공편명', tip: '항공사 코드 + 번호, **띄어쓰기 없이**',
             mistake: '말레이시아에 "실제로 착륙하는" 마지막 구간 편명을 씁니다. 경유편이면 두 번째 편명입니다.', bad: 'MH 067 / KE 671→', good: 'MH067' },
       en: { label: 'Flight number', tip: 'Airline code + number, no space.',
             mistake: 'Use the flight that actually LANDS in Malaysia — for connections, that is the second leg.', bad: 'MH 067', good: 'MH067' },
@@ -171,7 +171,7 @@ module.exports = {
       en: { label: 'Accommodation type', tip: 'Hotel, friend/relative, Airbnb etc.' },
     }},
     { type: 'type', field: 'address', value: S.address, text: {
-      ko: { label: '말레이시아 체류 주소', tip: '첫날 밤 묵는 숙소의 영문 주소를 넣습니다. 예약 확인서에 있는 것을 그대로 쓰세요.',
+      ko: { label: '말레이시아 체류 주소', tip: '첫날 묵는 숙소의 **영문 주소**를 예약 확인서에서 그대로',
             mistake: '"Kuala Lumpur"만 쓰면 반려될 수 있습니다. 호텔 이름 + 도로명까지 넣으세요.', bad: 'Kuala Lumpur', good: 'SUNWAY PUTRA HOTEL, 100 JALAN PUTRA' },
       en: { label: 'Address in Malaysia', tip: 'Where you stay on the first night — copy it from your booking confirmation.',
             mistake: 'Just "Kuala Lumpur" can be rejected. Include the hotel name and street.', bad: 'Kuala Lumpur', good: 'SUNWAY PUTRA HOTEL, 100 JALAN PUTRA' },
@@ -205,12 +205,12 @@ module.exports = {
             mistake: 'You cannot edit after submitting. Re-check the five spots above (name order, 0/O in passport no., expiry date, arrival date, last port) first.' },
     }},
 
-    // ---------- OUTRO ----------
-    { type: 'card', hold: 4500, card: {
-      ko: { id: 'outro', big: '끝', title: '이 다음은 이것만 준비하세요', subtitle: '📱 말레이시아 eSIM  ·  🚆 KLIA 익스프레스  ·  🏨 호텔\n링크는 설명란 맨 위에 있습니다',
-            chips: ['공식 MDAC 사이트는 설명란 첫 줄', '구독하면 서식이 바뀔 때 최신판을 보내드립니다'] },
-      en: { id: 'outro', big: 'Done', title: 'Next, you only need these', subtitle: '📱 Malaysia eSIM  ·  🚆 KLIA Ekspres  ·  🏨 Hotel\nLinks are at the top of the description',
-            chips: ['Official MDAC link: first line of the description', 'Subscribe — we re-upload when the form changes'] },
+    // ---------- OUTRO (ticket) ----------
+    { type: 'card', hold: 5000, card: {
+      ko: { id: 'outro', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: '끝. **이제 이것만 준비하세요**', subtitle: '제출 확인 PDF는 휴대폰에 저장. 공항에서는 여권만 보여주면 됩니다.',
+            meta: [{ k: '설명란 1줄', v: '공식 사이트' }, { k: '설명란 2줄', v: 'eSIM' }, { k: '설명란 3줄', v: '공항 픽업' }], stamp: '제출\n완료', flag: '🇲🇾', rightTitle: '다음 영상', rightText: '', next: ['📱 말레이시아 eSIM 5분 개통', '🇸🇬 싱가포르 입국카드 SGAC', '🔔 서식 바뀌면 최신판 알림'], brand: '▶ 따라하면 끝 · 입국신고서·비자' },
+      en: { id: 'outro', route: { from: 'ICN', fromCity: 'SEOUL', to: 'KUL', toCity: 'KUALA LUMPUR' }, title: 'Done. **Only these left**', subtitle: 'Save the confirmation PDF on your phone. At the airport you only show your passport.',
+            meta: [{ k: 'LINE 1', v: 'Official site' }, { k: 'LINE 2', v: 'eSIM' }, { k: 'LINE 3', v: 'Transfer' }], stamp: 'SUB\nMITTED', flag: '🇲🇾', rightTitle: 'Up next', rightText: '', next: ['📱 Malaysia eSIM in 5 min', '🇸🇬 Singapore Arrival Card', '🔔 Subscribe for updates'], brand: '▶ Copy My Screen' },
     }},
   ],
 };
