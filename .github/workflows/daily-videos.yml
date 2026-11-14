@@ -36,6 +36,8 @@ jobs:
           YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
           YT_TOKEN_KO_JSON: ${{ secrets.YT_TOKEN_KO_JSON }}
           YT_TOKEN_EN_JSON: ${{ secrets.YT_TOKEN_EN_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
         run: node upload/secrets-from-env.js
 
       - name: Produce & schedule uploads
