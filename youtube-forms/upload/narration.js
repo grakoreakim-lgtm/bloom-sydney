@@ -27,26 +27,27 @@ function buildScript(form, lang) {
   for (const step of form.steps) {
     if (step.type === 'card') {
       const c = step.card[lang];
-      lines.push({ id: `card-${c.id}`, text: clean([c.title, c.subtitle, ...(c.chips || [])].filter(Boolean).join('. ')) });
+      lines.push({ id: `card-${c.id}`, text: clean(c.speech || [c.title, c.subtitle, ...(c.chips || [])].filter(Boolean).join('. ')) });
       continue;
     }
     n += 1;
-    const x = step.text[lang];
-    if (x.tip) lines.push({ id: `s${n}-tip`, text: clean(`${x.label}. ${x.tip}`) });
-    if (x.mistake) {
-      const ex = x.bad && x.good ? (lang === 'ko' ? ` ${x.bad}가 아니라 ${x.good}입니다.` : ` Not ${x.bad}, but ${x.good}.`) : '';
-      lines.push({ id: `s${n}-mistake`, text: clean(`${t.mistakeTitle}. ${x.mistake}${ex}`) });
+    const x = step.text[lang]; const sp = x.speech || {};
+    // prefer the conversational `speech` script; fall back to the on-screen text
+    if (sp.tip || x.tip) lines.push({ id: `s${n}-tip`, text: clean(sp.tip || `${x.label}. ${x.tip}`) });
+    if (sp.mistake || x.mistake) {
+      const ex = !sp.mistake && x.bad && x.good ? (lang === 'ko' ? ` ${x.bad}가 아니라 ${x.good}입니다.` : ` Not ${x.bad}, but ${x.good}.`) : '';
+      lines.push({ id: `s${n}-mistake`, text: clean(sp.mistake || `${t.mistakeTitle}. ${x.mistake}${ex}`) });
     }
   }
   return lines;
 }
 
 async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1.0) {
-  const key = process.env.GOOGLE_TTS_API_KEY;
+  const key = process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_TTS_KEY_VIA_PROXY;   // the latter: any placeholder, a proxy injects the real header
   if (!key) throw new Error('GOOGLE_TTS_API_KEY is not set');
   const voice = voices[lang] || VOICES[lang];
-  const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`, {
-    method: 'POST', headers: { 'content-type': 'application/json' },
+  const res = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
+    method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
     body: JSON.stringify({ input: { text }, voice, audioConfig: { audioEncoding: 'MP3', speakingRate } }),
   });
   if (!res.ok) throw new Error(`TTS ${res.status}: ${await res.text()}`);
