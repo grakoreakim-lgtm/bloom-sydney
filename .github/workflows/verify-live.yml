@@ -1,0 +1,28 @@
+# Opens the real government pages and checks that each form's live selectors match.
+# Nothing is typed or submitted. Results (screenshots + field dumps) are kept as an artifact.
+name: verify-live
+
+on:
+  workflow_dispatch:
+    inputs:
+      forms: { description: 'Form ids, space separated', required: false, default: 'mdac sgac' }
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+      - name: Verify
+        run: node upload/verify-live.js ${{ github.event.inputs.forms }} | tee verify.log; echo '```' >> $GITHUB_STEP_SUMMARY; cat verify.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: verify-${{ github.run_id }}, path: youtube-forms/out/verify, retention-days: 14 }

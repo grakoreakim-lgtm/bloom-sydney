@@ -87,18 +87,19 @@ class Recorder {
 
   async runStep(step) {
     const sel = this.selectors[step.field];
+    const hsel = (step.hl && this.selectors[step.hl]) || sel;   // what to frame (e.g. the whole question row)
     const text = step.text[this.lang];
     if (!sel) throw new Error(`No selector for field "${step.field}" on target "${this.target}"`);
 
     await this.ov('setStep', this.stepIndex, this.totalSteps, text.label);
     await this.ov('setStrings', this.t.easyPill, this.t.mistakeTitle);
     await this.ov('moveCursor', sel);
-    await this.ov('highlight', sel, true);
+    await this.ov('highlight', hsel, true);
     await this.wait(700);
 
     // 1) explain the field (tip) before touching it
     if (text.tip) {
-      await this.ov('callout', sel, { kind: 'tip', title: text.label, body: text.tip });
+      await this.ov('callout', hsel, { kind: 'tip', title: text.label, body: text.tip });
       this.cue(`s${this.stepIndex}-tip`);
       await this.holdFor(`s${this.stepIndex}-tip`, step.tipHold ?? 2200);
     }
@@ -110,7 +111,7 @@ class Recorder {
 
     // 3) common mistake callout (if any) — shown AFTER the correct value is in
     if (text.mistake) {
-      await this.ov('callout', sel, { kind: 'warn', title: this.t.mistakeTitle, body: text.mistake, bad: text.bad, good: text.good });
+      await this.ov('callout', hsel, { kind: 'warn', title: this.t.mistakeTitle, body: text.mistake, bad: text.bad, good: text.good });
       this.cue(`s${this.stepIndex}-mistake`);
       await this.shot(`step${this.stepIndex}-${step.field}`);
       await this.holdFor(`s${this.stepIndex}-mistake`, step.mistakeHold ?? 3800);

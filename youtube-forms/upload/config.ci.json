@@ -45,7 +45,7 @@
     ]
   },
   "tts": {
-    "speakingRate": 1.0,
+    "speakingRate": 1,
     "voices": {
       "ko": {
         "languageCode": "ko-KR",
@@ -75,7 +75,8 @@
   },
   "bgm": null,
   "formMap": {
-    "MDAC 디지털 입국카드": "mdac"
+    "MDAC 디지털 입국카드": "mdac",
+    "SG Arrival Card(웹·MyICA)": "sgac"
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
