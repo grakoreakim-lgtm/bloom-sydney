@@ -15,7 +15,7 @@ concurrency: { group: daily-videos, cancel-in-progress: false }
 
 jobs:
   produce:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.50 does not support ubuntu-latest (26.04) yet
     timeout-minutes: 300
     defaults: { run: { working-directory: youtube-forms } }
     steps:
