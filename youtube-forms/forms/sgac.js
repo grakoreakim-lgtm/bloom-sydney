@@ -9,7 +9,7 @@ const path = require('path');
 
 // Sample traveller — obviously fake. Never use real personal data on camera.
 const S = {
-  name: 'HONG GILDONG',
+  name: 'GILDONG HONG',   // SGAC: given name followed by surname (unlike MDAC)
   passport: 'M12345678',
   nationality: 'KOR',
   dob: '15/05/1990',
@@ -42,10 +42,10 @@ module.exports = {
 
   url: {
     mock: 'file://' + path.join(__dirname, '..', 'mock', 'sgac-form.html'),
-    live: 'https://eservices.ica.gov.sg/sgarrivalcard/',
+    live: 'https://eservices.ica.gov.sg/arrivalcard/sgac',
   },
   // live only: clicks that lead from the landing page into the form (verified 2026-11 via verify-live)
-  livePre: [{ click: 'text=Visitor' }, { click: 'text=Fill in Manually' }],
+  livePre: [{ goto: 'https://eservices.ica.gov.sg/arrivalcard/sgac/visitor/submit' }],
 
   selectors: {
     mock: {
@@ -86,10 +86,10 @@ module.exports = {
 
     // ---------- PERSONAL ----------
     { type: 'type', field: 'name', value: S.name, text: {
-      ko: { label: '이름', speech: { tip: '이름이에요. 여권 맨 아래 줄 순서 그대로, 전부 대문자로 쳐 주세요.', mistake: '여기서 많이들 틀려요. 성이랑 이름 순서를 바꾸면 여권이랑 안 맞아요. 홍, 띄어쓰기, 길동. 여권에 적힌 그대로요.' },
-            tip: '여권 아래 줄 순서대로, **전부 대문자**로', mistake: '성·이름 순서를 바꾸면 여권과 불일치가 납니다.', bad: 'Gildong Hong', good: 'HONG GILDONG' },
-      en: { label: 'Full name', speech: { tip: 'Your full name, exactly as on the bottom line of your passport, all capitals.', mistake: 'Do not swap the surname and given name. Type it the way your passport shows it.' },
-            tip: 'As in your passport, **ALL CAPITALS**', mistake: 'Swapping surname and given name causes a mismatch.', bad: 'Gildong Hong', good: 'HONG GILDONG' },
+      ko: { label: '이름', speech: { tip: '이름이에요. 싱가포르는 이름을 먼저, 성을 나중에 써요. 칸 안에도 기븐 네임 다음에 서네임이라고 적혀 있어요.', mistake: '여기서 정말 많이 틀려요. 말레이시아 신고서는 성이 먼저였는데, 싱가포르는 반대예요. 홍길동이면 길동, 띄어쓰기, 홍. 철자는 여권 영문 그대로요.' },
+            tip: '**이름 먼저, 성 나중** (Given name → Surname)', mistake: '말레이시아(MDAC)와 순서가 반대입니다. 철자는 여권 영문 그대로.', bad: 'HONG GILDONG', good: 'GILDONG HONG' },
+      en: { label: 'Full name', speech: { tip: 'Full name. Singapore asks for your given name first, then your surname. The box even says given name followed by surname.', mistake: 'This trips people up, especially if you just did the Malaysia card, which wants the surname first. Given name, space, surname, spelled exactly as in your passport.' },
+            tip: '**Given name first, then surname**', mistake: 'Opposite order to the Malaysia MDAC. Spelling exactly as in your passport.', bad: 'HONG GILDONG', good: 'GILDONG HONG' },
     }},
     { type: 'type', field: 'passport', value: S.passport, text: {
       ko: { label: '여권번호', speech: { tip: '여권번호예요. 띄어쓰기 없이요.', mistake: '숫자 영이랑 영문 오, 숫자 일이랑 영문 아이가 헷갈려요. 여권을 확대해서 한 글자씩 확인하세요.' },
@@ -142,7 +142,7 @@ module.exports = {
       en: { id: 'trip', speech: 'Now the trip details. Keep your flight and hotel bookings open next to you.', route, title: 'Trip details', subtitle: 'Keep your flight and hotel bookings next to you', flag: '✈️', rightTitle: '2 / 3', rightText: 'Arrival · flight · last city\npurpose · stay · departure' },
     }},
     { type: 'type', field: 'arrival', value: S.arrival, text: {
-      ko: { label: '도착일', speech: { tip: '싱가포르에 내리는 날짜예요.', mistake: '밤 비행기면 출발일 말고 도착일이에요. 그리고 이 카드는 도착일 기준 사흘 전부터만 낼 수 있어요. 너무 일찍 하면 날짜가 안 골라져요.' },
+      ko: { label: '도착일', speech: { tip: '싱가포르에 내리는 날짜예요. 실제 화면에서는 오늘, 내일, 모레 세 날짜 중에서 고르게 되어 있어요.', mistake: '밤 비행기면 출발일 말고 도착일이에요. 그리고 고를 수 있는 날짜가 사흘뿐이라, 도착일이 목록에 없으면 아직 낼 때가 아닌 거예요. 너무 일찍 하려고 하지 마세요.' },
             tip: '싱가포르에 **내리는 날짜**', mistake: '도착일 기준 **3일 전부터만** 제출 가능합니다.', bad: '출발일', good: '현지 도착일' },
       en: { label: 'Date of arrival', speech: { tip: 'The date you land in Singapore.', mistake: 'For an overnight flight, use the arrival date. And you can only submit within three days before you arrive.' },
             tip: 'The date you **land**', mistake: 'Only within **3 days** before arrival.', bad: 'departure date', good: 'local arrival date' },

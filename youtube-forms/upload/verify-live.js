@@ -24,7 +24,7 @@ if (!ids.length) { console.error('usage: node upload/verify-live.js <formId> [..
       await page.goto(form.url.live, { waitUntil: 'networkidle', timeout: 60000 });
       await page.waitForTimeout(2500);
       for (const p of form.livePre || []) {
-        try { await page.locator(p.click).first().click({ timeout: 10000 }); await page.waitForLoadState('networkidle').catch(() => {}); await page.waitForTimeout(2000); console.log(`  pre: clicked ${p.click}`); }
+        try { if (p.goto) await page.goto(p.goto, { waitUntil: 'networkidle', timeout: 60000 }); else await page.locator(p.click).first().click({ timeout: 10000 }); await page.waitForLoadState('networkidle').catch(() => {}); await page.waitForTimeout(2000); console.log(`  pre: ${p.goto ? 'goto ' + p.goto : 'clicked ' + p.click}`); }
         catch (e) { console.log(`  pre: FAILED ${p.click} — ${e.message.split('\n')[0]}`); }
       }
       await page.screenshot({ path: path.join(dir, 'page.png'), fullPage: true });
