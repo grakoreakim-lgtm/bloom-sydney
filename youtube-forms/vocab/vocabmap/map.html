@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>VocabMap video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 720px; overflow: hidden; background: #efe9dc; font-family: "Noto Sans KR", "Pretendard", "Segoe UI", system-ui, sans-serif; color: #1d1d1f; }
+
+  /* ---- camera: #world is the 1200x896 artwork; we move the camera with one transform ---- */
+  #world { position: absolute; left: 0; top: 0; width: 1200px; height: 896px; transform-origin: 0 0; transition: transform 1.1s cubic-bezier(.25,.8,.25,1); will-change: transform; }
+  #blank, #filled { position: absolute; inset: 0; width: 1200px; height: 896px; }
+  /* the blank art sits on top only for the hook's "before → after" crossfade */
+  #blank { opacity: 0; transition: opacity 1s ease; pointer-events: none; }
+  #blank.on { opacity: 1; }
+  /* sticker: a paper note covering one word, numbered like the blank sheet. Peel = reveal. */
+  .patch { position: absolute; background: #f4efe3; border: 1.5px solid #cfc6b2; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,.18); display: flex; align-items: center; justify-content: center; transition: opacity .45s ease, transform .45s ease; transform-origin: 50% 50%; }
+  .patch::before { content: attr(data-no); width: 30px; height: 30px; border-radius: 50%; border: 2px solid #6b5a3e; color: #6b5a3e; font: 900 17px/26px "Noto Sans KR", sans-serif; text-align: center; background: #fff; }
+  .patch.peeled { opacity: 0; transform: var(--rot) translateY(-14px) scale(.85); }
+  .patch.ask::before { background: #ff3b3b; border-color: #ff3b3b; color: #fff; }
+  .patch.ask { box-shadow: 0 0 0 6px rgba(255,59,59,.3), 0 2px 5px rgba(0,0,0,.18); }
+  /* red ring around a word that has just been revealed */
+  .ring { position: absolute; border: 4px solid #ff3b3b; border-radius: 10px; box-shadow: 0 0 0 10px rgba(255,59,59,.16); opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .ring.on { opacity: 1; }
+  /* dim everything except a region */
+  #spot { position: absolute; border-radius: 18px; box-shadow: 0 0 0 9999px rgba(20,16,10,.55); opacity: 0; transition: all .9s ease; pointer-events: none; }
+  #spot.on { opacity: 1; }
+
+  /* ---- HUD ---- */
+  #badge { position: absolute; left: 24px; top: 20px; background: #1d1d1f; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 19px; font-weight: 700; z-index: 6; display: flex; gap: 10px; align-items: center; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+  #badge .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff3b3b; }
+  #pill { position: absolute; right: 24px; top: 20px; background: #0b7a3b; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 16px; font-weight: 700; z-index: 6; }
+  #progress { position: absolute; left: 0; bottom: 0; height: 8px; background: #ff3b3b; width: 0; transition: width .6s ease; z-index: 6; }
+
+  /* ---- word card (right side) ---- */
+  #card { position: absolute; right: 28px; top: 92px; width: 460px; background: #fff; border-radius: 20px; padding: 22px 26px; box-shadow: 0 24px 70px rgba(0,0,0,.28); border-left: 10px solid #ff3b3b; display: none; z-index: 5; }
+  #card.on { display: block; animation: pop .35s ease; }
+  @keyframes pop { from { transform: translateY(14px); opacity: 0; } }
+  #card .k { font-size: 13px; letter-spacing: 2px; font-weight: 800; color: #ff3b3b; }
+  #card .w { font-size: 50px; font-weight: 900; line-height: 1.05; letter-spacing: -.02em; }
+  #card .ipa { font-size: 18px; color: #666; margin: 2px 0 10px; }
+  #card .ko { font-size: 28px; font-weight: 700; margin-bottom: 14px; }
+  #card .ex { font-size: 21px; line-height: 1.4; background: #fff6cc; padding: 12px 14px; border-radius: 12px; }
+  #card .ex b { background: #ffd400; padding: 0 5px; border-radius: 5px; }
+  #card .exko { font-size: 16px; color: #555; margin-top: 8px; }
+  #card .col { margin-top: 12px; font-size: 17px; color: #333; }
+  #card .col b { color: #0b7a3b; }
+
+  /* ---- scene / story panel (left-bottom wide) ---- */
+  #panel { position: absolute; left: 28px; right: 28px; bottom: 28px; background: rgba(255,255,255,.97); border-radius: 18px; padding: 20px 26px; box-shadow: 0 16px 50px rgba(0,0,0,.3); display: none; z-index: 5; }
+  #panel.on { display: block; animation: pop .35s ease; }
+  #panel .k { font-size: 13px; letter-spacing: 2px; font-weight: 800; color: #ff3b3b; margin-bottom: 6px; }
+  #panel .t { font-size: 26px; font-weight: 700; line-height: 1.4; }
+  #panel .t .blank { display: inline-block; min-width: 110px; border-bottom: 4px solid #ff3b3b; color: #ff3b3b; text-align: center; font-size: 20px; vertical-align: baseline; }
+  #panel .t .ans { background: #ffd400; padding: 0 6px; border-radius: 6px; }
+  #panel .sub { font-size: 17px; color: #555; margin-top: 8px; }
+  #panel .count { position: absolute; right: 22px; top: 18px; width: 56px; height: 56px; border-radius: 50%; background: #ff3b3b; color: #fff; font-size: 30px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  #panel .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  #panel .chip { background: #f1ede2; border-radius: 999px; padding: 6px 14px; font-size: 18px; font-weight: 700; }
+
+  /* ---- full-screen card ---- */
+  #fs { position: absolute; inset: 0; background: #1d1d1f; color: #f5f5f7; display: none; align-items: center; justify-content: center; text-align: center; padding: 60px; z-index: 10; }
+  #fs.on { display: flex; }
+  #fs h1 { font-size: 60px; margin: 0 0 14px; letter-spacing: -.02em; }
+  #fs h2 { font-size: 27px; font-weight: 400; opacity: .85; margin: 0 0 26px; white-space: pre-line; line-height: 1.4; }
+  #fs .big { font-size: 96px; font-weight: 900; color: #7CFF9B; }
+  #fs .chips { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  #fs .chip { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28); padding: 10px 18px; border-radius: 999px; font-size: 21px; }
+  #fs .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; }
+  #fs .grid div { background: rgba(255,255,255,.1); border-radius: 10px; padding: 10px; font-size: 22px; font-weight: 800; }
+  #fs .grid div small { display: block; font-size: 14px; font-weight: 500; opacity: .85; }
+</style>
+</head>
+<body>
+  <div id="world">
+    <img id="filled" src="assets/junior-a01.png" alt="">
+    <div id="patches"></div>
+    <div id="rings"></div>
+    <img id="blank" src="assets/junior-a01-blank.png" alt="">
+    <div id="spot"></div>
+  </div>
+  <div id="card"></div>
+  <div id="panel"></div>
+  <div id="badge"><span class="dot"></span><span class="txt"></span></div>
+  <div id="pill">🗺 지도 한 장 · 20단어 · 세 번 꺼내기</div>
+  <div id="progress"></div>
+  <div id="fs"></div>
+
+<script src="data/junior-a01.js"></script>
+<script>
+  const U = window.UNIT, $ = (s) => document.querySelector(s);
+  const W = U.art.w, H = U.art.h;
+  const E = Object.fromEntries(U.entries.map(e => [e.headword, e]));
+
+  // ---- build stickers & rings (one per word, rotated to the word's angle) ----
+  U.entries.forEach(e => {
+    const [x, y] = e.pos_xy, w = 80 + e.headword.length * 17, h = 68, rot = `rotate(${e.angle || 0}deg)`;
+    const p = document.createElement('div'); p.className = 'patch'; p.id = 'p-' + e.headword; p.dataset.no = e.no;
+    p.style.cssText = `left:${x - w / 2}px;top:${y - h / 2}px;width:${w}px;height:${h}px;transform:${rot};--rot:${rot}`;
+    $('#patches').appendChild(p);
+    const r = document.createElement('div'); r.className = 'ring'; r.id = 'r-' + e.headword;
+    r.style.cssText = `left:${x - w / 2 - 8}px;top:${y - h / 2 - 6}px;width:${w + 16}px;height:${h + 12}px;transform:${rot}`;
+    $('#rings').appendChild(r);
+  });
+
+  // ---- camera: fit a region (in art coords) into a viewport box (in screen coords) ----
+  function camera(region, box = { x: 0, y: 0, w: 1280, h: 720 }, pad = 30) {
+    const [rx, ry, rw, rh] = region;
+    const s = Math.min((box.w - pad * 2) / rw, (box.h - pad * 2) / rh);
+    const tx = box.x + (box.w - rw * s) / 2 - rx * s;
+    const ty = box.y + (box.h - rh * s) / 2 - ry * s;
+    $('#world').style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+  }
+  const FULL = [0, 0, W, H];
+  const LEFTBOX = { x: 0, y: 80, w: 760, h: 620 };   // leaves the right side for the card
+
+  const api = {
+    badge: (t) => { $('#badge .txt').textContent = t; },
+    progress: (p) => { $('#progress').style.width = (p * 100) + '%'; },
+    full: () => { camera(FULL, { x: 0, y: 0, w: 1280, h: 720 }, 10); api.spot(null); },
+    zoomCentre: () => camera([U.centre[0] - 140, U.centre[1] - 110, 280, 220]),
+    branch: (id, withCard = true) => camera(U.branches.find(b => b.id === id).region.map, withCard ? LEFTBOX : undefined),
+    scene: (id) => camera(U.branches.find(b => b.id === id).region.scene, { x: 0, y: 80, w: 560, h: 620 }),
+    spot: (region) => { const s = $('#spot'); if (!region) { s.className = ''; return; } const [x, y, w, h] = region; s.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`; s.className = 'on'; },
+
+    blankOverlay: (on) => { $('#blank').className = on ? 'on' : ''; },
+    showAll: (on) => document.querySelectorAll('.patch').forEach(p => p.className = on ? 'patch peeled' : 'patch'),
+    reveal: (word, hot = true) => { api.unhot(); $('#p-' + word).className = 'patch peeled'; if (hot) $('#r-' + word).className = 'ring on'; },
+    unhot: () => document.querySelectorAll('.ring.on').forEach(r => r.className = 'ring'),
+    cover: (words) => words.forEach(w => { $('#p-' + w).className = 'patch'; }),
+    // highlight one sticker as "the one being asked" (red number)
+    ask: (word, on) => { const p = $('#p-' + word); p.classList.toggle('ask', !!on); },
+    clearAsk: () => document.querySelectorAll('.patch.ask').forEach(p => p.classList.remove('ask')),
+
+    card: (word) => {
+      const e = E[word];
+      $('#card').innerHTML = `<div class="k">${e.tag} · ${e.no}/20</div><div class="w">${e.headword}</div><div class="ipa">${e.ipa} · ${e.pos}</div><div class="ko">${e.ko}</div>` +
+        `<div class="ex">${e.example.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}<div class="exko">${e.exampleKo}</div></div>` +
+        `<div class="col">자주 붙는 말 · <b>${e.collocation}</b></div>`;
+      $('#card').className = 'on';
+    },
+    hideCard: () => { $('#card').className = ''; },
+
+    panel: ({ k, t, sub, count, chips }) => {
+      $('#panel').innerHTML = `<div class="k">${k || ''}</div><div class="t">${t || ''}</div>` + (sub ? `<div class="sub">${sub}</div>` : '') +
+        (chips ? `<div class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '') + (count != null ? `<div class="count">${count}</div>` : '');
+      $('#panel').className = 'on';
+    },
+    hidePanel: () => { $('#panel').className = ''; },
+
+    // story paragraph with {{n}} → blanks or answers
+    story: (i, mode, count) => {
+      const p = U.story.paragraphs[i];
+      const t = p.text.replace(/\{\{(\d+)\}\}/g, (_, n) => {
+        const a = U.story.cloze.find(c => c.no == n);
+        return mode === 'blank' ? `<span class="blank">${n}</span>` : `<span class="ans">${a.answer}</span>`;
+      });
+      api.panel({ k: `꺼내기 ② · 이야기 빈칸 ${i + 1}/4 — ${p.label}`, t, sub: mode === 'blank' ? '괄호 번호 = 지도의 번호. 소리 내어 말해보세요.' : '지도에서 본 그 자리의 단어입니다.', count });
+    },
+
+    fs: ({ big, title, subtitle, chips = [], words }) => {
+      $('#fs').innerHTML = (big ? `<div class="big">${big}</div>` : '') + `<div><h1>${title}</h1>` + (subtitle ? `<h2>${subtitle}</h2>` : '') +
+        (chips.length ? `<div class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '') +
+        (words ? `<div class="grid">${words.map(w => `<div>${w.headword}<small>${w.ko}</small></div>`).join('')}</div>` : '') + '</div>';
+      $('#fs').className = 'on';
+    },
+    hideFs: () => { $('#fs').className = ''; },
+  };
+  window.api = api;
+  api.full();
+</script>
+</body>
+</html>

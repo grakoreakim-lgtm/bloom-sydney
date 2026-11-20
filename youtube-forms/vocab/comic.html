@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Vocab Comic</title>
+<style>
+  :root { --accent: #ff3b3b; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 720px; overflow: hidden; background: #0f1320; font-family: "Pretendard", "Noto Sans KR", "Segoe UI", system-ui, sans-serif; color: #fff; }
+
+  /* ---- stage: the comic image, scaled with transform so we can zoom into a panel ---- */
+  #stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+  #comic { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; object-fit: contain; background: #fff; }
+  #dim { position: absolute; inset: 0; pointer-events: none; }
+  #dim .hole { position: absolute; box-shadow: 0 0 0 9999px rgba(0,0,0,.72); border: 5px solid var(--accent); border-radius: 10px; transition: all .6s ease; }
+  #bubble { position: absolute; border: 4px solid #ffd400; border-radius: 16px; box-shadow: 0 0 0 6px rgba(255,212,0,.35); display: none; transition: all .5s ease; }
+  #bubble.on { display: block; animation: pulse 1.1s infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 14px rgba(255,212,0,.08); } }
+
+  /* ---- right-hand teaching card ---- */
+  #card { position: absolute; right: 28px; top: 90px; width: 440px; background: rgba(15,19,32,.94); border-radius: 18px; padding: 22px 24px; box-shadow: 0 20px 60px rgba(0,0,0,.5); border-left: 8px solid var(--accent); display: none; z-index: 4; }
+  #card.on { display: block; animation: slidein .45s ease; }
+  @keyframes slidein { from { transform: translateX(40px); opacity: 0; } }
+  #card .step { font-size: 14px; font-weight: 800; letter-spacing: 2px; color: #ffd400; margin-bottom: 6px; }
+  #card .word { font-size: 44px; font-weight: 900; line-height: 1.05; }
+  #card .ipa { font-size: 18px; opacity: .75; margin: 2px 0 12px; }
+  #card .meaning { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+  #card .row { font-size: 17px; line-height: 1.45; margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.07); }
+  #card .row b { color: #ffd400; }
+  #card .bonus { margin-top: 12px; font-size: 16px; opacity: .9; border-top: 1px dashed rgba(255,255,255,.25); padding-top: 10px; }
+  #card .bonus b { color: #7CFF9B; }
+
+  /* ---- sentence strip under the panel (context + quiz) ---- */
+  #strip { position: absolute; left: 28px; bottom: 28px; width: 760px; background: #fff; color: #111; border-radius: 16px; padding: 18px 22px; font-size: 28px; font-weight: 700; line-height: 1.35; box-shadow: 0 16px 40px rgba(0,0,0,.45); display: none; z-index: 4; }
+  #strip.on { display: block; }
+  #strip .hl { background: #ffd400; padding: 0 6px; border-radius: 6px; }
+  #strip .blank { display: inline-block; min-width: 170px; border-bottom: 5px solid var(--accent); color: var(--accent); text-align: center; }
+  #strip .hint { font-size: 18px; font-weight: 500; color: #555; margin-top: 8px; }
+  #strip .count { position: absolute; right: 18px; top: 14px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; }
+
+  /* ---- top chrome ---- */
+  #badge { position: absolute; left: 24px; top: 20px; background: #111; padding: 10px 18px; border-radius: 999px; font-size: 20px; font-weight: 800; box-shadow: 0 4px 16px rgba(0,0,0,.4); display: flex; gap: 10px; align-items: center; z-index: 5; }
+  #badge .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  #pill { position: absolute; right: 24px; top: 20px; background: #0b7a3b; padding: 10px 18px; border-radius: 999px; font-size: 17px; font-weight: 700; z-index: 5; }
+  #progress { position: absolute; left: 0; bottom: 0; height: 8px; background: var(--accent); width: 0; transition: width .6s ease; z-index: 6; }
+
+  /* ---- full-screen cards ---- */
+  #fs { position: absolute; inset: 0; background: radial-gradient(1200px 600px at 20% 10%, #1e3a8a 0%, #0b1220 60%); display: none; align-items: center; justify-content: center; text-align: center; padding: 60px; z-index: 10; }
+  #fs.on { display: flex; }
+  #fs h1 { font-size: 62px; margin: 0 0 14px; }
+  #fs h2 { font-size: 28px; font-weight: 500; opacity: .9; margin: 0 0 26px; white-space: pre-line; }
+  #fs .big { font-size: 100px; font-weight: 900; color: #7CFF9B; }
+  #fs .chips { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  #fs .chip { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.3); padding: 10px 18px; border-radius: 999px; font-size: 22px; }
+  #fs .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+  #fs .grid div { background: rgba(255,255,255,.1); border-radius: 12px; padding: 14px; font-size: 26px; font-weight: 800; }
+  #fs .grid div small { display: block; font-size: 16px; font-weight: 500; opacity: .85; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <img id="comic" src="assets/comic.jpg" alt="">
+    <div id="dim"><div class="hole"></div></div>
+    <div id="bubble"></div>
+  </div>
+  <div id="card"><div class="step"></div><div class="word"></div><div class="ipa"></div><div class="meaning"></div><div class="row r1"></div><div class="row r2"></div><div class="bonus"></div></div>
+  <div id="strip"></div>
+  <div id="badge"><span class="dot"></span><span class="txt"></span></div>
+  <div id="pill">👀 보고 → 뜻 → 바로 떠올리기</div>
+  <div id="progress"></div>
+  <div id="fs"></div>
+
+<script src="data/new-school.js"></script>
+<script>
+  const V = window.VOCAB;
+  const $ = (s) => document.querySelector(s);
+
+  // image is object-fit: contain inside 1280x720 → compute drawn rect
+  function imgRect() {
+    const img = $('#comic');
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const s = Math.min(1280 / iw, 720 / ih);
+    const w = iw * s, h = ih * s;
+    return { x: (1280 - w) / 2, y: (720 - h) / 2, w, h };
+  }
+  function panelRect(n) {
+    const r = imgRect(), g = V.grid;
+    const i = n - 1, col = i % g.cols, row = Math.floor(i / g.cols);
+    const top = r.y + r.h * g.top, ph = (r.h * (1 - g.top)) / g.rows, pw = r.w / g.cols;
+    return { x: r.x + col * pw, y: top + row * ph, w: pw, h: ph };
+  }
+
+  const api = {
+    badge(t) { $('#badge .txt').textContent = t; },
+    progress(p) { $('#progress').style.width = (p * 100) + '%'; },
+
+    overview() {
+      $('#stage').style.transform = 'none';
+      $('#dim .hole').style.cssText = 'left:-20px;top:-20px;width:1320px;height:760px;border-color:transparent';
+      $('#bubble').className = ''; $('#card').className = ''; $('#strip').className = '';
+    },
+
+    // zoom so the panel fills the left ~58% of the frame, leaving room for the card
+    focusPanel(n) {
+      const p = panelRect(n);
+      const targetW = 740, targetH = 600;
+      const s = Math.min(targetW / p.w, targetH / p.h);
+      const tx = 28 - p.x * s, ty = 90 - p.y * s;
+      $('#stage').style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+      const hole = $('#dim .hole');
+      hole.style.cssText = `left:${p.x}px;top:${p.y}px;width:${p.w}px;height:${p.h}px;border-width:${5 / s}px;border-radius:${10 / s}px`;
+      $('#bubble').className = '';
+    },
+    showBubble(n, on = true) {
+      const p = panelRect(n), g = V.grid;
+      const b = $('#bubble');
+      b.style.cssText = `left:${p.x + p.w * 0.04}px;top:${p.y + p.h * 0.02}px;width:${p.w * 0.92}px;height:${p.h * g.bubbleHeight}px`;
+      b.className = on ? 'on' : '';
+    },
+
+    // STEP 1 — context: sentence with the target highlighted
+    context(n) {
+      const P = V.panels[n - 1];
+      const re = new RegExp(`(${P.target})`, 'i');
+      $('#strip').innerHTML = P.bubble.replace(re, '<span class="hl">$1</span>');
+      $('#strip').className = 'on';
+      $('#card').className = '';
+    },
+    // STEP 2 — meaning + nuance + situation card
+    meaning(n) {
+      const P = V.panels[n - 1];
+      $('#card .step').textContent = 'STEP 2 · 뜻과 뉘앙스';
+      $('#card .word').textContent = P.target;
+      $('#card .ipa').textContent = `${P.ipa}  ·  ${P.pos}`;
+      $('#card .meaning').textContent = P.meaning;
+      $('#card .r1').innerHTML = `<b>뉘앙스</b> ${P.nuance}`;
+      $('#card .r2').innerHTML = `<b>이럴 때</b> ${P.situation}`;
+      $('#card .bonus').innerHTML = P.bonus ? `<b>+ ${P.bonus.word}</b> ${P.bonus.meaning} — ${P.bonus.nuance}` : '';
+      $('#card .bonus').style.display = P.bonus ? 'block' : 'none';
+      $('#card').className = 'on';
+    },
+    // STEP 3 — recall: blank in the sentence + countdown, then reveal
+    quiz(n, count) {
+      const P = V.panels[n - 1];
+      $('#card').className = '';
+      $('#strip').innerHTML = P.quiz.blank.replace('______', '<span class="blank">?</span>') +
+        `<div class="hint">힌트: ${P.quiz.hint}</div><div class="count">${count}</div>`;
+      $('#strip').className = 'on';
+    },
+    reveal(n) {
+      const P = V.panels[n - 1];
+      $('#strip').innerHTML = P.quiz.blank.replace('______', `<span class="hl">${P.target}</span>`) + `<div class="hint">✅ ${P.meaning}</div>`;
+    },
+
+    card({ big, title, subtitle, chips = [], words }) {
+      $('#fs').innerHTML = (big ? `<div class="big">${big}</div>` : '') + `<div><h1>${title}</h1>` +
+        (subtitle ? `<h2>${subtitle}</h2>` : '') +
+        (chips.length ? `<div class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '') +
+        (words ? `<div class="grid">${words.map(w => `<div>${w.target}<small>${w.meaning}</small></div>`).join('')}</div>` : '') + '</div>';
+      $('#fs').className = 'on';
+    },
+    hideCard() { $('#fs').className = ''; },
+  };
+  window.api = api;
+  api.overview();
+</script>
+</body>
+</html>

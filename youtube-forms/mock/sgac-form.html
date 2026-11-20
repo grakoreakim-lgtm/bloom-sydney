@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — SG Arrival Card (not the official site)</title>
+<style>
+  :root { --b: #b0182f; --bg: #f4f4f6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #333; color: #fff; text-align: center; padding: 8px; font-weight: 700; font-size: 14px; }
+  header { background: #fff; border-bottom: 4px solid var(--b); padding: 16px 28px; font-size: 22px; font-weight: 700; color: var(--b); }
+  main { max-width: 980px; margin: 24px auto; background: #fff; padding: 28px 36px 40px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  h2 { font-size: 17px; border-bottom: 2px solid var(--b); padding-bottom: 6px; margin: 28px 0 14px; color: var(--b); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  input, select { width: 100%; padding: 9px 10px; border: 1px solid #bbb; border-radius: 4px; font-size: 15px; background: #fff; }
+  .full { grid-column: 1 / -1; }
+  .phone { display: grid; grid-template-columns: 120px 1fr; gap: 8px; }
+  .q { font-size: 14px; margin: 10px 0 6px; } .yn { display: flex; gap: 18px; font-size: 14px; } .yn input { width: auto; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-top: 18px; } .check input { width: 18px; height: 18px; margin-top: 2px; }
+  button { margin-top: 24px; background: var(--b); color: #fff; border: 0; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 4px; }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official ICA website and submits nothing</div>
+<header>SG Arrival Card — Practice Form</header>
+<main>
+  <form onsubmit="return false;">
+    <h2>Personal Particulars</h2>
+    <div class="row">
+      <div class="full"><label for="name">Full Name (as in passport) <span>*</span></label><input id="name" autocomplete="off"></div>
+      <div><label for="passport">Passport No. <span>*</span></label><input id="passport" autocomplete="off"></div>
+      <div><label for="nationality">Nationality / Citizenship <span>*</span></label>
+        <select id="nationality"><option value="">-- Select --</option><option value="KOR">KOREA, SOUTH</option><option value="JPN">JAPAN</option><option value="IND">INDIA</option><option value="IDN">INDONESIA</option><option value="USA">UNITED STATES</option><option value="AUS">AUSTRALIA</option></select></div>
+      <div><label for="dob">Date of Birth <span>*</span></label><input id="dob" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="sex">Sex <span>*</span></label><select id="sex"><option value="">-- Select --</option><option value="M">MALE</option><option value="F">FEMALE</option></select></div>
+      <div><label for="passportExpiry">Passport Expiry Date <span>*</span></label><input id="passportExpiry" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="residence">Country / Place of Residence <span>*</span></label>
+        <select id="residence"><option value="">-- Select --</option><option value="KOR">KOREA, SOUTH</option><option value="JPN">JAPAN</option><option value="IND">INDIA</option><option value="IDN">INDONESIA</option><option value="USA">UNITED STATES</option><option value="AUS">AUSTRALIA</option></select></div>
+      <div><label for="email">Email Address <span>*</span></label><input id="email" type="email" autocomplete="off"></div>
+      <div><label for="phone">Mobile Number <span>*</span></label>
+        <div class="phone"><select id="phoneCode"><option value="">Code</option><option value="82">+82</option><option value="65">+65</option><option value="81">+81</option><option value="91">+91</option><option value="62">+62</option><option value="61">+61</option></select><input id="phone" autocomplete="off"></div></div>
+    </div>
+
+    <h2>Trip Information</h2>
+    <div class="row">
+      <div><label for="arrival">Date of Arrival <span>*</span></label><input id="arrival" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="mode">Mode of Travel <span>*</span></label><select id="mode"><option value="">-- Select --</option><option value="AIR">AIR</option><option value="SEA">SEA</option><option value="LAND">LAND</option></select></div>
+      <div><label for="flight">Flight No. <span>*</span></label><input id="flight" autocomplete="off"></div>
+      <div><label for="lastCity">Last City / Port of Embarkation before Singapore <span>*</span></label>
+        <select id="lastCity"><option value="">-- Select --</option><option value="SEOUL">SEOUL (ICN)</option><option value="BUSAN">BUSAN (PUS)</option><option value="KUALA LUMPUR">KUALA LUMPUR (KUL)</option><option value="TOKYO">TOKYO (NRT)</option><option value="BANGKOK">BANGKOK (BKK)</option></select></div>
+      <div><label for="purpose">Purpose of Travel <span>*</span></label><select id="purpose"><option value="">-- Select --</option><option value="HOLIDAY">HOLIDAY / LEISURE</option><option value="BUSINESS">BUSINESS</option><option value="EDUCATION">EDUCATION</option><option value="VISIT">VISITING FRIENDS / RELATIVES</option><option value="TRANSIT">TRANSIT</option></select></div>
+      <div><label for="accommodation">Type of Accommodation <span>*</span></label><select id="accommodation"><option value="">-- Select --</option><option value="HOTEL">HOTEL</option><option value="RESIDENTIAL">RESIDENTIAL</option><option value="OTHERS">OTHERS</option></select></div>
+      <div><label for="postal">Postal Code of Accommodation in Singapore <span>*</span></label><input id="postal" autocomplete="off" maxlength="6"></div>
+      <div><label for="address">Address <span>*</span></label><input id="address" autocomplete="off"></div>
+      <div><label for="departure">Date of Departure <span>*</span></label><input id="departure" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+    </div>
+
+    <h2>Health Declaration</h2>
+    <div id="yfRow"><div class="q">Have you visited any of the countries/regions listed (yellow fever risk) in the past 6 days prior to arrival?</div>
+    <div class="yn"><label><input type="radio" name="yf" id="yfNo" value="N"> No</label><label><input type="radio" name="yf" id="yfYes" value="Y"> Yes</label></div></div>
+    <div id="symRow"><div class="q">Do you currently have any of these symptoms: fever, cough, shortness of breath, rash?</div>
+    <div class="yn"><label><input type="radio" name="sym" id="symNo" value="N"> No</label><label><input type="radio" name="sym" id="symYes" value="Y"> Yes</label></div></div>
+
+    <h2>Declaration</h2>
+    <div class="check"><input id="agree" type="checkbox"><label for="agree" style="font-weight:400">I declare that the information given is true and correct.</label></div>
+    <button id="submit" type="submit">Submit</button>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with any government.</footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — Digital Arrival Card (not the official site)</title>
+<style>
+  :root { --b: #1f4e9b; --bg: #f3f5f9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #b00020; color: #fff; text-align: center; padding: 8px; font-weight: 700; font-size: 14px; }
+  header { background: var(--b); color: #fff; padding: 18px 28px; font-size: 22px; font-weight: 700; }
+  main { max-width: 980px; margin: 24px auto; background: #fff; padding: 28px 36px 40px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  h2 { font-size: 17px; border-bottom: 2px solid var(--b); padding-bottom: 6px; margin: 28px 0 14px; color: var(--b); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  input, select { width: 100%; padding: 9px 10px; border: 1px solid #bbb; border-radius: 4px; font-size: 15px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .full { grid-column: 1 / -1; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-top: 18px; }
+  .check input { width: 18px; height: 18px; margin-top: 2px; }
+  .captcha { display: flex; gap: 12px; align-items: center; margin-top: 14px; }
+  .captcha .img { width: 160px; height: 52px; background: repeating-linear-gradient(135deg,#ddd 0 6px,#eee 6px 12px); display: flex; align-items: center; justify-content: center; font: italic 700 24px Georgia, serif; letter-spacing: 6px; color: #555; border: 1px solid #bbb; }
+  .captcha input { width: 180px; }
+  button { margin-top: 24px; background: var(--b); color: #fff; border: 0; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 4px; cursor: pointer; }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official immigration website and submits nothing</div>
+<header>Digital Arrival Card — Practice Form</header>
+<main>
+  <form id="mdac" onsubmit="return false;">
+    <h2>Personal Information</h2>
+    <div class="row">
+      <div><label for="name">Name (as in passport) <span>*</span></label><input id="name" autocomplete="off"></div>
+      <div><label for="passport">Passport No. <span>*</span></label><input id="passport" autocomplete="off"></div>
+      <div><label for="nationality">Nationality / Citizenship <span>*</span></label>
+        <select id="nationality"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="IND">INDIA</option><option value="IDN">INDONESIA</option><option value="USA">UNITED STATES</option><option value="GBR">UNITED KINGDOM</option><option value="AUS">AUSTRALIA</option></select></div>
+      <div><label for="dob">Date of Birth <span>*</span></label><input id="dob" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="sex">Sex <span>*</span></label>
+        <select id="sex"><option value="">-- Select --</option><option value="M">MALE</option><option value="F">FEMALE</option></select></div>
+      <div><label for="passportExpiry">Passport Expiry Date <span>*</span></label><input id="passportExpiry" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+    </div>
+
+    <h2>Contact Information</h2>
+    <div class="row">
+      <div><label for="email">Email <span>*</span></label><input id="email" type="email" autocomplete="off"></div>
+      <div><label for="emailConfirm">Confirm Email <span>*</span></label><input id="emailConfirm" type="email" autocomplete="off"></div>
+      <div><label for="phone">Mobile No. (with country code) <span>*</span></label><input id="phone" autocomplete="off"></div>
+    </div>
+
+    <h2>Traveling Information</h2>
+    <div class="row">
+      <div><label for="arrival">Date of Arrival <span>*</span></label><input id="arrival" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="departure">Date of Departure <span>*</span></label><input id="departure" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="mode">Mode of Travel <span>*</span></label>
+        <select id="mode"><option value="">-- Select --</option><option value="AIR">AIR</option><option value="LAND">LAND</option><option value="SEA">SEA</option></select></div>
+      <div><label for="flight">Flight / Vessel No. <span>*</span></label><input id="flight" autocomplete="off"></div>
+      <div><label for="lastPort">Last Port of Embarkation <span>*</span></label>
+        <select id="lastPort"><option value="">-- Select --</option><option value="ICN">ICN — SEOUL INCHEON</option><option value="SIN">SIN — SINGAPORE CHANGI</option><option value="NRT">NRT — TOKYO NARITA</option><option value="DEL">DEL — DELHI</option><option value="CGK">CGK — JAKARTA</option><option value="SYD">SYD — SYDNEY</option></select></div>
+    </div>
+
+    <h2>Accommodation in Malaysia</h2>
+    <div class="row">
+      <div><label for="accommodation">Accommodation Stay <span>*</span></label>
+        <select id="accommodation"><option value="">-- Select --</option><option value="HOTEL">HOTEL / MOTEL / REST HOUSE</option><option value="FRIEND">FRIEND / RELATIVE HOUSE</option><option value="RENTAL">RENTED ACCOMMODATION</option><option value="OTHER">OTHERS</option></select></div>
+      <div class="full"><label for="address">Address <span>*</span></label><input id="address" autocomplete="off"></div>
+      <div><label for="state">State <span>*</span></label>
+        <select id="state"><option value="">-- Select --</option><option value="KUALA LUMPUR">W.P. KUALA LUMPUR</option><option value="SELANGOR">SELANGOR</option><option value="PULAU PINANG">PULAU PINANG</option><option value="SABAH">SABAH</option><option value="JOHOR">JOHOR</option><option value="MELAKA">MELAKA</option></select></div>
+      <div><label for="city">City <span>*</span></label>
+        <select id="city"><option value="">-- Select --</option><option value="KUALA LUMPUR">KUALA LUMPUR</option><option value="PETALING JAYA">PETALING JAYA</option><option value="GEORGE TOWN">GEORGE TOWN</option><option value="KOTA KINABALU">KOTA KINABALU</option></select></div>
+      <div><label for="postcode">Postcode <span>*</span></label><input id="postcode" autocomplete="off" maxlength="5"></div>
+    </div>
+
+    <h2>Declaration</h2>
+    <div class="check"><input id="agree" type="checkbox"><label for="agree" style="font-weight:400">I declare that the information given is true and correct, and I understand that giving false information is an offence.</label></div>
+    <div class="captcha"><div class="img">7Kq2M</div><input id="captcha" placeholder="Enter the code shown" autocomplete="off"></div>
+    <button id="submit" type="submit">Submit</button>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with any government.</footer>
+</body>
+</html>
