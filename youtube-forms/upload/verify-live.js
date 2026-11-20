@@ -31,6 +31,18 @@ if (!ids.length) { console.error('usage: node upload/verify-live.js <formId> [..
                  label: (lab?.innerText || e.closest('label')?.innerText || e.getAttribute('aria-label') || '').trim().slice(0, 80), visible: r.width > 0 && r.height > 0 };
       }));
       fs.writeFileSync(path.join(dir, 'fields.json'), JSON.stringify(fields, null, 1));
+      // print what is on the page so the log alone is enough to fix selectors / find the way into the form
+      const nav = await page.$$eval('a, button, [role="button"]', (els) => els.map((e) => {
+        const r = e.getBoundingClientRect();
+        return { text: (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 60), href: e.getAttribute('href') || '', visible: r.width > 0 && r.height > 0 };
+      }).filter((x) => x.visible && x.text));
+      const frames = page.frames().map((f) => f.url()).filter((u) => u && u !== 'about:blank');
+      console.log(`  url now: ${page.url()}`);
+      if (frames.length > 1) console.log(`  frames: ${frames.join(' | ')}`);
+      console.log(`  fields (${fields.filter((f) => f.visible).length} visible):`);
+      for (const f of fields.filter((x) => x.visible).slice(0, 60)) console.log(`    ${f.tag}${f.type ? '[' + f.type + ']' : ''} name="${f.name}" id="${f.id}" label="${f.label}" ph="${f.placeholder}"`);
+      console.log(`  links/buttons (${nav.length}):`);
+      for (const n of nav.slice(0, 50)) console.log(`    "${n.text}" ${n.href}`);
       for (const [field, sel] of Object.entries(form.selectors.live || {})) {
         let n = 0; try { n = await page.locator(sel).count(); } catch { n = -1; }
         (n === 1 ? report.ok : n === 0 || n === -1 ? report.missing : report.ambiguous).push({ field, sel, count: n });
