@@ -44,6 +44,8 @@ module.exports = {
     mock: 'file://' + path.join(__dirname, '..', 'mock', 'sgac-form.html'),
     live: 'https://eservices.ica.gov.sg/sgarrivalcard/',
   },
+  // live only: clicks that lead from the landing page into the form (verified 2026-11 via verify-live)
+  livePre: [{ click: 'text=Visitor' }, { click: 'text=Fill in Manually' }],
 
   selectors: {
     mock: {

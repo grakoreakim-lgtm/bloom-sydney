@@ -23,6 +23,10 @@ if (!ids.length) { console.error('usage: node upload/verify-live.js <formId> [..
     try {
       await page.goto(form.url.live, { waitUntil: 'networkidle', timeout: 60000 });
       await page.waitForTimeout(2500);
+      for (const p of form.livePre || []) {
+        try { await page.locator(p.click).first().click({ timeout: 10000 }); await page.waitForLoadState('networkidle').catch(() => {}); await page.waitForTimeout(2000); console.log(`  pre: clicked ${p.click}`); }
+        catch (e) { console.log(`  pre: FAILED ${p.click} — ${e.message.split('\n')[0]}`); }
+      }
       await page.screenshot({ path: path.join(dir, 'page.png'), fullPage: true });
       const fields = await page.$$eval('input, select, textarea, button', (els) => els.map((e) => {
         const lab = e.id && document.querySelector(`label[for="${e.id}"]`);
