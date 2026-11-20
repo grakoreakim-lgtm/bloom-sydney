@@ -45,7 +45,7 @@ module.exports = {
     live: 'https://eservices.ica.gov.sg/arrivalcard/sgac',
   },
   // live only: clicks that lead from the landing page into the form (verified 2026-11 via verify-live)
-  livePre: [{ click: 'text="Visitor"' }, { click: 'text="Fill in Manually" >> nth=1' }],
+  livePre: [{ click: 'text="Fill in Manually" >> nth=1' }],
 
   selectors: {
     mock: {
