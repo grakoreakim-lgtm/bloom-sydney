@@ -29,7 +29,7 @@ const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
 if (opt('target')) cfg.target = opt('target');
 const date = opt('date') || new Date().toISOString().slice(0, 10);
 const onlyRow = opt('row') ? Number(opt('row')) : null;
-const dry = flag('dry'), fakeTts = flag('fake-tts');
+const dry = flag('dry'), fakeTts = flag('fake-tts'), review = flag('review');   // --review: upload private, no auto-publish
 
 // calendar CSV → rows for the day
 function readCsv(file) {
@@ -85,8 +85,8 @@ const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
-      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry });
-      console.log(`    ✔ ${up.url}  publishAt=${meta.publishAt}`);
+      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review });
+      console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
     } catch (e) {
       console.error(`    ✖ ${e.message}`); log.push({ row, status: 'error: ' + e.message });
