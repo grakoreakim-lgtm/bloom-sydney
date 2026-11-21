@@ -1,0 +1,74 @@
+{
+  "ko": {
+    "primary": "미국 ESTA 신청 방법",
+    "hook": "공식 사이트 따라하기",
+    "titles": [
+      "{primary} {year} | {hook}",
+      "{year} 미국 ESTA 발급, 화면 그대로 따라 하면 끝 (대행 사이트 주의)",
+      "ESTA 신청 방법 {year} | 공식 수수료 40달러, 성·이름 순서와 발급국가 주의"
+    ],
+    "secondary": [
+      "ESTA 신청 방법",
+      "미국 ESTA 발급",
+      "미국 ESTA 신청",
+      "ESTA 공식 사이트",
+      "ESTA 비용",
+      "ESTA 수수료 40달러",
+      "미국 전자여행허가",
+      "미국 무비자 입국",
+      "ESTA 대행 사이트",
+      "ESTA 유효기간",
+      "ESTA 승인 조회",
+      "미국 여행 준비"
+    ],
+    "questions": [
+      "ESTA 공식 사이트 주소는? (esta.cbp.dhs.gov)",
+      "ESTA 비용은 얼마인가요? (1인 USD 40.62, 2026.10.16~)",
+      "ESTA는 언제 신청해야 하나요? (출국 72시간 전까지 권장)",
+      "ESTA 유효기간은? (2년 또는 여권 만료일 중 빠른 날)",
+      "여권을 새로 받으면 ESTA도 다시 해야 하나요?",
+      "쿠바에 다녀왔는데 ESTA 되나요?"
+    ],
+    "hashtags": [
+      "미국ESTA",
+      "ESTA신청",
+      "미국여행"
+    ]
+  },
+  "en": {
+    "primary": "How to Apply for ESTA",
+    "hook": "Step by Step",
+    "titles": [
+      "{primary} {year} | Official Site {hook}",
+      "ESTA Application Step by Step {year} — Copy My Screen (Avoid Fake ESTA Sites)",
+      "US ESTA {year}: Apply on the Official Site for $40 — Every Screen Explained"
+    ],
+    "secondary": [
+      "ESTA application",
+      "ESTA application step by step",
+      "how to apply for ESTA",
+      "ESTA official website",
+      "esta.cbp.dhs.gov",
+      "ESTA fee",
+      "ESTA USA",
+      "US travel authorization",
+      "Visa Waiver Program",
+      "ESTA eligibility questions",
+      "ESTA validity",
+      "check ESTA status"
+    ],
+    "questions": [
+      "What is the official ESTA website? (esta.cbp.dhs.gov)",
+      "How much does ESTA cost? (USD 40.62 per person from 16 Oct 2026)",
+      "When should I apply for ESTA? (at least 72 hours before departure)",
+      "How long is ESTA valid? (2 years or until the passport expires)",
+      "Do I need a new ESTA with a new passport?",
+      "Can I get an ESTA after visiting Cuba?"
+    ],
+    "hashtags": [
+      "ESTA",
+      "ESTAApplication",
+      "USATravel"
+    ]
+  }
+}
