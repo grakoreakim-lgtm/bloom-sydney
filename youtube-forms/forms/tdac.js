@@ -44,6 +44,7 @@ module.exports = {
   country: { ko: '태국', en: 'Thailand' }, flag: '🇹🇭',
   fee: '무료', when: '도착 3일 전', captcha: true,   // the real site shows a "verify you are human" check
   title: { ko: '태국 디지털 입국카드 (TDAC)', en: 'Thailand Digital Arrival Card (TDAC)' },
+  shortTitle: { ko: '태국 TDAC', en: 'Thailand TDAC' },   // Shorts headline / title
   videoTitle: { ko: '태국 입국신고서 TDAC 작성법 {year} | 5분 따라하기', en: 'Thailand Digital Arrival Card (TDAC) Step-by-Step {year} | Copy My Screen' },
 
   url: {

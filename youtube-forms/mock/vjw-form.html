@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — Visit Japan Web (not the official site)</title>
+<style>
+  :root { --b: #1a3d7c; --accent: #bc002d; --bg: #e9edf3; --line: #d5dbe5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #333; color: #fff; text-align: center; padding: 8px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right) */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 340px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  header b { font-size: 17px; letter-spacing: .2px; } header small { font-size: 11px; opacity: .85; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 8px; vertical-align: -2px; border: 2px solid #fff; }
+  main { padding: 6px 16px 26px; }
+  main h2 { font-size: 15px; color: var(--b); margin: 22px 0 10px; padding: 8px 10px; background: #eef2f8; border-left: 4px solid var(--b); border-radius: 4px; }
+  main h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; }
+  input, select { width: 100%; padding: 10px; border: 1px solid #b9c1cd; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .scan { display: block; width: 100%; text-align: center; padding: 10px; border: 1px dashed var(--b); border-radius: 6px; color: var(--b); font-size: 13px; font-weight: 700; margin: 4px 0 14px; background: #f7f9fc; }
+  .acct { font-size: 12px; color: #444; background: #f7f9fc; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; margin: 6px 0 4px; }
+  .fam { display: flex; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; }
+  .fam input { width: 20px; height: 20px; }
+  .q { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+  .q p { margin: 0 0 8px; font-size: 13px; line-height: 1.4; }
+  .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .yn label { font-weight: 400; display: flex; align-items: center; gap: 8px; border: 1px solid #c8cfda; border-radius: 6px; padding: 8px 10px; margin: 0; font-size: 14px; }
+  .yn input { width: 18px; height: 18px; margin: 0; }
+  .qr { margin-top: 18px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; text-align: center; }
+  .qr .ok { font-size: 12px; color: #2a7a3b; font-weight: 700; margin-bottom: 8px; }
+  button { width: 100%; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official Visit Japan Web site and submits nothing</div>
+<div class="phone">
+<header><b><i class="dot"></i>Visit Japan Web</b><small>Practice form</small></header>
+<main>
+  <form onsubmit="return false;">
+    <!-- 1. Account + user (passport) info -->
+    <h2>Your details<small>Register user information (as in your passport)</small></h2>
+    <div class="acct">Account: sample.traveller@example.com &nbsp;·&nbsp; signed in</div>
+    <span class="scan">📷 Read passport with camera (optional)</span>
+    <div class="two">
+      <div class="f"><label for="surname">Surname <span>*</span></label><input id="surname" autocomplete="off"></div>
+      <div class="f"><label for="givenName">Given name <span>*</span></label><input id="givenName" autocomplete="off"></div>
+    </div>
+    <div class="f"><label for="passport">Passport number <span>*</span></label><input id="passport" autocomplete="off"></div>
+    <div class="f"><label for="nationality">Nationality / Region <span>*</span></label>
+      <select id="nationality"><option value="">Select</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="TWN">TAIWAN</option><option value="CHN">CHINA</option><option value="USA">UNITED STATES</option><option value="AUS">AUSTRALIA</option><option value="SGP">SINGAPORE</option></select></div>
+    <div class="two">
+      <div class="f"><label for="dob">Date of birth <span>*</span></label><input id="dob" placeholder="YYYY/MM/DD" autocomplete="off" maxlength="10"></div>
+      <div class="f"><label for="passportExpiry">Passport expiry <span>*</span></label><input id="passportExpiry" placeholder="YYYY/MM/DD" autocomplete="off" maxlength="10"></div>
+    </div>
+
+    <!-- 2. Planned entry -->
+    <h2>Planned entry<small>Register planned entry / return</small></h2>
+    <div class="f"><label for="arrival">Expected date of arrival in Japan <span>*</span></label><input id="arrival" placeholder="YYYY/MM/DD" autocomplete="off" maxlength="10"></div>
+    <div class="f"><label for="airline">Airline <span>*</span></label>
+      <select id="airline"><option value="">Select</option><option value="KE">KOREAN AIR (KE)</option><option value="OZ">ASIANA AIRLINES (OZ)</option><option value="7C">JEJU AIR (7C)</option><option value="JL">JAPAN AIRLINES (JL)</option><option value="NH">ALL NIPPON AIRWAYS (NH)</option><option value="QF">QANTAS (QF)</option></select></div>
+    <div class="f"><label for="flight">Flight number <span>*</span></label><input id="flight" inputmode="numeric" autocomplete="off" maxlength="5">
+      <div class="hint">Code-share: enter the operating carrier's flight</div></div>
+    <div class="f" id="famRow"><label>Family members traveling with you</label>
+      <div class="fam"><input id="companion" type="checkbox"><label for="companion" style="font-weight:400;margin:0">HONG MINJI (registered family member)</label></div></div>
+    <div class="f"><label for="hotel">Accommodation in Japan — name <span>*</span></label><input id="hotel" autocomplete="off"></div>
+    <div class="f"><label for="address">Address <span>*</span></label><input id="address" autocomplete="off"></div>
+    <div class="f"><label for="phone">Phone number (digits only) <span>*</span></label><input id="phone" inputmode="tel" autocomplete="off" maxlength="15"></div>
+
+    <!-- 3. Immigration (disembarkation card) -->
+    <h2>Immigration<small>Disembarkation card for foreigner</small></h2>
+    <div class="f"><label for="purpose">Purpose of visit <span>*</span></label>
+      <select id="purpose"><option value="">Select</option><option value="TOURISM">TOURISM</option><option value="BUSINESS">BUSINESS</option><option value="RELATIVES">VISITING RELATIVES</option><option value="TRANSIT">TRANSIT</option><option value="OTHERS">OTHERS</option></select></div>
+    <div class="q" id="imm1Row"><p>Have you ever been deported from Japan, departed under a departure order, or been denied entry to Japan?</p>
+      <div class="yn"><label><input type="radio" name="imm1" id="imm1Yes" value="Y"> Yes</label><label><input type="radio" name="imm1" id="imm1No" value="N"> No</label></div></div>
+    <div class="q" id="imm2Row"><p>Have you ever been convicted of a crime (not only in Japan)?</p>
+      <div class="yn"><label><input type="radio" name="imm2" id="imm2Yes" value="Y"> Yes</label><label><input type="radio" name="imm2" id="imm2No" value="N"> No</label></div></div>
+    <div class="q" id="imm3Row"><p>Do you presently have in your possession narcotics, marijuana, opium, stimulants or other controlled substances, firearms, swords, explosives or other such items?</p>
+      <div class="yn"><label><input type="radio" name="imm3" id="imm3Yes" value="Y"> Yes</label><label><input type="radio" name="imm3" id="imm3No" value="N"> No</label></div></div>
+
+    <!-- 4. Customs declaration -->
+    <h2>Customs declaration<small>Are you bringing the following into Japan?</small></h2>
+    <div class="q" id="cus1Row"><p>1. Items prohibited or restricted from being brought into Japan (narcotics, firearms, counterfeit goods, certain meat or plant products, etc.)</p>
+      <div class="yn"><label><input type="radio" name="cus1" id="cus1Yes" value="Y"> Yes</label><label><input type="radio" name="cus1" id="cus1No" value="N"> No</label></div></div>
+    <div class="q" id="cus2Row"><p>2. Purchases, souvenirs or gifts exceeding the duty-free allowance (alcohol, tobacco, perfume, other goods over JPY 200,000 in total)</p>
+      <div class="yn"><label><input type="radio" name="cus2" id="cus2Yes" value="Y"> Yes</label><label><input type="radio" name="cus2" id="cus2No" value="N"> No</label></div></div>
+    <div class="q" id="cus3Row"><p>3. Commercial goods or samples</p>
+      <div class="yn"><label><input type="radio" name="cus3" id="cus3Yes" value="Y"> Yes</label><label><input type="radio" name="cus3" id="cus3No" value="N"> No</label></div></div>
+    <div class="q" id="cus4Row"><p>4. Items you were asked by someone else to carry</p>
+      <div class="yn"><label><input type="radio" name="cus4" id="cus4Yes" value="Y"> Yes</label><label><input type="radio" name="cus4" id="cus4No" value="N"> No</label></div></div>
+    <div class="q" id="cashRow"><p>Are you carrying cash or securities, etc. exceeding the value of JPY 1 million (or precious metals over 1 kg)?</p>
+      <div class="yn"><label><input type="radio" name="cash" id="cashYes" value="Y"> Yes</label><label><input type="radio" name="cash" id="cashNo" value="N"> No</label></div></div>
+    <div class="q" id="sepRow"><p>Do you have any baggage sent separately (unaccompanied baggage) to arrive later?</p>
+      <div class="yn"><label><input type="radio" name="sep" id="sepYes" value="Y"> Yes</label><label><input type="radio" name="sep" id="sepNo" value="N"> No</label></div></div>
+
+    <!-- 5. QR code -->
+    <div class="qr"><div class="ok">✔ Immigration and customs: one QR code per traveller</div>
+      <button id="showQr" type="button">Display QR code</button></div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with the Digital Agency or any government.</footer>
+</div>
+</body>
+</html>

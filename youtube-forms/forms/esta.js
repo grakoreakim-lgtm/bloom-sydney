@@ -34,6 +34,7 @@ module.exports = {
   country: { ko: '미국', en: 'USA' }, flag: '🇺🇸',
   fee: '40.62달러 (USD, 2026.10.16~)', when: '출국 72시간 전까지 권장', captcha: true,
   title: { ko: '미국 전자여행허가 (ESTA)', en: 'US Electronic System for Travel Authorization (ESTA)' },
+  shortTitle: { ko: '미국 ESTA', en: 'US ESTA' },   // Shorts headline / title
   videoTitle: { ko: '미국 ESTA 신청 방법 {year} | 공식 사이트 화면 그대로 따라하기', en: 'How to Apply for ESTA {year} | Official Site Step-by-Step | Copy My Screen' },
 
   url: {

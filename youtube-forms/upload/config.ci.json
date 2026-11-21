@@ -76,7 +76,10 @@
   "bgm": null,
   "formMap": {
     "MDAC 디지털 입국카드": "mdac",
-    "SG Arrival Card(웹·MyICA)": "sgac"
+    "SG Arrival Card(웹·MyICA)": "sgac",
+    "ESTA 전자여행허가": "esta",
+    "Visit Japan Web 등록·QR": "vjw",
+    "TDAC 태국 디지털 입국카드": "tdac"
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
