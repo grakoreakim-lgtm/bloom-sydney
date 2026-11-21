@@ -159,5 +159,6 @@ function planDay(all, date) {
     } catch (e) { console.error(`  ✖ Shorts ${j.formId}-${j.lang}: ${e.message}`); log.push({ row: j.row, status: 'error (short): ' + e.message }); }
   }
   fs.writeFileSync(path.join(dayDir, 'log.json'), JSON.stringify(log, null, 1));
-  console.log(`done — ${log.filter((l) => l.status === 'ok').length}/${rows.length} uploaded, log: ${path.join(dayDir, 'log.json')}`);
+  const okMain = log.filter((l) => l.status === 'ok' && l.kind !== 'short').length, okShort = log.filter((l) => l.kind === 'short' && l.status === 'ok').length;
+  console.log(`done — ${okMain}/${rows.length} videos + ${okShort} Shorts, log: ${path.join(dayDir, 'log.json')}`);
 })().catch((e) => { console.error(e); process.exit(1); });
