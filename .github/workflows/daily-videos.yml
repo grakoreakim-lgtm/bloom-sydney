@@ -4,7 +4,8 @@ name: daily-videos
 
 on:
   schedule:
-    - cron: '0 21 * * *'          # 21:00 UTC = 06:00 KST
+    - cron: '0 11 * * *'          # 11:00 UTC = 20:00 KST — builds TOMORROW's videos the evening before;
+                                  # they go public at a random time 06:00–10:00 (publishWindow in config.ci.json)
   workflow_dispatch:
     inputs:
       date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
@@ -46,7 +47,7 @@ jobs:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
           TZ: Asia/Seoul
         run: |
-          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date +%F)
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
           DRY=""; [ "${{ github.event.inputs.dry }}" = "true" ] && DRY="--dry"
           FAKE=""; [ -z "$GOOGLE_TTS_API_KEY" ] && FAKE="--fake-tts"
           TARGET="${{ github.event.inputs.target }}"; [ -z "$TARGET" ] && TARGET=mock

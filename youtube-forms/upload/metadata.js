@@ -39,18 +39,30 @@ function buildMetadata(row, form, timeline, aff, cfg) {
     (cfg.hashtags?.[lang] || cfg.hashtags?.en || []).map((h) => `#${h}`).join(' '),
   ].filter((x) => x !== null).join('\n').slice(0, 4900);
   const tags = [...new Set([row['서식/주제'], row['국가'].replace(/^\S+\s/, ''), ...(cfg.tags?.[lang] || cfg.tags?.en || [])])].filter(Boolean).slice(0, 30);
-  // publish time: slot → local hour in the channel's timezone
-  const hours = cfg.publishHours?.[lang] || cfg.publishHours?.default || [7, 10, 13, 17, 20];
-  const hour = hours[(Number(row['슬롯']) - 1) % hours.length];
+  // publish time in the channel's timezone:
+  //  - publishWindow {from, to}: a random minute inside the window (stable per date+slot+lang, so re-runs agree)
+  //  - otherwise publishHours by slot
   const tz = cfg.timezone?.[lang] || cfg.timezone?.default || 'Asia/Seoul';
-  const publishAt = localToIso(row['날짜'], hour, tz);
+  const win = cfg.publishWindow?.[lang] || cfg.publishWindow?.default || null;
+  let minuteOfDay;
+  if (win) {
+    const seed = [...`${row['날짜']}|${row['슬롯']}|${lang}`].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+    minuteOfDay = win.from * 60 + (seed % ((win.to - win.from) * 60));
+  } else {
+    const hours = cfg.publishHours?.[lang] || cfg.publishHours?.default || [7, 10, 13, 17, 20];
+    minuteOfDay = hours[(Number(row['슬롯']) - 1) % hours.length] * 60;
+  }
+  let publishAt = localToIso(row['날짜'], Math.floor(minuteOfDay / 60), tz, minuteOfDay % 60);
+  // YouTube needs publishAt in the future; if the run is late, publish 30 min from now instead
+  const earliest = Date.now() + 30 * 60 * 1000;
+  if (Date.parse(publishAt) < earliest) publishAt = new Date(earliest).toISOString();
   return { title, description, tags, publishAt, categoryId: '27', defaultLanguage: lang, chapters };
 }
 
-// "YYYY-MM-DD" + hour in IANA tz → RFC3339 UTC
-function localToIso(dateStr, hour, tz) {
+// "YYYY-MM-DD" + hour[:minute] in IANA tz → RFC3339 UTC
+function localToIso(dateStr, hour, tz, minute = 0) {
   const [y, m, d] = dateStr.split('-').map(Number);
-  const guess = new Date(Date.UTC(y, m - 1, d, hour, 0, 0));
+  const guess = new Date(Date.UTC(y, m - 1, d, hour, minute, 0));
   const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   const parts = Object.fromEntries(fmt.formatToParts(guess).map((p) => [p.type, p.value]));
   const asLocal = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour) % 24, Number(parts.minute));
