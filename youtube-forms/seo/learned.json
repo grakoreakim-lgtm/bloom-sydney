@@ -1,0 +1,6 @@
+{
+  "_comment": "Written by upload/seo-review.js every two weeks. terms = real YouTube search terms that brought views (per form/lang), merged into tags and the description of new videos. videos = per-video title variant state.",
+  "updatedAt": null,
+  "terms": {},
+  "videos": {}
+}
