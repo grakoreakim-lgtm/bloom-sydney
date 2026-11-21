@@ -11,8 +11,10 @@ from openpyxl.comments import Comment
 
 random.seed(7)
 OUT = os.path.dirname(os.path.abspath(__file__))
-START = dt.date(2027, 1, 4)          # 월요일 시작 (사용자가 바꾸면 됨)
-YEAR = START.year
+START = dt.date(2026, 12, 1)         # 시작일 (MEC 연수생 12월 출국에 맞춤)
+YEAR = START.year + (1 if START.month >= 11 else 0)   # 제목에 쓰는 연도: 11~12월 시작이면 다음 해 '최신판'
+# 맨 앞에 먼저 올릴 서식(코드)과 언어 — 연수생이 바로 쓰는 싱가포르·말레이시아
+PRIORITY = [('SGAC', 'KO'), ('MDAC', 'KO'), ('SGAC', 'EN'), ('MDAC', 'EN')]
 DAYS = 365
 
 # ───────────────────────────── 언어 ─────────────────────────────
@@ -281,6 +283,9 @@ def interleave(group):
 ordered = []
 for (ph, tr), grp in itertools.groupby(longs, key=lambda i: (i['phase'], tier_rank[i['tier']])):
     ordered += interleave(list(grp))
+# priority forms go first (phase-1 long-form only)
+front = [next(i for i in ordered if i['code'] == c and i['lang'] == l and i['kind'] == 'L' and i['phase'] == 1) for c, l in PRIORITY]
+ordered = front + [i for i in ordered if all(i is not f for f in front)]
 
 # 일자별 슬롯 수
 def slots(day_idx):

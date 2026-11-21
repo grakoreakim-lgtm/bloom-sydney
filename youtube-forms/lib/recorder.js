@@ -51,6 +51,7 @@ class Recorder {
     this.page = await this.context.newPage();
     this.t0 = Date.now();                       // video recording starts with the page
     await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
+    if (this.target === 'live') for (const p of this.form.livePre || []) { if (p.goto) await this.page.goto(p.goto, { waitUntil: 'networkidle' }); else await this.page.locator(p.click).first().click({ timeout: 15000 }); await this.page.waitForLoadState('networkidle').catch(() => {}); await sleep(1500); }
     await this.page.evaluate(() => window.__ytOverlay.install());
   }
 
