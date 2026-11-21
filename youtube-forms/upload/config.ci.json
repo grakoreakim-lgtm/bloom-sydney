@@ -14,11 +14,11 @@
   "_channels": "language → token file suffix (upload/secrets/token-<suffix>.json). Non-EN/KO languages start on the EN channel.",
   "timezone": {
     "ko": "Asia/Seoul",
-    "en": "America/New_York",
-    "hi": "Asia/Kolkata",
-    "es": "America/Mexico_City",
-    "id": "Asia/Jakarta",
-    "ja": "Asia/Tokyo",
+    "en": "Asia/Seoul",
+    "hi": "Asia/Seoul",
+    "es": "Asia/Seoul",
+    "id": "Asia/Seoul",
+    "ja": "Asia/Seoul",
     "default": "Asia/Seoul"
   },
   "publishHours": {
@@ -142,5 +142,10 @@
       "to": 10
     }
   },
-  "_publishWindow": "Each video goes public at a random time between from:00 and to:00 in its channel timezone (KO: Asia/Seoul, EN: America/New_York)."
+  "_publishWindow": "Each video goes public at a random time between from:00 and to:00 in its channel timezone (KO: Asia/Seoul, EN: America/New_York).",
+  "_timezone": "All channels publish on Korean time (06:00-10:00 KST window).",
+  "seo": {
+    "keywords": "seo/keywords.json",
+    "learned": "seo/learned.json"
+  }
 }

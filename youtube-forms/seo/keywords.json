@@ -1,0 +1,55 @@
+{
+  "_comment": "Search keyword bank per form + language. primary = the exact phrase people type (goes first in the title, first line of the description and first tag). titles = A/B title templates; the biweekly review rotates to the next one when CTR is low. Placeholders: {primary} {year} {hook}. learned.json (written by seo-review) adds real search terms on top of this.",
+  "mdac": {
+    "ko": {
+      "primary": "말레이시아 입국신고서 MDAC 작성법",
+      "hook": "5분 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 말레이시아 입국신고서 MDAC, 화면 그대로 따라 하면 끝 (실수 TOP3)",
+        "MDAC 말레이시아 디지털 입국카드 {year} 신청 방법 | 쿠알라룸푸르·코타키나발루"
+      ],
+      "secondary": ["말레이시아 입국신고서", "MDAC", "MDAC 작성법", "MDAC 신청", "말레이시아 디지털 입국카드", "말레이시아 전자입국카드", "말레이시아 입국카드 작성", "말레이시아 입국 준비", "쿠알라룸푸르 입국", "코타키나발루 입국신고서", "페낭 입국", "말레이시아 여행 준비물"],
+      "questions": ["MDAC는 언제 신청하나요? (도착 3일 전부터)", "말레이시아 입국신고서는 무료인가요?", "이름은 성부터 쓰나요?", "확인 메일이 안 오면 어떻게 하나요?"],
+      "hashtags": ["말레이시아입국신고서", "MDAC", "말레이시아여행"]
+    },
+    "en": {
+      "primary": "Malaysia Digital Arrival Card MDAC",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | How to Fill It ({hook})",
+        "How to Fill the MDAC Malaysia Arrival Card {year} — Copy My Screen",
+        "MDAC Registration {year}: Malaysia Arrival Card in 5 Minutes (Avoid These Mistakes)"
+      ],
+      "secondary": ["MDAC", "MDAC Malaysia", "MDAC registration", "how to fill MDAC", "Malaysia arrival card", "Malaysia digital arrival card", "Malaysia arrival card online", "MDAC form", "Malaysia entry requirements", "Kuala Lumpur arrival", "Malaysia immigration", "Malaysia travel"],
+      "questions": ["When can I submit the MDAC? (within 3 days before arrival)", "Is the Malaysia arrival card free?", "Which name goes first?", "What if I don't get the confirmation email?"],
+      "hashtags": ["MDAC", "MalaysiaArrivalCard", "MalaysiaTravel"]
+    }
+  },
+  "sgac": {
+    "ko": {
+      "primary": "싱가포르 입국신고서 SG Arrival Card 작성법",
+      "hook": "5분 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 싱가포르 입국카드, 화면 그대로 따라 하면 끝 (이름 순서 주의)",
+        "SG Arrival Card 싱가포르 전자입국카드 {year} 신청 방법 | MyICA 앱도 OK"
+      ],
+      "secondary": ["싱가포르 입국신고서", "SG Arrival Card", "SG 어라이벌 카드", "싱가포르 입국카드", "싱가포르 전자입국카드", "싱가포르 입국카드 작성", "싱가포르 입국 준비", "싱가포르 여행 준비물", "MyICA", "창이공항 입국", "SGAC 작성법"],
+      "questions": ["SG Arrival Card는 언제 신청하나요? (도착 3일 전부터)", "싱가포르 입국카드는 무료인가요?", "이름은 이름-성 순서인가요?", "가족 것도 한 번에 할 수 있나요?"],
+      "hashtags": ["싱가포르입국카드", "SGArrivalCard", "싱가포르여행"]
+    },
+    "en": {
+      "primary": "SG Arrival Card Singapore",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | How to Fill It ({hook})",
+        "How to Fill the Singapore Arrival Card {year} — Copy My Screen",
+        "SG Arrival Card {year}: Singapore Entry Form in 5 Minutes (ICA / MyICA)"
+      ],
+      "secondary": ["SG Arrival Card", "SGAC", "Singapore arrival card", "how to fill SG Arrival Card", "ICA arrival card", "Singapore arrival card online", "MyICA app", "Singapore entry requirements", "Changi Airport arrival", "Singapore immigration", "Singapore travel"],
+      "questions": ["When can I submit the SG Arrival Card? (within 3 days before arrival)", "Is the SG Arrival Card free?", "Which name goes first?", "Can I submit for my family at once?"],
+      "hashtags": ["SGArrivalCard", "Singapore", "SingaporeTravel"]
+    }
+  }
+}

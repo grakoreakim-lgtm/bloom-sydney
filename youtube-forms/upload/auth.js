@@ -8,7 +8,7 @@ const path = require('path');
 const http = require('http');
 const { google } = require('googleapis');
 
-const SCOPES = ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube'];
+const SCOPES = ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/yt-analytics.readonly'];
 const SECRETS = path.join(__dirname, 'secrets');
 
 function client() {

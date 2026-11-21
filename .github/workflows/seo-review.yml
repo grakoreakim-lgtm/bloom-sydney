@@ -1,0 +1,63 @@
+# Biweekly search review: search terms, impressions, CTR → updates tags / rotates low-CTR titles,
+# and saves learned search terms (seo/learned.json) that the daily factory uses for new videos.
+name: seo-review
+
+on:
+  schedule:
+    - cron: '17 2 * * 1'        # Mondays 11:17 KST; the job only runs on even ISO weeks = every 2 weeks
+  workflow_dispatch:
+    inputs:
+      apply: { description: 'Apply changes (tags / titles) — off = report only', type: boolean, default: true }
+
+permissions:
+  contents: write
+
+concurrency: { group: seo-review, cancel-in-progress: false }
+
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - name: Every other week
+        id: gate
+        working-directory: .
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ $(( 10#$(date +%V) % 2 )) -ne 0 ]; then
+            echo "odd ISO week — skipping"; echo "run=false" >> $GITHUB_OUTPUT
+          else echo "run=true" >> $GITHUB_OUTPUT; fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with: { node-version: '22' }
+
+      - name: Install
+        if: steps.gate.outputs.run == 'true'
+        run: npm install --no-audit --no-fund
+
+      - name: Write secrets
+        if: steps.gate.outputs.run == 'true'
+        env:
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+
+      - name: Review
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          APPLY="--apply"; [ "${{ github.event.inputs.apply }}" = "false" ] && APPLY=""
+          node upload/seo-review.js --config upload/config.ci.json $APPLY | tee seo-review.log
+          cat seo-review.log >> $GITHUB_STEP_SUMMARY
+
+      - name: Save learned terms + report
+        if: always() && steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "seo-review bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add seo/learned.json seo/reports
+          git diff --cached --quiet || { git commit -m "SEO review $(date +%F)"; git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}"; }
