@@ -7,7 +7,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { execSync } = require('child_process');
 
-const VOICES = {   // Neural2 / WaveNet voices; change freely in config.json → tts.voices
+const VOICES = {   // defaults; config.json → tts.voices overrides (e.g. ko-KR-Chirp3-HD-* for the most natural Korean)
   ko: { languageCode: 'ko-KR', name: 'ko-KR-Neural2-C' },
   en: { languageCode: 'en-US', name: 'en-US-Neural2-F' },
   hi: { languageCode: 'hi-IN', name: 'hi-IN-Neural2-A' },
@@ -48,7 +48,8 @@ async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1
   const voice = voices[lang] || VOICES[lang];
   const res = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({ input: { text }, voice, audioConfig: { audioEncoding: 'MP3', speakingRate } }),
+    // Chirp 3 HD voices (most natural) take plain text; only send speakingRate when it is not the default
+    body: JSON.stringify({ input: { text }, voice: { languageCode: voice.languageCode, name: voice.name }, audioConfig: { audioEncoding: 'MP3', ...(speakingRate && speakingRate !== 1 ? { speakingRate } : {}) } }),
   });
   if (!res.ok) throw new Error(`TTS ${res.status}: ${await res.text()}`);
   const { audioContent } = await res.json();

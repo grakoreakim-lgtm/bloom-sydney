@@ -1,0 +1,34 @@
+# Render voice audition samples and publish them on GitHub Pages (follow-done/voices/<lang>/).
+name: voice-samples
+
+on:
+  workflow_dispatch:
+    inputs:
+      lang: { description: 'Language', required: false, default: 'ko' }
+      voices: { description: 'Voice names (space separated)', required: false, default: 'ko-KR-Chirp3-HD-Aoede ko-KR-Chirp3-HD-Kore ko-KR-Chirp3-HD-Leda ko-KR-Chirp3-HD-Zephyr ko-KR-Chirp3-HD-Charon ko-KR-Chirp3-HD-Puck ko-KR-Neural2-C' }
+
+permissions:
+  contents: write
+
+jobs:
+  samples:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: Render
+        working-directory: youtube-forms
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          LANG_IN: ${{ github.event.inputs.lang }}
+          VOICES_IN: ${{ github.event.inputs.voices }}
+        run: node upload/voice-samples.js "../follow-done/voices/$LANG_IN" "$LANG_IN" $VOICES_IN
+      - name: Publish
+        run: |
+          git config user.name "voice-samples bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add follow-done/voices
+          git diff --cached --quiet || { git commit -m "Voice samples (${{ github.event.inputs.lang }})"; git pull --rebase -q origin "$GITHUB_REF_NAME"; git push origin HEAD:"$GITHUB_REF_NAME"; }
