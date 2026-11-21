@@ -31,6 +31,8 @@ class Recorder {
     this.narration = opts.narration || {};
     this.cues = [];            // [{ id, t }]  t = ms since recording start
     this.t0 = null;
+    // page zoom (overlay unaffected) so fields stay readable on phones; mock pages are small, so zoom more
+    this.zoom = opts.zoom ?? form.zoom?.[this.target] ?? (this.target === 'mock' ? 1.5 : 1.25);
   }
 
   wait(ms) { return sleep(ms * this.speed); }
@@ -53,6 +55,7 @@ class Recorder {
     await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
     if (this.target === 'live') for (const p of this.form.livePre || []) { if (p.goto) await this.page.goto(p.goto, { waitUntil: 'networkidle' }); else await this.page.locator(p.click).first().click({ timeout: 15000 }); await this.page.waitForLoadState('networkidle').catch(() => {}); await sleep(1500); }
     await this.page.evaluate(() => window.__ytOverlay.install());
+    await this.ov('setZoom', this.zoom);
   }
 
   // ---- overlay helpers --------------------------------------------------

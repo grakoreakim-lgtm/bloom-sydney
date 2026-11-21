@@ -38,6 +38,7 @@ module.exports = {
   country: { ko: '싱가포르', en: 'Singapore' }, flag: '🇸🇬',
   fee: '무료', when: '도착 3일 전', captcha: false,
   title: { ko: '싱가포르 입국카드 (SG Arrival Card)', en: 'Singapore SG Arrival Card' },
+  shortTitle: { ko: '싱가포르 입국카드', en: 'SG Arrival Card' },   // Shorts headline / title
   videoTitle: { ko: '싱가포르 입국카드 SG Arrival Card 작성법 {year} | 5분 따라하기', en: 'SG Arrival Card Step-by-Step {year} | Singapore | Copy My Screen' },
 
   url: {

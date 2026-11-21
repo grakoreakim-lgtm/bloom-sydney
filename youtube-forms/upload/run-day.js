@@ -6,6 +6,7 @@
 //   node upload/run-day.js --date 2027-01-12 --dry        # build everything, upload nothing
 //   node upload/run-day.js --date 2027-01-12 --dry --fake-tts   # also skip the TTS API (silent clips) — pipeline test
 //   node upload/run-day.js --row 3              # only slot 3 of that day
+//   node upload/run-day.js --date 2027-01-12 --plan   # just print what that day would produce
 //   node upload/run-day.js --config upload/config.ci.json --target live   # CI: committed config, real sites
 //
 // Rows whose 서식 has no definition in forms/ are listed and skipped (add forms/<id>.js first).
@@ -19,6 +20,7 @@ const { mux } = require('./mux');
 const { thumbnail } = require('./thumbnail');
 const { buildMetadata } = require('./metadata');
 const { upload } = require('./upload');
+const { makeShort } = require('./shorts');
 
 const ROOT = path.join(__dirname, '..');
 const argv = process.argv.slice(2);
@@ -50,12 +52,51 @@ function parse(line) {  // minimal CSV parser (quotes + commas)
 // 서식/주제 → forms/<id>.js   (extend as you add form definitions)
 const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
 
+// produced.json: which form+language videos are already on YouTube (committed back by the workflow).
+// Calendar rows whose form has no definition yet are filled with the next not-yet-produced video instead,
+// so every slot of the day is used; a row whose video was already produced (pulled forward) is skipped.
+const PRODUCED = path.join(ROOT, 'plan', 'produced.json');
+const produced = fs.existsSync(PRODUCED) ? JSON.parse(fs.readFileSync(PRODUCED, 'utf8')) : {};
+const comboOf = (r) => `${FORM_MAP[r['서식/주제']]}:${r['언어'].toLowerCase()}`;
+
+function planDay(all, date) {
+  const day = all.filter((r) => r['날짜'] === date);
+  const taken = new Set(Object.keys(produced));
+  const backlog = [];   // defined form+language combos not produced yet, in calendar order
+  for (const r of all) {
+    if (!FORM_MAP[r['서식/주제']] || !r['유형'].startsWith('본편')) continue;
+    const c = comboOf(r); if (taken.has(c) || backlog.some((b) => b.c === c)) continue;
+    const form = require(path.join(ROOT, 'forms', `${FORM_MAP[r['서식/주제']]}.js`));
+    if (form.strings[r['언어'].toLowerCase()]) backlog.push({ c, row: r });
+  }
+  const out = [];
+  for (const r of day) {
+    if (FORM_MAP[r['서식/주제']] && r['유형'].startsWith('본편')) {
+      const c = comboOf(r);
+      if (taken.has(c)) { console.log(`  ⏭ [${r['슬롯']}] ${c} already produced`); continue; }
+      taken.add(c); out.push(r); continue;
+    }
+    if (!cfg.fillEmptySlots) { out.push(r); continue; }
+    const next = backlog.find((b) => !taken.has(b.c));
+    if (!next) { out.push(r); continue; }
+    taken.add(next.c);
+    console.log(`  ↪ [${r['슬롯']}] ${r['서식/주제']} (${r['언어']}) not defined yet → ${next.c}`);
+    out.push({ ...next.row, '날짜': r['날짜'], '슬롯': r['슬롯'], '_filled': true });
+  }
+  return out;
+}
+
 (async () => {
-  const rows = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv')).filter((r) => r['날짜'] === date && (!onlyRow || Number(r['슬롯']) === onlyRow));
+  const all = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv'));
+  const rows = planDay(all, date).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow);
+  if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
   console.log(`▶ ${date}: ${rows.length} slot(s)${dry ? '  [DRY RUN]' : ''}`);
   const dayDir = path.join(ROOT, 'out', 'days', date); fs.mkdirSync(dayDir, { recursive: true });
   const log = [];
+  const shortsQueue = [];   // made after all main videos, within the daily upload budget
+  const budget = cfg.uploadsPerDay || 6;   // YouTube API default quota ≈ 6 uploads/day per project
+  let uploads = 0;
 
   for (const row of rows) {
     const lang = row['언어'].toLowerCase(); const kind = row['유형']; const formId = FORM_MAP[row['서식/주제']];
@@ -89,12 +130,35 @@ const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
       const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review });
+      if (!up.duplicate && !dry) uploads++;
       console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
+      if (!dry && !review && /youtu\.be/.test(up.url)) { produced[`${formId}:${lang}`] = { date, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1) + '\n'); }
+      if (cfg.shorts?.enabled) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
     } catch (e) {
       console.error(`    ✖ ${e.message}`); log.push({ row, status: 'error: ' + e.message });
     }
   }
+  // Shorts: the "common mistakes" moments of each main video, vertical, linking back to it
+  for (const j of shortsQueue) {
+    if (!dry && uploads >= budget) { console.log(`  ⏭ Shorts for ${j.formId}-${j.lang}: daily upload budget (${budget}) used`); continue; }
+    try {
+      const short = makeShort(j.final, j.cues, { lang: j.lang, short: j.form.shortTitle?.[j.lang] || j.form.country?.[j.lang], country: j.form.country?.[j.lang] || '', form: j.form.shortTitle?.[j.lang] || j.form.title?.[j.lang] || j.formId }, `${j.base}.short.mp4`);
+      if (!short) { console.log(`  ⏭ Shorts for ${j.formId}-${j.lang}: no mistake moments`); continue; }
+      const full = j.lang === 'ko' ? '▶ 전체 따라하기 영상' : '▶ Full step-by-step video';
+      const meta = {
+        title: short.title,
+        description: [`${full}: ${j.mainUrl}`, '', j.meta.description.split('\n')[0], '', j.meta.description.split('\n').filter((l) => l.startsWith('#')).pop() || ''].join('\n'),
+        tags: j.meta.tags, categoryId: j.meta.categoryId, defaultLanguage: j.lang,
+        publishAt: new Date(Date.parse(j.meta.publishAt) + 90 * 60 * 1000).toISOString(),   // 1.5 h after the main video
+      };
+      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review });
+      if (!up.duplicate && !dry) uploads++;
+      console.log(`  ✔ Shorts ${short.seconds}s ${up.url}`);
+      log.push({ row: j.row, status: 'ok', kind: 'short', video: short.file, url: up.url, publishAt: meta.publishAt });
+    } catch (e) { console.error(`  ✖ Shorts ${j.formId}-${j.lang}: ${e.message}`); log.push({ row: j.row, status: 'error (short): ' + e.message }); }
+  }
   fs.writeFileSync(path.join(dayDir, 'log.json'), JSON.stringify(log, null, 1));
-  console.log(`done — ${log.filter((l) => l.status === 'ok').length}/${rows.length} uploaded, log: ${path.join(dayDir, 'log.json')}`);
+  const okMain = log.filter((l) => l.status === 'ok' && l.kind !== 'short').length, okShort = log.filter((l) => l.kind === 'short' && l.status === 'ok').length;
+  console.log(`done — ${okMain}/${rows.length} videos + ${okShort} Shorts, log: ${path.join(dayDir, 'log.json')}`);
 })().catch((e) => { console.error(e); process.exit(1); });

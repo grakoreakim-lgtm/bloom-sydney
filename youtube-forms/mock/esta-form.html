@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — ESTA Application (not the official site)</title>
+<style>
+  :root { --b: #112e51; --a: #205493; --bg: #f1f1f1; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Source Sans Pro", Arial, Helvetica, sans-serif; background: var(--bg); color: #212121; }
+  .banner { background: #b00020; color: #fff; text-align: center; padding: 8px; font-weight: 700; font-size: 14px; }
+  header { background: var(--b); color: #fff; padding: 16px 28px; font-size: 21px; font-weight: 700; }
+  header small { display: block; font-size: 13px; font-weight: 400; opacity: .85; margin-top: 2px; }
+  main { max-width: 980px; margin: 24px auto; background: #fff; padding: 28px 36px 40px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  h2 { font-size: 17px; border-bottom: 2px solid var(--a); padding-bottom: 6px; margin: 30px 0 14px; color: var(--b); }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  .hint { font-size: 12px; color: #666; font-weight: 400; }
+  input, select { width: 100%; padding: 9px 10px; border: 1px solid #aeb0b5; border-radius: 3px; font-size: 15px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--a); }
+  .full { grid-column: 1 / -1; }
+  .box { border: 1px solid #d6d7d9; background: #fafafa; padding: 14px 16px; border-radius: 4px; font-size: 14px; line-height: 1.45; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-top: 10px; }
+  .check input { width: 18px; height: 18px; margin-top: 2px; flex: none; }
+  .check label { font-weight: 400; margin: 0; }
+  .upload { border: 2px dashed #aeb0b5; border-radius: 4px; padding: 18px; text-align: center; color: #555; font-size: 14px; background: #fafafa; }
+  .upload b { display: block; color: var(--a); font-size: 15px; margin-bottom: 4px; }
+  .q { display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: center; padding: 10px 12px; border-bottom: 1px solid #e4e4e4; font-size: 14px; }
+  .q:nth-child(odd) { background: #fafafa; }
+  .q .yn { display: flex; gap: 14px; }
+  .q .yn label { display: flex; gap: 5px; align-items: center; font-weight: 400; margin: 0; }
+  .q .yn input { width: 16px; height: 16px; }
+  .yesno { display: flex; gap: 18px; align-items: center; padding: 8px 0; font-size: 14px; }
+  .yesno label { display: flex; gap: 6px; align-items: center; font-weight: 400; margin: 0; }
+  .yesno input { width: 16px; height: 16px; }
+  .captcha { display: flex; gap: 12px; align-items: center; margin-top: 14px; }
+  .captcha .img { width: 160px; height: 52px; background: repeating-linear-gradient(135deg,#ddd 0 6px,#eee 6px 12px); display: flex; align-items: center; justify-content: center; font: italic 700 24px Georgia, serif; letter-spacing: 6px; color: #555; border: 1px solid #bbb; }
+  .captcha input { width: 200px; }
+  .pay { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding: 14px 16px; border: 1px solid #d6d7d9; border-radius: 4px; }
+  .pay .amt { font-size: 18px; font-weight: 700; }
+  button { background: var(--a); color: #fff; border: 0; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 3px; cursor: pointer; }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official ESTA website, collects nothing and takes no payment</div>
+<header>ESTA Application — Practice Form<small>Electronic System for Travel Authorization (field layout only)</small></header>
+<main>
+  <form id="esta" onsubmit="return false;">
+
+    <h2>Travel Authorization Program Disclaimer</h2>
+    <div id="disclaimerBox" class="box">
+      This application collects information to determine eligibility to travel to the United States under the Visa Waiver Program.
+      An approved travel authorization is generally valid for two years or until your passport expires, whichever comes first.
+      It does not guarantee admission; a CBP officer decides admission at the port of entry.
+      <div class="check"><input id="disclaimer" type="checkbox"><label for="disclaimer">Yes, I have read and understand the information and agree to these terms.</label></div>
+    </div>
+
+    <h2>Email Address Verification</h2>
+    <div class="row">
+      <div><label for="email">Email Address <span>*</span></label><input id="email" type="email" autocomplete="off"></div>
+      <div><label for="emailConfirm">Confirm Email Address <span>*</span></label><input id="emailConfirm" type="email" autocomplete="off"></div>
+      <div class="full hint">A one-time verification code is sent to this address.</div>
+    </div>
+
+    <h2>Upload Passport &amp; Photo</h2>
+    <div class="row">
+      <div id="passportUpload" class="upload"><b>Upload Passport</b>Photo of the passport biographical (photo) page<br><span class="hint">Information is read from the image to pre-fill the form</span></div>
+      <div id="photoUpload" class="upload"><b>Upload Photo / Take Photo</b>A recent photo of your face<br><span class="hint">No hat, sunglasses or filters</span></div>
+    </div>
+
+    <h2>Applicant / Passport Information</h2>
+    <div class="row">
+      <div><label for="familyName">Family Name <span>*</span></label><input id="familyName" autocomplete="off"></div>
+      <div><label for="givenName">First (Given) Name <span>*</span></label><input id="givenName" autocomplete="off"></div>
+      <div><label for="sex">Gender <span>*</span></label>
+        <select id="sex"><option value="">-- Select --</option><option value="M">Male</option><option value="F">Female</option></select></div>
+      <div><label for="dob">Date of Birth <span>*</span> <span class="hint">(DD MMM YYYY)</span></label><input id="dob" placeholder="DD MMM YYYY" autocomplete="off"></div>
+      <div><label for="cityOfBirth">City of Birth <span>*</span></label><input id="cityOfBirth" autocomplete="off"></div>
+      <div><label for="countryOfBirth">Country of Birth <span>*</span></label>
+        <select id="countryOfBirth"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF (SOUTH)</option><option value="PRK">KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF (NORTH)</option><option value="JPN">JAPAN</option><option value="AUS">AUSTRALIA</option><option value="GBR">UNITED KINGDOM</option></select></div>
+      <div><label for="passport">Passport Number <span>*</span></label><input id="passport" autocomplete="off"></div>
+      <div><label for="issuingCountry">Issuing Country <span>*</span></label>
+        <select id="issuingCountry"><option value="">-- Select --</option><option value="PRK">KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF (NORTH)</option><option value="KOR">KOREA, REPUBLIC OF (SOUTH)</option><option value="JPN">JAPAN</option><option value="AUS">AUSTRALIA</option><option value="GBR">UNITED KINGDOM</option></select></div>
+      <div><label for="passportIssue">Passport Issuance Date <span>*</span></label><input id="passportIssue" placeholder="DD MMM YYYY" autocomplete="off"></div>
+      <div><label for="passportExpiry">Passport Expiration Date <span>*</span></label><input id="passportExpiry" placeholder="DD MMM YYYY" autocomplete="off"></div>
+      <div><label for="citizenship">Country of Citizenship <span>*</span></label>
+        <select id="citizenship"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF (SOUTH)</option><option value="JPN">JAPAN</option><option value="AUS">AUSTRALIA</option><option value="GBR">UNITED KINGDOM</option></select></div>
+      <div><label for="nationalId">National Identification Number <span class="hint">(if any)</span></label><input id="nationalId" autocomplete="off"></div>
+    </div>
+
+    <h2>Other Citizenship / Nationality</h2>
+    <div id="otherCitizenRow" class="box">
+      Are you now, or have you ever been, a citizen or national of any other country?
+      <div class="yesno"><label><input type="radio" name="otherCitizen" id="otherCitizenYes" value="Y"> Yes</label><label><input type="radio" name="otherCitizen" id="otherCitizenNo" value="N"> No</label></div>
+    </div>
+
+    <h2>Contact Information</h2>
+    <div class="row">
+      <div class="full"><label for="homeAddress">Home Address Line 1 <span>*</span></label><input id="homeAddress" autocomplete="off"></div>
+      <div><label for="phone">Phone Number (with country code) <span>*</span></label><input id="phone" autocomplete="off"></div>
+      <div><label for="social">Social Media <span class="hint">(provider / identifier)</span></label><input id="social" autocomplete="off"></div>
+    </div>
+
+    <h2>Travel Information</h2>
+    <div id="transitRow" class="box">
+      Is your travel to the U.S. occurring in transit to another country?
+      <div class="yesno"><label><input type="radio" name="transit" id="transitYes" value="Y"> Yes</label><label><input type="radio" name="transit" id="transitNo" value="N"> No</label></div>
+    </div>
+    <h2>Point of Contact in the United States</h2>
+    <div class="row">
+      <div><label for="pocName">Name <span>*</span></label><input id="pocName" autocomplete="off"></div>
+      <div><label for="pocPhone">Phone Number</label><input id="pocPhone" autocomplete="off"></div>
+    </div>
+    <h2>Address While in the United States</h2>
+    <div class="row">
+      <div class="full"><label for="usAddress">Address Line 1 <span>*</span></label><input id="usAddress" autocomplete="off"></div>
+      <div><label for="usCity">City <span>*</span></label><input id="usCity" autocomplete="off"></div>
+      <div><label for="usState">State <span>*</span></label>
+        <select id="usState"><option value="">-- Select --</option><option value="CA">CALIFORNIA</option><option value="HI">HAWAII</option><option value="NV">NEVADA</option><option value="NY">NEW YORK</option><option value="WA">WASHINGTON</option></select></div>
+    </div>
+
+    <h2>Eligibility Questions</h2>
+    <div id="eligList">
+      <div class="q" id="q1Row"><div>1) Do you have a physical or mental disorder; or are you a drug abuser or addict; or do you currently have any of the following diseases (cholera, diphtheria, infectious tuberculosis, plague, smallpox, yellow fever, viral hemorrhagic fevers, severe acute respiratory illnesses)?</div>
+        <div class="yn"><label><input type="radio" name="q1" value="Y"> Yes</label><label><input type="radio" name="q1" id="q1No" value="N"> No</label></div></div>
+      <div class="q" id="q2Row"><div>2) Have you ever been arrested or convicted for a crime that resulted in serious damage to property, or serious harm to another person or government authority?</div>
+        <div class="yn"><label><input type="radio" name="q2" value="Y"> Yes</label><label><input type="radio" name="q2" id="q2No" value="N"> No</label></div></div>
+      <div class="q" id="q3Row"><div>3) Have you ever violated any law related to possessing, using, or distributing illegal drugs?</div>
+        <div class="yn"><label><input type="radio" name="q3" value="Y"> Yes</label><label><input type="radio" name="q3" id="q3No" value="N"> No</label></div></div>
+      <div class="q" id="q4Row"><div>4) Do you seek to engage in or have you ever engaged in terrorist activities, espionage, sabotage, or genocide?</div>
+        <div class="yn"><label><input type="radio" name="q4" value="Y"> Yes</label><label><input type="radio" name="q4" id="q4No" value="N"> No</label></div></div>
+      <div class="q" id="q5Row"><div>5) Have you ever committed fraud or misrepresented yourself or others to obtain, or assist others to obtain, a visa or entry into the United States?</div>
+        <div class="yn"><label><input type="radio" name="q5" value="Y"> Yes</label><label><input type="radio" name="q5" id="q5No" value="N"> No</label></div></div>
+      <div class="q" id="q6Row"><div>6) Are you currently seeking employment in the United States or were you previously employed in the United States without prior permission from the U.S. government?</div>
+        <div class="yn"><label><input type="radio" name="q6" value="Y"> Yes</label><label><input type="radio" name="q6" id="q6No" value="N"> No</label></div></div>
+      <div class="q" id="q7Row"><div>7) Have you ever been denied a U.S. visa or entry into the United States or had a visa application withdrawn at a U.S. port of entry?</div>
+        <div class="yn"><label><input type="radio" name="q7" value="Y"> Yes</label><label><input type="radio" name="q7" id="q7No" value="N"> No</label></div></div>
+      <div class="q" id="q8Row"><div>8) Have you ever stayed in the United States longer than the admission period granted to you by the U.S. government?</div>
+        <div class="yn"><label><input type="radio" name="q8" value="Y"> Yes</label><label><input type="radio" name="q8" id="q8No" value="N"> No</label></div></div>
+      <div class="q" id="q9Row"><div>9) Have you traveled to, or been present in Iran, Iraq, Libya, North Korea, Somalia, Sudan, Syria or Yemen on or after March 1, 2011, or Cuba on or after January 12, 2021?</div>
+        <div class="yn"><label><input type="radio" name="q9" value="Y"> Yes</label><label><input type="radio" name="q9" id="q9No" value="N"> No</label></div></div>
+    </div>
+
+    <h2>Certification &amp; Waiver of Rights</h2>
+    <div id="waiverBox" class="box">
+      I, the applicant, hereby waive any rights to review or appeal of a CBP officer's determination as to my admissibility, or to contest, other than on the basis of an application for asylum, any action in deportation. I certify that I have read and understand all the questions and statements of this application, and that the answers are true and correct to the best of my knowledge and belief.
+      <div class="check"><input id="waiver" type="checkbox"><label for="waiver">I have read and agree to the Certification and Waiver of Rights.</label></div>
+    </div>
+
+    <h2>Review &amp; Payment</h2>
+    <div class="captcha"><div class="img">8eW4p</div><input id="captcha" placeholder="Enter the characters shown" autocomplete="off"></div>
+    <div class="pay"><div>Application fee (per applicant)<div class="amt">USD 40.62</div></div><button id="payNow" type="button">Pay Now</button></div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with CBP, DHS or any government. Apply only at esta.cbp.dhs.gov.</footer>
+</body>
+</html>

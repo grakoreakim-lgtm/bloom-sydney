@@ -9,9 +9,31 @@
         "{year} 말레이시아 입국신고서 MDAC, 화면 그대로 따라 하면 끝 (실수 TOP3)",
         "MDAC 말레이시아 디지털 입국카드 {year} 신청 방법 | 쿠알라룸푸르·코타키나발루"
       ],
-      "secondary": ["말레이시아 입국신고서", "MDAC", "MDAC 작성법", "MDAC 신청", "말레이시아 디지털 입국카드", "말레이시아 전자입국카드", "말레이시아 입국카드 작성", "말레이시아 입국 준비", "쿠알라룸푸르 입국", "코타키나발루 입국신고서", "페낭 입국", "말레이시아 여행 준비물"],
-      "questions": ["MDAC는 언제 신청하나요? (도착 3일 전부터)", "말레이시아 입국신고서는 무료인가요?", "이름은 성부터 쓰나요?", "확인 메일이 안 오면 어떻게 하나요?"],
-      "hashtags": ["말레이시아입국신고서", "MDAC", "말레이시아여행"]
+      "secondary": [
+        "말레이시아 입국신고서",
+        "MDAC",
+        "MDAC 작성법",
+        "MDAC 신청",
+        "말레이시아 디지털 입국카드",
+        "말레이시아 전자입국카드",
+        "말레이시아 입국카드 작성",
+        "말레이시아 입국 준비",
+        "쿠알라룸푸르 입국",
+        "코타키나발루 입국신고서",
+        "페낭 입국",
+        "말레이시아 여행 준비물"
+      ],
+      "questions": [
+        "MDAC는 언제 신청하나요? (도착 3일 전부터)",
+        "말레이시아 입국신고서는 무료인가요?",
+        "이름은 성부터 쓰나요?",
+        "확인 메일이 안 오면 어떻게 하나요?"
+      ],
+      "hashtags": [
+        "말레이시아입국신고서",
+        "MDAC",
+        "말레이시아여행"
+      ]
     },
     "en": {
       "primary": "Malaysia Digital Arrival Card MDAC",
@@ -21,9 +43,31 @@
         "How to Fill the MDAC Malaysia Arrival Card {year} — Copy My Screen",
         "MDAC Registration {year}: Malaysia Arrival Card in 5 Minutes (Avoid These Mistakes)"
       ],
-      "secondary": ["MDAC", "MDAC Malaysia", "MDAC registration", "how to fill MDAC", "Malaysia arrival card", "Malaysia digital arrival card", "Malaysia arrival card online", "MDAC form", "Malaysia entry requirements", "Kuala Lumpur arrival", "Malaysia immigration", "Malaysia travel"],
-      "questions": ["When can I submit the MDAC? (within 3 days before arrival)", "Is the Malaysia arrival card free?", "Which name goes first?", "What if I don't get the confirmation email?"],
-      "hashtags": ["MDAC", "MalaysiaArrivalCard", "MalaysiaTravel"]
+      "secondary": [
+        "MDAC",
+        "MDAC Malaysia",
+        "MDAC registration",
+        "how to fill MDAC",
+        "Malaysia arrival card",
+        "Malaysia digital arrival card",
+        "Malaysia arrival card online",
+        "MDAC form",
+        "Malaysia entry requirements",
+        "Kuala Lumpur arrival",
+        "Malaysia immigration",
+        "Malaysia travel"
+      ],
+      "questions": [
+        "When can I submit the MDAC? (within 3 days before arrival)",
+        "Is the Malaysia arrival card free?",
+        "Which name goes first?",
+        "What if I don't get the confirmation email?"
+      ],
+      "hashtags": [
+        "MDAC",
+        "MalaysiaArrivalCard",
+        "MalaysiaTravel"
+      ]
     }
   },
   "sgac": {
@@ -35,9 +79,30 @@
         "{year} 싱가포르 입국카드, 화면 그대로 따라 하면 끝 (이름 순서 주의)",
         "SG Arrival Card 싱가포르 전자입국카드 {year} 신청 방법 | MyICA 앱도 OK"
       ],
-      "secondary": ["싱가포르 입국신고서", "SG Arrival Card", "SG 어라이벌 카드", "싱가포르 입국카드", "싱가포르 전자입국카드", "싱가포르 입국카드 작성", "싱가포르 입국 준비", "싱가포르 여행 준비물", "MyICA", "창이공항 입국", "SGAC 작성법"],
-      "questions": ["SG Arrival Card는 언제 신청하나요? (도착 3일 전부터)", "싱가포르 입국카드는 무료인가요?", "이름은 이름-성 순서인가요?", "가족 것도 한 번에 할 수 있나요?"],
-      "hashtags": ["싱가포르입국카드", "SGArrivalCard", "싱가포르여행"]
+      "secondary": [
+        "싱가포르 입국신고서",
+        "SG Arrival Card",
+        "SG 어라이벌 카드",
+        "싱가포르 입국카드",
+        "싱가포르 전자입국카드",
+        "싱가포르 입국카드 작성",
+        "싱가포르 입국 준비",
+        "싱가포르 여행 준비물",
+        "MyICA",
+        "창이공항 입국",
+        "SGAC 작성법"
+      ],
+      "questions": [
+        "SG Arrival Card는 언제 신청하나요? (도착 3일 전부터)",
+        "싱가포르 입국카드는 무료인가요?",
+        "이름은 이름-성 순서인가요?",
+        "가족 것도 한 번에 할 수 있나요?"
+      ],
+      "hashtags": [
+        "싱가포르입국카드",
+        "SGArrivalCard",
+        "싱가포르여행"
+      ]
     },
     "en": {
       "primary": "SG Arrival Card Singapore",
@@ -47,9 +112,256 @@
         "How to Fill the Singapore Arrival Card {year} — Copy My Screen",
         "SG Arrival Card {year}: Singapore Entry Form in 5 Minutes (ICA / MyICA)"
       ],
-      "secondary": ["SG Arrival Card", "SGAC", "Singapore arrival card", "how to fill SG Arrival Card", "ICA arrival card", "Singapore arrival card online", "MyICA app", "Singapore entry requirements", "Changi Airport arrival", "Singapore immigration", "Singapore travel"],
-      "questions": ["When can I submit the SG Arrival Card? (within 3 days before arrival)", "Is the SG Arrival Card free?", "Which name goes first?", "Can I submit for my family at once?"],
-      "hashtags": ["SGArrivalCard", "Singapore", "SingaporeTravel"]
+      "secondary": [
+        "SG Arrival Card",
+        "SGAC",
+        "Singapore arrival card",
+        "how to fill SG Arrival Card",
+        "ICA arrival card",
+        "Singapore arrival card online",
+        "MyICA app",
+        "Singapore entry requirements",
+        "Changi Airport arrival",
+        "Singapore immigration",
+        "Singapore travel"
+      ],
+      "questions": [
+        "When can I submit the SG Arrival Card? (within 3 days before arrival)",
+        "Is the SG Arrival Card free?",
+        "Which name goes first?",
+        "Can I submit for my family at once?"
+      ],
+      "hashtags": [
+        "SGArrivalCard",
+        "Singapore",
+        "SingaporeTravel"
+      ]
+    }
+  },
+  "esta": {
+    "ko": {
+      "primary": "미국 ESTA 신청 방법",
+      "hook": "공식 사이트 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 미국 ESTA 발급, 화면 그대로 따라 하면 끝 (대행 사이트 주의)",
+        "ESTA 신청 방법 {year} | 공식 수수료 40달러, 성·이름 순서와 발급국가 주의"
+      ],
+      "secondary": [
+        "ESTA 신청 방법",
+        "미국 ESTA 발급",
+        "미국 ESTA 신청",
+        "ESTA 공식 사이트",
+        "ESTA 비용",
+        "ESTA 수수료 40달러",
+        "미국 전자여행허가",
+        "미국 무비자 입국",
+        "ESTA 대행 사이트",
+        "ESTA 유효기간",
+        "ESTA 승인 조회",
+        "미국 여행 준비"
+      ],
+      "questions": [
+        "ESTA 공식 사이트 주소는? (esta.cbp.dhs.gov)",
+        "ESTA 비용은 얼마인가요? (1인 USD 40.62, 2026.10.16~)",
+        "ESTA는 언제 신청해야 하나요? (출국 72시간 전까지 권장)",
+        "ESTA 유효기간은? (2년 또는 여권 만료일 중 빠른 날)",
+        "여권을 새로 받으면 ESTA도 다시 해야 하나요?",
+        "쿠바에 다녀왔는데 ESTA 되나요?"
+      ],
+      "hashtags": [
+        "미국ESTA",
+        "ESTA신청",
+        "미국여행"
+      ]
+    },
+    "en": {
+      "primary": "How to Apply for ESTA",
+      "hook": "Step by Step",
+      "titles": [
+        "{primary} {year} | Official Site {hook}",
+        "ESTA Application Step by Step {year} — Copy My Screen (Avoid Fake ESTA Sites)",
+        "US ESTA {year}: Apply on the Official Site for $40 — Every Screen Explained"
+      ],
+      "secondary": [
+        "ESTA application",
+        "ESTA application step by step",
+        "how to apply for ESTA",
+        "ESTA official website",
+        "esta.cbp.dhs.gov",
+        "ESTA fee",
+        "ESTA USA",
+        "US travel authorization",
+        "Visa Waiver Program",
+        "ESTA eligibility questions",
+        "ESTA validity",
+        "check ESTA status"
+      ],
+      "questions": [
+        "What is the official ESTA website? (esta.cbp.dhs.gov)",
+        "How much does ESTA cost? (USD 40.62 per person from 16 Oct 2026)",
+        "When should I apply for ESTA? (at least 72 hours before departure)",
+        "How long is ESTA valid? (2 years or until the passport expires)",
+        "Do I need a new ESTA with a new passport?",
+        "Can I get an ESTA after visiting Cuba?"
+      ],
+      "hashtags": [
+        "ESTA",
+        "ESTAApplication",
+        "USATravel"
+      ]
+    }
+  },
+  "tdac": {
+    "ko": {
+      "primary": "태국 입국신고서 TDAC 작성법",
+      "hook": "5분 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 태국 디지털 입국카드 TDAC, 화면 그대로 따라 하면 끝 (실수 TOP6)",
+        "TDAC 태국 전자입국신고서 {year} 신청 방법 | 방콕·푸껫·파타야 무료 공식 사이트"
+      ],
+      "secondary": [
+        "태국 입국신고서",
+        "TDAC",
+        "TDAC 작성법",
+        "TDAC 신청",
+        "태국 디지털 입국카드",
+        "태국 전자입국신고서",
+        "태국 입국카드 작성",
+        "태국 입국 준비",
+        "방콕 입국신고서",
+        "푸껫 입국신고서",
+        "파타야 입국",
+        "태국 여행 준비물",
+        "TDAC 무료",
+        "TDAC 공식 사이트"
+      ],
+      "questions": [
+        "TDAC는 언제 신청하나요? (도착 3일 전부터)",
+        "태국 입국신고서는 무료인가요? 돈 내는 사이트는 뭔가요?",
+        "성과 이름은 어느 칸에 쓰나요?",
+        "파타야 숙소는 주를 뭘로 고르나요?",
+        "건강 신고에는 어떤 나라를 넣나요?",
+        "확인 메일이 안 오면 어떻게 하나요?"
+      ],
+      "hashtags": [
+        "태국입국신고서",
+        "TDAC",
+        "태국여행"
+      ]
+    },
+    "en": {
+      "primary": "Thailand Digital Arrival Card TDAC",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | How to Fill It ({hook})",
+        "TDAC Thailand How to Fill {year} — Copy My Screen",
+        "Thailand Arrival Card Online {year}: TDAC in 5 Minutes (Avoid These 6 Mistakes)"
+      ],
+      "secondary": [
+        "TDAC",
+        "TDAC Thailand",
+        "TDAC Thailand how to fill",
+        "Thailand digital arrival card",
+        "Thailand arrival card",
+        "Thailand arrival card online",
+        "TDAC form",
+        "TDAC registration",
+        "TDAC official website",
+        "Thailand TM6 online",
+        "Thailand entry requirements",
+        "Bangkok arrival",
+        "Thailand immigration",
+        "Thailand travel"
+      ],
+      "questions": [
+        "When can I submit the TDAC? (within 3 days before arrival)",
+        "Is the Thailand Digital Arrival Card free?",
+        "Which box is family name and which is first name?",
+        "Which province do I pick for Pattaya?",
+        "Which countries go in the health declaration?",
+        "What if I don't get the confirmation email?"
+      ],
+      "hashtags": [
+        "TDAC",
+        "ThailandArrivalCard",
+        "ThailandTravel"
+      ]
+    }
+  },
+  "vjw": {
+    "ko": {
+      "primary": "비짓재팬웹 등록 방법",
+      "hook": "일본 입국 QR 코드 7분 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 비짓재팬웹 등록, 화면 그대로 따라 하면 끝 (가족 등록·실수 TOP5)",
+        "일본 입국 QR 코드 받는 법 {year} | Visit Japan Web 입국심사·세관신고 한 번에"
+      ],
+      "secondary": [
+        "비짓재팬웹",
+        "비지트재팬웹",
+        "Visit Japan Web",
+        "비짓재팬웹 가족 등록",
+        "비짓재팬웹 동반가족",
+        "일본 입국 QR 코드",
+        "일본 입국신고서",
+        "일본 세관신고서 작성",
+        "일본 전자 입국카드",
+        "일본 입국 준비물",
+        "나리타 입국 QR",
+        "간사이공항 입국 QR",
+        "일본 여행 준비"
+      ],
+      "questions": [
+        "비짓재팬웹은 언제까지 등록해야 하나요? (도착 6시간 전까지 권장)",
+        "입국심사 QR과 세관 QR이 따로 있나요? (2024년부터 QR 하나로 통합)",
+        "가족은 한 계정에서 등록하나요? QR은 각자 필요한가요?",
+        "비짓재팬웹은 무료인가요?",
+        "QR 코드를 캡처해도 되나요?"
+      ],
+      "hashtags": [
+        "비짓재팬웹",
+        "일본입국",
+        "일본여행"
+      ]
+    },
+    "en": {
+      "primary": "Visit Japan Web Registration",
+      "hook": "Japan Arrival QR Code Step-by-Step",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "How to Fill Visit Japan Web {year} — Immigration & Customs QR Code (Copy My Screen)",
+        "Japan Arrival QR Code {year}: Visit Japan Web in 7 Minutes (Family + Common Mistakes)"
+      ],
+      "secondary": [
+        "Visit Japan Web",
+        "Visit Japan Web registration",
+        "how to use Visit Japan Web",
+        "Visit Japan Web QR code",
+        "Japan arrival QR code",
+        "Japan customs declaration online",
+        "Japan disembarkation card online",
+        "Visit Japan Web family members",
+        "Japan entry requirements",
+        "Japan immigration QR code",
+        "Narita arrival",
+        "Haneda arrival",
+        "Japan travel tips"
+      ],
+      "questions": [
+        "When should I register on Visit Japan Web? (at least 6 hours before arrival)",
+        "Is there one QR code for immigration and customs? (one combined code since 2024)",
+        "Does each family member need their own QR code?",
+        "Is Visit Japan Web free?",
+        "Can I use a screenshot of the QR code?"
+      ],
+      "hashtags": [
+        "VisitJapanWeb",
+        "JapanTravel",
+        "JapanArrival"
+      ]
     }
   }
 }

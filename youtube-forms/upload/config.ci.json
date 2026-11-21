@@ -76,7 +76,10 @@
   "bgm": null,
   "formMap": {
     "MDAC 디지털 입국카드": "mdac",
-    "SG Arrival Card(웹·MyICA)": "sgac"
+    "SG Arrival Card(웹·MyICA)": "sgac",
+    "ESTA 전자여행허가": "esta",
+    "Visit Japan Web 등록·QR": "vjw",
+    "TDAC 태국 디지털 입국카드": "tdac"
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
@@ -147,5 +150,13 @@
   "seo": {
     "keywords": "seo/keywords.json",
     "learned": "seo/learned.json"
-  }
+  },
+  "shorts": {
+    "enabled": true
+  },
+  "_shorts": "One vertical Shorts clip (common-mistake moments) per main video, uploaded 1.5 h after it, within uploadsPerDay.",
+  "uploadsPerDay": 6,
+  "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase.",
+  "fillEmptySlots": true,
+  "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json)."
 }
