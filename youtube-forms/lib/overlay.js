@@ -19,35 +19,35 @@ const OVERLAY_CSS = `
 
 /* step badge, top-left */
 #yt-step { position: fixed; left: 28px; top: 22px; z-index: 2147483000; display: flex; align-items: stretch; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
-#yt-step .n { background: #facc15; color: #111; font-weight: 900; font-size: 22px; padding: 8px 14px; display: flex; align-items: center; }
-#yt-step .l { background: #111; color: #fff; font-weight: 800; font-size: 18px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+#yt-step .n { background: #facc15; color: #111; font-weight: 900; font-size: 28px; padding: 8px 14px; display: flex; align-items: center; }
+#yt-step .l { background: #111; color: #fff; font-weight: 800; font-size: 24px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
 #yt-step .bar { width: 110px; height: 6px; background: #333; border-radius: 3px; overflow: hidden; } #yt-step .bar i { display: block; height: 100%; background: #facc15; width: 0; transition: width .5s; }
-#yt-step .c { color: #9ca3af; font-weight: 700; font-size: 14px; }
+#yt-step .c { color: #9ca3af; font-weight: 700; font-size: 18px; }
 
 /* top-right pill (easy promise) / red warn flag */
-#yt-easy { position: fixed; right: 28px; top: 22px; z-index: 2147483000; background: #111; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 15px; font-weight: 800; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+#yt-easy { position: fixed; right: 28px; top: 22px; z-index: 2147483000; background: #111; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 19px; font-weight: 800; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
 #yt-easy.warn { background: #ef4444; }
 
 /* black caption bar (tip) — bottom centre */
 #yt-cap { position: fixed; left: 0; right: 0; bottom: 42px; z-index: 2147483000; text-align: center; display: none; }
-#yt-cap .in { display: inline-block; max-width: 1100px; background: rgba(0,0,0,.88); color: #fff; font-size: 28px; font-weight: 900; padding: 14px 26px; border-radius: 12px; border: 2px solid #222; line-height: 1.35; text-align: left; }
-#yt-cap .in small { display: block; font-size: 15px; font-weight: 600; color: #cbd5e1; margin-top: 4px; }
+#yt-cap .in { display: inline-block; max-width: 1180px; background: rgba(0,0,0,.9); color: #fff; font-size: 36px; font-weight: 900; padding: 14px 26px; border-radius: 12px; border: 2px solid #222; line-height: 1.35; text-align: left; }
+#yt-cap .in small { display: block; font-size: 20px; font-weight: 600; color: #cbd5e1; margin-top: 4px; }
 .yt-ov mark { background: #facc15; color: #111; padding: 0 7px; border-radius: 6px; }
 #yt-cap.on { display: block; animation: ytup .3s ease; }
 @keyframes ytup { from { transform: translateY(14px); opacity: 0; } }
 
 /* dark mistake card — next to the field */
-#yt-callout { position: absolute; z-index: 2147483000; width: 440px; background: #111; border: 1px solid #2a2a2a; border-radius: 16px; padding: 18px 20px; color: #fff; box-shadow: 0 30px 60px rgba(0,0,0,.6); display: none; }
+#yt-callout { position: absolute; z-index: 2147483000; width: 500px; background: #111; border: 1px solid #2a2a2a; border-radius: 16px; padding: 18px 20px; color: #fff; box-shadow: 0 30px 60px rgba(0,0,0,.6); display: none; }
 #yt-callout.on { display: block; animation: ytup .3s ease; }
-#yt-callout .k { display: inline-block; background: #ef4444; color: #fff; font-weight: 900; font-size: 13px; padding: 4px 10px; border-radius: 999px; letter-spacing: .04em; margin-bottom: 8px; }
-#yt-callout .t { font-size: 22px; font-weight: 900; line-height: 1.25; }
-#yt-callout .b { font-size: 15px; color: #cbd5e1; line-height: 1.5; margin-top: 8px; }
-#yt-callout .ex { margin-top: 12px; display: grid; gap: 8px; } #yt-callout .ex div { padding: 9px 12px; border-radius: 10px; font-weight: 800; font-size: 17px; }
+#yt-callout .k { display: inline-block; background: #ef4444; color: #fff; font-weight: 900; font-size: 13px; padding: 5px 12px; border-radius: 999px; letter-spacing: .04em; margin-bottom: 8px; font-size: 17px; }
+#yt-callout .t { font-size: 29px; font-weight: 900; line-height: 1.25; }
+#yt-callout .b { font-size: 19px; color: #cbd5e1; line-height: 1.5; margin-top: 8px; }
+#yt-callout .ex { margin-top: 12px; display: grid; gap: 8px; } #yt-callout .ex div { padding: 10px 14px; border-radius: 10px; font-weight: 800; font-size: 23px; }
 #yt-callout .bad { background: #2a1215; color: #fca5a5; text-decoration: line-through; } #yt-callout .good { background: #14231a; color: #86efac; }
 
 /* pause card — "type this much, then come back" */
-#yt-pause { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2147483300; background: #facc15; color: #111; border-radius: 18px; padding: 18px 28px; font-weight: 900; font-size: 30px; display: none; box-shadow: 0 30px 70px rgba(0,0,0,.6); }
-#yt-pause small { display: block; font-size: 15px; font-weight: 700; color: #444; margin-top: 4px; }
+#yt-pause { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2147483300; background: #facc15; color: #111; border-radius: 18px; padding: 18px 28px; font-weight: 900; font-size: 38px; display: none; box-shadow: 0 30px 70px rgba(0,0,0,.6); }
+#yt-pause small { display: block; font-size: 20px; font-weight: 700; color: #444; margin-top: 4px; }
 #yt-pause.on { display: block; animation: ytpop .25s ease; }
 @keyframes ytpop { from { transform: translate(-50%, -50%) scale(.9); opacity: 0; } }
 
@@ -80,7 +80,7 @@ const CURSOR_SVG = `<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 
 function install() {
   if (document.getElementById('yt-ov-style')) return;
   const style = document.createElement('style'); style.id = 'yt-ov-style'; style.textContent = OVERLAY_CSS; document.documentElement.appendChild(style);
-  const mk = (id, html) => { const el = document.createElement('div'); el.id = id; el.className = 'yt-ov'; el.innerHTML = html || ''; document.body.appendChild(el); return el; };
+  const mk = (id, html) => { const el = document.createElement('div'); el.id = id; el.className = 'yt-ov'; el.innerHTML = html || ''; document.documentElement.appendChild(el); return el; };   // outside <body>, so body zoom never scales the overlay
   mk('yt-ring'); mk('yt-arrow', '➜');
   mk('yt-step', '<span class="n">1</span><span class="l"><span class="lbl"></span><span class="bar"><i></i></span><span class="c"></span></span>');
   mk('yt-easy'); mk('yt-cap', '<div class="in"></div>'); mk('yt-callout', '<div class="k"></div><div class="t"></div><div class="b"></div><div class="ex"></div>');
@@ -100,7 +100,7 @@ function setEasyPill(text, warn = false) { install(); const el = document.getEle
 
 function rectOf(selector) {
   const el = document.querySelector(selector); if (!el) return null;
-  el.scrollIntoView({ block: 'center', behavior: 'instant' });
+  el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
   const r = el.getBoundingClientRect();
   return { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height, vx: r.left, vy: r.top };
 }
@@ -129,10 +129,19 @@ function callout(selector, { kind = 'tip', title, body, bad, good }) {
   ex.innerHTML = (bad ? `<div class="bad">${esc(bad)}</div>` : '') + (good ? `<div class="good">${esc(good)}</div>` : ''); ex.style.display = bad || good ? 'grid' : 'none';
   box.className = 'yt-ov on'; setEasyPill(window.__ytWarn || '⚠ 많이 틀리는 곳', true);
   if (!r) return;
-  const vw = window.innerWidth, boxW = 440; let left = r.x + r.w + 28, top = r.y - 6;
+  const vw = window.innerWidth, boxW = 500; let left = r.x + r.w + 28, top = r.y - 6;
   if (r.vx + r.w + 28 + boxW > vw) { left = Math.max(20, r.x + r.w - boxW); top = r.y + r.h + 22; }
   box.style.left = left + 'px'; box.style.top = top + 'px';
+  // keep clear of the caption bar at the bottom: move above the field, or hide the caption if there is no room
+  const h = box.offsetHeight, capTop = window.innerHeight - 170;
+  if (top - window.scrollY + h > capTop) {
+    const above = r.y - h - 22;
+    if (above - window.scrollY > 90) box.style.top = above + 'px';
+    else document.getElementById('yt-cap').className = 'yt-ov';
+  }
 }
+// browser-style zoom of the page content (not the overlay) so form fields are readable on a phone
+function setZoom(z) { if (document.body) document.body.style.zoom = String(z || 1); }
 function pause(text, sub) { install(); const p = document.getElementById('yt-pause'); p.innerHTML = esc(text) + (sub ? `<small>${esc(sub)}</small>` : ''); p.className = 'yt-ov on'; }
 function hidePause() { install(); document.getElementById('yt-pause').className = 'yt-ov'; }
 
@@ -157,8 +166,8 @@ module.exports = {
       const OVERLAY_CSS = ${JSON.stringify(OVERLAY_CSS)}; const CURSOR_SVG = ${JSON.stringify(CURSOR_SVG)};
       ${install.toString()} const esc = ${esc.toString()}; const mark = ${mark.toString()};
       ${setStep.toString()} ${setEasyPill.toString()} ${rectOf.toString()} ${highlight.toString()} ${clearHighlight.toString()}
-      ${callout.toString()} ${pause.toString()} ${hidePause.toString()} ${card.toString()} ${hideCard.toString()} ${moveCursor.toString()} ${clickCursor.toString()} ${setStrings.toString()}
-      return { install, setStep, setEasyPill, setStrings, highlight, clearHighlight, callout, pause, hidePause, card, hideCard, moveCursor, clickCursor };
+      ${callout.toString()} ${pause.toString()} ${hidePause.toString()} ${card.toString()} ${hideCard.toString()} ${moveCursor.toString()} ${clickCursor.toString()} ${setStrings.toString()} ${setZoom.toString()}
+      return { install, setStep, setEasyPill, setStrings, highlight, clearHighlight, callout, pause, hidePause, card, hideCard, moveCursor, clickCursor, setZoom };
     })();
   `,
 };

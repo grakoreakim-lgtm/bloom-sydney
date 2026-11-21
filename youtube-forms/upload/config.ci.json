@@ -147,5 +147,11 @@
   "seo": {
     "keywords": "seo/keywords.json",
     "learned": "seo/learned.json"
-  }
+  },
+  "shorts": {
+    "enabled": true
+  },
+  "_shorts": "One vertical Shorts clip (common-mistake moments) per main video, uploaded 1.5 h after it, within uploadsPerDay.",
+  "uploadsPerDay": 6,
+  "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase."
 }
