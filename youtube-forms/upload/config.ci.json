@@ -135,5 +135,12 @@
       "travel documents",
       "immigration"
     ]
-  }
+  },
+  "publishWindow": {
+    "default": {
+      "from": 6,
+      "to": 10
+    }
+  },
+  "_publishWindow": "Each video goes public at a random time between from:00 and to:00 in its channel timezone (KO: Asia/Seoul, EN: America/New_York)."
 }
