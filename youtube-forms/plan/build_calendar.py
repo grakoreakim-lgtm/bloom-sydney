@@ -11,7 +11,7 @@ from openpyxl.comments import Comment
 
 random.seed(7)
 OUT = os.path.dirname(os.path.abspath(__file__))
-START = dt.date(2026, 12, 1)         # 시작일 (MEC 연수생 12월 출국에 맞춤)
+START = dt.date(2026, 11, 21)        # 시작일 (사용자 요청: 오늘부터 시작)
 YEAR = START.year + (1 if START.month >= 11 else 0)   # 제목에 쓰는 연도: 11~12월 시작이면 다음 해 '최신판'
 # 맨 앞에 먼저 올릴 서식(코드)과 언어 — 연수생이 바로 쓰는 싱가포르·말레이시아
 PRIORITY = [('SGAC', 'KO'), ('MDAC', 'KO'), ('SGAC', 'EN'), ('MDAC', 'EN')]

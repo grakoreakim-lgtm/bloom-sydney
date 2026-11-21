@@ -19,7 +19,7 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
     notifySubscribers: true,
     requestBody: {
       snippet: { title: meta.title, description: meta.description, tags: meta.tags, categoryId: meta.categoryId, defaultLanguage: meta.defaultLanguage, defaultAudioLanguage: meta.defaultLanguage },
-      status: { privacyStatus: 'private', publishAt: meta.publishAt, selfDeclaredMadeForKids: false, embeddable: true, license: 'youtube' },
+      status: { privacyStatus: 'private', ...(opts.review ? {} : { publishAt: meta.publishAt }), selfDeclaredMadeForKids: false, embeddable: true, license: 'youtube' },
     },
     media: { body: fs.createReadStream(videoFile) },
   }, { onUploadProgress: (e) => process.stdout.write(`\r  upload ${Math.round((e.bytesRead / size) * 100)}%`) });

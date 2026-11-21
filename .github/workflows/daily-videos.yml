@@ -10,6 +10,7 @@ on:
       date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
       dry: { description: 'Dry run (build everything, upload nothing)', type: boolean, default: false }
       target: { description: 'mock (practice form) or live (real site)', required: false, default: 'mock' }
+      review: { description: 'Upload as private for review (no auto-publish)', type: boolean, default: false }
 
 concurrency: { group: daily-videos, cancel-in-progress: false }
 
@@ -49,7 +50,8 @@ jobs:
           DRY=""; [ "${{ github.event.inputs.dry }}" = "true" ] && DRY="--dry"
           FAKE=""; [ -z "$GOOGLE_TTS_API_KEY" ] && FAKE="--fake-tts"
           TARGET="${{ github.event.inputs.target }}"; [ -z "$TARGET" ] && TARGET=mock
-          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE | tee run.log
+          REVIEW=""; [ "${{ github.event.inputs.review }}" = "true" ] && REVIEW="--review"
+          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Keep outputs for 7 days
