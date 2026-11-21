@@ -79,7 +79,10 @@ const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
       // 4) thumbnail (uses the first field screenshot as the backdrop)
       const shot = r.shots.find((s) => /step1-/.test(s)) || r.shots[1];
       const flagEmoji = (row['국가'].match(/^\S+/) || [''])[0];
-      const thumb = await thumbnail({ flag: flagEmoji, country: row['국가'].replace(/^\S+\s/, ''), form: row['서식/주제'], lang, year: date.slice(0, 4), shot }, `${base}.png`);
+      // thumbnail text in the video's language (calendar columns are Korean)
+      const thumbCountry = form.country?.[lang] || (lang === 'ko' ? row['국가'].replace(/^\S+\s/, '') : form.country?.en || '');
+      const thumbForm = form.title?.[lang] || (lang === 'ko' ? row['서식/주제'] : form.title?.en || row['서식/주제']);
+      const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot }, `${base}.png`);
       // 5) metadata
       const aff = (cfg.affiliate?.[lang] || cfg.affiliate?.default || {})[row['국가'].replace(/^\S+\s/, '')] || cfg.affiliate?.fallback || {};
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
