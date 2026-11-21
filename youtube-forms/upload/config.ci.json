@@ -156,5 +156,7 @@
   },
   "_shorts": "One vertical Shorts clip (common-mistake moments) per main video, uploaded 1.5 h after it, within uploadsPerDay.",
   "uploadsPerDay": 6,
-  "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase."
+  "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase.",
+  "fillEmptySlots": true,
+  "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json)."
 }

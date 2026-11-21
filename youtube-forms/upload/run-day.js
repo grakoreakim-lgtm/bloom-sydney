@@ -6,6 +6,7 @@
 //   node upload/run-day.js --date 2027-01-12 --dry        # build everything, upload nothing
 //   node upload/run-day.js --date 2027-01-12 --dry --fake-tts   # also skip the TTS API (silent clips) — pipeline test
 //   node upload/run-day.js --row 3              # only slot 3 of that day
+//   node upload/run-day.js --date 2027-01-12 --plan   # just print what that day would produce
 //   node upload/run-day.js --config upload/config.ci.json --target live   # CI: committed config, real sites
 //
 // Rows whose 서식 has no definition in forms/ are listed and skipped (add forms/<id>.js first).
@@ -51,8 +52,44 @@ function parse(line) {  // minimal CSV parser (quotes + commas)
 // 서식/주제 → forms/<id>.js   (extend as you add form definitions)
 const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
 
+// produced.json: which form+language videos are already on YouTube (committed back by the workflow).
+// Calendar rows whose form has no definition yet are filled with the next not-yet-produced video instead,
+// so every slot of the day is used; a row whose video was already produced (pulled forward) is skipped.
+const PRODUCED = path.join(ROOT, 'plan', 'produced.json');
+const produced = fs.existsSync(PRODUCED) ? JSON.parse(fs.readFileSync(PRODUCED, 'utf8')) : {};
+const comboOf = (r) => `${FORM_MAP[r['서식/주제']]}:${r['언어'].toLowerCase()}`;
+
+function planDay(all, date) {
+  const day = all.filter((r) => r['날짜'] === date);
+  const taken = new Set(Object.keys(produced));
+  const backlog = [];   // defined form+language combos not produced yet, in calendar order
+  for (const r of all) {
+    if (!FORM_MAP[r['서식/주제']] || !r['유형'].startsWith('본편')) continue;
+    const c = comboOf(r); if (taken.has(c) || backlog.some((b) => b.c === c)) continue;
+    const form = require(path.join(ROOT, 'forms', `${FORM_MAP[r['서식/주제']]}.js`));
+    if (form.strings[r['언어'].toLowerCase()]) backlog.push({ c, row: r });
+  }
+  const out = [];
+  for (const r of day) {
+    if (FORM_MAP[r['서식/주제']] && r['유형'].startsWith('본편')) {
+      const c = comboOf(r);
+      if (taken.has(c)) { console.log(`  ⏭ [${r['슬롯']}] ${c} already produced`); continue; }
+      taken.add(c); out.push(r); continue;
+    }
+    if (!cfg.fillEmptySlots) { out.push(r); continue; }
+    const next = backlog.find((b) => !taken.has(b.c));
+    if (!next) { out.push(r); continue; }
+    taken.add(next.c);
+    console.log(`  ↪ [${r['슬롯']}] ${r['서식/주제']} (${r['언어']}) not defined yet → ${next.c}`);
+    out.push({ ...next.row, '날짜': r['날짜'], '슬롯': r['슬롯'], '_filled': true });
+  }
+  return out;
+}
+
 (async () => {
-  const rows = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv')).filter((r) => r['날짜'] === date && (!onlyRow || Number(r['슬롯']) === onlyRow));
+  const all = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv'));
+  const rows = planDay(all, date).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow);
+  if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
   console.log(`▶ ${date}: ${rows.length} slot(s)${dry ? '  [DRY RUN]' : ''}`);
   const dayDir = path.join(ROOT, 'out', 'days', date); fs.mkdirSync(dayDir, { recursive: true });
@@ -96,6 +133,7 @@ const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
       if (!up.duplicate && !dry) uploads++;
       console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
+      if (!dry && !review && /youtu\.be/.test(up.url)) { produced[`${formId}:${lang}`] = { date, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1) + '\n'); }
       if (cfg.shorts?.enabled) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
     } catch (e) {
       console.error(`    ✖ ${e.message}`); log.push({ row, status: 'error: ' + e.message });

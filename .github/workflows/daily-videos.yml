@@ -13,6 +13,9 @@ on:
       target: { description: 'mock (practice form) or live (real site)', required: false, default: 'mock' }
       review: { description: 'Upload as private for review (no auto-publish)', type: boolean, default: false }
 
+permissions:
+  contents: write   # commits plan/produced.json back so the next day knows what is already on YouTube
+
 concurrency: { group: daily-videos, cancel-in-progress: false }
 
 jobs:
@@ -54,6 +57,14 @@ jobs:
           REVIEW=""; [ "${{ github.event.inputs.review }}" = "true" ] && REVIEW="--review"
           node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Remember produced videos
+        if: always()
+        run: |
+          git config user.name "daily-videos bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plan/produced.json
+          git diff --cached --quiet || { git commit -m "produced: $(date +%F)"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push origin HEAD:"$GITHUB_REF_NAME"; }
 
       - name: Keep outputs for 7 days
         if: always()
