@@ -1,0 +1,38 @@
+# Re-render + set thumbnails for videos from earlier daily-videos runs (uses their 7-day artifacts).
+name: fix-thumbnails
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_ids: { description: 'daily-videos run IDs (space separated)', required: true }
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  thumbs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk > /dev/null
+      - name: Download artifacts
+        env: { GH_TOKEN: '${{ github.token }}', RUN_IDS: '${{ github.event.inputs.run_ids }}' }
+        run: for id in $RUN_IDS; do gh run download "$id" -R "$GITHUB_REPOSITORY" -D "artifacts/$id"; done
+      - name: Write secrets
+        env:
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+      - name: Set thumbnails
+        run: node upload/fix-thumbs.js artifacts --config upload/config.ci.json
