@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE PAGE — not the real myGov. Use my.gov.au</title>
+<style>
+  /* Neutral styling on purpose: no government logo, crest, colours or page design are copied here.
+     Only the plain field names follow the real flow, so viewers can recognise each step. */
+  :root { --b: #3b4a63; --soft: #eef1f6; --accent: #b3541e; --bg: #e9ecf1; --line: #d6dbe4; --ok: #2a7a3b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #8a1f1f; color: #fff; text-align: center; padding: 9px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right) */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 60px; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 420px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); padding-bottom: 0; }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  header b { font-size: 17px; } header small { font-size: 11px; opacity: .85; }
+  main { padding: 6px 16px 24px; }
+  main h2 { font-size: 15px; color: var(--b); margin: 20px 0 10px; padding: 8px 10px; background: var(--soft); border-left: 4px solid var(--b); border-radius: 4px; }
+  main h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; line-height: 1.4; }
+  input[type=text], input[type=email], input[type=tel], input[type=password], select { width: 100%; padding: 10px; border: 1px solid #b9c1cd; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  button { width: 100%; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  button.ghost { background: #fff; color: var(--b); border: 2px solid var(--b); }
+  button.small { width: auto; padding: 9px 16px; font-size: 14px; flex: none; }
+  /* browser address bar (plain drawing) */
+  .addr { display: flex; align-items: center; gap: 8px; border: 1px solid #b9c1cd; border-radius: 20px; padding: 9px 14px; background: #f6f7f9; font-size: 16px; }
+  .addr b { font-weight: 700; } .addr span { color: var(--ok); font-size: 13px; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fbfcfd; margin-bottom: 10px; }
+  .opts { display: grid; gap: 8px; }
+  .opt { display: flex; align-items: center; gap: 10px; border: 1px solid #c3cbd3; border-radius: 8px; padding: 10px 12px; margin: 0; font-weight: 400; font-size: 14px; background: #fff; }
+  .opt input { width: 20px; height: 20px; margin: 0; flex: none; }
+  .opt b { font-size: 14px; } .opt small { display: block; color: #666; font-size: 11px; margin-top: 2px; }
+  .opt:has(input:checked) { border-color: var(--b); background: var(--soft); }
+  .codebox { display: flex; gap: 6px; margin-top: 4px; }
+  .codebox i { width: 38px; height: 44px; border: 1px solid #b9c1cd; border-radius: 6px; background: #fff; display: block; }
+  .own { border: 1px dashed var(--b); border-radius: 6px; padding: 11px 10px; font-size: 14px; color: var(--b); font-weight: 700; background: #f7f8fb; letter-spacing: .02em; }
+  .rules { margin: 6px 0 0; padding-left: 18px; font-size: 11px; color: #555; line-height: 1.5; }
+  .okmsg { visibility: hidden; font-size: 13px; font-weight: 700; color: var(--ok); margin-top: 10px; }
+  .okmsg.on { visibility: visible; }
+  /* linked-services list */
+  .svc { border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fff; }
+  .svc .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .svc .top b { font-size: 15px; } .svc .top small { display: block; color: #666; font-size: 11px; font-weight: 400; margin-top: 2px; }
+  .svc .body { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 10px; }
+  .tag { font-size: 11px; font-weight: 700; color: #777; border: 1px solid #c3cbd3; border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+  .tag.on { color: var(--ok); border-color: var(--ok); }
+  .dim { opacity: .5; }
+  .two { display: grid; grid-template-columns: 1fr 96px; gap: 10px; }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE PAGE — not the real myGov. Use my.gov.au<br><span style="font-weight:400">Unofficial. For video recording only. Nothing you type here is sent anywhere.</span></div>
+<div class="phone">
+
+<!-- ============ PART 1: create the account ============ -->
+<header><b>Create an account (practice)</b><small>Practice page</small></header>
+<main>
+  <form onsubmit="return false;" autocomplete="off">
+    <h2>Open the official site<small>Type the address yourself. Never follow a link in a text or email</small></h2>
+    <div class="f" id="addressRow"><label>Browser address bar</label>
+      <div class="addr" id="address"><span>🔒</span><b>my.gov.au</b></div>
+      <div class="hint">The only official address. This practice page is not it.</div></div>
+
+    <div class="box" id="startBox">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Sign in</div>
+      <button id="createAccount" type="button" class="ghost">Create account</button>
+      <div class="hint" style="text-align:center">Already have an account? Sign in to that one instead.</div>
+    </div>
+
+    <h2>How do you want to continue?</h2>
+    <div class="opts" id="continueBox">
+      <label class="opt" id="withIdRow"><input type="radio" name="how" id="withId" value="digital-id"><span><b>Continue with Digital ID</b><small>myID, if you already have one</small></span></label>
+      <label class="opt" id="withEmailRow"><input type="radio" name="how" id="withEmail" value="email"><span><b>Continue with email</b><small>Then select Get started</small></span></label>
+    </div>
+
+    <h2>Terms of use and privacy notice<small>Read both, then tick both boxes</small></h2>
+    <div class="opts">
+      <label class="opt" id="termsUseRow"><input type="checkbox" id="termsUse"><span>I have read and accept the <b>terms of use</b></span></label>
+      <label class="opt" id="termsPrivacyRow"><input type="checkbox" id="termsPrivacy"><span>I have read the <b>privacy notice</b></span></label>
+    </div>
+
+    <h2>Enter email</h2>
+    <div class="f"><label for="email">Email address</label><input id="email" type="email" autocomplete="off" placeholder="name@example.com">
+      <div class="hint">A personal email only you can access. One email address works for one account only.</div></div>
+    <div class="f" id="emailCodeRow"><label>Enter code</label>
+      <div class="codebox" id="emailCode" aria-label="code boxes, type your own"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="hint">We sent a code to your email. Type your own code here.</div></div>
+
+    <h2>Enter mobile number<small>Optional</small></h2>
+    <div class="f" id="mobileRow"><label for="mobile">Mobile number</label><input id="mobile" type="tel" autocomplete="off" placeholder="04xx xxx xxx">
+      <div class="hint">No mobile or no reception? Select No and go on. Notifications then go to your email.</div></div>
+
+    <h2>Create password</h2>
+    <div class="f" id="passwordRow"><label>Password</label>
+      <div class="own" id="password">•••••••••• &nbsp;type your own</div>
+      <ul class="rules"><li>At least 10 characters</li><li>At least 1 letter and 1 number</li><li>No repeated or sequential characters (aaaa, 1234)</li></ul></div>
+
+    <h2>Choose a sign-in option<small>How you prove it is you each time</small></h2>
+    <div class="opts" id="mfaBox">
+      <label class="opt"><input type="radio" name="mfa" id="mfaPasskey" value="passkey"><span><b>Passkey</b><small>Fingerprint, face or screen lock on your device</small></span></label>
+      <label class="opt"><input type="radio" name="mfa" id="mfaApp" value="authenticator"><span><b>Authenticator app</b><small>An app that shows a one-time code</small></span></label>
+      <label class="opt"><input type="radio" name="mfa" id="mfaSms" value="sms"><span><b>Code by SMS</b><small>A code sent to your mobile number</small></span></label>
+    </div>
+
+    <h2>Secret questions<small>Set up 3. They help you recover your account</small></h2>
+    <div id="secretRow">
+      <div class="f"><label for="secretQ1">Question 1</label>
+        <select id="secretQ1"><option value="">Select a question</option><option value="q-street">What street did you grow up on?</option><option value="q-teacher">What was the name of your first teacher?</option><option value="q-pet">What was the name of your first pet?</option><option value="q-own">Write my own question</option></select></div>
+      <div class="f"><label>Answer 1</label><div class="own" id="secretA1">type your own answer</div>
+        <div class="hint">Answers are not case sensitive. Repeat for questions 2 and 3.</div></div>
+    </div>
+  </form>
+</main>
+
+<!-- ============ PART 2: link services ============ -->
+<header><b>Link services (practice)</b><small>After you sign in</small></header>
+<main>
+  <button id="linkServices" type="button" class="ghost" style="margin-top:14px">View and link services</button>
+  <div class="okmsg" id="svcMsg">▼ Services you can link</div>
+
+  <div id="services" class="dim">
+  <!-- ATO -->
+  <div class="svc" id="atoCard">
+    <div class="top"><div><b>Australian Taxation Office</b><small>Tax returns · super</small></div><button id="linkAto" type="button" class="small">Link</button></div>
+    <div class="body">
+      <div class="f"><label>Tax file number</label><div class="own">type your own — never share it</div></div>
+      <div class="f" id="atoProofRow" style="margin-bottom:0"><label for="atoProof">Answer questions from your records</label>
+        <select id="atoProof"><option value="">Select what you have</option><option value="bank">Bank account details</option><option value="super">Super account details</option><option value="noa">Notice of assessment</option><option value="payg">PAYG payment summary</option><option value="dividend">Dividend statement</option></select>
+        <div class="hint">Questions use details the ATO already holds about you. Cannot answer? Phone the ATO for help with linking.</div></div>
+    </div>
+  </div>
+
+  <!-- Medicare -->
+  <div class="svc" id="medicareSvc">
+    <div class="top"><div><b>Medicare</b><small>Health care · claims</small></div><span class="tag">Not linked</span></div>
+    <div class="body">
+      <div class="two" id="medicareBox">
+        <div class="f" id="medicareRow" style="margin-bottom:0"><label for="medicareCard">Medicare card number</label><input id="medicareCard" type="text" inputmode="numeric" autocomplete="off" placeholder="0000000000"></div>
+        <div class="f" id="irnRow" style="margin-bottom:0"><label for="irn">Ref. number</label><select id="irn"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+      </div>
+      <div class="hint">Individual reference number = the number next to your name on the card. Sample name on card: 1 ALEX SAMPLE</div>
+    </div>
+  </div>
+
+  <!-- Centrelink -->
+  <div class="svc" id="centrelinkSvc">
+    <div class="top"><div><b>Centrelink</b><small>Payments and services</small></div><span class="tag">Not linked</span></div>
+    <div class="body">
+      <div class="opts" id="clBox">
+        <label class="opt"><input type="radio" name="cl" id="clCrn" value="crn"><span><b>I have a Customer Reference Number (CRN)</b><small>Enter your CRN and a linking code from Centrelink</small></span></label>
+        <label class="opt"><input type="radio" name="cl" id="clOnline" value="online"><span><b>I do not have a CRN</b><small>Prove your identity online with your identity documents</small></span></label>
+      </div>
+    </div>
+  </div>
+
+  <button id="linkBtn" type="button">Link</button>
+  <div class="hint" style="text-align:center">Practice page: this button does nothing.</div>
+  </div>
+</main>
+<footer>Practice page for tutorial recording. Unofficial — not affiliated with myGov, Services Australia, the ATO or any government agency. Not legal or tax advice. The only official site is my.gov.au.</footer>
+</div>
+<script>
+  // tiny state so the walkthrough reacts a little; nothing leaves this page
+  var $ = function (id) { return document.getElementById(id); };
+  $('linkServices').addEventListener('click', function () { $('services').classList.remove('dim'); $('svcMsg').classList.add('on'); });
+  // close the native option list as soon as a value is chosen, so it never hangs over the next screen
+  Array.prototype.forEach.call(document.querySelectorAll('select'), function (sel) { sel.addEventListener('change', function () { sel.blur(); }); });
+  $('linkAto').addEventListener('click', function () { $('linkAto').textContent = 'Linking…'; });
+</script>
+</body>
+</html>

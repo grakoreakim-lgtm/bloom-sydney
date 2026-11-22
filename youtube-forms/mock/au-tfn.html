@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — TFN application for visa holders (not the real ATO form)</title>
+<style>
+  /* Neutral practice page. Deliberately NOT the government's design: no logo, no crest, no official colours. */
+  :root { --b: #3d4a5c; --soft: #eef1f5; --bg: #f1f2f4; --line: #cfd5dd; --warn: #8a5a00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #222; color: #fff; text-align: center; padding: 9px 12px; font-weight: 700; font-size: 14px; line-height: 1.35; }
+  header { background: #fff; border-bottom: 3px solid var(--b); padding: 14px 28px; font-size: 20px; font-weight: 700; color: var(--b); }
+  header small { display: block; font-size: 12px; font-weight: 400; color: #666; margin-top: 3px; }
+  /* big bottom margin so the tutorial callouts under the last fields are never cut off */
+  main { max-width: 860px; margin: 22px auto 460px; background: #fff; padding: 22px 32px 36px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  main h2 { font-size: 16px; color: var(--b); margin: 26px 0 12px; padding: 8px 10px; background: var(--soft); border-left: 4px solid var(--b); border-radius: 3px; }
+  main h2:first-of-type { margin-top: 4px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 26px; }
+  .full { grid-column: 1 / -1; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #b00; }
+  .hint { font-size: 12px; color: #666; margin-top: 3px; line-height: 1.4; }
+  input[type=text], input[type=email], input[type=tel], select { width: 100%; padding: 9px 10px; border: 1px solid #b6bdc8; border-radius: 4px; font-size: 15px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .note { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 14px; line-height: 1.45; background: #fff; }
+  .note b { display: block; margin-bottom: 2px; }
+  .note small { color: #555; font-size: 12px; }
+  .tick { display: flex; gap: 10px; align-items: flex-start; }
+  .tick input { width: 20px; height: 20px; flex: none; margin: 1px 0 0; }
+  .tick label { font-weight: 400; font-size: 14px; margin: 0; line-height: 1.4; }
+  .q { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+  .yn { display: flex; gap: 22px; font-size: 14px; } .yn label { font-weight: 400; display: flex; align-items: center; gap: 6px; margin: 0; } .yn input { width: 18px; height: 18px; margin: 0; }
+  .box { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+  .code { border: 2px dashed #9aa3af; border-radius: 6px; padding: 12px; background: #fafbfc; display: flex; align-items: center; gap: 14px; font-size: 13px; color: #555; }
+  .code .img { flex: none; width: 150px; height: 44px; border-radius: 4px; background: repeating-linear-gradient(45deg, #dfe3e8, #dfe3e8 8px, #eef0f3 8px, #eef0f3 16px); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #777; }
+  .code .in { flex: none; width: 150px; height: 36px; border: 1px solid #b6bdc8; border-radius: 4px; background: #fff; }
+  button { margin-top: 18px; background: var(--b); color: #fff; border: 0; padding: 12px 30px; font-size: 16px; font-weight: 700; border-radius: 4px; }
+  .receipt { margin-top: 16px; border: 2px solid var(--line); border-radius: 6px; padding: 12px 14px; font-size: 14px; background: #fafbfc; }
+  .receipt .id { display: inline-block; margin-top: 6px; padding: 6px 12px; border: 1px dashed #9aa3af; border-radius: 4px; color: #666; font-size: 13px; background: #fff; }
+  .after { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .after .note { margin: 0; }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM — not the real ATO form. Apply at ato.gov.au</div>
+<header>TFN application for visa holders — Practice Form
+  <small>Tax file number · foreign passport holders, permanent migrants and temporary visitors · practice layout only, submits nothing</small></header>
+<main>
+  <form onsubmit="return false;">
+    <h2>Before you start</h2>
+    <div class="note" id="officialRow"><b>Apply only on the official website: ato.gov.au</b><small>Applying for a TFN is free. You do not need to send any documents.</small></div>
+    <div class="note tick" id="eligibleRow"><input type="checkbox" id="eligible"><label for="eligible"><b>I am in Australia now, and my visa lets me work</b><small>Foreign passport or travel document · a valid visa with work rights, linked to that passport</small></label></div>
+
+    <h2>1. Travel document details</h2>
+    <div class="row">
+      <div><label for="passportNo">Passport or travel document number <span>*</span></label><input type="text" id="passportNo" autocomplete="off" maxlength="14"></div>
+      <div><label for="passportCountry">Country of passport or travel document <span>*</span></label>
+        <select id="passportCountry"><option value="">-- Select --</option><option value="CHN">China</option><option value="FRA">France</option><option value="DEU">Germany</option><option value="IND">India</option><option value="IDN">Indonesia</option><option value="ITA">Italy</option><option value="JPN">Japan</option><option value="KOR">Korea, Republic of</option><option value="NPL">Nepal</option><option value="PHL">Philippines</option><option value="TWN">Taiwan</option><option value="GBR">United Kingdom</option><option value="VNM">Vietnam</option></select></div>
+      <div class="full"><label>Security check</label>
+        <div class="code" id="securityRow"><div class="img">picture code (sample)</div><div class="in"></div><div>If the real form shows a picture code, type it yourself.</div></div></div>
+    </div>
+
+    <h2>2. Your details</h2>
+    <div class="row">
+      <div><label for="familyName">Family name <span>*</span></label><input type="text" id="familyName" autocomplete="off"><div class="hint">Exactly as printed on your passport or travel document</div></div>
+      <div><label for="givenName">Given name(s) <span>*</span></label><input type="text" id="givenName" autocomplete="off"></div>
+      <div><label for="dob">Date of birth <span>*</span></label><input type="text" id="dob" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="sex">Sex <span>*</span></label><select id="sex"><option value="">-- Select --</option><option value="M">Male</option><option value="F">Female</option><option value="X">Other</option></select></div>
+    </div>
+
+    <h2>3. Previous TFN</h2>
+    <div class="box" id="hadTfnRow"><div class="q">Have you ever had a tax file number (TFN) or Australian business number (ABN) before? <span style="color:#b00">*</span></div>
+      <div class="yn"><label><input type="radio" name="hadTfn" id="hadTfnNo" value="N"> No</label><label><input type="radio" name="hadTfn" id="hadTfnYes" value="Y"> Yes</label></div></div>
+
+    <h2>4. Postal address in Australia</h2>
+    <div class="row">
+      <div class="full" id="postalRow"><label for="postalLine">Street address or PO box <span>*</span></label><input type="text" id="postalLine" autocomplete="off"><div class="hint">Your TFN letter is posted here. It can take up to 28 days.</div></div>
+      <div><label for="suburb">Suburb / town <span>*</span></label><input type="text" id="suburb" autocomplete="off"></div>
+      <div><label for="state">State / territory <span>*</span></label><select id="state"><option value="">-- Select --</option><option value="ACT">ACT</option><option value="NSW">NSW</option><option value="NT">NT</option><option value="QLD">QLD</option><option value="SA">SA</option><option value="TAS">TAS</option><option value="VIC">VIC</option><option value="WA">WA</option></select></div>
+      <div><label for="postcode">Postcode <span>*</span></label><input type="text" id="postcode" autocomplete="off" maxlength="4"></div>
+      <div class="full tick"><input type="checkbox" id="homeSame" checked><label for="homeSame">My home address is the same as my postal address <small style="color:#666">(the real form asks for your home address separately; it cannot be a PO box)</small></label></div>
+    </div>
+
+    <h2>5. Contact details</h2>
+    <div class="row">
+      <div><label for="email">Email address</label><input type="email" id="email" autocomplete="off"></div>
+      <div><label for="mobile">Mobile phone number</label><input type="tel" id="mobile" autocomplete="off"></div>
+    </div>
+
+    <h2>6. Spouse details</h2>
+    <div class="box" id="spouseRow"><div class="q">Do you have a spouse (married or de facto)? <span style="color:#b00">*</span></div>
+      <div class="yn"><label><input type="radio" name="spouse" id="spouseNo" value="N"> No</label><label><input type="radio" name="spouse" id="spouseYes" value="Y"> Yes</label></div>
+      <div class="hint">If yes, the form asks for your spouse's name and date of birth.</div></div>
+
+    <h2>7. Declaration</h2>
+    <div class="box tick" id="declareRow"><input type="checkbox" id="declare"><label for="declare">I declare that the information I have given is true and correct.</label></div>
+    <button id="submit" type="submit">Submit</button>
+
+    <div class="receipt" id="receiptRow"><b>After you submit: your receipt</b><br>The real form shows an ATO receipt ID. Write it down or take a screenshot.<br><span class="id">Receipt ID — shown here after you submit</span></div>
+
+    <h2>After your TFN letter arrives</h2>
+    <div class="after">
+      <div class="note" id="employerRow"><b>Your employer</b><small>Give your TFN on a TFN declaration, after you start the job.</small></div>
+      <div class="note" id="shareRow"><b>Your bank and your super fund</b><small>Give them your TFN too. Keep it private from everyone else.</small></div>
+    </div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Plain field layout only — not affiliated with the Australian Taxation Office or any government.</footer>
+</body>
+</html>

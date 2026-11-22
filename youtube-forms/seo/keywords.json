@@ -521,5 +521,88 @@
       ],
       "lead": "How to install a travel eSIM — buy it before you fly, scan the QR code, and set data roaming correctly, step by step. Works for iPhone and Android."
     }
+  },
+  "au-mygov": {
+    "en": {
+      "primary": "How to Create a myGov Account",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | Link the ATO, Medicare and Centrelink ({hook})",
+        "myGov Setup for Newcomers {year}: Create Your Account and Link the ATO (Copy My Screen)",
+        "Link ATO to myGov {year}: Linking Codes, Medicare and Centrelink Explained for New Arrivals"
+      ],
+      "secondary": [
+        "how to create a myGov account",
+        "link ATO to myGov",
+        "myGov linking code",
+        "how to link Medicare to myGov",
+        "link Centrelink to myGov",
+        "myGov account setup",
+        "myGov sign in",
+        "myGov passkey",
+        "myGov secret questions",
+        "myGov for international students",
+        "myGov working holiday visa",
+        "myGov scam text",
+        "ATO linking code",
+        "moving to Australia checklist"
+      ],
+      "questions": [
+        "How do I create a myGov account? (email, emailed code, password, secret questions)",
+        "What is a myGov linking code and where do I get one?",
+        "Why can't I link the ATO to myGov? (no TFN or no ATO record yet)",
+        "Can I create a myGov account without an Australian mobile number?",
+        "Does myGov send texts or emails with links? (no, those are scams)",
+        "What do I need to link Medicare or Centrelink to myGov?"
+      ],
+      "hashtags": [
+        "myGov",
+        "MovingToAustralia",
+        "ATO"
+      ],
+      "lead": "How to create a myGov account and link the ATO, Medicare and Centrelink, step by step, for people who have just arrived in Australia. Unofficial guide, not legal or tax advice. Only ever use the official site, my.gov.au."
+    }
+  },
+  "au-tfn": {
+    "en": {
+      "primary": "How to Apply for a TFN Online",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | Australia Tax File Number for Visa Holders ({hook})",
+        "TFN Application {year} for Working Holiday and Student Visas: Copy My Screen",
+        "Tax File Number Australia {year}: Apply Online After You Arrive (Free, Avoid These Mistakes)"
+      ],
+      "secondary": [
+        "how to apply for TFN online",
+        "TFN application working holiday visa",
+        "tax file number international student",
+        "apply for tax file number Australia",
+        "TFN application for visa holders",
+        "how to get a TFN in Australia",
+        "ATO TFN application foreign passport holders",
+        "TFN application temporary visa",
+        "tax file number for migrants",
+        "how long does a TFN take",
+        "is TFN application free",
+        "TFN declaration form new job",
+        "start work without TFN Australia",
+        "moving to Australia checklist"
+      ],
+      "questions": [
+        "Can I apply for a TFN before I arrive in Australia? (no, the online form works after you arrive)",
+        "Is the TFN application free? (yes, on ato.gov.au)",
+        "How long does it take to get a TFN? (up to 28 days by post)",
+        "Can I start work without a TFN? (tell your employer you have applied; you have 28 days)",
+        "What address should I use for my TFN application?",
+        "Can international students and working holiday makers apply for a TFN online?",
+        "What if my TFN letter does not arrive?"
+      ],
+      "hashtags": [
+        "TFN",
+        "MovingToAustralia",
+        "WorkingHolidayAustralia"
+      ],
+      "lead": "How to apply for a TFN online in Australia as a visa holder — the free ATO form for working holiday makers, international students and migrants, field by field. Unofficial guide, not tax advice; apply only on ato.gov.au."
+    }
   }
 }
