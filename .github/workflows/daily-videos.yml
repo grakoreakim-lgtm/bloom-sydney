@@ -91,7 +91,7 @@ jobs:
         run: |
           git config user.name "daily-videos bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add plan/produced.json
+          git add plan/produced.json plan/shorts.json 2>/dev/null || git add plan/produced.json
           git diff --cached --quiet || { git commit -m "produced: $(date +%F)"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push origin HEAD:"$GITHUB_REF_NAME"; }
 
       - name: Keep outputs for 7 days
