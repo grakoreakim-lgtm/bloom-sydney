@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       lang: { description: 'Language', required: false, default: 'ko' }
-      voices: { description: 'Voice names (space separated)', required: false, default: 'ko-KR-Chirp3-HD-Kore gemini-2.5-flash-tts:Kore gemini-2.5-pro-tts:Kore gemini-2.5-pro-tts:Leda gemini-2.5-pro-tts:Aoede' }
+      voices: { description: 'Voice names (space separated)', required: false, default: 'ko-KR-Chirp3-HD-Kore clova:nara clova:nminyoung clova:vara clova:vyuna openai:coral openai:nova openai:sage' }
 
 permissions:
   contents: write
@@ -23,6 +23,9 @@ jobs:
         working-directory: youtube-forms
         env:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          CLOVA_CLIENT_ID: ${{ secrets.CLOVA_CLIENT_ID }}
+          CLOVA_CLIENT_SECRET: ${{ secrets.CLOVA_CLIENT_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANG_IN: ${{ github.event.inputs.lang }}
           VOICES_IN: ${{ github.event.inputs.voices }}
         run: node upload/voice-samples.js "../follow-done/voices/$LANG_IN" "$LANG_IN" $VOICES_IN

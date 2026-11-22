@@ -43,14 +43,32 @@ function buildScript(form, lang, target = 'mock') {
   return lines;
 }
 
-async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1.0) {
-  const key = process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_TTS_KEY_VIA_PROXY;   // the latter: any placeholder, a proxy injects the real header
+// one chunk of text → mp3 Buffer, for each provider
+async function synthChunk(voice, t, speakingRate) {
+  const provider = voice.provider || 'google';
+  if (provider === 'openai') {             // OpenAI gpt-4o-mini-tts: steerable with "instructions"
+    const key = process.env.OPENAI_API_KEY; if (!key) throw new Error('OPENAI_API_KEY is not set');
+    const res = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+      body: JSON.stringify({ model: voice.model || 'gpt-4o-mini-tts', voice: voice.name || 'coral', input: t, response_format: 'mp3', ...(voice.prompt ? { instructions: voice.prompt } : {}), ...(speakingRate && speakingRate !== 1 ? { speed: speakingRate } : {}) }),
+    });
+    if (!res.ok) throw new Error(`OpenAI TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
+    return Buffer.from(await res.arrayBuffer());
+  }
+  if (provider === 'clova') {              // NAVER CLOVA Voice (Premium), Korean-native voices
+    const id = process.env.CLOVA_CLIENT_ID, secret = process.env.CLOVA_CLIENT_SECRET;
+    if (!id || !secret) throw new Error('CLOVA_CLIENT_ID / CLOVA_CLIENT_SECRET are not set');
+    const body = new URLSearchParams({ speaker: voice.name || 'nara', text: t, format: 'mp3', volume: '0', speed: String(voice.speed ?? 0), pitch: String(voice.pitch ?? 0), ...(voice.emotion != null ? { emotion: String(voice.emotion) } : {}) });
+    const res = await fetch(voice.endpoint || 'https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts', {
+      method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded', 'X-NCP-APIGW-API-KEY-ID': id, 'X-NCP-APIGW-API-KEY': secret }, body,
+    });
+    if (!res.ok) throw new Error(`CLOVA TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
+    return Buffer.from(await res.arrayBuffer());
+  }
+  // Google Cloud TTS (Chirp 3 HD etc.; Gemini TTS via voice.model + voice.prompt)
+  const key = process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_TTS_KEY_VIA_PROXY;
   if (!key) throw new Error('GOOGLE_TTS_API_KEY is not set');
-  const voice = voices[lang] || VOICES[lang];
-  // Plain text only. (Markup pause tags were read out as "um"-like sounds.) Long scripts are split into
-  // sentences and joined with a short real silence, which gives clean, even breathing room.
-  // Gemini TTS voices (voice.model, e.g. gemini-2.5-flash-tts) also take a style prompt (voice.prompt).
-  const call = (t) => fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
+  const res = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
     body: JSON.stringify({
       input: { text: t, ...(voice.model && voice.prompt ? { prompt: voice.prompt } : {}) },
@@ -58,13 +76,18 @@ async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1
       audioConfig: { audioEncoding: 'MP3', ...(speakingRate && speakingRate !== 1 ? { speakingRate } : {}) },
     }),
   });
+  if (!res.ok) throw new Error(`TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  return Buffer.from((await res.json()).audioContent, 'base64');
+}
+
+async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1.0) {
+  const voice = voices[lang] || VOICES[lang];
+  // Plain text, one request per sentence, joined with a short real silence (clean, even breathing room).
   const sentences = splitSentences(text);
   const parts = [];
   for (const [i, sTxt] of sentences.entries()) {
-    const res = await call(sTxt);
-    if (!res.ok) throw new Error(`TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
     const f = sentences.length === 1 ? outFile : `${outFile}.part${i}.mp3`;
-    fs.writeFileSync(f, Buffer.from((await res.json()).audioContent, 'base64'));
+    fs.writeFileSync(f, await synthChunk(voice, sTxt, speakingRate));
     parts.push(f);
   }
   if (parts.length > 1) {

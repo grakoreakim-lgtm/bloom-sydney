@@ -53,6 +53,9 @@ jobs:
       - name: Produce & schedule uploads
         env:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          CLOVA_CLIENT_ID: ${{ secrets.CLOVA_CLIENT_ID }}
+          CLOVA_CLIENT_SECRET: ${{ secrets.CLOVA_CLIENT_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TZ: Asia/Seoul
         run: |
           DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
