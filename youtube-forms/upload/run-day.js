@@ -177,7 +177,8 @@ function planDay(all, date) {
       const thumbForm = form.title?.[lang] || (lang === 'ko' ? row['서식/주제'] : form.title?.en || row['서식/주제']);
       const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot }, `${base}.png`);
       // 5) metadata
-      const aff = (cfg.affiliate?.[lang] || cfg.affiliate?.default || {})[row['국가'].replace(/^\S+\s/, '')] || cfg.affiliate?.fallback || {};
+      const affSet = cfg.affiliate?.[lang] || cfg.affiliate?.default || {};
+      const aff = affSet[cfg.affiliateByForm?.[formId]] || affSet[row['국가'].replace(/^\S+\s/, '')] || cfg.affiliate?.fallback || {};
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)

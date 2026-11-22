@@ -123,25 +123,46 @@
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
+    "_comment": "Travelpayouts links (Agoda pending review → add 'hotel' when approved). Keys = country name as in the calendar (without the flag).",
     "fallback": {
-      "esim": "https://airalo.tpo.lv/REPLACE",
-      "hotel": "https://agoda.tpo.lv/REPLACE"
+      "esim": "https://airalo.tpk.lv/h6d3oVBn",
+      "pickup": "https://klook.tpk.lv/d4yQTZBG",
+      "tour": "https://klook.tpk.lv/OE8h3jHh"
     },
     "default": {
-      "말레이시아": {
-        "esim": "https://airalo.tpo.lv/REPLACE-my",
-        "pickup": "https://klook.tpo.lv/REPLACE-klia",
-        "hotel": "https://agoda.tpo.lv/REPLACE-kl"
-      },
       "싱가포르": {
-        "esim": "https://airalo.tpo.lv/REPLACE-sg",
-        "pickup": "https://klook.tpo.lv/REPLACE-sin",
-        "hotel": "https://agoda.tpo.lv/REPLACE-sg"
+        "esim": "https://airalo.tpk.lv/b2F6T6Nm",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "말레이시아": {
+        "esim": "https://airalo.tpk.lv/PLqWjcrm",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "싱가포르·말레이시아": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "해외여행": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "미국": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "태국": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
       },
       "일본": {
-        "esim": "https://airalo.tpo.lv/REPLACE-jp",
-        "pickup": "https://klook.tpo.lv/REPLACE-nrt",
-        "hotel": "https://agoda.tpo.lv/REPLACE-tokyo"
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
       }
     }
   },
@@ -289,5 +310,14 @@
   "liveForms": [
     "sgac"
   ],
-  "_liveForms": "Forms recorded on the real website (form.stepsLive). Others use the practice page."
+  "_liveForms": "Forms recorded on the real website (form.stepsLive). Others use the practice page.",
+  "affiliateByForm": {
+    "sgac": "싱가포르",
+    "mdac": "말레이시아",
+    "grab": "싱가포르·말레이시아",
+    "esim": "해외여행",
+    "esta": "미국",
+    "tdac": "태국",
+    "vjw": "일본"
+  }
 }
