@@ -45,6 +45,7 @@
     ]
   },
   "tts": {
+    "maxMinutesPerVideo": 15,
     "speakingRate": 1,
     "voices": {
       "ko": {

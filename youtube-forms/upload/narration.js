@@ -44,6 +44,10 @@ function buildScript(form, lang, target = 'mock') {
 }
 
 // one chunk of text → mp3 Buffer, for each provider
+// optional time budget for the Gemini voice: setBudget(15) → after 15 minutes synthChunk throws and the caller falls back
+const budget = { until: 0, minutes: 0 };
+const setBudget = (minutes) => { budget.minutes = minutes || 0; budget.until = minutes ? Date.now() + minutes * 60000 : 0; };
+
 async function synthChunk(voice, t, speakingRate) {
   const provider = voice.provider || 'google';
   if (provider === 'openai') {             // OpenAI gpt-4o-mini-tts: steerable with "instructions"
@@ -62,10 +66,14 @@ async function synthChunk(voice, t, speakingRate) {
     let lastErr = '';
     for (const model of [...new Set(models)]) {
       for (let attempt = 0; attempt < 6; attempt++) {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        // time budget per video (set by the caller): a slow or rate-limited service must not stall the whole day
+        if (budget.until && Date.now() > budget.until) throw new Error(`Gemini TTS too slow — over the ${budget.minutes}-minute budget (${lastErr || 'slow responses'})`);
+        let res;
+        try { res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
           method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
           body: JSON.stringify({ contents: [{ parts: [{ text: say }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice.name || 'Leda' } } } } }),
-        });
+          signal: AbortSignal.timeout(180000),
+        }); } catch (e) { lastErr = `${model} ${e.name === 'TimeoutError' ? 'no answer in 3 minutes' : e.message}`; continue; }
         if (res.status === 429 || res.status >= 500) { lastErr = `${model} ${res.status}`; await new Promise((r) => setTimeout(r, 5000 * (attempt + 1))); continue; }
         if (!res.ok) { lastErr = `${model} ${res.status}: ${(await res.text()).slice(0, 200)}`; break; }   // e.g. model name not available → next model
         const part = (await res.json()).candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
@@ -219,4 +227,4 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   return clips;
 }
 
-module.exports = { buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, fillersAtPauses, VOICES };
+module.exports = { setBudget, buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, fillersAtPauses, VOICES };
