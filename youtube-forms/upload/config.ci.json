@@ -160,7 +160,8 @@
   "fillEmptySlots": true,
   "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json).",
   "channelIds": {
-    "ko": "UCWt28PFPArz9jolzvIpV36g"
+    "ko": "UCWt28PFPArz9jolzvIpV36g",
+    "en": "UC6PzEDfx5u_jXzGP9rKCEVQ"
   },
   "_channelIds": "Token → YouTube channel id. A token without an id here must NOT point to any listed channel (stops EN videos landing on the KO channel). Add en once its token is verified."
 }
