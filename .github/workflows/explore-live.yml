@@ -1,0 +1,36 @@
+# Map the live SG Arrival Card wizard with fictional data (fills page 1, presses Next, never Submit).
+# Screenshots + text map are pushed to the branch "explore-output" so they can be reviewed without artifacts.
+name: explore-live
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  explore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+      - name: Explore
+        run: node upload/explore-live.js
+      - name: Publish output
+        if: always()
+        working-directory: .
+        run: |
+          mkdir -p /tmp/x && cp -r youtube-forms/out/explore /tmp/x/ 2>/dev/null || true
+          git config user.name "explore bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan explore-output
+          git rm -rq --cached . && find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r /tmp/x/explore . && git add explore && git commit -qm "explore $(date +%F-%H%M)" && git push -f origin explore-output
