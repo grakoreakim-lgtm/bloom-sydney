@@ -1,3 +1,23 @@
 {
- "WsFYnd_4Tvc": { "main": "z3QmJ8RzpgM", "channel": "ko", "lang": "ko", "form": "mdac", "date": "2026-11-22" }
+ "WsFYnd_4Tvc": {
+  "main": "z3QmJ8RzpgM",
+  "channel": "ko",
+  "lang": "ko",
+  "form": "mdac",
+  "date": "2026-11-22"
+ },
+ "w7GyGPs8py0": {
+  "main": "gSK27VswUug",
+  "channel": "en",
+  "lang": "en",
+  "form": "grab",
+  "date": "2026-11-23"
+ },
+ "ES_sqgZdPzM": {
+  "main": "Gx0lyBoBs9Y",
+  "channel": "ko",
+  "lang": "ko",
+  "form": "esim",
+  "date": "2026-11-23"
+ }
 }
