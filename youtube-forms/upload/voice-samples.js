@@ -36,7 +36,7 @@ const { buildScript, synthesize, fillerClip, withFiller } = require('./narration
       const list = path.join(outDir, `_${file}.txt`);
       fs.writeFileSync(list, parts.map((p) => `file '${path.resolve(p)}'`).join('\n'));
       execSync(`ffmpeg -y -loglevel error -f concat -safe 0 -i "${list}" -c:a libmp3lame -q:a 4 "${path.join(outDir, file + '.mp3')}"`);
-      parts.forEach((p) => { try { fs.unlinkSync(p); } catch {} }); fs.readdirSync(outDir).filter((x) => /^_/.test(x)).forEach((x) => { try { fs.unlinkSync(path.join(outDir, x)); } catch {} }); fs.unlinkSync(list);
+      parts.forEach((p) => { try { fs.unlinkSync(p); } catch {} }); fs.readdirSync(outDir).filter((x) => /^_/.test(x)).forEach((x) => { try { fs.unlinkSync(path.join(outDir, x)); } catch {} });
       ok.push(name); console.log('✔', name);
     } catch (e) { console.log('✖', name, e.message.slice(0, 200)); }
   }
