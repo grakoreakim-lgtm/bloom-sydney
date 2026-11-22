@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       lang: { description: 'Language', required: false, default: 'ko' }
-      voices: { description: 'Voice names (space separated)', required: false, default: 'ko-KR-Chirp3-HD-Kore ko-KR-Chirp3-HD-Leda ko-KR-Chirp3-HD-Charon ko-KR-Chirp3-HD-Puck' }
+      voices: { description: 'Voice names (space separated)', required: false, default: 'ko-KR-Chirp3-HD-Kore gemini-2.5-flash-tts:Kore gemini-2.5-pro-tts:Kore gemini-2.5-pro-tts:Leda gemini-2.5-pro-tts:Aoede' }
 
 permissions:
   contents: write
