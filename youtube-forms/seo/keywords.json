@@ -75,7 +75,7 @@
       "primary": "싱가포르 입국신고서 SG Arrival Card 작성법",
       "hook": "5분 따라하기",
       "titles": [
-        "{primary} {year} | {hook}",
+        "{primary} {year} | 실제 화면으로 {hook}",
         "{year} 싱가포르 입국카드, 화면 그대로 따라 하면 끝 (이름 순서 주의)",
         "SG Arrival Card 싱가포르 전자입국카드 {year} 신청 방법 | MyICA 앱도 OK"
       ],
@@ -102,13 +102,14 @@
         "싱가포르입국카드",
         "SGArrivalCard",
         "싱가포르여행"
-      ]
+      ],
+      "lead": "싱가포르 입국신고서 SG Arrival Card 작성법 — 싱가포르 이민국(ICA) 공식 사이트 실제 화면으로, 제출 직전까지 그대로 따라 하면 됩니다."
     },
     "en": {
       "primary": "SG Arrival Card Singapore",
       "hook": "Step-by-Step",
       "titles": [
-        "{primary} {year} | How to Fill It ({hook})",
+        "{primary} {year} | Real Site Walkthrough ({hook})",
         "How to Fill the Singapore Arrival Card {year} — Copy My Screen",
         "SG Arrival Card {year}: Singapore Entry Form in 5 Minutes (ICA / MyICA)"
       ],
@@ -135,7 +136,8 @@
         "SGArrivalCard",
         "Singapore",
         "SingaporeTravel"
-      ]
+      ],
+      "lead": "SG Arrival Card Singapore — fill it in on the real ICA website, step by step, right up to the Submit button."
     }
   },
   "esta": {

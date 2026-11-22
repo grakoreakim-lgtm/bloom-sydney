@@ -115,8 +115,19 @@ function planDay(all, date) {
 
 (async () => {
   const all = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv'));
+  // --forms sgac,mdac : produce just these forms' pending videos (e.g. a re-recording), ignoring the calendar
+  const onlyForms = opt('forms') ? opt('forms').split(',') : null;
+  if (onlyForms) {
+    const pend = [];
+    for (const f of onlyForms) for (const l of ['ko', 'en']) {
+      if (produced[`${f}:${l}`]) continue;
+      const r = all.find((x) => FORM_MAP[x['서식/주제']] === f && x['언어'].toLowerCase() === l && x['유형'].startsWith('본편'));
+      if (r) pend.push({ ...r, '날짜': date, '슬롯': String(pend.length + 1), '_filled': true });
+    }
+    all.splice(0, all.length); pend.forEach((r) => all.push(r));
+  }
   const cap = Math.max(minSlots, cfg.maxVideosPerDay || 99);
-  const rows = planDay(all, date).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow).slice(0, cap);
+  const rows = (onlyForms ? all : planDay(all, date)).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow).slice(0, cap);
   if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
   console.log(`▶ ${date}: ${rows.length} slot(s)${dry ? '  [DRY RUN]' : ''}`);
