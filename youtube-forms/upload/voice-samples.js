@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { buildScript, synthesize, fillerClip, withFiller } = require('./narration');
+const { buildScript, synthesize, fillerClip, withFiller, fillersAtPauses } = require('./narration');
 
 (async () => {
   const [outDir, lang, ...voices] = process.argv.slice(2);
@@ -18,7 +18,7 @@ const { buildScript, synthesize, fillerClip, withFiller } = require('./narration
     try {
       const parts = [];
       // voice spec: "clova:nara", "openai:coral", "gemini-2.5-flash-tts:Kore" (Google Gemini) or a Google voice name
-      const useFiller = /\+filler$/.test(name); const spec = name.replace(/\+filler$/, '');
+      const useFiller = /\+(filler|comma)$/.test(name), atComma = /\+comma$/.test(name); const spec = name.replace(/\+(filler|comma)$/, '');
       const [head, vname] = spec.includes(':') ? spec.split(':') : [null, spec];
       const koPrompt = '친근하고 차분한 여행 가이드처럼, 또렷하고 자연스럽게, 너무 빠르지 않게 말해 주세요.';
       const enPrompt = 'Speak like a friendly, calm travel guide: clear, natural and not too fast.';
@@ -30,7 +30,7 @@ const { buildScript, synthesize, fillerClip, withFiller } = require('./narration
         : { languageCode: langCode, name: vname };
       if (useFiller) voice.filler = { text: lang === 'ko' ? '음…' : 'Hmm…', volume: 0.35 };
       const fl = useFiller ? await fillerClip(lang, outDir, { voices: { [lang]: voice } }) : null;
-      for (const [i, l] of pick.entries()) { const f = path.join(outDir, `_${name.replace(/[:+]/g, '_')}-${i}.mp3`); await synthesize(l.text, lang, f, { [lang]: voice }); parts.push(fl && i > 0 ? withFiller(f, fl) : f); }
+      for (const [i, l] of pick.entries()) { const f = path.join(outDir, `_${name.replace(/[:+]/g, '_')}-${i}.mp3`); await synthesize(l.text, lang, f, { [lang]: voice }); parts.push(fl ? (atComma ? fillersAtPauses(f, fl) : i > 0 ? withFiller(f, fl) : f) : f); }
       if (fl) fs.unlinkSync(fl);
       const file = name.replace(/[:+]/g, '_');
       const list = path.join(outDir, `_${file}.txt`);
@@ -40,7 +40,7 @@ const { buildScript, synthesize, fillerClip, withFiller } = require('./narration
       ok.push(name); console.log('✔', name);
     } catch (e) { console.log('✖', name, e.message.slice(0, 200)); }
   }
-  const label = (n) => n.replace(/^[a-z]{2}-[A-Z]{2}-/, '').replace(/^gemini-2\.5-(flash|pro)-tts:/, 'Gemini $1 · ').replace(/^gemini:/, 'Gemini · ').replace(/\+filler$/, ' (작은 \'음\' 포함)').replace(/^clova:/, 'CLOVA · ').replace(/^openai:/, 'OpenAI · ');
+  const label = (n) => n.replace(/^[a-z]{2}-[A-Z]{2}-/, '').replace(/^gemini-2\.5-(flash|pro)-tts:/, 'Gemini $1 · ').replace(/^gemini:/, 'Gemini · ').replace(/\+filler$/, ' (문장 앞 작은 \'음\')').replace(/\+comma$/, ' (쉼표마다 작은 \'음\')').replace(/^clova:/, 'CLOVA · ').replace(/^openai:/, 'OpenAI · ');
   fs.writeFileSync(path.join(outDir, 'index.html'), `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Voice samples</title>
 <style>body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#111;color:#eee}h1{font-size:20px}.v{background:#1d1d1d;border-radius:12px;padding:14px;margin:12px 0}.n{font-weight:700;font-size:18px;margin-bottom:8px}audio{width:100%}p{color:#aaa;font-size:14px;line-height:1.5}</style></head><body>
 <h1>목소리 샘플 (${lang})</h1><p>같은 문장을 목소리만 바꿔 읽었습니다. 마음에 드는 이름을 알려 주세요.<br>${pick.map((l) => l.text).join('<br>')}</p>

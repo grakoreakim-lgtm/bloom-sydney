@@ -158,6 +158,27 @@ async function fillerClip(lang, cacheDir, opts) {
   return file;
 }
 
+// put the quiet filler into the natural pauses inside a clip (the short breaks a voice makes at commas)
+function fillersAtPauses(clipFile, filler, { minPauseMs = 110, maxCount = 6 } = {}) {
+  const out = clipFile.replace(/\.mp3$/, '.c.mp3');
+  if (fs.existsSync(out)) return out;
+  const total = durationMs(clipFile);
+  const log = execSync(`ffmpeg -hide_banner -i "${clipFile}" -af silencedetect=noise=-38dB:d=${minPauseMs / 1000} -f null - 2>&1 || true`, { shell: '/bin/bash' }).toString();
+  const starts = [...log.matchAll(/silence_start: ([\d.]+)/g)].map((m) => Number(m[1]) * 1000);
+  const ends = [...log.matchAll(/silence_end: ([\d.]+)/g)].map((m) => Number(m[1]) * 1000);
+  // inner pauses only (not leading/trailing silence), cut at their middle
+  const cuts = starts.map((st, i) => [st, ends[i]]).filter(([st, en]) => en && st > 300 && en < total - 300).map(([st, en]) => Math.round((st + en) / 2)).slice(0, maxCount);
+  if (!cuts.length) return clipFile;
+  const segs = []; let prev = 0;
+  for (const [i, c] of cuts.entries()) { const f = `${clipFile}.seg${i}.mp3`; execSync(`ffmpeg -y -loglevel error -i "${clipFile}" -ss ${prev / 1000} -to ${c / 1000} -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${f}"`); segs.push(f); prev = c; }
+  const last = `${clipFile}.segL.mp3`; execSync(`ffmpeg -y -loglevel error -i "${clipFile}" -ss ${prev / 1000} -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${last}"`);
+  const list = `${clipFile}.cp.txt`;
+  fs.writeFileSync(list, [...segs.flatMap((sg) => [sg, filler]), last].map((p) => `file '${path.resolve(p)}'`).join('\n'));
+  execSync(`ffmpeg -y -loglevel error -f concat -safe 0 -i "${list}" -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${out}"`);
+  [...segs, last, list].forEach((f) => { try { fs.unlinkSync(f); } catch {} });
+  return out;
+}
+
 function withFiller(clipFile, filler, gapMs = 120) {
   const out = clipFile.replace(/\.mp3$/, '.f.mp3');
   if (fs.existsSync(out)) return out;
@@ -190,10 +211,12 @@ async function narrate(form, lang, cacheDir, opts = {}) {
     // a quiet "음" before mistake explanations and before every few other lines (stable choice per line)
     const h2 = parseInt(crypto.createHash('md5').update(line.id).digest('hex').slice(0, 6), 16);
     const wantFiller = filler && (/-mistake$/.test(line.id) ? fcfg.onMistakes !== false : (h2 % (fcfg.every || 4)) === 0) && !/^card-intro$/.test(line.id);
-    const use = wantFiller ? withFiller(file, filler) : file;
+    let use = file;
+    if (filler && fcfg.atPauses) use = fillersAtPauses(use, filler, fcfg);          // quiet "음" at comma pauses
+    else if (wantFiller) use = withFiller(file, filler);                             // or before some lines
     clips[line.id] = { file: use, durationMs: durationMs(use), text: line.text };
   }
   return clips;
 }
 
-module.exports = { buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, VOICES };
+module.exports = { buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, fillersAtPauses, VOICES };
