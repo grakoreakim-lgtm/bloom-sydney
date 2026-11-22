@@ -15,6 +15,7 @@ on:
       now: { description: 'Publish immediately (no scheduled time)', type: boolean, default: false }
       slots: { description: 'Make at least this many videos (top up from the backlog)', required: false, default: '' }
       shorts: { description: 'Also make Shorts', type: boolean, default: true }
+      forms: { description: 'Only these forms, e.g. sgac (re-record), ignoring the calendar', required: false, default: '' }
 
 permissions:
   contents: write   # commits plan/produced.json back so the next day knows what is already on YouTube
@@ -62,7 +63,8 @@ jobs:
           NOW=""; [ "${{ github.event.inputs.now }}" = "true" ] && NOW="--now"
           SLOTS=""; [ -n "${{ github.event.inputs.slots }}" ] && SLOTS="--slots ${{ github.event.inputs.slots }}"
           SHORTS=""; [ "${{ github.event.inputs.shorts }}" = "false" ] && SHORTS="--no-shorts"
-          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS | tee run.log
+          FORMS=""; [ -n "${{ github.event.inputs.forms }}" ] && FORMS="--forms ${{ github.event.inputs.forms }}"
+          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS $FORMS | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Playlists & disclosure

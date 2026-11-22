@@ -245,5 +245,9 @@
     "ko": "출국 전에 해야 할 일을 순서대로: 입국신고서 → eSIM → 공항에서 시내까지. 화면 그대로 따라 하면 끝.",
     "en": "Everything to do before you fly, in order: arrival form → eSIM → airport to city. Just copy the screen."
   },
-  "_playlists": "Per-channel \"trip prep\" playlists, videos in this order (upload/maintain.js)."
+  "_playlists": "Per-channel \"trip prep\" playlists, videos in this order (upload/maintain.js).",
+  "liveForms": [
+    "sgac"
+  ],
+  "_liveForms": "Forms recorded on the real website (form.stepsLive). Others use the practice page."
 }

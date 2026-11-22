@@ -142,10 +142,10 @@ const steps = (route) => [
     { label: '항공사', speech: { tip: '항공사를 고르는 칸이에요. 편명 앞 두 글자, 에스큐를 치면 싱가포르 항공이 떠요.' }, tip: '편명 앞 두 글자로 **항공사 선택**' },
     { label: 'Flight code', speech: { tip: 'Pick the airline. Type the two letters of your flight, like SQ.' }, tip: 'Pick the **airline** by its code' }) },
   { type: 'type', field: 'flightNumber', value: '607', text: T(
-    { label: '편명 숫자', speech: { tip: '편명은 숫자만 쳐요. 육공칠.', mistake: '여기서 에스큐 육공칠처럼 글자까지 치면 숫자만 넣으라고 오류가 나요. 항공사는 바로 위에서 이미 골랐어요.' },
-      tip: '**숫자만**', mistake: '항공사 코드는 위에서 골랐으니 **숫자만** 칩니다.', bad: 'SQ607', good: '607' },
-    { label: 'Flight number', speech: { tip: 'Digits only.', mistake: 'Type SQ607 here and you get an error saying digits only. The airline is already picked above.' },
-      tip: '**Digits only**', mistake: 'The airline is picked above — **digits only** here.', bad: 'SQ607', good: '607' }) },
+    { label: '편명 숫자', speech: { tip: '편명은 숫자만 쳐요. 육공칠. 앞의 에스큐는 위에서 항공사를 고르면 자동으로 붙어요.', mistake: '에스큐가 자동으로 붙는 걸 모르고 글자까지 또 치면, 숫자만 넣으라고 오류가 나요. 숫자만 치세요.' },
+      tip: '**숫자만** (SQ는 자동으로 붙음)', mistake: 'SQ는 자동으로 붙습니다. 또 치면 **오류**.', bad: 'SQ607 직접 입력', good: '607만 입력' },
+    { label: 'Flight number', speech: { tip: 'Digits only. The SQ in front is added automatically from the airline you picked.', mistake: 'If you type the letters again, you get an error saying digits only.' },
+      tip: '**Digits only** (SQ is added for you)', mistake: 'SQ is added automatically — typing it gives an **error**.', bad: 'typing SQ607', good: 'typing 607' }) },
   { type: 'choose', field: 'accommodation', value: 'HOTEL', noPause: true, text: T(
     { label: '숙소 유형', speech: { tip: '숙소 유형이에요. 호텔이면 호텔.' }, tip: '호텔이면 **HOTEL**' },
     { label: 'Accommodation', speech: { tip: 'Type of accommodation. Hotel for a hotel.' }, tip: '**HOTEL** for hotels' }) },
