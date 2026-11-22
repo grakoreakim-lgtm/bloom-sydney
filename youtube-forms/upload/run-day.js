@@ -115,7 +115,8 @@ function planDay(all, date) {
 
 (async () => {
   const all = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv'));
-  const rows = planDay(all, date).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow);
+  const cap = Math.max(minSlots, cfg.maxVideosPerDay || 99);
+  const rows = planDay(all, date).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow).slice(0, cap);
   if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
   console.log(`▶ ${date}: ${rows.length} slot(s)${dry ? '  [DRY RUN]' : ''}`);
