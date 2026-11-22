@@ -104,7 +104,12 @@ const AFF = {
 async function affiliate(yt, videos, lang, seo) {
   let n = 0;
   for (const v of videos) {
-    const sn = v.snippet; if (/tpk\.lv|tpo\.lv|tp\.st/.test(sn.description)) continue;
+    const sn = v.snippet;
+    // drop placeholder links (".../REPLACE...") and their old disclosure line, then add the real block once
+    const t0 = AFF[(sn.defaultLanguage || lang).slice(0, 2)] || AFF.en;
+    const base = sn.description.split('\n').filter((x) => !/REPLACE/.test(x) && x !== t0.disclosure);
+    if (/tpk\.lv|tp\.st/.test(base.join('\n'))) continue;   // already has real affiliate links
+    sn.description = base.join('\n');
     const l = (sn.defaultLanguage || lang).slice(0, 2); const t = AFF[l] || AFF.en;
     const form = guessForm(seo, l, `${sn.title} ${(sn.tags || []).join(' ')}`);
     const country = form && cfg.affiliateByForm?.[form];
