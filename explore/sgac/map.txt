@@ -1,0 +1,383 @@
+
+=== PAGE 1 (empty) — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  button[button] id="" name="" fc="" label="More information about Date of Arrival" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-dateOfArrival" name="" fc="" label="Select Date of Arrival" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-0-input" name="mat-radio-group-0" fc="" label="22 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-1-input" name="mat-radio-group-0" fc="" label="23 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-2-input" name="mat-radio-group-0" fc="" label="24 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-fullName" name="" fc="" label="Full Name (In Passport)" box="traveller-0-input-fullName" head=""
+  input[text] id="traveller-0-input-passportNumber" name="" fc="" label="Passport Number" box="traveller-0-input-passportNumber" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfPassportExpiry" name="" fc="" label="" box="traveller-0-input-dateOfPassportExpiry" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-sex" name="" fc="" label="Select Sex as indicated in Passport" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-3-input" name="mat-radio-group-1" fc="" label="FEMALE" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-4-input" name="mat-radio-group-1" fc="" label="MALE" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-5-input" name="mat-radio-group-1" fc="" label="OTHERS" box="traveller-0-input-sex" head="FEMALE"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfBirth" name="" fc="" label="" box="traveller-0-input-dateOfBirth" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  mat-checkbox id="mat-mdc-checkbox-0" name="" fc="dayUnknown" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-0-input" name="" fc="" label="Day unknown" box="" head=""
+  mat-checkbox id="mat-mdc-checkbox-1" name="" fc="monthUnknown" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-1-input" name="" fc="" label="Month unknown" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nationality" name="" fc="" label="Nationality/Citizenship" box="traveller-0-input-nationality" head=""
+  input[text]{combobox} id="traveller-0-input-placeOfBirth" name="" fc="" label="Country/Place of Birth" box="traveller-0-input-placeOfBirth" head=""
+  input[text]{combobox} id="traveller-0-input-placeOfResidence" name="" fc="" label="Place of Residence in Home Country" box="traveller-0-input-placeOfResidence" head=""
+  button[button] id="" name="" fc="" label="More information about Email Address" box="" head=""
+  input[text] id="traveller-0-input-emailAddress" name="" fc="" label="Email Address" box="traveller-0-input-emailAddress" head=""
+  input[text]{combobox} id="traveller-0-input-countryCode" name="" fc="" label="Country Code" box="traveller-0-input-countryCode" head=""
+  input[text] id="traveller-0-input-mobileNumber" name="" fc="" label="Mobile Number" box="traveller-0-input-mobileNumber" head=""
+  input[text]{combobox} id="traveller-0-input-lastCity" name="" fc="" label="Last City/Port of Embarkation before Singapore" box="traveller-0-input-lastCity" head=""
+  input[text]{combobox} id="traveller-0-input-purposeOfTravel" name="" fc="" label="Purpose of Travel" box="traveller-0-input-purposeOfTravel" head=""
+  button[button] id="" name="" fc="" label="More Information" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfDeparture" name="" fc="" label="" box="traveller-0-input-dateOfDeparture" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  button[button] id="" name="" fc="" label="More information about Next City/ Port of Disembarkation after Singapo" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nextCity" name="" fc="" label="Next City/ Port of Disembarkation after Singapore" box="traveller-0-input-nextCity" head=""
+  mat-checkbox id="mat-mdc-checkbox-2" name="" fc="" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-2-input" name="" fc="" label="Same as Last City" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-haveUsedDiffPassportName" name="" fc="" label="Select Have you ever used a passport under different name to enter Sin" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  input[radio] id="mat-radio-6-input" name="mat-radio-group-2" fc="" label="YES" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  input[radio] id="mat-radio-7-input" name="mat-radio-group-2" fc="" label="NO" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  mat-radio-group{radiogroup} id="traveller-0-input-8" name="" fc="" label="Select Do you currently have fever, cough, shortness of breath, headac" box="traveller-0-input-8" head="YES"
+  input[radio] id="mat-radio-8-input" name="mat-radio-group-3" fc="" label="YES" box="traveller-0-input-8" head="YES"
+  input[radio] id="mat-radio-9-input" name="mat-radio-group-3" fc="" label="NO" box="traveller-0-input-8" head="YES"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  radio traveller-0-input-dateOfArrival: q="Date of Arrival " options=[22 NOVEMBER 2026 | 23 NOVEMBER 2026 | 24 NOVEMBER 2026]
+  radio traveller-0-input-sex: q="Sex as indicated in Passport " options=[FEMALE | MALE | OTHERS]
+  radio traveller-0-input-haveUsedDiffPassportName: q="Have you ever used a passport under different name to enter Singapore? " options=[YES | NO]
+  radio traveller-0-input-8: q="Do you currently have fever, cough, shortness of breath, headache, vomiting or dizziness?" options=[YES | NO]
+  [shot] 01-page1-empty.png
+  arrival options: 22 NOVEMBER 2026 | 23 NOVEMBER 2026 | 24 NOVEMBER 2026
+  dateN 0 = 31/12/2031 ok
+  dateN 1 = 15/05/1990 ok
+  auto #traveller-0-input-nationality "KOREA" → options: DEMOCRATIC PEOPLE'S REPUBLIC KOREAN | KOREAN, SOUTH
+    picked "KOREAN, SOUTH"
+  auto #traveller-0-input-placeOfBirth "KOREA" → options: REPUBLIC OF KOREA | DEMOCRATIC PEOPLE'S REPUBLIC OF KOREA | REPUBLIC OF KOREA
+    picked "REPUBLIC OF KOREA"
+  auto #traveller-0-input-placeOfResidence "SEOUL" → options: SOUTH KOREA, SEOUL, SEOUL
+    picked "SOUTH KOREA, SEOUL, SEOUL"
+  auto #traveller-0-input-countryCode "82" → options: 82 | 82 | 382 | 682
+    picked "82"
+  auto #traveller-0-input-lastCity "SEOUL" → options: SOUTH KOREA, SEOUL, SEOUL
+    picked "SOUTH KOREA, SEOUL, SEOUL"
+  auto #traveller-0-input-purposeOfTravel "HOLIDAY" → options: HOLIDAY/SIGHTSEEING/LEISURE
+    picked "HOLIDAY/SIGHTSEEING/LEISURE"
+  dateN 2 = 28/11/2026 ok
+  traveller-0-input-haveUsedDiffPassportName = NO
+  traveller-0-input-8 = NO
+  traveller-0-input-9 = NO (round 0)
+
+=== PAGE 1 (filled) — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  button[button] id="" name="" fc="" label="More information about Date of Arrival" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-dateOfArrival" name="" fc="" label="Select Date of Arrival" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-0-input" name="mat-radio-group-0" fc="" label="22 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-1-input" name="mat-radio-group-0" fc="" label="23 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  input[radio] id="mat-radio-2-input" name="mat-radio-group-0" fc="" label="24 NOVEMBER 2026" box="traveller-0-input-dateOfArrival" head="22 NOVEMBER 2026"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-fullName" name="" fc="" label="Full Name (In Passport)" box="traveller-0-input-fullName" head=""
+  input[text] id="traveller-0-input-passportNumber" name="" fc="" label="Passport Number" box="traveller-0-input-passportNumber" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfPassportExpiry" name="" fc="" label="" box="traveller-0-input-dateOfPassportExpiry" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-sex" name="" fc="" label="Select Sex as indicated in Passport" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-3-input" name="mat-radio-group-1" fc="" label="FEMALE" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-4-input" name="mat-radio-group-1" fc="" label="MALE" box="traveller-0-input-sex" head="FEMALE"
+  input[radio] id="mat-radio-5-input" name="mat-radio-group-1" fc="" label="OTHERS" box="traveller-0-input-sex" head="FEMALE"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfBirth" name="" fc="" label="" box="traveller-0-input-dateOfBirth" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  mat-checkbox id="mat-mdc-checkbox-0" name="" fc="dayUnknown" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-0-input" name="" fc="" label="Day unknown" box="" head=""
+  mat-checkbox id="mat-mdc-checkbox-1" name="" fc="monthUnknown" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-1-input" name="" fc="" label="Month unknown" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nationality" name="" fc="" label="Nationality/Citizenship" box="traveller-0-input-nationality" head=""
+  input[text]{combobox} id="traveller-0-input-placeOfBirth" name="" fc="" label="Country/Place of Birth" box="traveller-0-input-placeOfBirth" head=""
+  input[text]{combobox} id="traveller-0-input-placeOfResidence" name="" fc="" label="Place of Residence in Home Country" box="traveller-0-input-placeOfResidence" head=""
+  button[button] id="" name="" fc="" label="More information about Email Address" box="" head=""
+  input[text] id="traveller-0-input-emailAddress" name="" fc="" label="Email Address" box="traveller-0-input-emailAddress" head=""
+  input[text]{combobox} id="traveller-0-input-countryCode" name="" fc="" label="Country Code" box="traveller-0-input-countryCode" head=""
+  input[text] id="traveller-0-input-mobileNumber" name="" fc="" label="Mobile Number" box="traveller-0-input-mobileNumber" head=""
+  input[text]{combobox} id="traveller-0-input-lastCity" name="" fc="" label="Last City/Port of Embarkation before Singapore" box="traveller-0-input-lastCity" head=""
+  input[text]{combobox} id="traveller-0-input-purposeOfTravel" name="" fc="" label="Purpose of Travel" box="traveller-0-input-purposeOfTravel" head=""
+  button[button] id="" name="" fc="" label="More Information" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  input[text] id="traveller-0-input-dateOfDeparture" name="" fc="" label="" box="traveller-0-input-dateOfDeparture" head=""
+  input[text] id="traveller-0-input-day" name="" fc="" label="Day" box="traveller-0-input-day" head=""
+  input[text] id="traveller-0-input-month" name="" fc="" label="Month" box="traveller-0-input-month" head=""
+  input[text] id="traveller-0-input-year" name="" fc="" label="Year" box="traveller-0-input-year" head=""
+  button[button] id="" name="" fc="" label="More information about Next City/ Port of Disembarkation after Singapo" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nextCity" name="" fc="" label="Next City/ Port of Disembarkation after Singapore" box="traveller-0-input-nextCity" head=""
+  mat-checkbox id="mat-mdc-checkbox-2" name="" fc="" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-2-input" name="" fc="" label="Same as Last City" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-haveUsedDiffPassportName" name="" fc="" label="Select Have you ever used a passport under different name to enter Sin" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  input[radio] id="mat-radio-6-input" name="mat-radio-group-2" fc="" label="YES" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  input[radio] id="mat-radio-7-input" name="mat-radio-group-2" fc="" label="NO" box="traveller-0-input-haveUsedDiffPassportName" head="YES"
+  mat-radio-group{radiogroup} id="traveller-0-input-8" name="" fc="" label="Select Do you currently have fever, cough, shortness of breath, headac" box="traveller-0-input-8" head="YES"
+  input[radio] id="mat-radio-8-input" name="mat-radio-group-3" fc="" label="YES" box="traveller-0-input-8" head="YES"
+  input[radio] id="mat-radio-9-input" name="mat-radio-group-3" fc="" label="NO" box="traveller-0-input-8" head="YES"
+  mat-radio-group{radiogroup} id="traveller-0-input-9" name="" fc="" label="Select Have you visited any of the listed countries^ in Africa or Lati" box="traveller-0-input-9" head="YES"
+  input[radio] id="mat-radio-10-input" name="mat-radio-group-4" fc="" label="YES" box="traveller-0-input-9" head="YES"
+  input[radio] id="mat-radio-11-input" name="mat-radio-group-4" fc="" label="NO" box="traveller-0-input-9" head="YES"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  radio traveller-0-input-dateOfArrival: q="Date of Arrival " options=[22 NOVEMBER 2026 | 23 NOVEMBER 2026 | 24 NOVEMBER 2026]
+  radio traveller-0-input-sex: q="Sex as indicated in Passport " options=[FEMALE | MALE | OTHERS]
+  radio traveller-0-input-haveUsedDiffPassportName: q="Have you ever used a passport under different name to enter Singapore? " options=[YES | NO]
+  radio traveller-0-input-8: q="Do you currently have fever, cough, shortness of breath, headache, vomiting or dizziness?" options=[YES | NO]
+  radio traveller-0-input-9: q="Have you visited any of the listed countries^ in Africa or Latin America in the past 6 days prior to your arrival in Sin" options=[YES | NO]
+  [shot] 02-page1-filled.png
+
+Next button found: 1
+
+=== PAGE 2 — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-modeOfTravel" name="" fc="" label="Select Mode of Travel" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-12-input" name="mat-radio-group-5" fc="" label="AIR" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-13-input" name="mat-radio-group-5" fc="" label="LAND" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-14-input" name="mat-radio-group-5" fc="" label="SEA" box="traveller-0-input-modeOfTravel" head="AIR"
+  button[button] id="" name="" fc="" label="More information about Type of Accommodation in Singapore" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-typeOfAccommodation" name="" fc="" label="Select Type of Accommodation in Singapore" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-15-input" name="mat-radio-group-6" fc="" label="HOTEL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-16-input" name="mat-radio-group-6" fc="" label="RESIDENTIAL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-17-input" name="mat-radio-group-6" fc="" label="TRANSIT" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-18-input" name="mat-radio-group-6" fc="" label="DAY TRIP" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  radio traveller-0-input-modeOfTravel: q="Mode of Travel " options=[AIR | LAND | SEA]
+  radio traveller-0-input-typeOfAccommodation: q="Type of Accommodation in Singapore " options=[HOTEL | RESIDENTIAL | TRANSIT | DAY TRIP]
+  [shot] 03-page2.png
+  buttons: ENGLISH | Previous | Next
+
+--- page 2 text ---
+Home
+Update SG Arrival Card
+E-Pass
+FAQ
+ENGLISH
+Foreign Visitors / In-Principle Approval (IPA) Holders Submission
+Traveller Details
+2
+Visit Details
+3
+Review
+GILDONG HONG
+Transport
+Mode of Travel 
+AIR 
+LAND 
+SEA 
+Accommodation
+Type of Accommodation in Singapore 
+HOTEL 
+RESIDENTIAL 
+TRANSIT 
+DAY TRIP 
+Previous
+Next
+For more information on the SG Arrival Card e-Service, please refer to our Frequently Asked Questions (FAQs) or send an enquiry via the feedback form with a screenshot of the error message (if available). Please also indicate whether you are using the web service or mobile application.
+Immigration & Checkpoint Authority
+Contact Us
+FAQ
+Feedback
+Reach.gov.sg
+Report Vulnerability
+Privacy Statement
+Terms of Use
+© 2026 Government of Singapore
+Last Updated 12 November 2026
+This website is optimised for Edge, Firefox, Chrome, Safari.
+  traveller-0-input-airTransport = COMMERCIAL FLIGHT (round 0)
+
+=== PAGE 2 (after AIR + HOTEL) — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-modeOfTravel" name="" fc="" label="Select Mode of Travel" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-12-input" name="mat-radio-group-5" fc="" label="AIR" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-13-input" name="mat-radio-group-5" fc="" label="LAND" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-14-input" name="mat-radio-group-5" fc="" label="SEA" box="traveller-0-input-modeOfTravel" head="AIR"
+  mat-radio-group{radiogroup} id="traveller-0-input-airTransport" name="" fc="" label="Select Mode of Transport" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[radio] id="mat-radio-19-input" name="mat-radio-group-7" fc="" label="COMMERCIAL FLIGHT" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[radio] id="mat-radio-20-input" name="mat-radio-group-7" fc="" label="PRIVATE/CARGO AIRLINE/OTHERS" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[text]{combobox} id="traveller-0-input-flightCode" name="" fc="" label="Flight Code" box="traveller-0-input-flightCode" head=""
+  input[text] id="traveller-0-input-flightNumber" name="" fc="" label="Flight Number" box="traveller-0-input-flightNumber" head=""
+  button[button] id="" name="" fc="" label="More information about Type of Accommodation in Singapore" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-typeOfAccommodation" name="" fc="" label="Select Type of Accommodation in Singapore" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-15-input" name="mat-radio-group-6" fc="" label="HOTEL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-16-input" name="mat-radio-group-6" fc="" label="RESIDENTIAL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-17-input" name="mat-radio-group-6" fc="" label="TRANSIT" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-18-input" name="mat-radio-group-6" fc="" label="DAY TRIP" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  button[button] id="" name="" fc="" label="More information about Name of Hotel" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nameOfHotel" name="" fc="" label="Name of Hotel" box="traveller-0-input-nameOfHotel" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  radio traveller-0-input-modeOfTravel: q="Mode of Travel " options=[AIR | LAND | SEA]
+  radio traveller-0-input-airTransport: q="Mode of Transport " options=[COMMERCIAL FLIGHT | PRIVATE/CARGO AIRLINE/OTHERS]
+  radio traveller-0-input-typeOfAccommodation: q="Type of Accommodation in Singapore " options=[HOTEL | RESIDENTIAL | TRANSIT | DAY TRIP]
+  [shot] 04-page2-revealed.png
+  page-2 inputs: [{"id":"traveller-0-input-flightCode","role":"combobox","label":"Flight Code"},{"id":"traveller-0-input-flightNumber","role":"","label":"Flight Number"},{"id":"traveller-0-input-nameOfHotel","role":"combobox","label":"Name of Hotel"}]
+  auto [id="traveller-0-input-flightCode"] "SQ" → options: SINGAPORE AIRLINES (SQ)
+    picked "SINGAPORE AIRLINES (SQ)"
+  traveller-0-input-flightNumber = 607
+  auto [id="traveller-0-input-nameOfHotel"] "MARINA BAY SANDS" → options: MARINA BAY SANDS SINGAPORE
+    picked "MARINA BAY SANDS SINGAPORE"
+
+=== PAGE 2 (filled) — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-modeOfTravel" name="" fc="" label="Select Mode of Travel" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-12-input" name="mat-radio-group-5" fc="" label="AIR" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-13-input" name="mat-radio-group-5" fc="" label="LAND" box="traveller-0-input-modeOfTravel" head="AIR"
+  input[radio] id="mat-radio-14-input" name="mat-radio-group-5" fc="" label="SEA" box="traveller-0-input-modeOfTravel" head="AIR"
+  mat-radio-group{radiogroup} id="traveller-0-input-airTransport" name="" fc="" label="Select Mode of Transport" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[radio] id="mat-radio-19-input" name="mat-radio-group-7" fc="" label="COMMERCIAL FLIGHT" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[radio] id="mat-radio-20-input" name="mat-radio-group-7" fc="" label="PRIVATE/CARGO AIRLINE/OTHERS" box="traveller-0-input-airTransport" head="COMMERCIAL FLIGHT"
+  input[text]{combobox} id="traveller-0-input-flightCode" name="" fc="" label="Flight Code" box="traveller-0-input-flightCode" head=""
+  input[text] id="traveller-0-input-flightNumber" name="" fc="" label="Flight Number" box="traveller-0-input-flightNumber" head=""
+  button[button] id="" name="" fc="" label="More information about Type of Accommodation in Singapore" box="" head=""
+  mat-radio-group{radiogroup} id="traveller-0-input-typeOfAccommodation" name="" fc="" label="Select Type of Accommodation in Singapore" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-15-input" name="mat-radio-group-6" fc="" label="HOTEL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-16-input" name="mat-radio-group-6" fc="" label="RESIDENTIAL" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-17-input" name="mat-radio-group-6" fc="" label="TRANSIT" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  input[radio] id="mat-radio-18-input" name="mat-radio-group-6" fc="" label="DAY TRIP" box="traveller-0-input-typeOfAccommodation" head="HOTEL"
+  button[button] id="" name="" fc="" label="More information about Name of Hotel" box="" head=""
+  input[text]{combobox} id="traveller-0-input-nameOfHotel" name="" fc="" label="Name of Hotel" box="traveller-0-input-nameOfHotel" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  radio traveller-0-input-modeOfTravel: q="Mode of Travel " options=[AIR | LAND | SEA]
+  radio traveller-0-input-airTransport: q="Mode of Transport " options=[COMMERCIAL FLIGHT | PRIVATE/CARGO AIRLINE/OTHERS]
+  radio traveller-0-input-typeOfAccommodation: q="Type of Accommodation in Singapore " options=[HOTEL | RESIDENTIAL | TRANSIT | DAY TRIP]
+  [shot] 05-page2-filled.png
+
+=== PAGE 3 (review) — https://eservices.ica.gov.sg/arrivalcard/sgac/fvipa/submit
+  button[button] id="" name="" fc="" label="Select language" box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  mat-checkbox id="mat-mdc-checkbox-3" name="" fc="" label="" box="" head=""
+  input[checkbox] id="mat-mdc-checkbox-3-input" name="" fc="" label="I have read and agreed to the declaration." box="" head=""
+  button[button] id="" name="" fc="" label="" box="" head=""
+  [shot] 06-page3-review.png
+  buttons: ENGLISH | Edit | Edit | Submit
+
+--- page 3 text ---
+Home
+Update SG Arrival Card
+E-Pass
+FAQ
+ENGLISH
+Foreign Visitors / In-Principle Approval (IPA) Holders Submission
+Traveller Details
+Visit Details
+3
+Review
+Please review your details carefully. To make changes, click "Edit" at the top or bottom of the page. When everything is correct, click "Submit" to proceed.
+GILDONG HONG
+Edit
+Arrival Date
+Date of Arrival
+23 NOVEMBER 2026
+23 NOVEMBER 2026
+Personal Information
+Full Name (In Passport)
+GILDONG HONG
+GILDONG HONG
+Passport Number
+M 1 2 3 4 5 6 7 8
+M12345678
+Date of Passport Expiry
+31 December 2031
+31/12/2031
+Sex as indicated in Passport
+MALE
+MALE
+Date of Birth
+15 May 1990
+15/05/1990
+Nationality/Citizenship
+KOREAN, SOUTH
+KOREAN, SOUTH
+Country/Place of Birth
+REPUBLIC OF KOREA
+REPUBLIC OF KOREA
+Place of Residence in Home Country
+SOUTH KOREA, SEOUL, SEOUL
+SOUTH KOREA, SEOUL, SEOUL
+Email Address
+S A M P L E . T R A V E L L E R @ E X A M P L E . C O M
+SAMPLE.TRAVELLER@EXAMPLE.COM
+Mobile Number
++ 8 2 1 0 1 2 3 4 5 6 7 8
++82 1012345678
+Trip Information
+Last City/Port of Embarkation before Singapore
+SOUTH KOREA, SEOUL, SEOUL
+SOUTH KOREA, SEOUL, SEOUL
+Purpose of Travel
+HOLIDAY/SIGHTSEEING/LEISURE
+HOLIDAY/SIGHTSEEING/LEISURE
+Date of Departure from Singapore
+28 November 2026
+28/11/2026
+Next City/ Port of Disembarkation after Singapore
+SOUTH KOREA, SEOUL, SEOUL
+SOUTH KOREA, SEOUL, SEOUL
+Have you ever used a passport under different name to enter Singapore?
+NO
+NO
+Health Declaration
+Do you currently have fever, cough, shortness of breath, headache, vomiting or dizziness?
+Do you currently have fever, cough, shortness of breath, headache, vomiting or dizziness?
+NO
+Have you visited any of the listed countries^ in Africa or Latin America in the past 6 days prior to your arrival in Singapore?^Refer to Communicable Diseases Agency's website (https://www.cda.gov.sg/public/diseases/yellow-fever) for countries with risk of yellow fever transmission.
+Have you visited any of the listed countries^ in Africa or Latin America in the past 6 days prior to your arrival in Singapore?
+^Refer to Communicable Diseases Agency's website (https://www.cda.gov.sg/public/diseases/yellow-fever) for countries with risk of yellow fever transmission.
+NO
+Transport
+Mode of Travel
+AIR
+AIR
+Mode of Transport
+COMMERCIAL FLIGHT
+COMMERCIAL FLIGHT
+Flight Code
+SINGAPORE AIRLINES (SQ)
+SINGAPORE AIRLINES (SQ)
+Flight Number
+S Q 6 0 7
+SQ607
+Accommodation
+Type of Accommodation in Singapore
+HOTEL
+HOTEL
+Name of Hotel
+MARINA BAY SANDS SINGAPORE
+MARINA BAY SANDS SINGAPORE
+I have read and agreed to the declaration.
+Submit
+For more information on the SG Arrival Card e-Service, please refer to our Frequently Asked Questions (FAQs) or send an enquiry via the feedback form with a screenshot of the error message (if available). Please also indicate whether you are using the web service or mobile application.
+Immigration & Checkpoint Authority
+Contact Us
+FAQ
+Feedback
+Reach.gov.sg
+Report Vulnerability
+Privacy Statement
+Terms of Use
+© 2026 Government of Singapore
+Last Updated 12 November 2026
+This website is optimised for Edge, Firefox, Chrome, Safari.
