@@ -1,7 +1,8 @@
 # Background music
 
-Put 3–5 calm instrumental tracks here (mp3/m4a). Each video picks one (stable per form + language),
-plays it quietly under the narration, ducks it while the voice speaks, and fades in/out.
+`01-…05-*.mp3` are original tracks made by `generate.py` (synthesized here, no samples or third-party music),
+so they are free of copyright claims. Each video picks one (stable per form + language), plays it quietly under
+the narration, ducks it while the voice speaks, and fades in/out. Listen: follow-done/bgm/ on GitHub Pages.
 
-Only use tracks you may use on YouTube without claims — e.g. YouTube Studio → **Audio library**,
-filter "Attribution not required", genre Ambient / Calm, no vocals.
+You can add or replace tracks (mp3/m4a). Only use music you may use on YouTube without claims — e.g. YouTube Studio →
+Audio library, "Attribution not required", calm, no vocals.
