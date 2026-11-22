@@ -144,7 +144,7 @@ async function date(page, box, d, m, y) {
   log('  page-2 inputs: ' + JSON.stringify(fields));
   for (const f of fields) {
     const sel = f.id ? `[id="${f.id}"]` : null; if (!sel) continue;
-    if (/flight|vessel|vehicle/i.test(f.id + f.label)) { if (f.role === 'combobox') await auto(page, sel, 'SQ', /SQ|SINGAPORE AIRLINES/i); else { await page.locator(sel).fill('SQ607'); log(`  ${f.id} = SQ607`); } }
+    if (/flight|vessel|vehicle/i.test(f.id + f.label)) { if (f.role === 'combobox') await auto(page, sel, 'SQ', /SQ|SINGAPORE AIRLINES/i); else { await page.locator(sel).fill('607'); log(`  ${f.id} = 607`); } }
     else if (/nameOfHotel/i.test(f.id)) await auto(page, sel, 'MARINA BAY SANDS', /MARINA BAY SANDS/i);
     else if (/hotel|accommodation|name/i.test(f.id + f.label)) await auto(page, sel, 'MARINA', /MARINA/i);
     else if (/postal/i.test(f.id + f.label)) { await page.locator(sel).fill('018956'); log(`  ${f.id} = 018956`); }
