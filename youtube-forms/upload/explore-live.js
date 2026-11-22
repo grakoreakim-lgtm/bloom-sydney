@@ -101,6 +101,15 @@ async function date(page, box, d, m, y) {
     try { await page.locator(`#${g} mat-radio-button`, { hasText: /^\s*NO\s*$/i }).first().click(); log(`  ${g} = NO`); }
     catch (e) { try { await page.locator(`#${g} input[type=radio]`).nth(1).check({ force: true }); log(`  ${g} = NO (force)`); } catch (e2) { log(`  ${g} NO FAILED ` + e2.message.split('\n')[0]); } }
   }
+  // answering one health question can reveal another (e.g. yellow-fever countries) → answer NO to every open YES/NO group
+  for (let round = 0; round < 4; round++) {
+    const open = await page.$$eval('mat-radio-group', (gs) => gs.filter((g) => /\bYES\b/.test(g.innerText) && /\bNO\b/.test(g.innerText) && !g.querySelector('input:checked')).map((g) => g.id));
+    if (!open.length) break;
+    for (const id of open) {
+      try { await page.locator(`[id="${id}"] mat-radio-button`, { hasText: /^\s*NO\s*$/i }).first().click(); log(`  ${id} = NO (round ${round})`); } catch (e) { log(`  ${id} NO FAILED ${e.message.split('\n')[0]}`); }
+    }
+    await sleep(800);
+  }
   await sleep(800);
   await describe(page, 'PAGE 1 (filled)'); await snap(page, 'page1-filled');
 
