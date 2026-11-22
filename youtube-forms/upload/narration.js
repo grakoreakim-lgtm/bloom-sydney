@@ -196,4 +196,4 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   return clips;
 }
 
-module.exports = { buildScript, narrate, synthesize, splitSentences, VOICES };
+module.exports = { buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, VOICES };
