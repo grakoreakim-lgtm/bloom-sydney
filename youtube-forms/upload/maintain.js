@@ -7,6 +7,8 @@
 // Tasks
 //   disclosure  add the AI-narration line to descriptions that lack it and set containsSyntheticMedia
 //   playlists   keep one "travel prep" playlist per country (config.playlists) with our videos in order
+//   affiliate   add the affiliate block (eSIM / airport transfer / tours) to videos that do not have it yet
+//   links       print where each affiliate short link redirects (to check the mapping)
 const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
@@ -95,8 +97,42 @@ async function playlists(yt, videos, lang, seo) {
   }
 }
 
+const AFF = {
+  ko: { disclosure: '※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', esim: '📱 eSIM', pickup: '🚆 공항 픽업·교통', hotel: '🏨 호텔', tour: '🎟 투어·입장권' },
+  en: { disclosure: '※ Links below may earn this channel a commission at no extra cost to you.', esim: '📱 eSIM', pickup: '🚆 Airport transfer', hotel: '🏨 Hotels', tour: '🎟 Tours & tickets' },
+};
+async function affiliate(yt, videos, lang, seo) {
+  let n = 0;
+  for (const v of videos) {
+    const sn = v.snippet; if (/tpk\.lv|tpo\.lv|tp\.st/.test(sn.description)) continue;
+    const l = (sn.defaultLanguage || lang).slice(0, 2); const t = AFF[l] || AFF.en;
+    const form = guessForm(seo, l, `${sn.title} ${(sn.tags || []).join(' ')}`);
+    const country = form && cfg.affiliateByForm?.[form];
+    const aff = (country && cfg.affiliate?.default?.[country]) || cfg.affiliate?.fallback || {};
+    const lines = ['esim', 'pickup', 'hotel', 'tour'].filter((k) => aff[k]).map((k) => `${t[k]}: ${aff[k]}`);
+    if (!lines.length) continue;
+    const d = sn.description.split('\n');
+    const at = Math.max(0, d.findIndex((x) => /^📌/.test(x)) + 1) || Math.min(2, d.length);   // right after the official-site line
+    d.splice(at, 0, t.disclosure, ...lines, '');
+    await yt.videos.update({ part: ['snippet'], requestBody: { id: v.id, snippet: { title: sn.title, description: d.join('\n').slice(0, 4990), tags: sn.tags, categoryId: sn.categoryId, defaultLanguage: sn.defaultLanguage } } });
+    n++; console.log(`  ✔ affiliate → ${v.id} (${form || 'general'})  ${sn.title.slice(0, 40)}`);
+  }
+  console.log(`  affiliate: ${n} video(s) updated`);
+}
+async function checkLinks() {
+  const urls = new Set(); const all = [cfg.affiliate?.fallback, ...Object.values(cfg.affiliate?.default || {})];
+  for (const a of all) for (const [k, u] of Object.entries(a || {})) if (/^https?:/.test(u)) urls.add(`${k}|${u}`);
+  for (const x of urls) {
+    const [k, u] = x.split('|');
+    let loc = ''; try { const r = await fetch(u, { redirect: 'manual' }); loc = r.headers.get('location') || `(status ${r.status})`; } catch (e) { loc = 'ERR ' + e.message; }
+    const target = decodeURIComponent(loc).match(/https?:\/\/(www\.)?(airalo|klook|agoda)[^\s&"]*/i)?.[0] || loc.slice(0, 160);
+    console.log(`  link ${k.padEnd(6)} ${u} → ${target}`);
+  }
+}
+
 (async () => {
   const seo = loadSeo(cfg);
+  if (want('links')) await checkLinks();
   const chans = Object.entries(cfg.channelIds || { ko: null, en: null });
   for (const [ch] of chans) {
     const lang = ch;   // token key == primary language of that channel
@@ -106,6 +142,7 @@ async function playlists(yt, videos, lang, seo) {
       const videos = await ourVideos(yt);
       if (want('disclosure')) await disclosure(yt, videos, lang);
       if (want('playlists')) await playlists(yt, videos, lang, seo);
+      if (want('affiliate')) await affiliate(yt, videos, lang, seo);
     } catch (e) { console.error(`  ✖ ${ch}: ${e?.response?.data?.error?.message || e.message}`); process.exitCode = 1; }
   }
 })();
