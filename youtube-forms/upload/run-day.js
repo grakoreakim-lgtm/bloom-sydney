@@ -51,6 +51,11 @@ function parse(line) {  // minimal CSV parser (quotes + commas)
 
 // 서식/주제 → forms/<id>.js   (extend as you add form definitions)
 const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
+// channel guard options for upload(): expected channel id per token, and "must not be another token's channel"
+function guardFor(chKey) {
+  const ids = cfg.channelIds || {};
+  return { expectChannel: ids[chKey] || null, forbidChannel: ids[chKey] ? null : Object.entries(ids).filter(([k]) => k !== chKey).map(([, v]) => v)[0] || null };
+}
 
 // produced.json: which form+language videos are already on YouTube (committed back by the workflow).
 // Calendar rows whose form has no definition yet are filled with the next not-yet-produced video instead,
@@ -129,7 +134,7 @@ function planDay(all, date) {
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
-      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review });
+      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review, ...guardFor(cfg.channels?.[lang] || lang) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
@@ -152,7 +157,7 @@ function planDay(all, date) {
         tags: j.meta.tags, categoryId: j.meta.categoryId, defaultLanguage: j.lang,
         publishAt: new Date(Date.parse(j.meta.publishAt) + 90 * 60 * 1000).toISOString(),   // 1.5 h after the main video
       };
-      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review });
+      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review, ...guardFor(cfg.channels?.[j.lang] || j.lang) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`  ✔ Shorts ${short.seconds}s ${up.url}`);
       log.push({ row: j.row, status: 'ok', kind: 'short', video: short.file, url: up.url, publishAt: meta.publishAt });

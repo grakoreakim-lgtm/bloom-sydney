@@ -158,5 +158,9 @@
   "uploadsPerDay": 6,
   "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase.",
   "fillEmptySlots": true,
-  "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json)."
+  "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json).",
+  "channelIds": {
+    "ko": "UCWt28PFPArz9jolzvIpV36g"
+  },
+  "_channelIds": "Token → YouTube channel id. A token without an id here must NOT point to any listed channel (stops EN videos landing on the KO channel). Add en once its token is verified."
 }

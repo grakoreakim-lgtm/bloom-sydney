@@ -13,6 +13,13 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
   if (opts.dryRun) return { id: 'DRY-RUN', url: '(dry run — nothing uploaded)' };
   const auth = await authorize(channel);
   const yt = google.youtube({ version: 'v3', auth });
+  // channel guard: never post to the wrong channel (e.g. the EN token was issued for the KO channel)
+  if (opts.expectChannel || opts.forbidChannel) {
+    const me = (await yt.channels.list({ part: ['id'], mine: true })).data.items?.[0]?.id;
+    if ((opts.expectChannel && me !== opts.expectChannel) || (opts.forbidChannel && me === opts.forbidChannel)) {
+      throw new Error(`token for "${channel}" points to channel ${me} — not uploading (re-issue YT_REFRESH_TOKEN_${channel.toUpperCase()} for the right channel)`);
+    }
+  }
   // duplicate guard: a manual run and the scheduled run must not post the same video twice
   const dup = await findByTitle(yt, meta.title);
   if (dup) { console.log(`  ⏭ already on the channel: ${meta.title}`); return { id: dup, url: `https://youtu.be/${dup}`, duplicate: true }; }
