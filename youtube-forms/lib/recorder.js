@@ -49,15 +49,29 @@ class Recorder {
       viewport: this.size,
       deviceScaleFactor: 1,
       recordVideo: { dir: this.outDir, size: this.size },
-      locale: this.lang === 'ko' ? 'ko-KR' : 'en-US',
+      // live sites: keep the browser in the site's language (the narration names its English labels)
+      locale: this.target === 'live' ? (this.form.liveLocale || 'en-US') : (this.lang === 'ko' ? 'ko-KR' : 'en-US'),
     });
     await this.context.addInitScript(overlay.bundle);
     this.page = await this.context.newPage();
     this.t0 = Date.now();                       // video recording starts with the page
     await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
+    if (this.target === 'live') await this.dismissDialogs();
     if (this.target === 'live') for (const p of this.form.livePre || []) { if (p.goto) await this.page.goto(p.goto, { waitUntil: 'networkidle' }); else await this.page.locator(p.click).first().click({ timeout: 15000 }); await this.page.waitForLoadState('networkidle').catch(() => {}); await sleep(1500); }
     await this.page.evaluate(() => window.__ytOverlay.install());
     await this.ov('setZoom', this.zoom);
+  }
+
+  // close pop-ups such as a language-suggestion dialog that would block clicks
+  async dismissDialogs() {
+    await sleep(1500);
+    for (let i = 0; i < 3; i++) {
+      const dlg = this.page.locator('.cdk-overlay-container mat-dialog-container, .cdk-overlay-container [role="dialog"]');
+      if (!(await dlg.count())) return;
+      const btn = dlg.locator('button', { hasText: /no|cancel|close|english|stay|keep|dismiss|ok/i }).first();
+      if (await btn.count()) await btn.click().catch(() => {}); else await this.page.keyboard.press('Escape');
+      await sleep(800);
+    }
   }
 
   // ---- overlay helpers --------------------------------------------------
