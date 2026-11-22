@@ -56,7 +56,7 @@ const FORM_MAP = cfg.formMap || { 'MDAC 디지털 입국카드': 'mdac' };
 // channel guard options for upload(): expected channel id per token, and "must not be another token's channel"
 function guardFor(chKey) {
   const ids = cfg.channelIds || {};
-  return { expectChannel: ids[chKey] || null, forbidChannel: ids[chKey] ? null : Object.entries(ids).filter(([k]) => k !== chKey).map(([, v]) => v)[0] || null };
+  return { expectChannel: ids[chKey] || null, forbidChannel: ids[chKey] ? null : Object.entries(ids).filter(([k]) => k !== chKey).map(([, v]) => v) };
 }
 
 // produced.json: which form+language videos are already on YouTube (committed back by the workflow).
@@ -79,6 +79,7 @@ function planDay(all, date) {
   // topics that are not in the calendar (e.g. the "after you arrive" series) go to the front of the backlog
   const extras = [];
   for (const x of cfg.extraTopics || []) {
+    if (x.channel) continue;   // own channel → own schedule (planChannels)
     if (!fs.existsSync(path.join(ROOT, 'forms', `${x.form}.js`))) continue;
     FORM_MAP[x.topic] = x.form;
     const form = require(path.join(ROOT, 'forms', `${x.form}.js`));
@@ -114,6 +115,32 @@ function planDay(all, date) {
   return out;
 }
 
+// channel of a video: a form can belong to its own channel (e.g. 'gov'), otherwise the language's channel
+const chOf = (form, lang) => form.channel || cfg.channels?.[lang] || lang;
+
+// extra channels (cfg.channelSchedule): their own topics on their own weekdays, on top of the main plan
+function planChannels(date, startSlot) {
+  const out = []; const wd = new Date(`${date}T00:00:00Z`).getUTCDay();
+  for (const [ch, sch] of Object.entries(cfg.channelSchedule || {})) {
+    if (!(sch.days || [1, 3, 5]).includes(wd)) continue;
+    if (!dry && !fs.existsSync(path.join(__dirname, 'secrets', `token-${ch}.json`))) { console.log(`  ⏭ channel ${ch}: no token yet (add secret YT_REFRESH_TOKEN_${ch.toUpperCase()})`); continue; }
+    let n = 0;
+    for (const x of (cfg.extraTopics || []).filter((t) => t.channel === ch)) {
+      if (n >= (sch.perDay || 1)) break;
+      if (!fs.existsSync(path.join(ROOT, 'forms', `${x.form}.js`))) continue;
+      const form = require(path.join(ROOT, 'forms', `${x.form}.js`));
+      for (const lang of x.langs || ['en']) {
+        if (n >= (sch.perDay || 1)) break;
+        if (produced[`${x.form}:${lang}`] || !form.strings[lang]) continue;
+        FORM_MAP[x.topic] = x.form;
+        out.push({ '날짜': date, '슬롯': String(startSlot + out.length + 1), '유형': '본편(5-8분)', '등급': 'S', '국가': x.country, '서식/주제': x.topic, '언어': lang.toUpperCase(), '제목(초안)': (form.videoTitle?.[lang] || x.topic).replace('{year}', date.slice(0, 4)), '공식 URL(설명란 1줄)': '', '비용': '-', '제출 시점·유효': '-', '_filled': true });
+        n++; console.log(`  ＋ channel ${ch} → ${x.form}:${lang}`);
+      }
+    }
+  }
+  return out;
+}
+
 (async () => {
   const all = readCsv(path.join(ROOT, 'plan', cfg.calendar || 'upload-calendar-2027.csv'));
   // --forms sgac,mdac : produce just these forms' pending videos (e.g. a re-recording), ignoring the calendar
@@ -128,7 +155,9 @@ function planDay(all, date) {
     all.splice(0, all.length); pend.forEach((r) => all.push(r));
   }
   const cap = Math.max(minSlots, cfg.maxVideosPerDay || 99);
-  const rows = (onlyForms ? all : planDay(all, date)).filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow).slice(0, cap);
+  let rows = (onlyForms ? all : planDay(all, date)).slice(0, cap);
+  if (!onlyForms) rows = rows.concat(planChannels(date, rows.length));
+  rows = rows.filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow);
   if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
   console.log(`▶ ${date}: ${rows.length} slot(s)${dry ? '  [DRY RUN]' : ''}`);
@@ -175,7 +204,7 @@ function planDay(all, date) {
       // thumbnail text in the video's language (calendar columns are Korean)
       const thumbCountry = form.country?.[lang] || (lang === 'ko' ? row['국가'].replace(/^\S+\s/, '') : form.country?.en || '');
       const thumbForm = form.title?.[lang] || (lang === 'ko' ? row['서식/주제'] : form.title?.en || row['서식/주제']);
-      const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot }, `${base}.png`);
+      const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot, brand: cfg.brands?.[chOf(form, lang)] }, `${base}.png`);
       // 5) metadata
       const affSet = cfg.affiliate?.[lang] || cfg.affiliate?.default || {};
       const aff = affSet[cfg.affiliateByForm?.[formId]] || affSet[row['국가'].replace(/^\S+\s/, '')] || cfg.affiliate?.fallback || {};
@@ -183,7 +212,7 @@ function planDay(all, date) {
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
       const hold = review || !check.ok;   // never auto-publish a video that failed QA
-      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review: hold, publishNow: publishNow && !hold, ...guardFor(cfg.channels?.[lang] || lang) });
+      const up = await upload(chOf(form, lang), meta, final, thumb, { dryRun: dry, review: hold, publishNow: publishNow && !hold, ...guardFor(chOf(form, lang)) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`    ✔ ${up.url}  ${!check.ok ? 'PRIVATE — QA failed, needs a fix' : review ? 'PRIVATE (review — publish in YouTube Studio)' : publishNow ? 'PUBLIC now' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: check.ok ? 'ok' : 'qa-failed', qa: check, video: final, url: up.url, publishAt: meta.publishAt });
@@ -206,14 +235,14 @@ function planDay(all, date) {
         tags: j.meta.tags, categoryId: j.meta.categoryId, defaultLanguage: j.lang,
         publishAt: new Date(Date.parse(j.meta.publishAt) + 90 * 60 * 1000).toISOString(),   // 1.5 h after the main video
       };
-      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review, publishNow, ...guardFor(cfg.channels?.[j.lang] || j.lang) });
+      const up = await upload(chOf(j.form, j.lang), meta, short.file, null, { dryRun: dry, review, publishNow, ...guardFor(chOf(j.form, j.lang)) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`  ✔ Shorts ${short.seconds}s ${up.url}`);
       // remember Short → main video, so the PC helper (upload/link-shorts-pc.js) can set the "Related video" link
       if (!dry && /youtu\.be\//.test(up.url) && !up.duplicate) {
         const SH = path.join(ROOT, 'plan', 'shorts.json');
         const map = fs.existsSync(SH) ? JSON.parse(fs.readFileSync(SH, 'utf8')) : {};
-        map[up.url.split('youtu.be/')[1]] = { main: j.mainUrl.split('youtu.be/')[1], channel: cfg.channels?.[j.lang] || j.lang, lang: j.lang, form: j.formId, date };
+        map[up.url.split('youtu.be/')[1]] = { main: j.mainUrl.split('youtu.be/')[1], channel: chOf(j.form, j.lang), lang: j.lang, form: j.formId, date };
         fs.writeFileSync(SH, JSON.stringify(map, null, 1) + '\n');
       }
       log.push({ row: j.row, status: 'ok', kind: 'short', video: short.file, url: up.url, publishAt: meta.publishAt });

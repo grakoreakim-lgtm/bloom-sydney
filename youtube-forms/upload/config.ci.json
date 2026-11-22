@@ -163,7 +163,8 @@
         "esim": "https://airalo.tpk.lv/h6d3oVBn",
         "pickup": "https://klook.tpk.lv/d4yQTZBG",
         "tour": "https://klook.tpk.lv/OE8h3jHh"
-      }
+      },
+      "gov-au": {}
     }
   },
   "_affiliate": "Travelpayouts / Impact tracking links per country. Keys are the 국가 column without the flag.",
@@ -247,6 +248,33 @@
         "ko",
         "en"
       ]
+    },
+    {
+      "form": "au-mygov",
+      "topic": "Australia: myGov account + linking",
+      "country": "🇦🇺 Australia",
+      "langs": [
+        "en"
+      ],
+      "channel": "gov"
+    },
+    {
+      "form": "au-tfn",
+      "topic": "Australia: TFN application",
+      "country": "🇦🇺 Australia",
+      "langs": [
+        "en"
+      ],
+      "channel": "gov"
+    },
+    {
+      "form": "au-vevo",
+      "topic": "Australia: VEVO visa check",
+      "country": "🇦🇺 Australia",
+      "langs": [
+        "en"
+      ],
+      "channel": "gov"
     }
   ],
   "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
@@ -318,6 +346,23 @@
     "esim": "해외여행",
     "esta": "미국",
     "tdac": "태국",
-    "vjw": "일본"
+    "vjw": "일본",
+    "au-mygov": "gov-au",
+    "au-tfn": "gov-au",
+    "au-vevo": "gov-au"
+  },
+  "channelSchedule": {
+    "gov": {
+      "days": [
+        1,
+        3,
+        5
+      ],
+      "perDay": 1
+    }
+  },
+  "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (token secret YT_REFRESH_TOKEN_GOV).",
+  "brands": {
+    "gov": "Copy My Screen: Gov Edition"
   }
 }

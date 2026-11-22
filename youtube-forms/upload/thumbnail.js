@@ -5,7 +5,7 @@ const fs = require('fs');
 const BRAND = { ko: '따라하면 끝', en: 'Copy My Screen', hi: 'Copy My Screen', es: 'Copy My Screen', id: 'Copy My Screen', ja: 'Copy My Screen' };
 const BADGE = { ko: ['무료', '5분', '따라하기'], en: ['FREE', '5 MIN', 'STEP BY STEP'], hi: ['FREE', '5 MIN', 'हिंदी'], es: ['GRATIS', '5 MIN', 'PASO A PASO'], id: ['GRATIS', '5 MENIT', 'MUDAH'], ja: ['無料', '5分', '手順'] };
 
-function html({ flag, country, form, lang, year, shot }) {
+function html({ flag, country, form, lang, year, shot, brand }) {
   const chips = BADGE[lang] || BADGE.en;
   return `<!doctype html><html><head><meta charset="utf-8"><style>
   body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:"Pretendard","Noto Sans KR","Segoe UI",system-ui,sans-serif;background:#0b1220;color:#fff;position:relative}
@@ -25,7 +25,7 @@ function html({ flag, country, form, lang, year, shot }) {
   <div class="flag">${flag}</div><div class="country">${country}</div>
   <div class="form">${form}</div>
   <div class="chips">${chips.map((c, i) => `<span class="chip ${i === 0 ? 'red' : ''}">${c}</span>`).join('')}</div>
-  <div class="brand">▶ ${BRAND[lang] || BRAND.en}</div><div class="year">${year}</div>
+  <div class="brand">▶ ${brand || BRAND[lang] || BRAND.en}</div><div class="year">${year}</div>
   </body></html>`;
 }
 
