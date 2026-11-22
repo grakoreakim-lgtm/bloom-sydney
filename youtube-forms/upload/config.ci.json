@@ -186,5 +186,7 @@
       ]
     }
   ],
-  "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists."
+  "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
+  "maxVideosPerDay": 3,
+  "_maxVideosPerDay": "Cap on main videos per day (quality over volume until monetization review). Raise later."
 }

@@ -29,7 +29,7 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
     notifySubscribers: true,
     requestBody: {
       snippet: { title: meta.title, description: meta.description, tags: meta.tags, categoryId: meta.categoryId, defaultLanguage: meta.defaultLanguage, defaultAudioLanguage: meta.defaultLanguage },
-      status: { privacyStatus: opts.publishNow && !opts.review ? 'public' : 'private', ...(opts.review || opts.publishNow ? {} : { publishAt: meta.publishAt }), selfDeclaredMadeForKids: false, embeddable: true, license: 'youtube' },
+      status: { privacyStatus: opts.publishNow && !opts.review ? 'public' : 'private', ...(opts.review || opts.publishNow ? {} : { publishAt: meta.publishAt }), selfDeclaredMadeForKids: false, containsSyntheticMedia: true, embeddable: true, license: 'youtube' },   // AI narration → disclose
     },
     media: { body: fs.createReadStream(videoFile) },
   }, { onUploadProgress: (e) => process.stdout.write(`\r  upload ${Math.round((e.bytesRead / size) * 100)}%`) });
