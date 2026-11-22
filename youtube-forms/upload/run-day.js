@@ -155,6 +155,7 @@ function planDay(all, date) {
       catch (e) {   // e.g. no GEMINI_API_KEY yet → fall back to the Google voice so the day still ships
         if (!cfg.tts?.fallback?.[lang]) throw e;
         console.warn(`    voice fallback (${e.message.slice(0, 120)})`);
+        console.log(`VOICE_FALLBACK ${formId}:${lang} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`);   // picked up by the workflow → notification
         clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts.fallback, speakingRate: cfg.tts?.speakingRate, target });
       }
       const narration = Object.fromEntries(Object.entries(clips).map(([k, v]) => [k, v.durationMs]));

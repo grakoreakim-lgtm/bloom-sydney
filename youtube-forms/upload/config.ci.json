@@ -93,14 +93,25 @@
     "fallback": {
       "ko": {
         "languageCode": "ko-KR",
-        "name": "ko-KR-Chirp3-HD-Kore"
+        "name": "ko-KR-Chirp3-HD-Kore",
+        "filler": {
+          "text": "음…",
+          "volume": 0.35,
+          "atPauses": true
+        }
       },
       "en": {
         "languageCode": "en-US",
-        "name": "en-US-Chirp3-HD-Leda"
+        "name": "en-US-Chirp3-HD-Leda",
+        "filler": {
+          "text": "Hmm…",
+          "volume": 0.35,
+          "every": 4,
+          "onMistakes": true
+        }
       }
     },
-    "_fallback": "Used automatically if Gemini TTS fails for a video (e.g. no GEMINI_API_KEY yet)."
+    "_fallback": "If Gemini TTS fails (e.g. prepaid credits used up), the video is made with these voices instead and an issue is opened to notify the owner."
   },
   "bgm": "assets/bgm",
   "formMap": {
