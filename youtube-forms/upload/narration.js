@@ -20,11 +20,12 @@ const VOICES = {   // defaults; config.json → tts.voices overrides (e.g. ko-KR
 const clean = (s) => String(s || '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}📌📱🚆🏨👀✅⚠️]/gu, '').replace(/\s+/g, ' ').trim();
 
 /** @returns {{id:string,text:string}[]} */
-function buildScript(form, lang) {
+function buildScript(form, lang, target = 'mock') {
   const t = form.strings[lang];
+  const steps = (target === 'live' && form.stepsLive) || form.steps;   // must match lib/recorder.js
   const lines = [];
   let n = 0;
-  for (const step of form.steps) {
+  for (const step of steps) {
     if (step.type === 'card') {
       const c = step.card[lang];
       lines.push({ id: `card-${c.id}`, text: clean(c.speech || [c.title, c.subtitle, ...(c.chips || [])].filter(Boolean).join('. ')) });
@@ -78,7 +79,7 @@ function durationMs(file) {
  */
 async function narrate(form, lang, cacheDir, opts = {}) {
   fs.mkdirSync(cacheDir, { recursive: true });
-  const script = buildScript(form, lang);
+  const script = buildScript(form, lang, opts.target);
   const clips = {};
   for (const line of script) {
     const h = crypto.createHash('sha1').update(`${lang}|${(opts.voices || VOICES)[lang]?.name}|p2|${line.text}`).digest('hex').slice(0, 12);

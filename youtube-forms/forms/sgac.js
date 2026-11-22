@@ -1,11 +1,11 @@
 // SGAC — Singapore SG Arrival Card (ICA)
 // Official (free) site: https://eservices.ica.gov.sg/sgarrivalcard  (also the MyICA mobile app)
 //
-// ⚠ "live" selectors are best-effort guesses and MUST be verified against the real page before a live
-//    recording (upload/verify-live.js captures the page and reports which selectors match).
-//    The "mock" target is ../mock/sgac-form.html, which mirrors the field set.
+// Two step lists: `steps` for the practice page (mock/sgac-form.html) and `stepsLive` for the REAL site,
+// mapped with upload/explore-live.js (3-page wizard; the recording stops at Submit and never presses it).
 
 const path = require('path');
+const LIVE = require('./sgac-live-steps');
 
 // Sample traveller — obviously fake. Never use real personal data on camera.
 const S = {
@@ -55,16 +55,8 @@ module.exports = {
       arrival: '#arrival', mode: '#mode', flight: '#flight', lastCity: '#lastCity', purpose: '#purpose', accommodation: '#accommodation',
       postal: '#postal', address: '#address', departure: '#departure', yfNo: '#yfNo', symNo: '#symNo', yfRow: '#yfRow', symRow: '#symRow', agree: '#agree', submit: '#submit',
     },
-    // TODO verify on the real page before a live recording (node upload/verify-live.js sgac)
-    live: {
-      name: 'input[name*="name" i]', passport: 'input[name*="passport" i]', nationality: 'select[name*="national" i]',
-      dob: 'input[name*="birth" i]', sex: 'select[name*="sex" i], select[name*="gender" i]', passportExpiry: 'input[name*="expir" i]',
-      residence: 'select[name*="residen" i]', email: 'input[type="email"]', phoneCode: 'select[name*="code" i]', phone: 'input[name*="mobile" i], input[type="tel"]',
-      arrival: 'input[name*="arriv" i]', mode: 'select[name*="mode" i]', flight: 'input[name*="flight" i], input[name*="vessel" i]',
-      lastCity: 'select[name*="embark" i], input[name*="embark" i]', purpose: 'select[name*="purpose" i]', accommodation: 'select[name*="accommodation" i]',
-      postal: 'input[name*="postal" i]', address: 'input[name*="address" i]', departure: 'input[name*="depart" i]',
-      yfRow: 'fieldset >> nth=0', symRow: 'fieldset >> nth=1', yfNo: 'input[type="radio"][value="N"]', symNo: 'input[type="radio"][value="N"] >> nth=1', agree: 'input[type="checkbox"]', submit: 'button[type="submit"]',
-    },
+    // mapped on the real site 2026-11-22 (upload/explore-live.js) — see forms/sgac-live-steps.js
+    live: LIVE.live,
   },
 
   strings: {
@@ -224,3 +216,4 @@ module.exports = {
     }},
   ],
 };
+module.exports.stepsLive = [...LIVE.steps(route), module.exports.steps[module.exports.steps.length - 1]];
