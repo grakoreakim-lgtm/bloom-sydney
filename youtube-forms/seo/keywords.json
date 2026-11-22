@@ -399,7 +399,8 @@
         "그랩사용법",
         "싱가포르여행",
         "말레이시아여행"
-      ]
+      ],
+      "lead": "그랩 사용법 — 싱가포르·말레이시아 공항에서 호텔까지, 출국 전 가입부터 도착 후 호출까지 화면 그대로 따라 하면 됩니다."
     },
     "en": {
       "primary": "How to use Grab in Singapore & Malaysia",
@@ -435,7 +436,8 @@
         "Grab",
         "SingaporeTravel",
         "MalaysiaTravel"
-      ]
+      ],
+      "lead": "How to use Grab — from sign-up before your trip to booking a ride from Changi or KLIA to your hotel, step by step on screen."
     }
   }
 }
