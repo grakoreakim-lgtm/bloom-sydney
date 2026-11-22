@@ -137,10 +137,10 @@ function planDay(all, date) {
     const base = path.join(dayDir, `${row['슬롯']}-${formId}-${lang}`);
     try {
       // 1) narration first, so the recorder can hold each cue for the clip length
-      const clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate });
+      const target = (cfg.liveForms || []).includes(formId) ? 'live' : (cfg.target || 'mock');   // real site where mapped
+      const clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate, target });
       const narration = Object.fromEntries(Object.entries(clips).map(([k, v]) => [k, v.durationMs]));
       // 2) record
-      const target = cfg.target || 'mock';
       const rec = new Recorder(form, { target, lang, outDir: path.join(dayDir, `rec-${row['슬롯']}`), narration });
       const r = await rec.run();
       // 3) mux

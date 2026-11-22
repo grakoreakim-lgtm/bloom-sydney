@@ -25,7 +25,9 @@ class Recorder {
     this.selectors = form.selectors[this.target];
     this.url = form.url[this.target];
     this.stepIndex = 0;
-    this.totalSteps = form.steps.filter((s) => s.type !== 'card').length;
+    // a live site can need its own step list (different controls / order than the practice page)
+    this.steps = (this.target === 'live' && form.stepsLive) || form.steps;
+    this.totalSteps = this.steps.filter((s) => s.type !== 'card').length;
     this.shots = [];
     // narration: { [cueId]: durationMs } — when present, each cue holds at least that long
     this.narration = opts.narration || {};
@@ -81,7 +83,7 @@ class Recorder {
   // ---- step runner ------------------------------------------------------
   async run() {
     await this.start();
-    for (const step of this.form.steps) {
+    for (const step of this.steps) {
       if (step.type === 'card') { await this.card(step.card[this.lang], step.hold ?? 3000); continue; }
       this.stepIndex += 1;
       await this.runStep(step);
@@ -125,16 +127,57 @@ class Recorder {
     }
     await this.ov('clearHighlight');
     // pause card: give the viewer time to type the same thing
-    if (!['manual', 'stop'].includes(step.type) && this.t.pause) {
+    if (!['manual', 'stop', 'next'].includes(step.type) && !step.noPause && this.t.pause) {
       await this.ov('pause', this.t.pause, this.t.pauseSub); await this.wait(step.pauseHold ?? 1800); await this.ov('hidePause');
     }
   }
 
+  // overlay-style selector → Playwright locator ("css@@2", "a || b" → first part, "btn:Next")
+  loc(sel) {
+    const first = sel.split('||')[0].trim();
+    if (first.startsWith('btn:')) return this.page.locator('button', { hasText: new RegExp(`^\\s*${first.slice(4).trim()}\\s*$`, 'i') }).first();
+    const m = first.match(/^(.*)@@(\d+)$/);
+    return m ? this.page.locator(m[1]).nth(Number(m[2])) : this.page.locator(first).first();
+  }
+
   async act(step, sel) {
     const page = this.page;
-    const loc = page.locator(sel).first();
+    const loc = this.loc(sel);
+    const value = typeof step.value === 'function' ? step.value() : step.value;
     switch (step.type) {
+      case 'choose': {     // Angular Material radio group: click the option whose label matches
+        const opt = typeof value === 'number' ? loc.locator('mat-radio-button').nth(value) : loc.locator('mat-radio-button', { hasText: new RegExp(`^\\s*${value}`, 'i') }).first();
+        await opt.click();
+        break;
+      }
+      case 'auto': {       // autocomplete: type slowly, then pick the matching option
+        await loc.click(); await loc.fill('');
+        await loc.pressSequentially(String(value), { delay: 110 * this.speed });
+        await this.wait(1300);
+        const opt = page.locator('mat-option, [role="option"]', { hasText: step.pick ? new RegExp(step.pick, 'i') : String(value) }).first();
+        await opt.waitFor({ timeout: 10000 });
+        await this.wait(500); await opt.click();
+        break;
+      }
+      case 'date3': {      // three boxes DD / MM / YYYY that share ids — step.n picks which date on the page
+        const [d, mo, y] = String(value).split('/');
+        for (const [part, v] of [['day', d], ['month', mo], ['year', y]]) {
+          const box = page.locator(`#${step.idPrefix || 'traveller-0-input'}-${part}`).nth(step.n || 0);
+          await box.click(); await box.fill(''); await box.pressSequentially(v, { delay: 120 * this.speed }); await this.wait(150);
+        }
+        break;
+      }
+      case 'tick':         // Material checkbox: click its label/box
+        await loc.click();
+        break;
+      case 'next':         // wizard "Next" — moves to the next page of the same form (never Submit)
+        await loc.click();
+        await page.waitForLoadState('networkidle').catch(() => {});
+        await this.wait(1800);
+        await page.evaluate(() => window.scrollTo(0, 0));
+        break;
       case 'type': {
+        if (typeof step.value === 'function') step = { ...step, value };
         await loc.click();
         const inputType = await loc.evaluate((el) => (el.getAttribute('type') || 'text').toLowerCase());
         if (inputType === 'date') {
@@ -184,7 +227,7 @@ class Recorder {
       execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
     } catch (e) { mp4 = null; }
     // cue timeline (for narration muxing + chapter timestamps)
-    const steps = this.form.steps.filter((s) => s.type !== 'card');
+    const steps = this.steps.filter((s) => s.type !== 'card');
     const chapters = this.cues.filter((c) => /^s\d+-tip$/.test(c.id)).map((c) => {
       const i = Number(c.id.match(/^s(\d+)-/)[1]); return { t: c.t, label: steps[i - 1].text[this.lang].label };
     });

@@ -98,11 +98,21 @@ function setStep(current, total, label) {
 }
 function setEasyPill(text, warn = false) { install(); const el = document.getElementById('yt-easy'); el.textContent = text || ''; el.className = 'yt-ov' + (warn ? ' warn' : ''); el.style.display = text ? 'block' : 'none'; }
 
+// selector extensions (live sites): "css@@2" = 3rd match, "a || b" = box around all parts, "btn:Next" = button by text
+function findEl(selector) {
+  const s = selector.trim();
+  if (s.startsWith('btn:')) { const want = s.slice(4).trim().toLowerCase(); return [...document.querySelectorAll('button')].find((b) => b.innerText.trim().toLowerCase() === want) || null; }
+  const m = s.match(/^(.*)@@(\d+)$/);
+  if (m) return document.querySelectorAll(m[1])[Number(m[2])] || null;
+  return document.querySelector(s);
+}
 function rectOf(selector) {
-  const el = document.querySelector(selector); if (!el) return null;
-  el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
-  const r = el.getBoundingClientRect();
-  return { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height, vx: r.left, vy: r.top };
+  const parts = selector.split('||').map((x) => findEl(x)).filter(Boolean);
+  if (!parts.length) return null;
+  parts[0].scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
+  const rs = parts.map((e) => e.getBoundingClientRect());
+  const L = Math.min(...rs.map((r) => r.left)), T = Math.min(...rs.map((r) => r.top)), R = Math.max(...rs.map((r) => r.right)), B = Math.max(...rs.map((r) => r.bottom));
+  return { x: L + window.scrollX, y: T + window.scrollY, w: R - L, h: B - T, vx: L, vy: T };
 }
 function highlight(selector, pulse = true) {
   install(); const r = rectOf(selector); const ring = document.getElementById('yt-ring'); const ar = document.getElementById('yt-arrow');
@@ -165,7 +175,7 @@ module.exports = {
     window.__ytOverlay = (function(){
       const OVERLAY_CSS = ${JSON.stringify(OVERLAY_CSS)}; const CURSOR_SVG = ${JSON.stringify(CURSOR_SVG)};
       ${install.toString()} const esc = ${esc.toString()}; const mark = ${mark.toString()};
-      ${setStep.toString()} ${setEasyPill.toString()} ${rectOf.toString()} ${highlight.toString()} ${clearHighlight.toString()}
+      ${setStep.toString()} ${setEasyPill.toString()} ${findEl.toString()} ${rectOf.toString()} ${highlight.toString()} ${clearHighlight.toString()}
       ${callout.toString()} ${pause.toString()} ${hidePause.toString()} ${card.toString()} ${hideCard.toString()} ${moveCursor.toString()} ${clickCursor.toString()} ${setStrings.toString()} ${setZoom.toString()}
       return { install, setStep, setEasyPill, setStrings, highlight, clearHighlight, callout, pause, hidePause, card, hideCard, moveCursor, clickCursor, setZoom };
     })();
