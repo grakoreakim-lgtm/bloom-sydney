@@ -40,7 +40,7 @@ function buildMetadata(row, form, timeline, aff, cfg) {
   const searchTerms = kw ? [...new Set([...(kw.learned || []), ...(kw.secondary || [])])].slice(0, 12) : [];
   const description = [
     lead,                                   // first ~150 chars show in search results: keyword first
-    `${t.official}: ${official}`,
+    /^https?:/.test(official) ? `${t.official}: ${official}` : null,
     affLines.length ? t.disclosure : null,
     ...affLines,
     '',
