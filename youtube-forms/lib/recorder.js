@@ -168,8 +168,14 @@ class Recorder {
         await loc.click(); await loc.fill('');
         await loc.pressSequentially(String(value), { delay: 110 * this.speed });
         await this.wait(1300);
-        const opt = page.locator('mat-option, [role="option"]', { hasText: step.pick ? new RegExp(step.pick, 'i') : String(value) }).first();
-        await opt.waitFor({ timeout: 10000 });
+        const opts = page.locator('mat-option, [role="option"]');
+        await opts.first().waitFor({ timeout: 10000 });
+        // match on the option's trimmed text (Playwright's hasText sees surrounding whitespace)
+        const texts = (await opts.allInnerTexts()).map((t) => t.trim());
+        const re = step.pick ? new RegExp(step.pick, 'i') : null;
+        const idx = texts.findIndex((t) => (re ? re.test(t) : t.toUpperCase().includes(String(value).toUpperCase())));
+        if (idx < 0) throw new Error(`no option matching ${step.pick || value} in [${texts.join(' | ')}]`);
+        const opt = opts.nth(idx);
         await this.wait(500); await opt.click();
         break;
       }

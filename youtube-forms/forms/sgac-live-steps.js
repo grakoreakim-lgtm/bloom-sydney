@@ -76,12 +76,12 @@ const steps = (route) => [
   { type: 'date3', field: 'dob', n: 1, value: '15/05/1990', text: T(
     { label: '생년월일', speech: { tip: '생년월일도 일, 월, 년 순서예요. 일이 먼저예요.' }, tip: '**일 / 월 / 년** 순서' },
     { label: 'Date of birth', speech: { tip: 'Date of birth, also day, month, year.' }, tip: '**Day / month / year**' }) },
-  { type: 'auto', field: 'nationality', value: 'KOREA', pick: 'KOREAN, SOUTH', text: T(
+  { type: 'auto', field: 'nationality', value: 'KOREA', pick: '^\\s*KOREAN, SOUTH', text: T(
     { label: '국적', speech: { tip: '국적이에요. 코리아까지 치면 목록이 떠요. 코리안, 사우스를 고르세요.', mistake: '바로 위에 북한이 먼저 떠요. 디모크라틱 피플스 리퍼블릭이 아니라, 코리안 사우스예요.' },
       tip: 'KOREA 입력 → **KOREAN, SOUTH**', mistake: '목록 첫 줄은 **북한**입니다. 두 번째를 고르세요.', bad: "DEMOCRATIC PEOPLE'S REPUBLIC", good: 'KOREAN, SOUTH' },
     { label: 'Nationality', speech: { tip: 'Nationality. Start typing and pick from the list.', mistake: 'For Koreans, North Korea appears first in the list. Pick KOREAN, SOUTH.' },
       tip: 'Type, then **pick from the list**', mistake: 'For Koreans: North Korea is listed first.', bad: "DEMOCRATIC PEOPLE'S REPUBLIC", good: 'KOREAN, SOUTH' }) },
-  { type: 'auto', field: 'placeOfBirth', value: 'KOREA', pick: '^REPUBLIC OF KOREA', noPause: true, text: T(
+  { type: 'auto', field: 'placeOfBirth', value: 'KOREA', pick: '^\\s*REPUBLIC OF KOREA', noPause: true, text: T(
     { label: '출생 국가', speech: { tip: '태어난 나라예요. 여기는 표기가 리퍼블릭 오브 코리아로 달라요.' }, tip: '**REPUBLIC OF KOREA**' },
     { label: 'Place of birth', speech: { tip: 'The country you were born in.' }, tip: 'Your **country of birth**' }) },
   { type: 'auto', field: 'residence', value: 'SEOUL', pick: 'SEOUL', text: T(
