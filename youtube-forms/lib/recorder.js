@@ -19,7 +19,10 @@ class Recorder {
     this.target = opts.target || 'mock';
     this.lang = opts.lang || 'ko';
     this.speed = opts.speed ?? 1;            // 1 = normal, 0.5 = twice as fast
-    this.size = opts.size || { width: 1280, height: 720 };
+    this.outSize = opts.size || { width: 1280, height: 720 };   // final video size
+    // live sites: CSS zoom breaks their pop-up positioning (dropdown lists open off-screen), so instead render a
+    // smaller viewport and scale the video up — same "zoomed in" look, real layout untouched
+    this.size = opts.target === 'live' ? { width: 1024, height: 576 } : this.outSize;
     this.outDir = opts.outDir || path.join(__dirname, '..', 'out');
     this.t = form.strings[this.lang];
     this.selectors = form.selectors[this.target];
@@ -34,7 +37,7 @@ class Recorder {
     this.cues = [];            // [{ id, t }]  t = ms since recording start
     this.t0 = null;
     // page zoom (overlay unaffected) so fields stay readable on phones; mock pages are small, so zoom more
-    this.zoom = opts.zoom ?? form.zoom?.[this.target] ?? (this.target === 'mock' ? 1.5 : 1.25);
+    this.zoom = opts.zoom ?? form.zoom?.[this.target] ?? (this.target === 'mock' ? 1.5 : 1);
   }
 
   wait(ms) { return sleep(ms * this.speed); }
@@ -244,7 +247,8 @@ class Recorder {
     let mp4 = null;
     try {
       mp4 = path.join(this.outDir, `${base}.mp4`);
-      execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
+      const scale = this.size.width !== this.outSize.width ? `-vf scale=${this.outSize.width}:${this.outSize.height}:flags=lanczos ` : '';
+      execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" ${scale}-c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
     } catch (e) { mp4 = null; }
     // cue timeline (for narration muxing + chapter timestamps)
     const steps = this.steps.filter((s) => s.type !== 'card');
