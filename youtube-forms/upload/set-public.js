@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// Make uploaded videos public now:  node upload/set-public.js <videoId> [<videoId> ...]
+// Change visibility now:  node upload/set-public.js [--privacy public|private|unlisted] <videoId> [<videoId> ...]
 // Tries each channel token until it finds the owner.
 const { google } = require('googleapis');
 const { authorize } = require('./auth');
 
 (async () => {
-  const ids = process.argv.slice(2).flatMap((a) => a.split(/[\s,]+/)).map((s) => s.replace(/.*(?:youtu\.be\/|v=)/, '').trim()).filter(Boolean);
+  const argv = process.argv.slice(2); const pi = argv.indexOf('--privacy'); const privacy = pi >= 0 ? argv.splice(pi, 2)[1] : 'public';
+  const ids = argv.flatMap((a) => a.split(/[\s,]+/)).map((s) => s.replace(/.*(?:youtu\.be\/|v=)/, '').trim()).filter(Boolean);
   if (!ids.length) { console.error('usage: set-public.js <videoId...>'); process.exit(1); }
   let failed = 0;
   for (const id of ids) {
@@ -15,9 +16,9 @@ const { authorize } = require('./auth');
         const yt = google.youtube({ version: 'v3', auth: await authorize(ch) });
         const v = (await yt.videos.list({ part: ['status', 'snippet'], id: [id] })).data.items?.[0];
         if (!v || !v.status.uploadStatus) continue;
-        const status = { privacyStatus: 'public', embeddable: v.status.embeddable, license: v.status.license, selfDeclaredMadeForKids: false, publicStatsViewable: v.status.publicStatsViewable };
+        const status = { privacyStatus: privacy, embeddable: v.status.embeddable, license: v.status.license, selfDeclaredMadeForKids: false, publicStatsViewable: v.status.publicStatsViewable };
         await yt.videos.update({ part: ['status'], requestBody: { id, status } });
-        console.log(`✔ PUBLIC  https://youtu.be/${id}  (${ch})  ${v.snippet.title}`);
+        console.log(`✔ ${privacy.toUpperCase()}  https://youtu.be/${id}  (${ch})  ${v.snippet.title}`);
         done = true; break;
       } catch (e) { if (/not found|forbidden/i.test(e.message)) continue; console.error(`  ${ch}: ${e.message}`); }
     }
