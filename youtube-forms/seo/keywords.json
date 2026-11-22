@@ -604,5 +604,50 @@
       ],
       "lead": "How to apply for a TFN online in Australia as a visa holder — the free ATO form for working holiday makers, international students and migrants, field by field. Unofficial guide, not tax advice; apply only on ato.gov.au."
     }
+  },
+  "au-vevo": {
+    "en": {
+      "primary": "How to Check Your Visa Status with VEVO",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | Check Work Rights and Send Proof to an Employer ({hook})",
+        "VEVO Check {year}: See Your Australian Visa Conditions and Email Them to Your Employer",
+        "How to Send VEVO to Your Employer {year} | Australian Visa Work Rights Check, Copy My Screen"
+      ],
+      "secondary": [
+        "how to check visa status VEVO",
+        "VEVO check work rights",
+        "send VEVO to employer",
+        "VEVO check Australia",
+        "how to check visa conditions Australia",
+        "VEVO for visa holders",
+        "where to find transaction reference number TRN",
+        "visa grant number VEVO",
+        "VEVO email PDF",
+        "myVEVO app",
+        "student visa work hours 48 hours a fortnight",
+        "condition 8105",
+        "condition 8547 working holiday",
+        "VEVO new passport error",
+        "working holiday visa 417 work rights",
+        "proof of visa Australia for employer"
+      ],
+      "questions": [
+        "Is VEVO free? (yes, on the official Home Affairs website)",
+        "What do I need for a VEVO check? (one reference number, date of birth, passport number and country)",
+        "Where do I find my TRN or visa grant number? (visa grant letter or ImmiAccount)",
+        "Why does VEVO show an error after I renewed my passport?",
+        "How do I send my VEVO details to an employer?",
+        "How many hours can I work on a student visa?",
+        "What do visa conditions 8547 and 8548 mean?",
+        "Do I need a visa label in my passport?"
+      ],
+      "hashtags": [
+        "VEVO",
+        "AustraliaVisa",
+        "WorkingHolidayAustralia"
+      ],
+      "lead": "How to check your Australian visa conditions with VEVO — enter your reference number, read your work and study rights, then email the result or save the PDF for an employer. Unofficial guide, not migration advice; use only the official Home Affairs website."
+    }
   }
 }
