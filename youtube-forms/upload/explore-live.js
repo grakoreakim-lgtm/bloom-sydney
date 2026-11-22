@@ -123,5 +123,30 @@ async function date(page, box, d, m, y) {
   const text = (await page.locator('body').innerText()).replace(/\n{2,}/g, '\n').slice(0, 4000);
   log('\n--- page 2 text ---\n' + text);
   fs.writeFileSync(path.join(OUT, 'page2.html'), (await page.content()).slice(0, 400000));
+
+  // ---- page 2: choose AIR + HOTEL, see what appears, fill it, then Next to the Review page (never Submit) ----
+  try { await page.locator('#traveller-0-input-modeOfTravel mat-radio-button', { hasText: /AIR/ }).first().click(); await sleep(1200); } catch (e) { log('  AIR FAILED ' + e.message.split('\n')[0]); }
+  try { await page.locator('#traveller-0-input-typeOfAccommodation mat-radio-button', { hasText: /HOTEL/ }).first().click(); await sleep(1500); } catch (e) { log('  HOTEL FAILED ' + e.message.split('\n')[0]); }
+  await describe(page, 'PAGE 2 (after AIR + HOTEL)'); await snap(page, 'page2-revealed');
+  // fill whatever text/combobox fields appeared, by their label
+  const fields = await page.$$eval('input[type=text], input:not([type])', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; }).map((e) => ({ id: e.id, role: e.getAttribute('role') || '', label: ((e.id && document.querySelector(`label[for="${e.id}"]`)?.innerText) || e.getAttribute('aria-label') || e.placeholder || '').trim() })));
+  log('  page-2 inputs: ' + JSON.stringify(fields));
+  for (const f of fields) {
+    const sel = f.id ? `[id="${f.id}"]` : null; if (!sel) continue;
+    if (/flight|vessel|vehicle/i.test(f.id + f.label)) { if (f.role === 'combobox') await auto(page, sel, 'SQ', /SQ|SINGAPORE AIRLINES/i); else { await page.locator(sel).fill('SQ 607'); log(`  ${f.id} = SQ 607`); } }
+    else if (/hotel|accommodation|name/i.test(f.id + f.label)) await auto(page, sel, 'MARINA', /MARINA/i);
+    else if (/postal/i.test(f.id + f.label)) { await page.locator(sel).fill('018956'); log(`  ${f.id} = 018956`); }
+    else if (/address/i.test(f.id + f.label)) { await page.locator(sel).fill('10 BAYFRONT AVENUE'); log(`  ${f.id} = address`); }
+    else if (/mode|transport|carrier|airline/i.test(f.id + f.label) && f.role === 'combobox') await auto(page, sel, 'SINGAPORE', /SINGAPORE AIRLINES/i);
+  }
+  await sleep(1000);
+  await describe(page, 'PAGE 2 (filled)'); await snap(page, 'page2-filled');
+  fs.writeFileSync(path.join(OUT, 'page2-filled.html'), (await page.content()).slice(0, 400000));
+  const next2 = page.locator('button', { hasText: /^\s*Next\s*$/i }).first();
+  if (await next2.count()) { await next2.click(); await page.waitForLoadState('networkidle').catch(() => {}); await sleep(3000); }
+  await describe(page, 'PAGE 3 (review)'); await snap(page, 'page3-review');
+  log(`  buttons: ${(await page.$$eval('button', (bs) => bs.map((b) => b.innerText.trim()).filter(Boolean))).join(' | ')}`);
+  log('\n--- page 3 text ---\n' + (await page.locator('body').innerText()).replace(/\n{2,}/g, '\n').slice(0, 4000));
+  // STOP here: the Review page has the Submit button — never pressed.
   await browser.close();
 })().catch((e) => { console.error(e); process.exit(1); });
