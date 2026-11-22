@@ -1,0 +1,29 @@
+# Channel maintenance: AI-narration disclosure on every video, "trip prep" playlists per country.
+# Also runs at the end of each daily-videos run.
+name: maintain
+
+on:
+  workflow_dispatch:
+    inputs:
+      only: { description: 'disclosure, playlists (comma separated) — empty = all', required: false, default: '' }
+
+jobs:
+  maintain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
+      - name: Write secrets
+        env:
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+      - name: Maintain
+        env: { ONLY: '${{ github.event.inputs.only }}' }
+        run: node upload/maintain.js --config upload/config.ci.json ${ONLY:+--only "$ONLY"} | tee -a $GITHUB_STEP_SUMMARY

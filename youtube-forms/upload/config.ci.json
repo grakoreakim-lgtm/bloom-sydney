@@ -149,7 +149,9 @@
   "_timezone": "All channels publish on Korean time (06:00-10:00 KST window).",
   "seo": {
     "keywords": "seo/keywords.json",
-    "learned": "seo/learned.json"
+    "learned": "seo/learned.json",
+    "lockedVideos": [],
+    "_lockedVideos": "Video IDs whose title must not be auto-rotated (e.g. while a YouTube Studio A/B test runs). Tell Claude the ID when you start a test."
   },
   "shorts": {
     "enabled": true
@@ -188,5 +190,60 @@
   ],
   "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
   "maxVideosPerDay": 3,
-  "_maxVideosPerDay": "Cap on main videos per day (quality over volume until monetization review). Raise later."
+  "_maxVideosPerDay": "Cap on main videos per day (quality over volume until monetization review). Raise later.",
+  "playlists": {
+    "ko": {
+      "싱가포르 여행 준비 (입국카드·eSIM·그랩)": [
+        "sgac",
+        "esim",
+        "grab"
+      ],
+      "말레이시아 여행 준비 (MDAC·eSIM·그랩)": [
+        "mdac",
+        "esim",
+        "grab"
+      ],
+      "미국 여행 준비 (ESTA·eSIM)": [
+        "esta",
+        "esim"
+      ],
+      "태국 여행 준비 (TDAC·eSIM)": [
+        "tdac",
+        "esim"
+      ],
+      "일본 여행 준비 (Visit Japan Web·eSIM)": [
+        "vjw",
+        "esim"
+      ]
+    },
+    "en": {
+      "Singapore Trip Prep (Arrival Card, eSIM, Grab)": [
+        "sgac",
+        "esim",
+        "grab"
+      ],
+      "Malaysia Trip Prep (MDAC, eSIM, Grab)": [
+        "mdac",
+        "esim",
+        "grab"
+      ],
+      "USA Trip Prep (ESTA, eSIM)": [
+        "esta",
+        "esim"
+      ],
+      "Thailand Trip Prep (TDAC, eSIM)": [
+        "tdac",
+        "esim"
+      ],
+      "Japan Trip Prep (Visit Japan Web, eSIM)": [
+        "vjw",
+        "esim"
+      ]
+    }
+  },
+  "playlistDescription": {
+    "ko": "출국 전에 해야 할 일을 순서대로: 입국신고서 → eSIM → 공항에서 시내까지. 화면 그대로 따라 하면 끝.",
+    "en": "Everything to do before you fly, in order: arrival form → eSIM → airport to city. Just copy the screen."
+  },
+  "_playlists": "Per-channel \"trip prep\" playlists, videos in this order (upload/maintain.js)."
 }

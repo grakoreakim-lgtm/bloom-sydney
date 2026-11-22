@@ -65,6 +65,11 @@ jobs:
           node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 
+      - name: Playlists & disclosure
+        if: success() && github.event.inputs.dry != 'true'
+        continue-on-error: true
+        run: node upload/maintain.js --config upload/config.ci.json
+
       - name: Remember produced videos
         if: always()
         run: |

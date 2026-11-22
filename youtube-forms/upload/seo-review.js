@@ -96,7 +96,9 @@ async function channelReport(chKey, seo, out) {
     const kw = formId ? entryFor(seo, formId, lang) : null;
     const vs = state.videos[vid] || { variant: 0, history: [] };
     const sinceChange = vs.changedAt ? (Date.now() - Date.parse(vs.changedAt)) / 864e5 : Infinity;
-    if (kw?.titles?.length > 1 && rc && rc.impressions >= R.minImpressions && ctr < R.minCtr && ageDays >= R.minAgeDays && sinceChange >= R.cooldownDays) {
+    const locked = (cfg.seo?.lockedVideos || []).includes(vid);   // e.g. a Studio A/B test is running — never touch the title
+    if (locked) actions.push('제목 고정 (A/B 테스트 중 — 자동 교체 안 함)');
+    if (!locked && kw?.titles?.length > 1 && rc && rc.impressions >= R.minImpressions && ctr < R.minCtr && ageDays >= R.minAgeDays && sinceChange >= R.cooldownDays) {
       const next = (vs.variant + 1) % kw.titles.length;
       const newTitle = fillTitle(kw.titles[next], kw, v.snippet.publishedAt.slice(0, 4)).slice(0, 100);
       actions.push(`제목 교체 → "${newTitle}" (CTR ${pct(ctr)} < ${pct(R.minCtr)})`);
