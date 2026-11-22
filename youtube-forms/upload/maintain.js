@@ -81,7 +81,7 @@ async function playlists(yt, videos, lang, seo) {
       console.log(`  ＋ playlist "${title}"`); fresh = true;
     }
     // a just-created playlist can take a few seconds to become visible → retry on "not found"
-    const retry = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (i < 6 && /cannot be found|notFound/i.test(e.message)) await new Promise((r) => setTimeout(r, 3000 * (i + 1))); else throw e; } } };
+    const retry = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (i < 6 && !/quota/i.test(e.message)) await new Promise((r) => setTimeout(r, 3000 * (i + 1))); else throw e; } } };
     const items = fresh ? [] : (await retry(() => yt.playlistItems.list({ part: ['contentDetails'], playlistId: pl.id, maxResults: 50 }))).data.items.map((i) => i.contentDetails.videoId);
     let pos = 0;
     for (const v of vids) {
