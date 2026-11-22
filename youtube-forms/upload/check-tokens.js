@@ -6,7 +6,8 @@ const { authorize } = require('./auth');
 
 (async () => {
   let bad = 0;
-  for (const ch of ['ko', 'en']) {
+  const fs = require('fs'); const path = require('path');
+  for (const ch of ['ko', 'en', 'gov'].filter((c) => c !== 'gov' || fs.existsSync(path.join(__dirname, 'secrets', 'token-gov.json')))) {
     try {
       const auth = await authorize(ch);
       const yt = google.youtube({ version: 'v3', auth });
