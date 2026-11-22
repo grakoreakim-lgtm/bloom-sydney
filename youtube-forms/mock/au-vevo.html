@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE PAGE — visa details check (not the real VEVO)</title>
+<style>
+  /* Neutral practice styling. This is NOT the government's design: no crest, no logo, no official colours. */
+  :root { --b: #4a5a3c; --soft: #eef2e9; --bg: #e9ebe6; --line: #d5d9cf; --ok: #2a7a3b; --warn: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #333; color: #fff; text-align: center; padding: 8px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right). The large bottom margin keeps callouts from being cut off. */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 40px; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 420px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); padding-bottom: 0; }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  header b { font-size: 16px; } header small { font-size: 11px; opacity: .85; white-space: nowrap; }
+  main { padding: 6px 16px 22px; }
+  h2 { font-size: 15px; color: var(--b); margin: 20px 0 10px; padding: 8px 10px; background: var(--soft); border-left: 4px solid var(--b); border-radius: 4px; }
+  h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; line-height: 1.4; }
+  input[type=text], input[type=email], select { width: 100%; padding: 10px; border: 1px solid #b9c1b4; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  button { width: 100%; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  button.ghost { background: #fff; color: var(--b); border: 2px solid var(--b); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
+  .row .tx { font-size: 14px; font-weight: 700; line-height: 1.3; } .row .tx small { display: block; font-weight: 400; color: #666; font-size: 11px; margin-top: 2px; line-height: 1.4; }
+  input.tick { width: 22px; height: 22px; flex: none; margin: 0; }
+  .addr { font-family: Consolas, Menlo, monospace; font-size: 13px; background: #f3f5f0; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; display: block; margin-top: 6px; font-weight: 700; color: #222; }
+  .note { font-size: 11px; color: #555; background: #f7f8f5; border: 1px dashed #b9c1b4; border-radius: 6px; padding: 8px 10px; margin: 8px 0 12px; line-height: 1.45; }
+  .dim { opacity: .4; }
+  /* results */
+  .sample { display: inline-block; border: 2px solid var(--warn); color: var(--warn); font-weight: 900; font-size: 12px; letter-spacing: .08em; padding: 2px 8px; border-radius: 4px; transform: rotate(-3deg); background: #fff; }
+  .res { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; overflow: hidden; background: #fff; }
+  .res .hd { display: flex; justify-content: space-between; align-items: center; background: #f3f5f0; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .04em; }
+  dl { margin: 0; padding: 4px 10px 8px; }
+  dl div { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid #eef0ea; font-size: 13px; line-height: 1.35; }
+  dl div:last-child { border-bottom: 0; }
+  dt { flex: none; width: 128px; color: #555; } dd { margin: 0; font-weight: 700; }
+  .cond { padding: 6px 10px 10px; font-size: 13px; line-height: 1.4; }
+  .cond p { margin: 6px 0 0; } .cond b { display: inline-block; min-width: 42px; }
+  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .btns button { padding: 12px 6px; font-size: 15px; }
+  .okmsg { visibility: hidden; font-size: 12px; font-weight: 700; color: var(--ok); margin: 0 0 8px; }
+  .okmsg.on { visibility: visible; }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE PAGE — not the real VEVO. Use the official Home Affairs website. Sample data only; nothing is checked or sent.</div>
+<div class="phone">
+
+<!-- ============ PART 0: start from the official site ============ -->
+<header><b>Before you start</b><small>Practice page</small></header>
+<main>
+  <h2>Where to check<small>The visa check is free on the government website</small></h2>
+  <div class="row" id="officialRow"><div class="tx">Start from the official Home Affairs website<small>Check visa details and conditions &rsaquo; VEVO &rsaquo; For visa holders. Free. No account needed.</small>
+    <span class="addr">immi.homeaffairs.gov.au</span></div></div>
+</main>
+
+<!-- ============ PART A: visa holder enquiry ============ -->
+<header><b>Visa holder enquiry (practice)</b><small>Step 1 of 3</small></header>
+<main>
+  <form onsubmit="return false;">
+    <h2>Your details<small>Enter them exactly as on your visa grant letter and travel document</small></h2>
+    <div class="f"><label for="docType">Document type</label>
+      <select id="docType"><option value="">Select</option><option value="PASSPORT">Passport</option><option value="IMMICARD">ImmiCard</option><option value="OTHER">Other travel document</option></select></div>
+    <div class="f"><label for="refType">Reference type</label>
+      <select id="refType"><option value="">Select</option><option value="TRN">Transaction Reference Number (TRN)</option><option value="VGN">Visa Grant Number</option><option value="VEN">Visa Evidence Number</option><option value="PWD">Password</option></select>
+      <div class="hint">Choose one. All four open the same visa record.</div></div>
+    <div class="f" id="refRow"><label for="refNumber">Reference number</label><input id="refNumber" type="text" autocomplete="off" placeholder="from your grant letter or ImmiAccount">
+      <div class="hint">On your visa grant letter, or in ImmiAccount next to your application.</div></div>
+    <div class="f"><label for="dob">Date of birth</label><input id="dob" type="text" autocomplete="off" placeholder="DD Month YYYY"></div>
+    <div class="f" id="docRow"><label for="docNumber">Document number</label><input id="docNumber" type="text" autocomplete="off" placeholder="passport or ImmiCard number">
+      <div class="hint">The passport your visa is linked to. New passport? Update your details first.</div></div>
+    <div class="f"><label for="country">Country of document</label>
+      <select id="country"><option value="">Select</option><option value="UTO">UTOPIA (sample country)</option><option value="AAA">Country A</option><option value="BBB">Country B</option><option value="CCC">Country C</option></select></div>
+    <div class="row" id="termsRow"><div class="tx" style="font-weight:400;font-size:13px">I have read and agree to the terms and conditions</div><input class="tick" type="checkbox" id="terms"></div>
+    <button id="submit" type="button">Submit</button>
+    <div class="hint" style="text-align:center">Practice page: shows a sample result only.</div>
+  </form>
+</main>
+
+<!-- ============ PART B: result ============ -->
+<header><b>Visa details (practice)</b><small>Step 2 of 3</small></header>
+<main>
+  <div id="results" class="dim">
+  <h2>Current visa details <span class="sample">SAMPLE</span><small>Fictional example. Your own result will be different.</small></h2>
+
+  <div class="res" id="visaRow"><div class="hd"><span>Visa</span><span class="sample">SAMPLE</span></div><dl>
+    <div><dt>Family name</dt><dd>SAMPLE</dd></div>
+    <div><dt>Given name(s)</dt><dd>ALEX</dd></div>
+    <div><dt>Visa description</dt><dd>WORKING HOLIDAY</dd></div>
+    <div><dt>Visa class / subclass</dt><dd>TZ / 417</dd></div>
+    <div><dt>Visa status</dt><dd>In Effect</dd></div>
+  </dl></div>
+
+  <div class="res" id="datesRow"><div class="hd"><span>Dates and stay</span><span class="sample">SAMPLE</span></div><dl>
+    <div><dt>Visa grant date</dt><dd>10 January 2026</dd></div>
+    <div><dt>Must not arrive after</dt><dd>10 January 2027</dd></div>
+    <div><dt>Visa expiry date</dt><dd>20 February 2027</dd></div>
+    <div><dt>Period of stay</dt><dd>12 months from first entry</dd></div>
+    <div><dt>Entries allowed</dt><dd>Multiple entries while the visa is valid</dd></div>
+  </dl></div>
+
+  <div class="res" id="workRow"><div class="hd"><span>Entitlements</span><span class="sample">SAMPLE</span></div><dl>
+    <div><dt>Work entitlements</dt><dd>The visa holder may work, subject to the conditions below</dd></div>
+    <div><dt>Study entitlements</dt><dd>The visa holder may study, subject to the conditions below</dd></div>
+  </dl></div>
+
+  <div class="res" id="condRow"><div class="hd"><span>Visa condition(s)</span><span class="sample">SAMPLE</span></div><div class="cond">
+    <p><b>8547</b> Not more than 6 months of work with any one employer</p>
+    <p><b>8548</b> Not more than 4 months of study or training</p>
+  </div></div>
+
+  <div class="row" id="appRow"><div class="tx">Prefer your phone? myVEVO app<small>Free app from the Department of Home Affairs. Same visa details, saved behind your own PIN.</small></div></div>
+  </div>
+</main>
+
+<!-- ============ PART C: send proof ============ -->
+<header><b>Share your visa details (practice)</b><small>Step 3 of 3</small></header>
+<main>
+  <div id="share" class="dim">
+  <h2>Save or send<small>For an employer, a landlord or a school</small></h2>
+  <div class="btns" id="btnRow"><button id="viewPdf" type="button" class="ghost">View as PDF</button><button id="openEmail" type="button" class="ghost">Send Email</button></div>
+  <div class="okmsg" id="pdfMsg">✔ PDF opened — save it from your browser (sample)</div>
+
+  <div id="emailBox" class="dim">
+  <div class="f" id="emailRow"><label for="emailTo">Email address</label><input id="emailTo" type="email" autocomplete="off" placeholder="name@example.com">
+    <div class="hint">You can add your own address too, so you keep a copy.</div></div>
+  <button id="sendEmail" type="button">Send email</button>
+  <div class="hint" style="text-align:center">Practice page: this button does nothing.</div>
+  </div>
+  </div>
+</main>
+<footer>Practice page for tutorial recording. Generic layout and sample data only.<br>Not affiliated with the Australian Government or the Department of Home Affairs. Not migration advice.</footer>
+</div>
+<script>
+  // tiny state so the walkthrough reacts like the real flow; nothing leaves this page
+  var $ = function (id) { return document.getElementById(id); };
+  $('submit').addEventListener('click', function () { $('results').classList.remove('dim'); $('share').classList.remove('dim'); });
+  $('viewPdf').addEventListener('click', function () { $('pdfMsg').classList.add('on'); });
+  $('openEmail').addEventListener('click', function () { $('emailBox').classList.remove('dim'); });
+</script>
+</body>
+</html>
