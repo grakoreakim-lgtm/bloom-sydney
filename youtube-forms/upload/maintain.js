@@ -75,16 +75,18 @@ async function playlists(yt, videos, lang, seo) {
   for (const [title, forms] of Object.entries(plan)) {
     const vids = forms.map((f) => byForm[f]).filter(Boolean);
     if (!vids.length) continue;
-    let pl = mine.find((p) => p.snippet.title === title);
+    let pl = mine.find((p) => p.snippet.title === title), fresh = false;
     if (!pl) {
       pl = (await yt.playlists.insert({ part: ['snippet', 'status'], requestBody: { snippet: { title, description: cfg.playlistDescription?.[lang] || '', defaultLanguage: lang }, status: { privacyStatus: 'public' } } })).data;
-      console.log(`  ＋ playlist "${title}"`);
+      console.log(`  ＋ playlist "${title}"`); fresh = true;
     }
-    const items = (await yt.playlistItems.list({ part: ['contentDetails'], playlistId: pl.id, maxResults: 50 })).data.items.map((i) => i.contentDetails.videoId);
+    // a just-created playlist can take a few seconds to become visible → retry on "not found"
+    const retry = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (i < 6 && /cannot be found|notFound/i.test(e.message)) await new Promise((r) => setTimeout(r, 3000 * (i + 1))); else throw e; } } };
+    const items = fresh ? [] : (await retry(() => yt.playlistItems.list({ part: ['contentDetails'], playlistId: pl.id, maxResults: 50 }))).data.items.map((i) => i.contentDetails.videoId);
     let pos = 0;
     for (const v of vids) {
       if (!items.includes(v.id)) {
-        await yt.playlistItems.insert({ part: ['snippet'], requestBody: { snippet: { playlistId: pl.id, position: Math.min(pos, items.length), resourceId: { kind: 'youtube#video', videoId: v.id } } } });
+        await retry(() => yt.playlistItems.insert({ part: ['snippet'], requestBody: { snippet: { playlistId: pl.id, position: Math.min(pos, items.length), resourceId: { kind: 'youtube#video', videoId: v.id } } } }));
         items.splice(Math.min(pos, items.length), 0, v.id);
         console.log(`  ✔ "${title}" ← ${v.snippet.title.slice(0, 40)}`);
       }
