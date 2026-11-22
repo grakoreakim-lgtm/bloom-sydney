@@ -43,6 +43,16 @@ async function auto(page, sel, typed, want) {
   } catch (e) { log(`  auto ${sel} FAILED: ${e.message.split('\n')[0]}`); }
 }
 
+async function dateN(page, n, d, m, y) {
+  try {
+    for (const [part, v] of [['day', d], ['month', m], ['year', y]]) {
+      const el = page.locator(`#traveller-0-input-${part}`).nth(n);
+      await el.click(); await el.fill(''); await el.type(v, { delay: 60 }); await sleep(200);
+    }
+    log(`  dateN ${n} = ${d}/${m}/${y} ok`);
+  } catch (e) { log(`  dateN ${n} FAILED: ${e.message.split('\n')[0]}`); }
+}
+
 async function date(page, box, d, m, y) {
   try {
     const html = await page.locator(box).first().evaluate((e) => [...e.querySelectorAll('input, select, mat-select, [role="combobox"]')].map((x) => `${x.tagName.toLowerCase()}#${x.id}[${x.type || x.getAttribute('role') || ''}] ph=${x.getAttribute('placeholder') || ''}`).join(', '));
@@ -73,9 +83,9 @@ async function date(page, box, d, m, y) {
   try { const r = page.locator('mat-radio-group').first().locator('label, .mdc-label'); log(`  arrival options: ${(await r.allInnerTexts()).join(' | ')}`); await r.nth(1).click(); } catch (e) { log('  arrival FAILED ' + e.message.split('\n')[0]); }
   await page.locator('#traveller-0-input-fullName').fill('GILDONG HONG');
   await page.locator('#traveller-0-input-passportNumber').fill('M12345678');
-  await date(page, '#traveller-0-input-dateOfPassportExpiry', '31', '12', '2031');
+  await dateN(page, 0, '31', '12', '2031');
   try { await page.locator('label', { hasText: /^\s*MALE\s*$/ }).first().click(); } catch (e) { log('  sex FAILED ' + e.message.split('\n')[0]); }
-  await date(page, '#traveller-0-input-dateOfBirth', '15', '05', '1990');
+  await dateN(page, 1, '15', '05', '1990');
   await auto(page, '#traveller-0-input-nationality', 'KOREA', /KOREA.*(SOUTH|REPUBLIC)|SOUTH KOREA/i);
   await auto(page, '#traveller-0-input-placeOfBirth', 'KOREA', /KOREA.*(SOUTH|REPUBLIC)|SOUTH KOREA/i);
   await auto(page, '#traveller-0-input-placeOfResidence', 'SEOUL', /SEOUL/i);
@@ -85,10 +95,11 @@ async function date(page, box, d, m, y) {
   await auto(page, '#traveller-0-input-lastCity', 'SEOUL', /SEOUL|INCHEON/i);
   await auto(page, '#traveller-0-input-purposeOfTravel', 'HOLIDAY', /HOLIDAY|LEISURE|SIGHT/i);
   const dep = new Date(Date.now() + 6 * 864e5);
-  await date(page, '#traveller-0-input-dateOfDeparture', String(dep.getDate()).padStart(2, '0'), String(dep.getMonth() + 1).padStart(2, '0'), String(dep.getFullYear()));
+  await dateN(page, 2, String(dep.getDate()).padStart(2, '0'), String(dep.getMonth() + 1).padStart(2, '0'), String(dep.getFullYear()));
   try { await page.locator('text=/Same as Last City/i').first().click(); } catch (e) { log('  sameAsLast FAILED ' + e.message.split('\n')[0]); }
-  for (const g of ['mat-radio-group-2', 'mat-radio-group-3']) {
-    try { await page.locator(`#${g} label`, { hasText: /^\s*NO\s*$/i }).first().click(); } catch (e) { log(`  ${g} NO FAILED ` + e.message.split('\n')[0]); }
+  for (const g of ['traveller-0-input-haveUsedDiffPassportName', 'traveller-0-input-8']) {
+    try { await page.locator(`#${g} mat-radio-button`, { hasText: /^\s*NO\s*$/i }).first().click(); log(`  ${g} = NO`); }
+    catch (e) { try { await page.locator(`#${g} input[type=radio]`).nth(1).check({ force: true }); log(`  ${g} = NO (force)`); } catch (e2) { log(`  ${g} NO FAILED ` + e2.message.split('\n')[0]); } }
   }
   await sleep(800);
   await describe(page, 'PAGE 1 (filled)'); await snap(page, 'page1-filled');
@@ -100,7 +111,8 @@ async function date(page, box, d, m, y) {
   await describe(page, 'PAGE 2'); await snap(page, 'page2');
   const btns = await page.$$eval('button', (bs) => bs.map((b) => b.innerText.trim()).filter(Boolean));
   log(`  buttons: ${btns.join(' | ')}`);
-  const text = (await page.locator('body').innerText()).replace(/\n{2,}/g, '\n').slice(0, 3000);
+  const text = (await page.locator('body').innerText()).replace(/\n{2,}/g, '\n').slice(0, 4000);
   log('\n--- page 2 text ---\n' + text);
+  fs.writeFileSync(path.join(OUT, 'page2.html'), (await page.content()).slice(0, 400000));
   await browser.close();
 })().catch((e) => { console.error(e); process.exit(1); });
