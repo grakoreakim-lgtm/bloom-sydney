@@ -16,7 +16,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const { Recorder } = require('../lib/recorder');
 const { narrate } = require('./narration');
-const { mux } = require('./mux');
+const { mux, pickBgm } = require('./mux');
 const { thumbnail } = require('./thumbnail');
 const { buildMetadata } = require('./metadata');
 const { upload } = require('./upload');
@@ -121,7 +121,7 @@ function planDay(all, date) {
       const rec = new Recorder(form, { target, lang, outDir: path.join(dayDir, `rec-${row['슬롯']}`), narration });
       const r = await rec.run();
       // 3) mux
-      const final = mux(r.mp4, r.timeline.cues, clips, `${base}.mp4`, { bgm: cfg.bgm || null });
+      const final = mux(r.mp4, r.timeline.cues, clips, `${base}.mp4`, { bgm: pickBgm(cfg.bgm, `${formId}-${lang}`, ROOT), bgmVolume: cfg.bgmVolume || 0.14 });
       // 4) thumbnail (uses the first field screenshot as the backdrop)
       const shot = r.shots.find((s) => /step1-/.test(s)) || r.shots[1];
       const flagEmoji = (row['국가'].match(/^\S+/) || [''])[0];
