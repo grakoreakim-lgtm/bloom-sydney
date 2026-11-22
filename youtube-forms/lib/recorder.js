@@ -35,6 +35,7 @@ class Recorder {
     // narration: { [cueId]: durationMs } — when present, each cue holds at least that long
     this.narration = opts.narration || {};
     this.cues = [];            // [{ id, t }]  t = ms since recording start
+    this.checks = [];          // per-step QA: { step, field, ok, expected, actual }
     this.t0 = null;
     // page zoom (overlay unaffected) so fields stay readable on phones; mock pages are small, so zoom more
     this.zoom = opts.zoom ?? form.zoom?.[this.target] ?? (this.target === 'mock' ? 1.5 : 1);
@@ -131,6 +132,8 @@ class Recorder {
     await this.ov('clickCursor');
     await this.act(step, sel);
     await this.wait(600);
+    // QA: did the screen really end up with what the narration says?
+    this.checks.push({ step: this.stepIndex, field: step.field, ...(await this.verify(step, sel).catch((e) => ({ ok: false, why: e.message.split('\n')[0] }))) });
 
     // 3) common mistake callout (if any) — shown AFTER the correct value is in
     if (text.mistake) {
@@ -235,6 +238,41 @@ class Recorder {
     }
   }
 
+  // read back the field after the action (case-insensitive; sites often upper-case input)
+  async verify(step, sel) {
+    const page = this.page; const loc = this.loc(sel);
+    const value = typeof step.value === 'function' ? step.value() : step.value;
+    const norm = (x) => String(x ?? '').replace(/\s+/g, ' ').trim().toUpperCase();
+    switch (step.type) {
+      case 'type': {
+        const v = await loc.inputValue().catch(() => '');
+        const okv = norm(v) === norm(value) || norm(v).replace(/\D/g, '') === norm(value).replace(/\D/g, '') && /^\d+$/.test(String(value)) || norm(v).endsWith(norm(value));
+        return { ok: !!okv, expected: value, actual: v };
+      }
+      case 'select': { const v = await loc.inputValue().catch(() => ''); return { ok: norm(v) === norm(value), expected: value, actual: v }; }
+      case 'radio': case 'check': case 'tick': {
+        const c = await loc.evaluate((e) => e.matches('input') ? e.checked : !!(e.querySelector('input:checked') || e.classList.contains('mat-mdc-checkbox-checked') || e.getAttribute('aria-checked') === 'true'));
+        return { ok: c, expected: 'checked', actual: c ? 'checked' : 'not checked' };
+      }
+      case 'choose': {
+        const v = await loc.evaluate((g) => { const i = g.querySelector('input:checked'); return i ? (i.closest('mat-radio-button')?.innerText || i.value || '').trim() : ''; });
+        const okv = typeof value === 'number' ? !!v : norm(v).startsWith(norm(value));
+        return { ok: okv, expected: value, actual: v };
+      }
+      case 'auto': {
+        const v = await loc.inputValue().catch(() => '');
+        return { ok: step.pick ? new RegExp(step.pick, 'i').test(v.trim()) : norm(v).includes(norm(value)), expected: step.pick || value, actual: v };
+      }
+      case 'date3': {
+        const got = []; for (const part of ['day', 'month', 'year']) got.push(await page.locator(`#${step.idPrefix || 'traveller-0-input'}-${part}`).nth(step.n || 0).inputValue().catch(() => ''));
+        const exp = String(value).split('/');
+        return { ok: got.every((g, i) => Number(g) === Number(exp[i])), expected: value, actual: got.join('/') };
+      }
+      case 'next': return { ok: true, expected: 'next page', actual: page.url() };
+      default: return { ok: true, expected: '-', actual: '-' };   // manual / stop / click: nothing to read back
+    }
+  }
+
   async finish() {
     const video = this.page.video();
     await this.context.close();
@@ -255,7 +293,7 @@ class Recorder {
     const chapters = this.cues.filter((c) => /^s\d+-tip$/.test(c.id)).map((c) => {
       const i = Number(c.id.match(/^s(\d+)-/)[1]); return { t: c.t, label: steps[i - 1].text[this.lang].label };
     });
-    const timeline = { cues: this.cues, chapters };
+    const timeline = { cues: this.cues, chapters, checks: this.checks, steps: steps.map((st, i) => ({ n: i + 1, field: st.field, type: st.type, hasTip: !!(st.text[this.lang].speech?.tip || st.text[this.lang].tip), hasMistake: !!(st.text[this.lang].speech?.mistake || st.text[this.lang].mistake) })) };
     fs.writeFileSync(path.join(this.outDir, `${base}.timeline.json`), JSON.stringify(timeline, null, 1));
     return { webm: finalWebm, mp4, shots: this.shots, timeline };
   }

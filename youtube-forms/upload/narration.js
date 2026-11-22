@@ -55,6 +55,31 @@ async function synthChunk(voice, t, speakingRate) {
     if (!res.ok) throw new Error(`OpenAI TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
     return Buffer.from(await res.arrayBuffer());
   }
+  if (provider === 'gemini') {             // Gemini TTS via the Gemini API (AI Studio key); style via a spoken instruction
+    const key = process.env.GEMINI_API_KEY; if (!key) throw new Error('GEMINI_API_KEY is not set');
+    const models = [voice.model, 'gemini-2.5-pro-preview-tts', 'gemini-2.5-flash-preview-tts'].filter(Boolean);
+    const say = voice.prompt ? `${voice.prompt}\n\n${t}` : t;
+    let lastErr = '';
+    for (const model of [...new Set(models)]) {
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({ contents: [{ parts: [{ text: say }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice.name || 'Leda' } } } } }),
+        });
+        if (res.status === 429 || res.status >= 500) { lastErr = `${model} ${res.status}`; await new Promise((r) => setTimeout(r, 5000 * (attempt + 1))); continue; }
+        if (!res.ok) { lastErr = `${model} ${res.status}: ${(await res.text()).slice(0, 200)}`; break; }   // e.g. model name not available → next model
+        const part = (await res.json()).candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
+        if (!part) { lastErr = `${model}: no audio in response`; break; }
+        const rate = Number((part.inlineData.mimeType || '').match(/rate=(\d+)/)?.[1] || 24000);
+        const tmp = path.join(require('os').tmpdir(), `gem-${process.pid}-${Date.now()}`);
+        fs.writeFileSync(`${tmp}.pcm`, Buffer.from(part.inlineData.data, 'base64'));
+        execSync(`ffmpeg -y -loglevel error -f s16le -ar ${rate} -ac 1 -i "${tmp}.pcm" -c:a libmp3lame -q:a 2 "${tmp}.mp3"`);
+        const buf = fs.readFileSync(`${tmp}.mp3`); fs.unlinkSync(`${tmp}.pcm`); fs.unlinkSync(`${tmp}.mp3`);
+        return buf;
+      }
+    }
+    throw new Error(`Gemini TTS failed: ${lastErr}`);
+  }
   if (provider === 'clova') {              // NAVER CLOVA Voice (Premium), Korean-native voices
     const id = process.env.CLOVA_CLIENT_ID, secret = process.env.CLOVA_CLIENT_SECRET;
     if (!id || !secret) throw new Error('CLOVA_CLIENT_ID / CLOVA_CLIENT_SECRET are not set');
@@ -83,7 +108,7 @@ async function synthChunk(voice, t, speakingRate) {
 async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1.0) {
   const voice = voices[lang] || VOICES[lang];
   // Plain text, one request per sentence, joined with a short real silence (clean, even breathing room).
-  const sentences = splitSentences(text);
+  const sentences = voice.split === false ? [String(text).replace(/\s+/g, ' ').trim()] : splitSentences(text);
   const parts = [];
   for (const [i, sTxt] of sentences.entries()) {
     const f = sentences.length === 1 ? outFile : `${outFile}.part${i}.mp3`;
@@ -118,10 +143,39 @@ function durationMs(file) {
  * Synthesize every cue. Returns { [cueId]: { file, durationMs, text } }.
  * With opts.dryRun it writes a short silent clip per cue instead of calling the API (for pipeline tests).
  */
+// soft thinking sound ("음…") placed quietly before some lines, so the voice breathes like a person
+async function fillerClip(lang, cacheDir, opts) {
+  const voice = (opts.voices || VOICES)[lang] || VOICES[lang];
+  const f = voice?.filler; if (!f || opts.dryRun) return null;
+  const file = path.join(cacheDir, `${lang}-filler-${crypto.createHash('sha1').update(JSON.stringify(voice)).digest('hex').slice(0, 10)}.mp3`);
+  if (!fs.existsSync(file)) {
+    const raw = `${file}.raw.mp3`;
+    await synthesize(f.text || (lang === 'ko' ? '음…' : 'Hmm…'), lang, raw, opts.voices, opts.speakingRate);
+    // quieter, trimmed, short fade so it sits under the voice like a breath
+    execSync(`ffmpeg -y -loglevel error -i "${raw}" -af "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,volume=${f.volume ?? 0.35},afade=t=out:st=0:d=0.01" -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${file}"`);
+    fs.unlinkSync(raw);
+  }
+  return file;
+}
+
+function withFiller(clipFile, filler, gapMs = 120) {
+  const out = clipFile.replace(/\.mp3$/, '.f.mp3');
+  if (fs.existsSync(out)) return out;
+  const sil = `${clipFile}.gap.mp3`;
+  execSync(`ffmpeg -y -loglevel error -f lavfi -i anullsrc=r=24000:cl=mono -t ${gapMs / 1000} -c:a libmp3lame -q:a 4 "${sil}"`);
+  const list = `${clipFile}.fl.txt`;
+  fs.writeFileSync(list, [filler, sil, clipFile].map((p) => `file '${path.resolve(p)}'`).join('\n'));
+  execSync(`ffmpeg -y -loglevel error -f concat -safe 0 -i "${list}" -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${out}"`);
+  fs.unlinkSync(list); fs.unlinkSync(sil);
+  return out;
+}
+
 async function narrate(form, lang, cacheDir, opts = {}) {
   fs.mkdirSync(cacheDir, { recursive: true });
   const script = buildScript(form, lang, opts.target);
   const clips = {};
+  const filler = await fillerClip(lang, cacheDir, opts).catch((e) => { console.warn('  filler skipped:', e.message); return null; });
+  const fcfg = ((opts.voices || VOICES)[lang] || {}).filler || {};
   for (const line of script) {
     const h = crypto.createHash('sha1').update(`${lang}|${(opts.voices || VOICES)[lang]?.name}|p3|${JSON.stringify((opts.voices || VOICES)[lang] || {})}|${line.text}`).digest('hex').slice(0, 12);
     const file = path.join(cacheDir, `${lang}-${h}.mp3`);
@@ -133,7 +187,11 @@ async function narrate(form, lang, cacheDir, opts = {}) {
         await synthesize(line.text, lang, file, opts.voices, opts.speakingRate);
       }
     }
-    clips[line.id] = { file, durationMs: durationMs(file), text: line.text };
+    // a quiet "음" before mistake explanations and before every few other lines (stable choice per line)
+    const h2 = parseInt(crypto.createHash('md5').update(line.id).digest('hex').slice(0, 6), 16);
+    const wantFiller = filler && (/-mistake$/.test(line.id) ? fcfg.onMistakes !== false : (h2 % (fcfg.every || 4)) === 0) && !/^card-intro$/.test(line.id);
+    const use = wantFiller ? withFiller(file, filler) : file;
+    clips[line.id] = { file: use, durationMs: durationMs(use), text: line.text };
   }
   return clips;
 }
