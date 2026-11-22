@@ -35,12 +35,12 @@ function buildMetadata(row, form, timeline, aff, cfg) {
   const affLines = [aff.esim && `${t.esim}: ${aff.esim}`, aff.pickup && `${t.pickup}: ${aff.pickup}`, aff.hotel && `${t.hotel}: ${aff.hotel}`, aff.tour && `${t.tour}: ${aff.tour}`].filter(Boolean);
   const tr = (v) => (lang === 'ko' ? v : (FACT_EN[v] || v));
   const facts = [row['비용'] && row['비용'] !== '-' ? `💰 ${tr(row['비용'])}` : null, row['제출 시점·유효'] && row['제출 시점·유효'] !== '-' ? `🗓 ${tr(row['제출 시점·유효'])}` : null].filter(Boolean).join('   ');
-  const lead = kw && t.lead ? t.lead(kw.primary, form?.country?.[lang] || country, formName) : null;
+  const lead = kw?.lead || (kw && t.lead ? t.lead(kw.primary, form?.country?.[lang] || country, formName) : null);   // keywords.json may give its own first line
   const hashtags = [...new Set([...(kw?.hashtags || []), ...(cfg.hashtags?.[lang] || cfg.hashtags?.en || [])])].slice(0, 8);
   const searchTerms = kw ? [...new Set([...(kw.learned || []), ...(kw.secondary || [])])].slice(0, 12) : [];
   const description = [
     lead,                                   // first ~150 chars show in search results: keyword first
-    `${t.official}: ${official}`,
+    /^https?:/.test(official) ? `${t.official}: ${official}` : null,
     affLines.length ? t.disclosure : null,
     ...affLines,
     '',

@@ -165,5 +165,26 @@
   },
   "_channelIds": "Token → YouTube channel id. A token without an id here must NOT point to any listed channel (stops EN videos landing on the KO channel). Add en once its token is verified.",
   "bgmVolume": 0.14,
-  "_bgm": "Folder of background tracks (see assets/bgm/README.md). Empty folder = no music."
+  "_bgm": "Folder of background tracks (see assets/bgm/README.md). Empty folder = no music.",
+  "extraTopics": [
+    {
+      "form": "grab",
+      "topic": "그랩 사용법(공항→시내)",
+      "country": "🚕 싱가포르·말레이시아",
+      "langs": [
+        "ko",
+        "en"
+      ]
+    },
+    {
+      "form": "esim",
+      "topic": "여행 eSIM 구매·설치",
+      "country": "📱 해외여행",
+      "langs": [
+        "ko",
+        "en"
+      ]
+    }
+  ],
+  "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists."
 }

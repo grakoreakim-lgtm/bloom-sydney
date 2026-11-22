@@ -75,6 +75,19 @@ function planDay(all, date) {
     const form = require(path.join(ROOT, 'forms', `${FORM_MAP[r['서식/주제']]}.js`));
     if (form.strings[r['언어'].toLowerCase()]) backlog.push({ c, row: r });
   }
+  // topics that are not in the calendar (e.g. the "after you arrive" series) go to the front of the backlog
+  const extras = [];
+  for (const x of cfg.extraTopics || []) {
+    if (!fs.existsSync(path.join(ROOT, 'forms', `${x.form}.js`))) continue;
+    FORM_MAP[x.topic] = x.form;
+    const form = require(path.join(ROOT, 'forms', `${x.form}.js`));
+    for (const lang of x.langs || ['ko', 'en']) {
+      const c = `${x.form}:${lang}`;
+      if (taken.has(c) || !form.strings[lang]) continue;
+      extras.push({ c, row: { '유형': '본편(5-8분)', '등급': 'S', '국가': x.country, '서식/주제': x.topic, '언어': lang.toUpperCase(), '제목(초안)': (form.videoTitle?.[lang] || form.title?.[lang] || x.topic).replace('{year}', date.slice(0, 4)), '공식 URL(설명란 1줄)': '', '비용': lang === 'ko' ? (form.fee || '-') : '-', '제출 시점·유효': lang === 'ko' ? (form.when || '-') : '-' } });
+    }
+  }
+  backlog.unshift(...extras);
   const out = [];
   for (const r of day) {
     if (FORM_MAP[r['서식/주제']] && r['유형'].startsWith('본편')) {

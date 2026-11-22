@@ -363,5 +363,161 @@
         "JapanArrival"
       ]
     }
+  },
+  "grab": {
+    "ko": {
+      "primary": "그랩 사용법 싱가포르 말레이시아",
+      "hook": "가입부터 호출까지 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 공항에서 시내까지 그랩 타는 법, 화면 그대로 따라 하면 끝 (가입은 출국 전에)",
+        "창이공항·쿠알라룸푸르 공항에서 그랩 부르는 법 {year} | 탑승 위치·요금·결제"
+      ],
+      "secondary": [
+        "그랩 사용법",
+        "싱가포르 그랩 가입",
+        "그랩 가입 방법",
+        "그랩 카드 등록",
+        "창이공항에서 시내 가는 법",
+        "창이공항 그랩 타는 곳",
+        "쿠알라룸푸르 공항에서 시내 가는 법",
+        "KLIA 그랩 타는 곳",
+        "말레이시아 그랩 사용법",
+        "그랩 요금",
+        "그랩 현금 결제",
+        "싱가포르 택시 그랩"
+      ],
+      "questions": [
+        "그랩은 한국 번호로 가입할 수 있나요?",
+        "그랩 가입은 언제 하는 게 좋나요? (출국 전, 문자 인증 때문)",
+        "창이공항에서 그랩은 어디서 타나요?",
+        "그랩 요금에 통행료가 포함되어 있나요?",
+        "짐이 많으면 어떤 차를 불러야 하나요?",
+        "카드 등록이 안 되면 현금으로 낼 수 있나요?"
+      ],
+      "hashtags": [
+        "그랩사용법",
+        "싱가포르여행",
+        "말레이시아여행"
+      ],
+      "lead": "그랩 사용법 — 싱가포르·말레이시아 공항에서 호텔까지, 출국 전 가입부터 도착 후 호출까지 화면 그대로 따라 하면 됩니다."
+    },
+    "en": {
+      "primary": "How to use Grab in Singapore & Malaysia",
+      "hook": "Sign Up to First Ride",
+      "titles": [
+        "{primary} {year} | Airport to City ({hook})",
+        "Changi Airport to City by Grab {year} — Copy My Screen (Sign Up Before You Fly)",
+        "KLIA to KL by Grab {year}: Pickup Point, Fare, Payment Step-by-Step"
+      ],
+      "secondary": [
+        "how to use Grab in Singapore",
+        "how to use Grab in Malaysia",
+        "Changi airport to city Grab",
+        "KLIA to KL Grab",
+        "Grab sign up foreign number",
+        "Grab app for tourists",
+        "Changi airport Grab pickup point",
+        "KLIA Grab pickup point",
+        "Grab add credit card",
+        "Grab cash payment",
+        "Grab fare tolls",
+        "Singapore airport transfer"
+      ],
+      "questions": [
+        "Can I sign up for Grab with a foreign phone number?",
+        "When should I sign up for Grab? (before you fly, because of the SMS code)",
+        "Where is the Grab pickup point at Changi Airport?",
+        "Where is the Grab pickup point at KLIA?",
+        "Are tolls included in the Grab fare?",
+        "Can I pay cash if my card is declined?"
+      ],
+      "hashtags": [
+        "Grab",
+        "SingaporeTravel",
+        "MalaysiaTravel"
+      ],
+      "lead": "How to use Grab — from sign-up before your trip to booking a ride from Changi or KLIA to your hotel, step by step on screen."
+    }
+  },
+  "esim": {
+    "ko": {
+      "primary": "해외여행 eSIM 설치 방법",
+      "hook": "구매부터 로밍 설정까지 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 여행용 이심 사용법, 화면 그대로 따라 하면 끝 (데이터 로밍 설정 주의)",
+        "eSIM 설치 방법 {year} 아이폰·갤럭시 공통 | 출국 전 5분, 로밍 요금 폭탄 피하기"
+      ],
+      "secondary": [
+        "eSIM 설치 방법",
+        "해외여행 이심 사용법",
+        "이심 설치 방법",
+        "여행용 eSIM",
+        "eSIM 사용법",
+        "아이폰 eSIM 설치",
+        "갤럭시 eSIM 설치",
+        "eSIM QR 코드 설치",
+        "eSIM 데이터 로밍 설정",
+        "eSIM 유심 차이",
+        "해외 데이터 로밍 요금",
+        "싱가포르 eSIM",
+        "말레이시아 eSIM",
+        "해외여행 준비물"
+      ],
+      "questions": [
+        "eSIM은 언제 설치하나요? (출국 1~2일 전, 와이파이에서)",
+        "내 폰이 eSIM을 지원하는지 어떻게 확인하나요? (*#06# → EID)",
+        "여행 eSIM은 데이터 로밍을 켜야 하나요?",
+        "원래 쓰던 한국 번호로 문자는 받을 수 있나요?",
+        "eSIM을 삭제하면 다시 설치할 수 있나요?",
+        "사용 기간은 설치할 때부터 시작되나요?"
+      ],
+      "hashtags": [
+        "eSIM",
+        "이심설치",
+        "해외여행준비"
+      ],
+      "lead": "여행 eSIM 설치 방법 — 출국 전에 구매하고 QR로 설치한 뒤, 로밍 설정까지 화면 그대로 따라 하면 됩니다. 아이폰·갤럭시 공통."
+    },
+    "en": {
+      "primary": "How to Install a Travel eSIM",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | Buy, Set Up, Avoid Roaming Charges ({hook})",
+        "Travel eSIM Setup {year} for iPhone and Android: Copy My Screen",
+        "eSIM for International Travel {year}: Install It Before You Fly (Data Roaming Settings Explained)"
+      ],
+      "secondary": [
+        "how to install travel eSIM",
+        "eSIM setup iPhone Android",
+        "how to use eSIM when traveling",
+        "travel eSIM",
+        "how to activate eSIM",
+        "eSIM QR code install",
+        "eSIM data roaming on or off",
+        "eSIM vs physical SIM",
+        "is my phone eSIM compatible",
+        "dual SIM travel settings",
+        "avoid roaming charges",
+        "Singapore eSIM",
+        "Malaysia eSIM",
+        "international travel tips"
+      ],
+      "questions": [
+        "When should I install a travel eSIM? (1-2 days before, on Wi-Fi)",
+        "How do I check if my phone supports eSIM? (*#06# shows an EID)",
+        "Should data roaming be on or off for a travel eSIM?",
+        "Can I still receive texts on my home number?",
+        "Can I reinstall an eSIM after deleting it?",
+        "Does the plan start when I install it?"
+      ],
+      "hashtags": [
+        "eSIM",
+        "TravelTips",
+        "TraveleSIM"
+      ],
+      "lead": "How to install a travel eSIM — buy it before you fly, scan the QR code, and set data roaming correctly, step by step. Works for iPhone and Android."
+    }
   }
 }
