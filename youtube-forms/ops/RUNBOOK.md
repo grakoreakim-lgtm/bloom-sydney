@@ -68,7 +68,34 @@ then mark them done with the result.
    and check `QA PASS`; open a pull request.
 5. **Next week:** report whether the change helped. Keep a running list in `ops/reports/learnings.md`.
 
+## AI demo videos (channel `apps` — "Copy My Screen: Apps & AI")
+These are "record first, script second": you use the real app on this Mac, record the screen, then write the script
+from what actually happened. Never script a feature you have not seen work in the recording.
+
+1. **Topics (Monday).** Read the official release notes / help pages of ChatGPT, Claude and Gemini (plus computer use
+   and browser control features). Propose 3 topics in the approval file: what the viewer will be able to do, the
+   official source link, and which paid plan it needs. Only features the owner's accounts actually have.
+2. **Record (after topic approval).** Clean desktop first: Do Not Disturb on, a browser window with no bookmarks bar,
+   no other tabs, a fresh chat with history hidden. Start a screen recording (`screencapture -v <dir>/screen.mov`, or
+   QuickTime), do the task once at a calm human pace, stop, convert:
+   `ffmpeg -i screen.mov -r 30 -pix_fmt yuv420p demos/<id>/screen.mp4`.
+   - Use only fictional sample data and sample files made for the video. No real names, emails, account pages, billing
+     pages or chat history may appear. If any does, re-record — do not blur and hope.
+   - Stop and call the owner at any login, CAPTCHA, phone check or payment screen. Never work around them.
+   - Use each service only as a normal signed-in user would, within its terms. No scraping, no bulk automation.
+   - If the feature fails or behaves differently from the source, do not fake it: record what really happens, or drop
+     the topic and say so in the report.
+3. **Write `demos/<id>/demo.json`** while watching the recording (format at the top of `upload/demo.js`). Each
+   segment's `say` describes exactly what is on screen between `from` and `to`; cut waiting time by leaving gaps
+   between segments. `sources` = official links, `checkedOn` = today. Channel is English: `"lang":"en"`.
+4. **Build and check:** `node upload/demo.js demos/<id>` → must print `QA PASS`. Then watch `out/<id>.mp4` fully once:
+   narration matches the screen in every segment, no personal data, captions readable on a phone.
+5. **Upload private:** `node upload/demo.js demos/<id> --upload` (needs `secrets/token-apps.json`). Put the private
+   link in the approval file. Publishing (and its time) happens only after the owner approves.
+6. Raw recordings stay on this Mac (`demos/` is not committed); commit only `demo.json`.
+
 ## Where things are
+- AI demo builder: `upload/demo.js`; recordings in `demos/<id>/` (local only)
 - Pipeline: `upload/run-day.js` (plan → narrate → record → QA → upload); settings `upload/config.ci.json`
 - Tutorials: `forms/<id>.js` + practice pages `mock/`; real-site steps e.g. `forms/sgac-live-steps.js`
 - QA rules: `upload/qa.js`; voice: `upload/narration.js`; SEO: `seo/keywords.json`, `upload/seo-review.js`
