@@ -127,13 +127,25 @@ async function date(page, box, d, m, y) {
   // ---- page 2: choose AIR + HOTEL, see what appears, fill it, then Next to the Review page (never Submit) ----
   try { await page.locator('#traveller-0-input-modeOfTravel mat-radio-button', { hasText: /AIR/ }).first().click(); await sleep(1200); } catch (e) { log('  AIR FAILED ' + e.message.split('\n')[0]); }
   try { await page.locator('#traveller-0-input-typeOfAccommodation mat-radio-button', { hasText: /HOTEL/ }).first().click(); await sleep(1500); } catch (e) { log('  HOTEL FAILED ' + e.message.split('\n')[0]); }
+  // choices reveal more questions (e.g. AIR → Mode of Transport → flight no.) — answer open radio groups in rounds
+  const PREF = [/^COMMERCIAL FLIGHT$/, /^AIR$/, /^HOTEL$/, /^NO$/];
+  for (let round = 0; round < 4; round++) {
+    const open = await page.$$eval('mat-radio-group', (gs) => gs.filter((g) => !g.querySelector('input:checked')).map((g) => ({ id: g.id, opts: [...g.querySelectorAll('mat-radio-button')].map((b) => b.innerText.trim()) })));
+    if (!open.length) break;
+    for (const g of open) {
+      const want = g.opts.find((o) => PREF.some((r) => r.test(o))) || g.opts[0];
+      try { await page.locator(`[id="${g.id}"] mat-radio-button`, { hasText: want }).first().click(); log(`  ${g.id} = ${want} (round ${round})`); } catch (e) { log(`  ${g.id} FAILED ${e.message.split('\n')[0]}`); }
+      await sleep(1000);
+    }
+  }
   await describe(page, 'PAGE 2 (after AIR + HOTEL)'); await snap(page, 'page2-revealed');
   // fill whatever text/combobox fields appeared, by their label
   const fields = await page.$$eval('input[type=text], input:not([type])', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; }).map((e) => ({ id: e.id, role: e.getAttribute('role') || '', label: ((e.id && document.querySelector(`label[for="${e.id}"]`)?.innerText) || e.getAttribute('aria-label') || e.placeholder || '').trim() })));
   log('  page-2 inputs: ' + JSON.stringify(fields));
   for (const f of fields) {
     const sel = f.id ? `[id="${f.id}"]` : null; if (!sel) continue;
-    if (/flight|vessel|vehicle/i.test(f.id + f.label)) { if (f.role === 'combobox') await auto(page, sel, 'SQ', /SQ|SINGAPORE AIRLINES/i); else { await page.locator(sel).fill('SQ 607'); log(`  ${f.id} = SQ 607`); } }
+    if (/flight|vessel|vehicle/i.test(f.id + f.label)) { if (f.role === 'combobox') await auto(page, sel, 'SQ', /SQ|SINGAPORE AIRLINES/i); else { await page.locator(sel).fill('SQ607'); log(`  ${f.id} = SQ607`); } }
+    else if (/nameOfHotel/i.test(f.id)) await auto(page, sel, 'MARINA BAY SANDS', /MARINA BAY SANDS/i);
     else if (/hotel|accommodation|name/i.test(f.id + f.label)) await auto(page, sel, 'MARINA', /MARINA/i);
     else if (/postal/i.test(f.id + f.label)) { await page.locator(sel).fill('018956'); log(`  ${f.id} = 018956`); }
     else if (/address/i.test(f.id + f.label)) { await page.locator(sel).fill('10 BAYFRONT AVENUE'); log(`  ${f.id} = address`); }
