@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE SHEET — works the same in Excel and Google Sheets</title>
+<style>
+  /* Neutral practice spreadsheet. Deliberately NOT Excel's or Google Sheets' design: no logo, no brand colours,
+     no ribbon or menu copied. Only the things every spreadsheet has: a formula bar, column letters, row numbers. */
+  :root { --b: #3d4a5c; --soft: #eef1f5; --bg: #f1f2f4; --line: #cfd5dd; --hdr: #e6e9ee; --ok: #1f4d7a; --err: #a11919; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #222; color: #fff; text-align: center; padding: 7px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* big bottom margin so the tutorial callouts under the last rows are never cut off */
+  main { width: 838px; margin: 10px auto 460px; background: #fff; padding: 10px 12px 16px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .name { font-size: 13px; font-weight: 700; color: var(--b); margin: 0 0 6px; }
+  .name small { font-weight: 400; color: #666; margin-left: 6px; }
+  .fbar { display: flex; align-items: stretch; gap: 6px; margin-bottom: 8px; font-size: 13px; }
+  .fbar .cellname { flex: none; width: 46px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; background: var(--soft); }
+  .fbar .fx { flex: none; display: flex; align-items: center; font-style: italic; font-weight: 700; color: #666; padding: 0 2px; }
+  .fbar #formulaBar { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font: 13px/1.2 "Courier New", Courier, monospace; background: #fff; color: #222; }
+  .fbar #resultPanel { flex: none; width: 190px; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; background: var(--soft); display: flex; align-items: center; gap: 6px; overflow: hidden; white-space: nowrap; }
+  .fbar #resultPanel small { color: #666; font-size: 11px; }
+  .fbar #resultPanel b { font-size: 14px; color: var(--ok); overflow: hidden; text-overflow: ellipsis; }
+  .fbar #resultPanel b.err { color: var(--err); }
+  table.grid { border-collapse: collapse; table-layout: fixed; width: 814px; }
+  .grid th { background: var(--hdr); color: #555; font-size: 11px; font-weight: 700; border: 1px solid var(--line); height: 20px; padding: 0; text-align: center; }
+  .grid th.rn { width: 26px; }
+  .grid td { border: 1px solid var(--line); padding: 0; vertical-align: top; background: #fff; }
+  .grid td input { display: block; width: 100%; height: 25px; border: 0; padding: 3px 6px; font: 13px/1.2 Arial, Helvetica, sans-serif; background: transparent; color: #222; }
+  .grid td input:focus { outline: 2px solid var(--b); outline-offset: -2px; background: #fff; }
+  .grid td input.num { text-align: right; }
+  .grid td input.formula { font-family: "Courier New", Courier, monospace; font-size: 12px; text-align: left; padding-right: 2px; }
+  .grid tr.head td input { font-weight: 700; background: var(--soft); color: var(--b); }
+  .grid td.txtnum { background: linear-gradient(225deg, #c98a00 0, #c98a00 5px, transparent 5px); }   /* small corner mark: number stored as text */
+  /* the calculated result: a badge beside the formula, so the formula text stays visible in the cell */
+  .grid td .cell { display: flex; align-items: center; }
+  .grid td .cell input { flex: 1; min-width: 0; }
+  .grid td .res { display: none; flex: none; max-width: 120px; margin: 0 3px; padding: 2px 8px; border-radius: 4px; background: #e9f0f8; border: 1px solid #b9cbe0; color: var(--ok); font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .grid td .res.on { display: block; }
+  .grid td .res.err { background: #fbeaea; border-color: #e3b5b5; color: var(--err); }
+  .grid td .res.wait { background: #f4f4f4; border-color: #ddd; color: #888; font-weight: 400; }
+  .grid td .res i { font-style: normal; font-weight: 400; color: #667; margin-right: 5px; }
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .note { border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; font-size: 12.5px; line-height: 1.4; background: #fafbfc; }
+  .note b { display: block; margin-bottom: 1px; color: var(--b); }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE SHEET — works the same in Excel and Google Sheets</div>
+<main>
+  <p class="name" id="sheetName"></p>
+  <div class="fbar" id="fbarRow">
+    <div class="cellname" id="cellName">A1</div><div class="fx">fx</div>
+    <div id="formulaBar"></div>
+    <div id="resultPanel"><small>Result</small><b id="resultValue"></b></div>
+  </div>
+  <table class="grid" id="grid"></table>
+  <div class="notes" id="notes"></div>
+</main>
+<footer>Practice sheet for tutorial recording. A plain grid only — not affiliated with Microsoft or Google.</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------- sample data (?data=orders | staff | prices)
+  // widths: one number per column A.., in px. `text` lists cells whose numbers are stored as text on purpose.
+  var DATA = {
+    orders: {
+      name: 'Orders', sub: 'sample data — a small orders table',
+      widths: [70, 78, 62, 42, 46, 80, 410], rows: 12,
+      table: [
+        ['Order ID', 'Product', 'Region', 'Qty', 'Price'],
+        [1001, 'Pen', 'East', 12, 1.5],
+        [1002, 'Notebook', 'West', 5, 4],
+        [1003, 'Pen', 'West', 20, 1.5],
+        [1004, 'Stapler', 'East', 3, 9],
+        [1005, 'Notebook', 'East', 10, 4],
+        [1006, 'Pen', 'East', 8, 1.5],
+        [1007, 'Stapler', 'West', 6, 9],
+        [1008, 'Notebook', 'East', 15, 4]
+      ],
+      cells: { F1: 'Condition', G1: 'Formula  →  result' }, text: [],
+      notes: [
+        { id: 'sizeRow', title: 'Same size ranges', text: 'Every range in one formula covers the same rows: here, rows 2 to 9.' },
+        { id: 'filterRow', title: 'Filters and hidden rows', text: 'SUMIFS and COUNTIFS still count rows that a filter hides. For visible rows only, use SUBTOTAL.' }
+      ]
+    },
+    staff: {
+      name: 'Staff list', sub: 'sample data — a small lookup table',
+      widths: [70, 78, 62, 42, 46, 80, 410], rows: 10,
+      table: [
+        ['Staff ID', 'Name', 'Team', 'Rate', ''],
+        [101, 'Alex', 'Sales', 28, ''],
+        [102, 'Bella', 'Support', 25, ''],
+        [103, 'Chen', 'Sales', 30, ''],
+        [104, 'Dana', 'Finance', 32, ''],
+        [105, 'Eli', 'Support', 26, ''],
+        [106, 'Fay', 'Finance', 31, '']
+      ],
+      cells: { F1: 'Find ID', G1: 'Formula  →  result' }, text: ['A7'],
+      notes: [
+        { id: 'versionRow', title: 'Where XLOOKUP works', text: 'Microsoft 365, Excel 2021 and newer, and Google Sheets. Not in Excel 2016 or 2019: use VLOOKUP there.' },
+        { id: 'cleanRow', title: 'A match must be exact', text: 'An extra space, or a number stored as text, is a different value. TRIM removes spaces. VALUE turns text into a number.' }
+      ]
+    },
+    prices: {
+      name: 'Price list', sub: 'sample data — a small price table',
+      widths: [70, 78, 62, 42, 46, 80, 410], rows: 10,
+      table: [
+        ['Code', 'Product', 'Unit', 'Price', 'Stock'],
+        ['P-01', 'Pen', 'each', 1.5, 240],
+        ['N-02', 'Notebook', 'each', 4, 85],
+        ['S-03', 'Stapler', 'each', 9, 30],
+        ['T-04', 'Tape', 'roll', 2.5, 120],
+        ['E-05', 'Envelopes', 'pack', 6, 60]
+      ],
+      cells: { F1: 'Find code', G1: 'Formula  →  result' }, text: [],
+      notes: []
+    }
+  };
+
+  var key = new URLSearchParams(location.search).get('data');
+  var D = DATA[Object.prototype.hasOwnProperty.call(DATA, key) ? key : 'orders'];
+  var NCOLS = D.widths.length, NROWS = D.rows;
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  // ---------------------------------------------------------------- build the grid
+  var grid = document.getElementById('grid');
+  var inputs = {};          // id → <input>
+  var badges = {};          // id → result badge
+  (function build() {
+    document.getElementById('sheetName').innerHTML = esc(D.name) + '<small>' + esc(D.sub) + '</small>';
+    var cg = '<colgroup><col style="width:26px">';
+    for (var c = 0; c < NCOLS; c++) cg += '<col style="width:' + D.widths[c] + 'px">';
+    var html = cg + '</colgroup><tr><th class="rn"></th>';
+    for (c = 0; c < NCOLS; c++) html += '<th id="col' + LETTERS[c] + '">' + LETTERS[c] + '</th>';
+    html += '</tr>';
+    for (var r = 1; r <= NROWS; r++) {
+      html += '<tr' + (r === 1 ? ' class="head"' : '') + ' id="row' + r + '"><th class="rn">' + r + '</th>';
+      for (c = 0; c < NCOLS; c++) {
+        var id = LETTERS[c] + r;
+        html += '<td id="c' + id + '"><div class="cell"><input type="text" id="' + id + '" autocomplete="off" spellcheck="false" aria-label="Cell ' + id + '"><div class="res" id="res' + id + '"></div></div></td>';
+      }
+      html += '</tr>';
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll('input').forEach(function (el) { inputs[el.id] = el; badges[el.id] = document.getElementById('res' + el.id); });
+    D.table.forEach(function (row, ri) { row.forEach(function (v, ci) { if (ci < NCOLS && v !== '') inputs[LETTERS[ci] + (ri + 1)].value = String(v); }); });
+    Object.keys(D.cells).forEach(function (id) { if (inputs[id]) inputs[id].value = D.cells[id]; });
+    D.text.forEach(function (id) { if (inputs[id]) inputs[id].dataset.t = '1'; });
+    document.getElementById('notes').innerHTML = D.notes.map(function (n) { return '<div class="note" id="' + n.id + '"><b>' + esc(n.title) + '</b>' + esc(n.text) + '</div>'; }).join('');
+  })();
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); }
+
+  // ---------------------------------------------------------------- values
+  // A value is: number | string | boolean | null (blank cell) | Err | Range
+  function Err(code) { this.code = code; }
+  function Range(rows) { this.rows = rows; this.h = rows.length; this.w = rows.length ? rows[0].length : 0; }
+  Range.prototype.flat = function () { return [].concat.apply([], this.rows); };
+  function ParseError(msg) { this.message = msg; }
+  var isErr = function (v) { return v instanceof Err; };
+  var NUM_RE = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i;
+
+  var memo = null, stack = null;
+  function cellValue(id) {
+    var el = inputs[id];
+    if (!el) return new Err('#REF!');
+    if (memo && Object.prototype.hasOwnProperty.call(memo, id)) return memo[id];
+    var raw = el.value, v;
+    if (el.dataset.t === '1') v = raw;                               // number stored as text (sample data)
+    else if (raw.charAt(0) === "'") v = raw.slice(1);                 // a leading apostrophe forces text
+    else if (raw.charAt(0) === '=') {
+      if (stack.indexOf(id) >= 0) v = new Err('#REF!');               // circular reference
+      else { stack.push(id); try { v = scalar(evalNode(parse(raw.slice(1)))); } catch (e) { v = e instanceof ParseError ? new Err('#ERROR!') : new Err('#VALUE!'); } stack.pop(); }
+    }
+    else if (raw.trim() === '') v = null;
+    else if (NUM_RE.test(raw.trim())) v = Number(raw.trim());
+    else if (/^(true|false)$/i.test(raw.trim())) v = raw.trim().toUpperCase() === 'TRUE';
+    else v = raw;                                                     // text keeps its spaces: "East " is not "East"
+    if (memo) memo[id] = v;
+    return v;
+  }
+
+  // ---------------------------------------------------------------- tokenizer + parser (no eval, no Function)
+  function tokenize(src) {
+    var out = [], i = 0, m;
+    while (i < src.length) {
+      var ch = src.charAt(i), rest = src.slice(i);
+      if (/\s/.test(ch)) { i++; continue; }
+      if (ch === '"') {
+        var j = i + 1, s = '';
+        for (;;) {
+          if (j >= src.length) throw new ParseError('open string');
+          if (src.charAt(j) === '"') { if (src.charAt(j + 1) === '"') { s += '"'; j += 2; continue; } break; }
+          s += src.charAt(j); j++;
+        }
+        out.push({ t: 'str', v: s }); i = j + 1; continue;
+      }
+      if ((m = /^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i.exec(rest))) { out.push({ t: 'num', v: Number(m[0]) }); i += m[0].length; continue; }
+      if ((m = /^\$?[A-Za-z]{1,2}\$?\d+(?![A-Za-z0-9_.(])/.exec(rest))) { out.push({ t: 'ref', v: m[0].replace(/\$/g, '').toUpperCase() }); i += m[0].length; continue; }
+      if ((m = /^[A-Za-z_][A-Za-z0-9_.]*/.exec(rest))) { out.push({ t: 'name', v: m[0].toUpperCase() }); i += m[0].length; continue; }
+      if ((m = /^(<=|>=|<>|[-+*\/^&=<>(),:])/.exec(rest))) { out.push({ t: 'op', v: m[0] }); i += m[0].length; continue; }
+      throw new ParseError('unexpected ' + ch);
+    }
+    return out;
+  }
+
+  function parse(src) {
+    var toks = tokenize(src), p = 0;
+    var peek = function () { return toks[p]; };
+    var isOp = function (v) { return toks[p] && toks[p].t === 'op' && toks[p].v === v; };
+    var need = function (v) { if (!isOp(v)) throw new ParseError('expected ' + v); p++; };
+    function bin(next, ops) {
+      return function () {
+        var left = next();
+        while (peek() && peek().t === 'op' && ops.indexOf(peek().v) >= 0) { var op = toks[p++].v; left = { k: 'bin', op: op, a: left, b: next() }; }
+        return left;
+      };
+    }
+    function primary() {
+      var tk = toks[p];
+      if (!tk) throw new ParseError('incomplete');
+      if (tk.t === 'num') { p++; return { k: 'lit', v: tk.v }; }
+      if (tk.t === 'str') { p++; return { k: 'lit', v: tk.v }; }
+      if (tk.t === 'ref') {
+        p++;
+        if (isOp(':')) { p++; var t2 = toks[p]; if (!t2 || t2.t !== 'ref') throw new ParseError('bad range'); p++; return { k: 'range', a: tk.v, b: t2.v }; }
+        return { k: 'ref', id: tk.v };
+      }
+      if (tk.t === 'name') {
+        p++;
+        if (isOp('(')) {
+          p++; var args = [];
+          if (isOp(')')) { p++; return { k: 'call', name: tk.v, args: args }; }
+          for (;;) {
+            if (isOp(',') || isOp(')')) args.push(null); else args.push(expr());     // an omitted argument
+            if (isOp(',')) { p++; continue; }
+            need(')'); break;
+          }
+          return { k: 'call', name: tk.v, args: args };
+        }
+        if (tk.v === 'TRUE') return { k: 'lit', v: true };
+        if (tk.v === 'FALSE') return { k: 'lit', v: false };
+        return { k: 'name', name: tk.v };
+      }
+      if (tk.t === 'op' && tk.v === '(') { p++; var e = expr(); need(')'); return e; }
+      throw new ParseError('unexpected token');
+    }
+    function unary() {
+      if (isOp('-')) { p++; return { k: 'neg', a: unary() }; }
+      if (isOp('+')) { p++; return unary(); }
+      return primary();
+    }
+    var pow = bin(unary, ['^']);
+    var mul = bin(pow, ['*', '/']);
+    var add = bin(mul, ['+', '-']);
+    var cat = bin(add, ['&']);
+    var expr = bin(cat, ['=', '<>', '<', '>', '<=', '>=']);
+    var tree = expr();
+    if (p < toks.length) throw new ParseError('trailing input');
+    return tree;
+  }
+
+  // ---------------------------------------------------------------- evaluator
+  function splitRef(id) { var m = /^([A-Z]{1,2})(\d+)$/.exec(id); var c = 0; for (var i = 0; i < m[1].length; i++) c = c * 26 + (m[1].charCodeAt(i) - 64); return { c: c - 1, r: Number(m[2]) }; }
+  function rangeOf(a, b) {
+    var A = splitRef(a), B = splitRef(b);
+    var c0 = Math.min(A.c, B.c), c1 = Math.max(A.c, B.c), r0 = Math.min(A.r, B.r), r1 = Math.max(A.r, B.r);
+    if (c1 >= NCOLS || r1 > NROWS || r0 < 1) return new Err('#REF!');
+    var rows = [];
+    for (var r = r0; r <= r1; r++) { var row = []; for (var c = c0; c <= c1; c++) row.push(cellValue(LETTERS[c] + r)); rows.push(row); }
+    return new Range(rows);
+  }
+  function scalar(v) { if (v instanceof Range) return v.h === 1 && v.w === 1 ? v.rows[0][0] : new Err('#VALUE!'); return v; }
+  function toNum(v) {
+    if (isErr(v)) return v;
+    if (typeof v === 'number') return v;
+    if (typeof v === 'boolean') return v ? 1 : 0;
+    if (v === null || v === undefined) return 0;
+    if (typeof v === 'string' && NUM_RE.test(v.trim())) return Number(v.trim());
+    return new Err('#VALUE!');
+  }
+  function toText(v) {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE';
+    if (typeof v === 'number') return fmtNum(v);
+    return String(v);
+  }
+  function toBool(v) {
+    if (isErr(v)) return v;
+    if (typeof v === 'boolean') return v;
+    if (typeof v === 'number') return v !== 0;
+    if (v === null || v === undefined) return false;
+    if (/^true$/i.test(v)) return true;
+    if (/^false$/i.test(v)) return false;
+    return new Err('#VALUE!');
+  }
+  function fmtNum(n) { if (!isFinite(n)) return '#NUM!'; var r = Math.round(n * 1e10) / 1e10; return String(r === 0 ? 0 : r); }
+  var rank = function (v) { return typeof v === 'number' ? 1 : typeof v === 'string' ? 2 : typeof v === 'boolean' ? 3 : 0; };
+  // order used by = < > : numbers before text before TRUE/FALSE; text compares without case
+  function compare(a, b) {
+    if (a === null || a === undefined) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0;
+    if (b === null || b === undefined) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0;
+    if (rank(a) !== rank(b)) return rank(a) < rank(b) ? -1 : 1;
+    if (typeof a === 'string') { a = a.toLowerCase(); b = b.toLowerCase(); }
+    return a < b ? -1 : a > b ? 1 : 0;
+  }
+  // lookup match: 104 (a number) does NOT match "104" (text), and "Dana " does not match "Dana"
+  function sameValue(a, b) {
+    if (a === null || b === null) return false;
+    if (typeof a !== typeof b) return false;
+    return typeof a === 'string' ? a.toLowerCase() === b.toLowerCase() : a === b;
+  }
+
+  function evalNode(n) {
+    switch (n.k) {
+      case 'lit': return n.v;
+      case 'ref': return inputs[n.id] ? new Range([[cellValue(n.id)]]) : new Err('#REF!');
+      case 'range': return rangeOf(n.a, n.b);
+      case 'name': return new Err('#NAME?');
+      case 'neg': { var x = toNum(scalar(evalNode(n.a))); return isErr(x) ? x : -x; }
+      case 'bin': {
+        var a = scalar(evalNode(n.a)), b = scalar(evalNode(n.b));
+        if (isErr(a)) return a; if (isErr(b)) return b;
+        if (n.op === '&') return toText(a) + toText(b);
+        if ('+-*/^'.indexOf(n.op) >= 0) {
+          var x1 = toNum(a), y1 = toNum(b);
+          if (isErr(x1)) return x1; if (isErr(y1)) return y1;
+          if (n.op === '+') return x1 + y1;
+          if (n.op === '-') return x1 - y1;
+          if (n.op === '*') return x1 * y1;
+          if (n.op === '/') return y1 === 0 ? new Err('#DIV/0!') : x1 / y1;
+          var pw = Math.pow(x1, y1); return isFinite(pw) ? pw : new Err('#NUM!');
+        }
+        var cmp = compare(a, b);
+        if (n.op === '=') return cmp === 0;
+        if (n.op === '<>') return cmp !== 0;
+        if (n.op === '<') return cmp < 0;
+        if (n.op === '>') return cmp > 0;
+        if (n.op === '<=') return cmp <= 0;
+        return cmp >= 0;
+      }
+      case 'call': {
+        if (!Object.prototype.hasOwnProperty.call(FN, n.name)) return new Err('#NAME?');     // unknown function
+        return FN[n.name](n.args);
+      }
+    }
+    return new Err('#VALUE!');
+  }
+
+  // argument helpers: `args` are syntax nodes, so IF / IFERROR only evaluate the branch they need
+  var arg = function (args, i) { return args[i] ? evalNode(args[i]) : undefined; };
+  var argS = function (args, i) { var v = arg(args, i); return v === undefined ? undefined : scalar(v); };
+  function argRange(args, i) { var v = arg(args, i); if (isErr(v)) return v; return v instanceof Range ? v : v === undefined ? new Err('#N/A') : new Range([[v]]); }
+  function numbersIn(args) {
+    var out = [];
+    for (var i = 0; i < args.length; i++) {
+      var v = arg(args, i);
+      if (v instanceof Range) { var f = v.flat(); for (var j = 0; j < f.length; j++) { if (isErr(f[j])) return f[j]; if (typeof f[j] === 'number') out.push(f[j]); } }   // text in a range is skipped
+      else if (v !== undefined) { var x = toNum(v); if (isErr(x)) return x; out.push(x); }
+    }
+    return out;
+  }
+
+  // criteria as used by SUMIF / SUMIFS / COUNTIF / COUNTIFS: "Pen", 10, ">=10", "<>East", "P*"
+  function criterion(c) {
+    c = scalar(c);
+    if (isErr(c)) return function () { return false; };
+    var op = '=', operand = c;
+    if (typeof c === 'string') { var m = /^(<=|>=|<>|=|<|>)?([\s\S]*)$/.exec(c); op = m[1] || '='; operand = m[2]; }
+    if (c === null || c === undefined) operand = '';
+    var isNum = typeof operand === 'number' || (typeof operand === 'string' && NUM_RE.test(operand));
+    var isBool = typeof operand === 'boolean' || (typeof operand === 'string' && /^(true|false)$/i.test(operand));
+    if (isNum) {
+      var nv = Number(operand);
+      // "=" also matches a cell that holds the same digits as text; < and > only look at real numbers
+      var eq = function (v) { return (typeof v === 'number' && v === nv) || (typeof v === 'string' && NUM_RE.test(v) && Number(v) === nv); };
+      if (op === '=') return eq;
+      if (op === '<>') return function (v) { return !eq(v); };
+      return function (v) { if (typeof v !== 'number') return false; return op === '<' ? v < nv : op === '>' ? v > nv : op === '<=' ? v <= nv : v >= nv; };
+    }
+    if (isBool) {
+      var bv = typeof operand === 'boolean' ? operand : /^true$/i.test(operand);
+      return function (v) { var hit = typeof v === 'boolean' && v === bv; return op === '<>' ? !hit : op === '=' ? hit : false; };
+    }
+    var text = String(operand).toLowerCase();
+    if (op === '=' || op === '<>') {
+      if (text === '') return function (v) { var blank = v === null || v === ''; return op === '=' ? blank : !blank; };
+      // wildcards: * any text, ? one character, ~ escapes
+      var re = '', i = 0;
+      while (i < text.length) {
+        var ch = text.charAt(i);
+        if (ch === '~' && i + 1 < text.length) { re += text.charAt(i + 1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); i += 2; continue; }
+        re += ch === '*' ? '[\\s\\S]*' : ch === '?' ? '[\\s\\S]' : ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); i++;
+      }
+      var rx = new RegExp('^' + re + '$');
+      var hitT = function (v) { return typeof v === 'string' && rx.test(v.toLowerCase()); };
+      return op === '=' ? hitT : function (v) { return !hitT(v); };
+    }
+    return function (v) { if (typeof v !== 'string') return false; var s = v.toLowerCase(); return op === '<' ? s < text : op === '>' ? s > text : op === '<=' ? s <= text : s >= text; };
+  }
+  // all (range, criterion) pairs must be the same shape → otherwise #VALUE!
+  function pairMask(args, from, shape) {
+    if ((args.length - from) % 2 !== 0 || args.length - from < 2) return new Err('#N/A');
+    var mask = null;
+    for (var i = from; i < args.length; i += 2) {
+      var rg = argRange(args, i); if (isErr(rg)) return rg;
+      if (!shape) shape = rg;
+      if (rg.h !== shape.h || rg.w !== shape.w) return new Err('#VALUE!');
+      var test = criterion(arg(args, i + 1)), f = rg.flat();
+      if (!mask) mask = f.map(function () { return true; });
+      for (var j = 0; j < f.length; j++) if (mask[j] && !test(f[j])) mask[j] = false;
+    }
+    return mask;
+  }
+  function sumMasked(range, mask) {
+    var f = range.flat(), total = 0;
+    for (var i = 0; i < f.length; i++) if (mask[i]) { if (isErr(f[i])) return f[i]; if (typeof f[i] === 'number') total += f[i]; }   // text is skipped, with no error
+    return total;
+  }
+
+  var FN = {
+    XLOOKUP: function (a) {
+      if (a.length < 3 || a.length > 6) return new Err('#N/A');
+      var lv = argS(a, 0); if (isErr(lv)) return lv;
+      var la = argRange(a, 1), ra = argRange(a, 2);
+      if (isErr(la)) return la; if (isErr(ra)) return ra;
+      if (la.h > 1 && la.w > 1) return new Err('#VALUE!');
+      var vertical = la.w === 1 && !(la.h === 1 && ra.h === 1 && ra.w > 1), n = vertical ? la.h : la.w;
+      if ((vertical ? ra.h : ra.w) !== n) return new Err('#VALUE!');      // lookup and return ranges must be the same size
+      var mm = a[4] ? toNum(argS(a, 4)) : 0, sm = a[5] ? toNum(argS(a, 5)) : 1;
+      if (isErr(mm)) return mm; if (isErr(sm)) return sm;
+      if ([0, -1, 1].indexOf(mm) < 0 || [1, -1].indexOf(sm) < 0) return new Err('#VALUE!');   // wildcard / binary modes: not in this practice sheet
+      var keys = la.flat(), order = keys.map(function (_, i) { return i; }); if (sm === -1) order.reverse();
+      var found = -1, i;
+      for (i = 0; i < n && found < 0; i++) if (sameValue(keys[order[i]], lv)) found = order[i];
+      if (found < 0 && mm !== 0) {
+        var best = null;
+        for (i = 0; i < n; i++) {
+          var k = keys[order[i]]; if (k === null || rank(k) !== rank(lv)) continue;
+          var c = compare(k, lv);
+          if (mm === -1 && c < 0 && (best === null || compare(k, best) > 0)) { best = k; found = order[i]; }
+          if (mm === 1 && c > 0 && (best === null || compare(k, best) < 0)) { best = k; found = order[i]; }
+        }
+      }
+      if (found < 0) return a[3] ? scalar(arg(a, 3)) : new Err('#N/A');
+      return vertical ? ra.rows[found][0] : ra.rows[0][found];
+    },
+    VLOOKUP: function (a) {
+      if (a.length < 3 || a.length > 4) return new Err('#N/A');
+      var lv = argS(a, 0); if (isErr(lv)) return lv;
+      var tb = argRange(a, 1); if (isErr(tb)) return tb;
+      var col = toNum(argS(a, 2)); if (isErr(col)) return col;
+      col = Math.floor(col);
+      if (col < 1) return new Err('#VALUE!');
+      if (col > tb.w) return new Err('#REF!');
+      var approx = a[3] ? toBool(argS(a, 3)) : true;                      // left out → TRUE → approximate match
+      if (isErr(approx)) return approx;
+      var found = -1, i;
+      if (!approx) { for (i = 0; i < tb.h && found < 0; i++) if (sameValue(tb.rows[i][0], lv)) found = i; }
+      else {
+        // approximate match assumes the first column is sorted: binary search for the last value <= lookup value
+        var lo = 0, hi = tb.h - 1;
+        while (lo <= hi) {
+          var mid = (lo + hi) >> 1, k = tb.rows[mid][0];
+          if (k !== null && rank(k) === rank(lv) && compare(k, lv) <= 0) { found = mid; lo = mid + 1; }
+          else if (k !== null && rank(k) < rank(lv)) lo = mid + 1; else hi = mid - 1;
+        }
+      }
+      return found < 0 ? new Err('#N/A') : tb.rows[found][col - 1];
+    },
+    SUMIF: function (a) {
+      if (a.length < 2 || a.length > 3) return new Err('#N/A');
+      var rg = argRange(a, 0); if (isErr(rg)) return rg;
+      var test = criterion(arg(a, 1)), sr = a[2] ? argRange(a, 2) : rg; if (isErr(sr)) return sr;
+      var total = 0;
+      for (var r = 0; r < rg.h; r++) for (var c = 0; c < rg.w; c++) {
+        if (!test(rg.rows[r][c])) continue;
+        var v = sr.rows[r] ? sr.rows[r][c] : undefined;
+        if (isErr(v)) return v; if (typeof v === 'number') total += v;
+      }
+      return total;
+    },
+    SUMIFS: function (a) {
+      if (a.length < 3) return new Err('#N/A');
+      var sr = argRange(a, 0); if (isErr(sr)) return sr;
+      var mask = pairMask(a, 1, sr); if (isErr(mask)) return mask;
+      return sumMasked(sr, mask);
+    },
+    COUNTIF: function (a) {
+      if (a.length !== 2) return new Err('#N/A');
+      var mask = pairMask(a, 0, null); if (isErr(mask)) return mask;
+      return mask.filter(Boolean).length;
+    },
+    COUNTIFS: function (a) {
+      var mask = pairMask(a, 0, null); if (isErr(mask)) return mask;
+      return mask.filter(Boolean).length;
+    },
+    IF: function (a) {
+      if (a.length < 2 || a.length > 3) return new Err('#N/A');
+      var t = toBool(argS(a, 0)); if (isErr(t)) return t;
+      if (t) return a[1] ? scalar(arg(a, 1)) : 0;
+      return a.length > 2 ? (a[2] ? scalar(arg(a, 2)) : 0) : false;
+    },
+    IFERROR: function (a) {
+      if (a.length < 1 || a.length > 2) return new Err('#N/A');
+      var v = argS(a, 0);
+      if (!isErr(v)) return v;
+      return a[1] ? scalar(arg(a, 1)) : '';
+    },
+    SUM: function (a) { var n = numbersIn(a); return isErr(n) ? n : n.reduce(function (s, x) { return s + x; }, 0); },
+    AVERAGE: function (a) { var n = numbersIn(a); if (isErr(n)) return n; return n.length ? n.reduce(function (s, x) { return s + x; }, 0) / n.length : new Err('#DIV/0!'); },
+    MIN: function (a) { var n = numbersIn(a); if (isErr(n)) return n; return n.length ? Math.min.apply(null, n) : 0; },
+    MAX: function (a) { var n = numbersIn(a); if (isErr(n)) return n; return n.length ? Math.max.apply(null, n) : 0; },
+    COUNT: function (a) { var k = 0; for (var i = 0; i < a.length; i++) { var v = arg(a, i); (v instanceof Range ? v.flat() : [v]).forEach(function (x) { if (typeof x === 'number') k++; }); } return k; },
+    COUNTA: function (a) { var k = 0; for (var i = 0; i < a.length; i++) { var v = arg(a, i); (v instanceof Range ? v.flat() : [v]).forEach(function (x) { if (x !== null && x !== undefined) k++; }); } return k; },
+    ROUND: function (a) { if (a.length !== 2) return new Err('#N/A'); var x = toNum(argS(a, 0)), d = toNum(argS(a, 1)); if (isErr(x)) return x; if (isErr(d)) return d; var f = Math.pow(10, Math.trunc(d)); return (x < 0 ? -1 : 1) * Math.round(Math.abs(x) * f + 1e-9) / f; },
+    TRIM: function (a) { if (a.length !== 1) return new Err('#N/A'); var v = argS(a, 0); return isErr(v) ? v : toText(v).replace(/ +/g, ' ').replace(/^ | $/g, ''); },
+    VALUE: function (a) { if (a.length !== 1) return new Err('#N/A'); var v = argS(a, 0); if (typeof v === 'boolean') return new Err('#VALUE!'); return toNum(v); },
+    LEN: function (a) { if (a.length !== 1) return new Err('#N/A'); var v = argS(a, 0); return isErr(v) ? v : toText(v).length; },
+    UPPER: function (a) { if (a.length !== 1) return new Err('#N/A'); var v = argS(a, 0); return isErr(v) ? v : toText(v).toUpperCase(); },
+    LOWER: function (a) { if (a.length !== 1) return new Err('#N/A'); var v = argS(a, 0); return isErr(v) ? v : toText(v).toLowerCase(); },
+    AND: function (a) { for (var i = 0; i < a.length; i++) { var t = toBool(argS(a, i)); if (isErr(t)) return t; if (!t) return false; } return true; },
+    OR: function (a) { for (var i = 0; i < a.length; i++) { var t = toBool(argS(a, i)); if (isErr(t)) return t; if (t) return true; } return false; },
+    NOT: function (a) { if (a.length !== 1) return new Err('#N/A'); var t = toBool(argS(a, 0)); return isErr(t) ? t : !t; }
+  };
+
+  // ---------------------------------------------------------------- display
+  function show(v) { return isErr(v) ? v.code : toText(v); }
+  var active = 'A1';
+  function recalc() {
+    memo = {}; stack = [];
+    Object.keys(inputs).forEach(function (id) {
+      var el = inputs[id], raw = el.value, badge = badges[id], isF = raw.charAt(0) === '=' && el.dataset.t !== '1';
+      var isText = el.dataset.t === '1' || raw.charAt(0) === "'";
+      el.classList.toggle('formula', isF);
+      el.classList.toggle('num', !isF && !isText && NUM_RE.test(raw.trim()));
+      el.closest('td').classList.toggle('txtnum', isText && NUM_RE.test(raw.replace(/^'/, '').trim()));
+      if (!isF) { badge.className = 'res'; badge.textContent = ''; return; }
+      var incomplete = false;
+      try { parse(raw.slice(1)); } catch (e) { incomplete = true; }
+      if (incomplete) { badge.className = 'res on wait'; badge.textContent = '…'; return; }
+      var v = cellValue(id);
+      badge.className = 'res on' + (isErr(v) ? ' err' : '');
+      badge.innerHTML = '<i>=</i>' + esc(show(v));
+    });
+    var el = inputs[active];
+    document.getElementById('cellName').textContent = active;
+    document.getElementById('formulaBar').textContent = el.value;
+    var out = document.getElementById('resultValue'), b = badges[active];
+    if (el.value.charAt(0) === '=' && el.dataset.t !== '1') { var v = b.classList.contains('wait') ? null : cellValue(active); out.textContent = v === null ? '…' : show(v); out.className = isErr(v) ? 'err' : ''; }
+    else { out.textContent = el.value.replace(/^'/, ''); out.className = ''; }
+    memo = null;
+  }
+  grid.addEventListener('focusin', function (e) { if (e.target.tagName === 'INPUT') { active = e.target.id; recalc(); } });
+  grid.addEventListener('input', function (e) { if (e.target.tagName === 'INPUT') { delete e.target.dataset.t; active = e.target.id; recalc(); } });   // retyping a cell makes it a normal value again
+  grid.addEventListener('keydown', function (e) {
+    if (e.target.tagName !== 'INPUT') return;
+    var at = splitRef(e.target.id), next = null;
+    if (e.key === 'Enter' || e.key === 'ArrowDown') next = LETTERS[at.c] + (at.r + 1);
+    else if (e.key === 'ArrowUp') next = LETTERS[at.c] + (at.r - 1);
+    if (next && inputs[next]) { e.preventDefault(); inputs[next].focus(); }
+  });
+  // small test hook: evaluate a formula string against the current sheet (used by the build checks)
+  window.__sheet = { calc: function (f) { memo = {}; stack = []; var v; try { v = scalar(evalNode(parse(String(f).replace(/^=/, '')))); } catch (e) { v = new Err(e instanceof ParseError ? '#ERROR!' : '#VALUE!'); } memo = null; return show(v); } };
+  recalc();
+})();
+</script>
+</body>
+</html>

@@ -164,7 +164,8 @@
         "pickup": "https://klook.tpk.lv/d4yQTZBG",
         "tour": "https://klook.tpk.lv/OE8h3jHh"
       },
-      "gov-au": {}
+      "gov-au": {},
+      "apps": {}
     }
   },
   "_affiliate": "Travelpayouts / Impact tracking links per country. Keys are the 국가 column without the flag.",
@@ -275,6 +276,24 @@
         "en"
       ],
       "channel": "gov"
+    },
+    {
+      "form": "sheet-xlookup",
+      "topic": "Sheets: XLOOKUP",
+      "country": "📊 Excel & Google Sheets",
+      "langs": [
+        "en"
+      ],
+      "channel": "apps"
+    },
+    {
+      "form": "sheet-sumifs",
+      "topic": "Sheets: SUMIFS",
+      "country": "📊 Excel & Google Sheets",
+      "langs": [
+        "en"
+      ],
+      "channel": "apps"
     }
   ],
   "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
@@ -349,7 +368,9 @@
     "vjw": "일본",
     "au-mygov": "gov-au",
     "au-tfn": "gov-au",
-    "au-vevo": "gov-au"
+    "au-vevo": "gov-au",
+    "sheet-xlookup": "apps",
+    "sheet-sumifs": "apps"
   },
   "channelSchedule": {
     "gov": {
@@ -359,10 +380,19 @@
         5
       ],
       "perDay": 1
+    },
+    "apps": {
+      "days": [
+        2,
+        4,
+        6
+      ],
+      "perDay": 1
     }
   },
-  "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (token secret YT_REFRESH_TOKEN_GOV).",
+  "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (secret YT_REFRESH_TOKEN_GOV), apps = \"Copy My Screen: Apps & AI\" (secret YT_REFRESH_TOKEN_APPS).",
   "brands": {
-    "gov": "Copy My Screen: Gov Edition"
+    "gov": "Copy My Screen: Gov Edition",
+    "apps": "Copy My Screen: Apps & AI"
   }
 }

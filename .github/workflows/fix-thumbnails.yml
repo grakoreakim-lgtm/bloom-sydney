@@ -35,6 +35,7 @@ jobs:
           YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
           YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
           YT_REFRESH_TOKEN_GOV: ${{ secrets.YT_REFRESH_TOKEN_GOV }}
+          YT_REFRESH_TOKEN_APPS: ${{ secrets.YT_REFRESH_TOKEN_APPS }}
         run: node upload/secrets-from-env.js
       - name: Set thumbnails
         run: node upload/fix-thumbs.js artifacts --config upload/config.ci.json
