@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE PAGE — travel eSIM setup (not a real store or phone)</title>
+<style>
+  :root { --b: #0f5c66; --soft: #e8f3f4; --accent: #d9822b; --bg: #e9edf0; --line: #d3dade; --ok: #2a7a3b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #333; color: #fff; text-align: center; padding: 8px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right) */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 40px; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 380px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  header b { font-size: 17px; } header small { font-size: 11px; opacity: .85; }
+  .bar { background: #3d4852; color: #fff; padding: 12px 16px; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+  .bar small { font-weight: 400; font-size: 11px; opacity: .85; }
+  main { padding: 6px 16px 22px; }
+  h2 { font-size: 15px; color: var(--b); margin: 20px 0 10px; padding: 8px 10px; background: var(--soft); border-left: 4px solid var(--b); border-radius: 4px; }
+  h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; line-height: 1.4; }
+  input[type=email], select { width: 100%; padding: 10px; border: 1px solid #b9c1cd; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  button { width: 100%; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  button.ghost { background: #fff; color: var(--b); border: 2px solid var(--b); }
+  /* a row with text on the left and a control on the right */
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
+  .row .tx { font-size: 14px; font-weight: 700; line-height: 1.3; } .row .tx small { display: block; font-weight: 400; color: #666; font-size: 11px; margin-top: 2px; }
+  .row select { width: 150px; flex: none; padding: 8px; font-size: 15px; }
+  input.tick { width: 22px; height: 22px; flex: none; margin: 0; }
+  /* neutral on/off switch (a plain checkbox underneath) */
+  input.sw { appearance: none; -webkit-appearance: none; flex: none; width: 52px; height: 30px; border-radius: 16px; background: #b8c0c7; position: relative; margin: 0; transition: background .2s; }
+  input.sw::after { content: ''; position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  input.sw:checked { background: var(--ok); } input.sw:checked::after { left: 25px; }
+  .state { font-size: 11px; font-weight: 700; color: #666; min-width: 26px; text-align: right; }
+  .swbox { display: flex; align-items: center; gap: 6px; flex: none; }
+  /* plan cards */
+  .plans { display: grid; gap: 8px; }
+  .plan { display: flex; align-items: center; gap: 10px; border: 1px solid #c3cbd3; border-radius: 8px; padding: 10px 12px; margin: 0; font-weight: 400; }
+  .plan input { width: 20px; height: 20px; margin: 0; flex: none; }
+  .plan b { font-size: 15px; } .plan small { display: block; color: #666; font-size: 11px; margin-top: 2px; }
+  .plan .p { margin-left: auto; font-weight: 700; color: var(--b); font-size: 15px; white-space: nowrap; }
+  .plan:has(input:checked) { border-color: var(--b); background: var(--soft); }
+  .note { font-size: 11px; color: #555; background: #f6f8f9; border: 1px dashed #b9c1cd; border-radius: 6px; padding: 8px 10px; margin: 8px 0 12px; line-height: 1.45; }
+  /* "email received" box with a sample (non-scannable) code */
+  .mail { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; gap: 12px; align-items: center; background: #fbfcfd; }
+  .qr { flex: none; width: 92px; height: 92px; position: relative; border: 5px solid #fff; outline: 1px solid #999;
+        background: conic-gradient(#222 25%, #fff 0 50%, #222 0 75%, #fff 0) 0 0 / 23px 23px, #fff; }
+  .qr::after { content: 'SAMPLE'; position: absolute; inset: 0; margin: auto; height: 20px; width: 70px; background: #fff; color: #c00; font-size: 12px; font-weight: 900; text-align: center; line-height: 20px; border: 1px solid #c00; }
+  .mail .tx { font-size: 12px; line-height: 1.5; } .mail .tx b { font-size: 13px; } .mail code { font-size: 11px; background: #eef1f3; padding: 1px 4px; border-radius: 3px; }
+  .dim { opacity: .45; }
+  .scanbox { border: 2px dashed var(--b); border-radius: 10px; padding: 12px; text-align: center; margin: 8px 0; background: #f7fafb; }
+  .scanbox p { margin: 0 0 8px; font-size: 12px; color: #555; }
+  .okmsg { visibility: hidden; font-size: 13px; font-weight: 700; color: var(--ok); margin-top: 8px; }   /* keeps its space so the highlight ring fits */
+  .okmsg.on { visibility: visible; }
+  .line-h { font-size: 12px; font-weight: 700; color: #555; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .status { border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; background: #f6f8f9; }
+  .status .sig { color: #888; } .status.on .sig { color: var(--ok); }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE PAGE — not a real store or phone. For video recording only. Nothing is sold, charged or installed.</div>
+<div class="phone">
+
+<!-- ============ PART 0: check your phone ============ -->
+<header><b>📱 Before you buy</b><small>Practice page</small></header>
+<main>
+  <h2>Check your phone<small>Two things to confirm before paying for any eSIM</small></h2>
+  <div class="row" id="supportRow"><div class="tx">My phone supports eSIM<small>Dial *#06# — an "EID" number means eSIM is supported</small></div><input class="tick" type="checkbox" id="supportsEsim"></div>
+  <div class="row" id="unlockRow"><div class="tx">My phone is carrier-unlocked<small>Not tied to one mobile carrier (no SIM restrictions)</small></div><input class="tick" type="checkbox" id="unlocked"></div>
+</main>
+
+<!-- ============ PART A: generic eSIM store ============ -->
+<header><b>🛒 eSIM Store (practice)</b><small>Any provider works the same way</small></header>
+<main>
+  <form onsubmit="return false;">
+    <h2>1. Where are you going?<small>One country, or a regional plan for several</small></h2>
+    <div class="f"><label for="destination">Destination</label>
+      <select id="destination"><option value="">Select</option><option value="SG">Singapore</option><option value="MY">Malaysia</option><option value="SGMY">Singapore + Malaysia (regional)</option><option value="JP">Japan</option><option value="TH">Thailand</option><option value="ASIA">Asia (multi-country)</option></select>
+      <div class="hint">Visiting two countries? A regional plan covers both with one eSIM.</div></div>
+
+    <h2>2. Choose a data plan<small>Days of validity · amount of data (sample prices)</small></h2>
+    <div class="plans" id="planRow">
+      <label class="plan" id="plan3Card"><input type="radio" name="plan" id="plan3" value="3d-1gb"><span><b>3 days · 1 GB</b><small>Data only</small></span><span class="p">US$4</span></label>
+      <label class="plan" id="plan7Card"><input type="radio" name="plan" id="plan7" value="7d-5gb"><span><b>7 days · 5 GB</b><small>Data only</small></span><span class="p">US$9</span></label>
+      <label class="plan" id="plan15Card"><input type="radio" name="plan" id="plan15" value="15d-10gb"><span><b>15 days · 10 GB</b><small>Data only</small></span><span class="p">US$15</span></label>
+    </div>
+    <div class="note" id="validityNote">Validity: check when the days start counting — at <b>installation</b> or at <b>first connection</b> in the destination. It depends on the provider and plan.</div>
+
+    <h2>3. Where do we send the QR code?</h2>
+    <div class="f"><label for="email">Email</label><input id="email" type="email" autocomplete="off" placeholder="name@example.com">
+      <div class="hint">The QR code and manual install codes are sent here.</div></div>
+    <div class="row" id="confirmRow"><div class="tx" style="font-weight:400;font-size:13px">I confirm my phone supports eSIM and is unlocked</div><input class="tick" type="checkbox" id="confirm"></div>
+    <button id="pay" type="button">Pay now · US$9</button>
+    <div class="hint" style="text-align:center">Practice page: this button does nothing.</div>
+
+    <h2>4. Your eSIM email<small>What arrives after payment (sample)</small></h2>
+    <div class="mail" id="qrMail"><div class="qr" aria-label="sample code, not scannable"></div>
+      <div class="tx"><b>Your eSIM is ready</b><br>Scan this QR code, or enter manually:<br>SM-DP+ address <code>sample.example.com</code><br>Activation code <code>SAMPLE-0000-0000</code></div></div>
+  </form>
+</main>
+
+<!-- ============ PART B: generic phone settings ============ -->
+<div class="bar"><span>⚙ Settings ▸ Mobile Data</span><small>Practice · generic phone</small></div>
+<main>
+  <h2>5. Install the eSIM<small>Do this at home on Wi-Fi, 1–2 days before you fly</small></h2>
+  <div class="row"><div class="tx">Wi-Fi<small>Home network · connected</small></div><span class="state" style="color:var(--ok)">ON</span></div>
+  <button id="addEsim" type="button" class="ghost">＋ Add eSIM</button>
+  <div class="scanbox dim" id="scanBox"><p>Point the camera at the QR code from your email</p>
+    <button id="scanQr" type="button">📷 Scan QR code</button>
+    <div class="okmsg" id="installed">✔ eSIM added — 2 lines on this phone</div></div>
+
+  <div id="lines" class="dim">
+  <h2>6. Name and set up your lines<small>Home SIM for calls · travel eSIM for data</small></h2>
+  <div class="row" id="labelRow"><div class="tx">Label for the new eSIM<small>So you can tell the two lines apart</small></div>
+    <select id="label"><option value="Secondary">Secondary</option><option value="Travel">Travel</option><option value="Business">Business</option><option value="Mobile Data">Mobile Data</option></select></div>
+  <div class="row" id="defaultRow"><div class="tx">Default line (calls &amp; SMS)<small>Your usual number</small></div>
+    <select id="defaultLine"><option value="">Select</option><option value="home">Home SIM</option><option value="travel">Travel eSIM</option></select></div>
+  <div class="row" id="dataRow"><div class="tx">Mobile data line<small>Which line uses the internet</small></div>
+    <select id="dataLine"><option value="home">Home SIM</option><option value="travel">Travel eSIM</option></select></div>
+  <div class="row" id="switchRow"><div class="tx">Allow mobile data switching<small>Lets the phone fall back to the other line</small></div>
+    <span class="swbox"><span class="state" data-for="dataSwitch">OFF</span><input class="sw" type="checkbox" id="dataSwitch"></span></div>
+
+  <div class="line-h">Home SIM (your usual number)</div>
+  <div class="row" id="homeRoamRow"><div class="tx">Data roaming — Home SIM<small>Charged by your home carrier</small></div>
+    <span class="swbox"><span class="state" data-for="homeRoaming">ON</span><input class="sw" type="checkbox" id="homeRoaming" checked></span></div>
+
+  <div class="line-h">Travel eSIM</div>
+  <div class="row" id="travelRoamRow"><div class="tx">Data roaming — Travel eSIM<small>Needed for most travel eSIMs to connect</small></div>
+    <span class="swbox"><span class="state" data-for="travelRoaming">OFF</span><input class="sw" type="checkbox" id="travelRoaming"></span></div>
+
+  <h2>7. When you land<small>Flight mode off, then turn the travel line on</small></h2>
+  <div class="row" id="travelOnRow"><div class="tx">Turn on this line — Travel eSIM<small>Switch on after you arrive</small></div>
+    <span class="swbox"><span class="state" data-for="travelOn">OFF</span><input class="sw" type="checkbox" id="travelOn"></span></div>
+  <div class="status" id="status"><span id="statusText">Travel eSIM: waiting for network…</span><span class="sig" id="sig">▂ ▂ ▂ ▂</span></div>
+  </div>
+</main>
+<footer>Practice page for tutorial recording. Generic layout only — not affiliated with any eSIM seller, phone maker or carrier. Menu names differ by phone.</footer>
+</div>
+<script>
+  // tiny state so the walkthrough reacts like a phone would; nothing leaves this page
+  var $ = function (id) { return document.getElementById(id); };
+  $('addEsim').addEventListener('click', function () { $('scanBox').classList.remove('dim'); });
+  $('scanQr').addEventListener('click', function () { $('scanBox').classList.remove('dim'); $('installed').classList.add('on'); $('lines').classList.remove('dim'); });
+  Array.prototype.forEach.call(document.querySelectorAll('input.sw'), function (sw) {
+    sw.addEventListener('change', function () {
+      var st = document.querySelector('.state[data-for="' + sw.id + '"]'); if (st) st.textContent = sw.checked ? 'ON' : 'OFF';
+      if (sw.id === 'travelOn') { $('status').classList.toggle('on', sw.checked); $('statusText').textContent = sw.checked ? 'Travel eSIM: connected · mobile data' : 'Travel eSIM: waiting for network…'; $('sig').textContent = sw.checked ? '▂ ▄ ▆ █' : '▂ ▂ ▂ ▂'; }
+    });
+  });
+</script>
+</body>
+</html>
