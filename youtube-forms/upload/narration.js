@@ -47,25 +47,43 @@ async function synthesize(text, lang, outFile, voices = VOICES, speakingRate = 1
   const key = process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_TTS_KEY_VIA_PROXY;   // the latter: any placeholder, a proxy injects the real header
   if (!key) throw new Error('GOOGLE_TTS_API_KEY is not set');
   const voice = voices[lang] || VOICES[lang];
-  const call = (input) => fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
+  // Plain text only. (Markup pause tags were read out as "um"-like sounds.) Long scripts are split into
+  // sentences and joined with a short real silence, which gives clean, even breathing room.
+  // Gemini TTS voices (voice.model, e.g. gemini-2.5-flash-tts) also take a style prompt (voice.prompt).
+  const call = (t) => fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-    // only send speakingRate when it is not the default (Chirp 3 HD voices)
-    body: JSON.stringify({ input, voice: { languageCode: voice.languageCode, name: voice.name }, audioConfig: { audioEncoding: 'MP3', ...(speakingRate && speakingRate !== 1 ? { speakingRate } : {}) } }),
+    body: JSON.stringify({
+      input: { text: t, ...(voice.model && voice.prompt ? { prompt: voice.prompt } : {}) },
+      voice: { languageCode: voice.languageCode, name: voice.name, ...(voice.model ? { modelName: voice.model } : {}) },
+      audioConfig: { audioEncoding: 'MP3', ...(speakingRate && speakingRate !== 1 ? { speakingRate } : {}) },
+    }),
   });
-  // Chirp 3 HD: real breaths at commas/sentence ends via markup pause tags; other voices get plain text
-  let res = /Chirp3/i.test(voice.name || '') ? await call({ markup: withPauses(text) }) : await call({ text });
-  if (!res.ok && /Chirp3/i.test(voice.name || '')) { console.warn('  markup pauses not accepted:', (await res.text()).slice(0, 160)); res = await call({ text }); }
-  if (!res.ok) throw new Error(`TTS ${res.status}: ${await res.text()}`);
-  const { audioContent } = await res.json();
-  fs.writeFileSync(outFile, Buffer.from(audioContent, 'base64'));
+  const sentences = splitSentences(text);
+  const parts = [];
+  for (const [i, sTxt] of sentences.entries()) {
+    const res = await call(sTxt);
+    if (!res.ok) throw new Error(`TTS ${res.status}: ${(await res.text()).slice(0, 300)}`);
+    const f = sentences.length === 1 ? outFile : `${outFile}.part${i}.mp3`;
+    fs.writeFileSync(f, Buffer.from((await res.json()).audioContent, 'base64'));
+    parts.push(f);
+  }
+  if (parts.length > 1) {
+    const gap = voice.sentenceGapMs ?? 280;
+    const list = `${outFile}.txt`;
+    const sil = `${outFile}.sil.mp3`;
+    execSync(`ffmpeg -y -loglevel error -f lavfi -i anullsrc=r=24000:cl=mono -t ${gap / 1000} -c:a libmp3lame -q:a 4 "${sil}"`);
+    const norm = parts.map((p, i) => { const o = `${outFile}.n${i}.mp3`; execSync(`ffmpeg -y -loglevel error -i "${p}" -ar 24000 -ac 1 -c:a libmp3lame -q:a 2 "${o}"`); return o; });
+    fs.writeFileSync(list, norm.flatMap((p, i) => (i ? [`file '${path.resolve(sil)}'`, `file '${path.resolve(p)}'`] : [`file '${path.resolve(p)}'`])).join('\n'));
+    execSync(`ffmpeg -y -loglevel error -f concat -safe 0 -i "${list}" -c:a libmp3lame -q:a 2 "${outFile}"`);
+    [...parts, ...norm, list, sil].forEach((f) => { try { fs.unlinkSync(f); } catch {} });
+  }
 }
 
-// "무료고, 오 분이면 끝나요." → "무료고, [pause short] 오 분이면 끝나요. [pause]"
-function withPauses(text) {
-  return String(text)
-    .replace(/,\s*/g, ', [pause short] ')
-    .replace(/([.?!。])\s+(?=\S)/g, '$1 [pause] ')
-    .replace(/\s{2,}/g, ' ').trim();
+// "말레이시아 가시죠? 비행기 타기 전에 … 돼요. MDAC이라고 하는데, …" → one chunk per sentence
+function splitSentences(text) {
+  const out = String(text).replace(/\s+/g, ' ').trim().split(/(?<=[.?!。])\s+(?=\S)/).map((x) => x.trim()).filter(Boolean);
+  // keep very short fragments with the previous sentence so the rhythm stays natural
+  return out.reduce((a, x) => { if (a.length && x.length < 6) a[a.length - 1] += ' ' + x; else a.push(x); return a; }, []);
 }
 
 function durationMs(file) {
@@ -82,7 +100,7 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   const script = buildScript(form, lang, opts.target);
   const clips = {};
   for (const line of script) {
-    const h = crypto.createHash('sha1').update(`${lang}|${(opts.voices || VOICES)[lang]?.name}|p2|${line.text}`).digest('hex').slice(0, 12);
+    const h = crypto.createHash('sha1').update(`${lang}|${(opts.voices || VOICES)[lang]?.name}|p3|${JSON.stringify((opts.voices || VOICES)[lang] || {})}|${line.text}`).digest('hex').slice(0, 12);
     const file = path.join(cacheDir, `${lang}-${h}.mp3`);
     if (!fs.existsSync(file)) {
       if (opts.dryRun) {
@@ -97,4 +115,4 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   return clips;
 }
 
-module.exports = { buildScript, narrate, synthesize, withPauses, VOICES };
+module.exports = { buildScript, narrate, synthesize, splitSentences, VOICES };
