@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write   # commits plan/produced.json back so the next day knows what is already on YouTube
+  issues: write     # opens an issue (→ email/app notification) when the voice had to fall back
 
 concurrency: { group: daily-videos, cancel-in-progress: false }
 
@@ -70,6 +71,15 @@ jobs:
           FORMS=""; [ -n "${{ github.event.inputs.forms }}" ] && FORMS="--forms ${{ github.event.inputs.forms }}"
           node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS $FORMS | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify if the voice fell back (e.g. Gemini credits used up)
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          [ -f run.log ] && grep -q '^VOICE_FALLBACK' run.log || exit 0
+          BODY=$(printf 'Gemini Leda 음성을 쓸 수 없어 오늘 영상은 Kore 음성(쉼표마다 작은 음)으로 만들었습니다.\n\n가장 흔한 원인: AI Studio 선불 크레딧 소진 → https://ai.studio/projects 에서 follow-done 충전.\n\n```\n%s\n```\n\nRun: %s' "$(grep '^VOICE_FALLBACK' run.log | head -20)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")
+          N=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "음성 대체 in:title" --json number -q '.[0].number')
+          if [ -n "$N" ]; then gh issue comment "$N" -R "$GITHUB_REPOSITORY" --body "$BODY"; else gh issue create -R "$GITHUB_REPOSITORY" --title "음성 대체: Gemini → Kore ($(date +%F))" --body "$BODY"; fi
 
       - name: Playlists & disclosure
         if: success() && github.event.inputs.dry != 'true'
