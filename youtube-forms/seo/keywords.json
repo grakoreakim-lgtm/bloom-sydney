@@ -649,5 +649,99 @@
       ],
       "lead": "How to check your Australian visa conditions with VEVO — enter your reference number, read your work and study rights, then email the result or save the PDF for an employer. Unofficial guide, not migration advice; use only the official Home Affairs website."
     }
+  },
+  "sheet-xlookup": {
+    "en": {
+      "primary": "How to Use XLOOKUP",
+      "hook": "5-Minute Tutorial",
+      "titles": [
+        "{primary} in Excel & Google Sheets {year} | {hook}",
+        "XLOOKUP vs VLOOKUP {year}: Which One to Use, Step by Step (Copy My Screen)",
+        "XLOOKUP for Beginners {year}: Fix #N/A, Add \"Not Found\", Lock Ranges With $"
+      ],
+      "secondary": [
+        "how to use XLOOKUP",
+        "XLOOKUP vs VLOOKUP",
+        "XLOOKUP tutorial for beginners",
+        "XLOOKUP Excel",
+        "XLOOKUP Google Sheets",
+        "XLOOKUP if not found",
+        "XLOOKUP #N/A error",
+        "XLOOKUP not working",
+        "XLOOKUP not available Excel 2016",
+        "XLOOKUP Excel 2019",
+        "VLOOKUP exact match",
+        "VLOOKUP FALSE",
+        "how to use VLOOKUP",
+        "VLOOKUP #N/A error",
+        "lookup formula Excel",
+        "Excel formulas for beginners",
+        "absolute reference dollar sign Excel",
+        "numbers stored as text Excel"
+      ],
+      "questions": [
+        "How do I use XLOOKUP? (what to look up, where to look, what to return)",
+        "What is the difference between XLOOKUP and VLOOKUP?",
+        "Why does my XLOOKUP return #N/A when the value is there? (text numbers or extra spaces)",
+        "Which Excel versions have XLOOKUP? (Microsoft 365 and Excel 2021 or newer, not 2016 or 2019)",
+        "Does XLOOKUP work in Google Sheets? (yes)",
+        "How do I show \"Not found\" in place of #N/A?",
+        "Why do I need FALSE at the end of VLOOKUP?",
+        "How do I stop the range from moving when I copy a formula down?"
+      ],
+      "hashtags": [
+        "XLOOKUP",
+        "ExcelTips",
+        "GoogleSheets"
+      ],
+      "lead": "How to use XLOOKUP in Excel and Google Sheets, built one piece at a time on a practice sheet: what to look up, where to look, what to return, and the \"if not found\" message. Plus the same lookup with VLOOKUP and exact match for older Excel, and the mistakes behind most #N/A errors. Unofficial tutorial, not affiliated with Microsoft or Google."
+    }
+  },
+  "sheet-sumifs": {
+    "en": {
+      "primary": "SUMIFS Multiple Criteria",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} in Excel & Google Sheets {year} | SUMIFS and COUNTIFS ({hook})",
+        "How to Use SUMIFS and COUNTIFS {year}: Totals by Condition (Copy My Screen)",
+        "SUMIF vs SUMIFS {year}: Two Conditions, Greater Than, and the Mistakes to Avoid"
+      ],
+      "secondary": [
+        "SUMIFS multiple criteria",
+        "how to use SUMIFS",
+        "SUMIF vs SUMIFS",
+        "SUMIFS Excel",
+        "SUMIFS Google Sheets",
+        "how to use COUNTIFS",
+        "COUNTIFS multiple criteria",
+        "SUMIFS greater than",
+        "SUMIFS greater than or equal to cell reference",
+        "SUMIFS with cell reference",
+        "SUMIFS not working",
+        "SUMIFS returns 0",
+        "SUMIFS #VALUE error",
+        "sum by category Excel",
+        "sum only visible cells Excel",
+        "SUBTOTAL filtered rows",
+        "SUMIF tutorial for beginners",
+        "Excel formulas for beginners"
+      ],
+      "questions": [
+        "How do I use SUMIFS with two conditions?",
+        "What is the difference between SUMIF and SUMIFS? (the sum range is last in SUMIF, first in SUMIFS)",
+        "How do I use greater than or equal to in SUMIFS? (in quotes: \">=10\")",
+        "How do I use a cell reference with an operator in SUMIFS? (\">=\"&F3)",
+        "Why does my SUMIFS return 0 or a total that is too low? (numbers stored as text, extra spaces)",
+        "Why does SUMIFS give a #VALUE! error? (ranges of different sizes)",
+        "Does SUMIFS ignore filtered rows? (no, use SUBTOTAL for visible rows)",
+        "How do I count rows with multiple conditions? (COUNTIFS)"
+      ],
+      "hashtags": [
+        "SUMIFS",
+        "ExcelTips",
+        "GoogleSheets"
+      ],
+      "lead": "How to use SUMIFS with multiple criteria in Excel and Google Sheets, on a practice sheet: SUMIF with one condition, SUMIFS with two, a cell as the condition, operators like \">=10\", and COUNTIFS to count rows. Plus the mistakes that give wrong totals. Unofficial tutorial, not affiliated with Microsoft or Google."
+    }
   }
 }
