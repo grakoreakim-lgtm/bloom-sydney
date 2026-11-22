@@ -5,8 +5,8 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const TXT = {
-  ko: { head: (c) => `${c}\n이것만 조심하세요`, sub: (n) => `실수 TOP ${n}`, foot: '전체 따라하기 영상은 ▶ 채널에서', title: (f, n) => `${f} 실수 TOP ${n} | 이것만 조심하세요 #Shorts` },
-  en: { head: (c) => `${c}\nAvoid these mistakes`, sub: (n) => `${n} mistakes to avoid`, foot: 'Full step-by-step video ▶ on the channel', title: (f, n) => `${f}: ${n} Mistakes to Avoid #Shorts` },
+  ko: { head: (c) => `${c}\n이것만 조심하세요`, sub: (n) => `실수 TOP ${n}`, foot: '▶ 아래 링크에서 전체 영상 보기', title: (f, n) => `${f} 실수 TOP ${n} | 이것만 조심하세요 #Shorts` },
+  en: { head: (c) => `${c}\nAvoid these mistakes`, sub: (n) => `${n} mistakes to avoid`, foot: '▶ Full step-by-step video: tap the link below', title: (f, n) => `${f}: ${n} Mistakes to Avoid #Shorts` },
 };
 
 function fontFile() {
