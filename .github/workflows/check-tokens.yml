@@ -1,0 +1,24 @@
+# Shows which YouTube channel each stored token belongs to (no secret values are printed).
+name: check-tokens
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
+      - name: Write secrets
+        env:
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+      - name: Check
+        run: node upload/check-tokens.js | tee -a $GITHUB_STEP_SUMMARY
