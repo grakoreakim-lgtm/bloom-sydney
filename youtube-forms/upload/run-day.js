@@ -209,6 +209,13 @@ function planDay(all, date) {
       const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review, publishNow, ...guardFor(cfg.channels?.[j.lang] || j.lang) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`  ✔ Shorts ${short.seconds}s ${up.url}`);
+      // remember Short → main video, so the PC helper (upload/link-shorts-pc.js) can set the "Related video" link
+      if (!dry && /youtu\.be\//.test(up.url) && !up.duplicate) {
+        const SH = path.join(ROOT, 'plan', 'shorts.json');
+        const map = fs.existsSync(SH) ? JSON.parse(fs.readFileSync(SH, 'utf8')) : {};
+        map[up.url.split('youtu.be/')[1]] = { main: j.mainUrl.split('youtu.be/')[1], channel: cfg.channels?.[j.lang] || j.lang, lang: j.lang, form: j.formId, date };
+        fs.writeFileSync(SH, JSON.stringify(map, null, 1) + '\n');
+      }
       log.push({ row: j.row, status: 'ok', kind: 'short', video: short.file, url: up.url, publishAt: meta.publishAt });
     } catch (e) { console.error(`  ✖ Shorts ${j.formId}-${j.lang}: ${e.message}`); log.push({ row: j.row, status: 'error (short): ' + e.message }); }
   }
