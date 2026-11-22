@@ -149,7 +149,9 @@
   "_timezone": "All channels publish on Korean time (06:00-10:00 KST window).",
   "seo": {
     "keywords": "seo/keywords.json",
-    "learned": "seo/learned.json"
+    "learned": "seo/learned.json",
+    "lockedVideos": [],
+    "_lockedVideos": "Video IDs whose title must not be auto-rotated (e.g. while a YouTube Studio A/B test runs). Tell Claude the ID when you start a test."
   },
   "shorts": {
     "enabled": true
