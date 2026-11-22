@@ -363,5 +363,79 @@
         "JapanArrival"
       ]
     }
+  },
+  "grab": {
+    "ko": {
+      "primary": "그랩 사용법 싱가포르 말레이시아",
+      "hook": "가입부터 호출까지 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 공항에서 시내까지 그랩 타는 법, 화면 그대로 따라 하면 끝 (가입은 출국 전에)",
+        "창이공항·쿠알라룸푸르 공항에서 그랩 부르는 법 {year} | 탑승 위치·요금·결제"
+      ],
+      "secondary": [
+        "그랩 사용법",
+        "싱가포르 그랩 가입",
+        "그랩 가입 방법",
+        "그랩 카드 등록",
+        "창이공항에서 시내 가는 법",
+        "창이공항 그랩 타는 곳",
+        "쿠알라룸푸르 공항에서 시내 가는 법",
+        "KLIA 그랩 타는 곳",
+        "말레이시아 그랩 사용법",
+        "그랩 요금",
+        "그랩 현금 결제",
+        "싱가포르 택시 그랩"
+      ],
+      "questions": [
+        "그랩은 한국 번호로 가입할 수 있나요?",
+        "그랩 가입은 언제 하는 게 좋나요? (출국 전, 문자 인증 때문)",
+        "창이공항에서 그랩은 어디서 타나요?",
+        "그랩 요금에 통행료가 포함되어 있나요?",
+        "짐이 많으면 어떤 차를 불러야 하나요?",
+        "카드 등록이 안 되면 현금으로 낼 수 있나요?"
+      ],
+      "hashtags": [
+        "그랩사용법",
+        "싱가포르여행",
+        "말레이시아여행"
+      ]
+    },
+    "en": {
+      "primary": "How to use Grab in Singapore & Malaysia",
+      "hook": "Sign Up to First Ride",
+      "titles": [
+        "{primary} {year} | Airport to City ({hook})",
+        "Changi Airport to City by Grab {year} — Copy My Screen (Sign Up Before You Fly)",
+        "KLIA to KL by Grab {year}: Pickup Point, Fare, Payment Step-by-Step"
+      ],
+      "secondary": [
+        "how to use Grab in Singapore",
+        "how to use Grab in Malaysia",
+        "Changi airport to city Grab",
+        "KLIA to KL Grab",
+        "Grab sign up foreign number",
+        "Grab app for tourists",
+        "Changi airport Grab pickup point",
+        "KLIA Grab pickup point",
+        "Grab add credit card",
+        "Grab cash payment",
+        "Grab fare tolls",
+        "Singapore airport transfer"
+      ],
+      "questions": [
+        "Can I sign up for Grab with a foreign phone number?",
+        "When should I sign up for Grab? (before you fly, because of the SMS code)",
+        "Where is the Grab pickup point at Changi Airport?",
+        "Where is the Grab pickup point at KLIA?",
+        "Are tolls included in the Grab fare?",
+        "Can I pay cash if my card is declined?"
+      ],
+      "hashtags": [
+        "Grab",
+        "SingaporeTravel",
+        "MalaysiaTravel"
+      ]
+    }
   }
 }

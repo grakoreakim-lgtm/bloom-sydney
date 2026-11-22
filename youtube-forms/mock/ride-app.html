@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE PAGE — Ride app (not the real app)</title>
+<style>
+  /* Neutral styling on purpose: this page does not use any ride-hailing brand's logo, colours or UI design. */
+  :root { --b: #2f3e5c; --accent: #c77a12; --bg: #e9ecf1; --line: #d6dbe4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #333; color: #fff; text-align: center; padding: 8px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right) */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 40px; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 380px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); padding-bottom: 0; }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  header b { font-size: 17px; letter-spacing: .2px; } header small { font-size: 11px; opacity: .85; }
+  main { padding: 6px 16px 26px; }
+  main h2 { font-size: 15px; color: var(--b); margin: 22px 0 10px; padding: 8px 10px; background: #eef1f6; border-left: 4px solid var(--b); border-radius: 4px; }
+  main h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; }
+  input, select { width: 100%; padding: 10px; border: 1px solid #b9c1cd; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .tel { display: grid; grid-template-columns: 150px 1fr; gap: 10px; }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.45; background: #f7f8fb; margin-bottom: 12px; }
+  .box b { display: block; font-size: 14px; margin-bottom: 2px; }
+  .dashed { border: 1px dashed var(--b); color: var(--b); text-align: center; font-weight: 700; }
+  .alt { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .alt span { border: 1px solid #c8cfda; border-radius: 6px; padding: 9px; text-align: center; font-size: 13px; background: #fff; }
+  .otp { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+  .otp i { width: 34px; height: 40px; border: 1px solid #b9c1cd; border-radius: 6px; background: #fff; display: block; }
+  .opts { display: grid; gap: 8px; }
+  .opts label { font-weight: 400; display: flex; align-items: center; gap: 10px; border: 1px solid #c8cfda; border-radius: 8px; padding: 10px; margin: 0; font-size: 14px; }
+  .opts input { width: 18px; height: 18px; margin: 0; flex: none; }
+  .opts .grow { flex: 1; } .opts small { display: block; color: #666; font-size: 11px; margin-top: 2px; }
+  .opts .fare { font-weight: 700; white-space: nowrap; }
+  .sum { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 12px; }
+  .sum div { display: flex; justify-content: space-between; padding: 3px 0; }
+  .sum .tot { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 7px; font-weight: 700; font-size: 15px; }
+  .sum .note { display: block; color: var(--accent); font-size: 11px; font-weight: 700; margin-top: 4px; }
+  .driver { display: flex; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .driver .av { width: 46px; height: 46px; border-radius: 50%; background: #cfd5df; flex: none; }
+  .driver .plate { margin-left: auto; border: 2px solid #222; border-radius: 6px; padding: 6px 10px; font-weight: 700; font-size: 17px; letter-spacing: 1px; background: #fff; white-space: nowrap; }
+  .driver small { display: block; color: #666; font-size: 11px; }
+  button { width: 100%; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  button.ghost { background: #fff; color: var(--b); border: 1px solid var(--b); padding: 11px; font-size: 14px; margin-bottom: 12px; }
+  .stars { font-size: 22px; letter-spacing: 4px; color: #b9c1cd; }
+  .tips { display: flex; gap: 6px; margin-top: 6px; } .tips span { border: 1px solid #c8cfda; border-radius: 16px; padding: 4px 12px; font-size: 12px; background: #fff; }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE PAGE — not the real app. For video recording only; it books nothing and charges nothing.</div>
+<div class="phone">
+<header><b>Ride app (practice)</b><small>Sample screens</small></header>
+<main>
+  <form onsubmit="return false;">
+    <!-- A. Sign up (before the trip) -->
+    <h2>1. Sign up<small>Do this at home, before you fly</small></h2>
+    <div class="box dashed" id="installRow">⬇ Get the app — App Store / Google Play<br><span style="font-weight:400;font-size:11px;color:#555">Install it at home, on Wi-Fi</span></div>
+    <div class="f" id="altRow"><label>Continue with</label>
+      <div class="alt"><span>Google account</span><span>Apple account</span></div>
+      <div class="hint">or use your mobile number below</div></div>
+    <div class="f"><label>Mobile number</label>
+      <div class="tel">
+        <select id="phoneCode"><option value="">Code</option><option value="82">+82 Korea</option><option value="65">+65 Singapore</option><option value="60">+60 Malaysia</option><option value="1">+1 USA</option><option value="61">+61 Australia</option><option value="81">+81 Japan</option></select>
+        <input id="phone" inputmode="tel" autocomplete="off" maxlength="15" placeholder="Mobile number">
+      </div></div>
+    <div class="box" id="otpRow"><b>Enter the code we sent by SMS</b>
+      <div class="otp"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="f"><label for="name">Name</label><input id="name" autocomplete="off"></div>
+    <div class="f"><label for="email">Email</label><input id="email" autocomplete="off"></div>
+    <div class="f" id="payRow"><label>Payment method</label>
+      <div class="opts">
+        <label><input type="radio" name="pay" id="payCard" value="CARD"><span class="grow">Credit / debit card</span></label>
+        <label><input type="radio" name="pay" id="payCash" value="CASH"><span class="grow">Cash<small>Pay the driver at the end</small></span></label>
+      </div></div>
+    <div class="box dashed" id="cardBox">＋ Add card<br><span style="font-weight:400;font-size:11px;color:#555">Enter your own card here — never shown in this video</span></div>
+
+    <!-- B. Book a ride (on arrival) -->
+    <h2>2. Book a ride<small>After you land and collect your bags</small></h2>
+    <div class="f"><label for="pickup">Pick-up</label>
+      <select id="pickup"><option value="">Where are you?</option>
+        <option value="SIN-T1">Changi Airport T1 – Arrival pickup</option><option value="SIN-T2">Changi Airport T2 – Arrival pickup</option>
+        <option value="SIN-T3">Changi Airport T3 – Arrival pickup</option><option value="SIN-T4">Changi Airport T4 – Arrival pickup</option>
+        <option value="KUL-T1">KLIA Terminal 1 – E-hailing pickup</option><option value="KUL-T2">KLIA Terminal 2 – E-hailing pickup</option></select>
+      <div class="hint">The app shows the exact pick-up point. Follow the airport signs to it.</div></div>
+    <div class="f"><label for="dest">Where to?</label><input id="dest" autocomplete="off" placeholder="Hotel name or address"></div>
+    <div class="f" id="rideRow"><label>Choose a ride <span style="font-weight:400;color:#666">(sample fares)</span></label>
+      <div class="opts">
+        <label><input type="radio" name="ride" id="rideStd" value="STD"><span class="grow">Standard car<small>Up to 4 seats · 2 large bags</small></span><span class="fare">S$ 24.00</span></label>
+        <label><input type="radio" name="ride" id="rideLarge" value="LARGE"><span class="grow">Large car (6 seats)<small>More room for luggage</small></span><span class="fare">S$ 33.00</span></label>
+      </div></div>
+    <div class="sum" id="fareRow">
+      <div><span>Fare (fixed before you book)</span><span>S$ 24.00</span></div>
+      <div><span>Tolls / surcharges</span><span>added if any</span></div>
+      <div class="tot"><span>Sample total</span><span>S$ 24.00 +</span></div>
+      <span class="note">Sample numbers only. Real fares change with distance, time and demand.</span></div>
+    <div class="f" id="payWithRow"><label>Pay with</label>
+      <div class="opts">
+        <label><input type="radio" name="payWith" id="payWithCard" value="CARD"><span class="grow">Card •••• (your card)</span></label>
+        <label><input type="radio" name="payWith" id="payWithCash" value="CASH"><span class="grow">Cash</span></label>
+      </div></div>
+    <button id="book" type="button">Book</button>
+
+    <!-- C. After booking (sample) -->
+    <h2>3. Your ride<small>What you see after booking (sample)</small></h2>
+    <div class="driver" id="driverCard"><i class="av"></i>
+      <div><b>SAMPLE DRIVER</b><small>Silver sedan · arriving in 4 min</small></div>
+      <span class="plate">SAMPLE 1234</span></div>
+    <button class="ghost" id="shareBtn" type="button" onclick="this.textContent='✔ Trip shared (sample)'">Share my trip</button>
+    <div class="box" id="rateRow"><b>How was your ride?</b>
+      <div class="stars">★★★★★</div>
+      <div class="tips"><span>No tip</span><span>S$ 1</span><span>S$ 2</span><span>S$ 5</span></div>
+      <div class="hint">Rating and tip are optional</div></div>
+  </form>
+</main>
+<footer>Practice page for tutorial recording. Generic layout only — not affiliated with Grab or any ride-hailing company. Driver, plate and fares are made up.</footer>
+</div>
+</body>
+</html>
