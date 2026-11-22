@@ -276,24 +276,6 @@
         "en"
       ],
       "channel": "gov"
-    },
-    {
-      "form": "sheet-xlookup",
-      "topic": "Sheets: XLOOKUP",
-      "country": "📊 Excel & Google Sheets",
-      "langs": [
-        "en"
-      ],
-      "channel": "apps"
-    },
-    {
-      "form": "sheet-sumifs",
-      "topic": "Sheets: SUMIFS",
-      "country": "📊 Excel & Google Sheets",
-      "langs": [
-        "en"
-      ],
-      "channel": "apps"
     }
   ],
   "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
@@ -394,5 +376,26 @@
   "brands": {
     "gov": "Copy My Screen: Gov Edition",
     "apps": "Copy My Screen: Apps & AI"
-  }
+  },
+  "parkedTopics": [
+    {
+      "form": "sheet-xlookup",
+      "topic": "Sheets: XLOOKUP",
+      "country": "📊 Excel & Google Sheets",
+      "langs": [
+        "en"
+      ],
+      "channel": "apps"
+    },
+    {
+      "form": "sheet-sumifs",
+      "topic": "Sheets: SUMIFS",
+      "country": "📊 Excel & Google Sheets",
+      "langs": [
+        "en"
+      ],
+      "channel": "apps"
+    }
+  ],
+  "_parkedTopics": "Finished tutorials that are not scheduled (the Apps & AI channel changed focus to AI assistants). Move back into extraTopics to publish."
 }
