@@ -21,6 +21,7 @@ const { thumbnail } = require('./thumbnail');
 const { buildMetadata } = require('./metadata');
 const { upload } = require('./upload');
 const { makeShort } = require('./shorts');
+const { qa } = require('./qa');
 
 const ROOT = path.join(__dirname, '..');
 const argv = process.argv.slice(2);
@@ -149,13 +150,24 @@ function planDay(all, date) {
     try {
       // 1) narration first, so the recorder can hold each cue for the clip length
       const target = (cfg.liveForms || []).includes(formId) ? 'live' : (cfg.target || 'mock');   // real site where mapped
-      const clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate, target });
+      let clips;
+      try { clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate, target }); }
+      catch (e) {   // e.g. no GEMINI_API_KEY yet → fall back to the Google voice so the day still ships
+        if (!cfg.tts?.fallback?.[lang]) throw e;
+        console.warn(`    voice fallback (${e.message.slice(0, 120)})`);
+        clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts.fallback, speakingRate: cfg.tts?.speakingRate, target });
+      }
       const narration = Object.fromEntries(Object.entries(clips).map(([k, v]) => [k, v.durationMs]));
       // 2) record
       const rec = new Recorder(form, { target, lang, outDir: path.join(dayDir, `rec-${row['슬롯']}`), narration });
       const r = await rec.run();
       // 3) mux
       const final = mux(r.mp4, r.timeline.cues, clips, `${base}.mp4`, { bgm: pickBgm(cfg.bgm, `${formId}-${lang}`, ROOT), bgmVolume: cfg.bgmVolume || 0.14 });
+      // 3b) QA (검수): narration ↔ screen sync and on-screen values. A failing video is uploaded PRIVATE for review.
+      const check = qa(r.timeline, clips, final);
+      fs.writeFileSync(`${base}.qa.json`, JSON.stringify(check, null, 1));
+      console.log(`    QA ${check.summary}`);
+      check.problems.slice(0, 12).forEach((p) => console.log(`      ✖ ${p}`));
       // 4) thumbnail (uses the first field screenshot as the backdrop)
       const shot = r.shots.find((s) => /step1-/.test(s)) || r.shots[1];
       const flagEmoji = (row['국가'].match(/^\S+/) || [''])[0];
@@ -168,12 +180,13 @@ function planDay(all, date) {
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
-      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review, publishNow, ...guardFor(cfg.channels?.[lang] || lang) });
+      const hold = review || !check.ok;   // never auto-publish a video that failed QA
+      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review: hold, publishNow: publishNow && !hold, ...guardFor(cfg.channels?.[lang] || lang) });
       if (!up.duplicate && !dry) uploads++;
-      console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : publishNow ? 'PUBLIC now' : 'publishAt=' + meta.publishAt}`);
-      log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
-      if (!dry && !review && /youtu\.be/.test(up.url)) { produced[`${formId}:${lang}`] = { date, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1) + '\n'); }
-      if (cfg.shorts?.enabled && !noShorts) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
+      console.log(`    ✔ ${up.url}  ${!check.ok ? 'PRIVATE — QA failed, needs a fix' : review ? 'PRIVATE (review — publish in YouTube Studio)' : publishNow ? 'PUBLIC now' : 'publishAt=' + meta.publishAt}`);
+      log.push({ row, status: check.ok ? 'ok' : 'qa-failed', qa: check, video: final, url: up.url, publishAt: meta.publishAt });
+      if (!dry && !hold && /youtu\.be/.test(up.url)) { produced[`${formId}:${lang}`] = { date, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1) + '\n'); }
+      if (cfg.shorts?.enabled && !noShorts && check.ok) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
     } catch (e) {
       console.error(`    ✖ ${e.message}`); log.push({ row, status: 'error: ' + e.message });
     }
