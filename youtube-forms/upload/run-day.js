@@ -31,7 +31,8 @@ const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
 if (opt('target')) cfg.target = opt('target');
 const date = opt('date') || new Date().toISOString().slice(0, 10);
 const onlyRow = opt('row') ? Number(opt('row')) : null;
-const dry = flag('dry'), fakeTts = flag('fake-tts'), review = flag('review');   // --review: upload private, no auto-publish
+const dry = flag('dry'), fakeTts = flag('fake-tts'), review = flag('review'), publishNow = flag('now'), noShorts = flag('no-shorts');
+const minSlots = Number(opt('slots') || 0);   // --slots 4: top the day up to 4 videos from the backlog   // --review: upload private, no auto-publish
 
 // calendar CSV → rows for the day
 function readCsv(file) {
@@ -88,6 +89,14 @@ function planDay(all, date) {
     console.log(`  ↪ [${r['슬롯']}] ${r['서식/주제']} (${r['언어']}) not defined yet → ${next.c}`);
     out.push({ ...next.row, '날짜': r['날짜'], '슬롯': r['슬롯'], '_filled': true });
   }
+  // top up to --slots with the next not-yet-produced videos
+  for (const b of backlog) {
+    if (out.length >= minSlots) break;
+    if (taken.has(b.c)) continue;
+    taken.add(b.c);
+    console.log(`  ＋ extra slot → ${b.c}`);
+    out.push({ ...b.row, '날짜': date, '슬롯': String(out.length + 1), '_filled': true });
+  }
   return out;
 }
 
@@ -134,12 +143,12 @@ function planDay(all, date) {
       const meta = buildMetadata(row, form, r.timeline, aff, cfg);
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
-      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review, ...guardFor(cfg.channels?.[lang] || lang) });
+      const up = await upload(cfg.channels?.[lang] || lang, meta, final, thumb, { dryRun: dry, review, publishNow, ...guardFor(cfg.channels?.[lang] || lang) });
       if (!up.duplicate && !dry) uploads++;
-      console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : 'publishAt=' + meta.publishAt}`);
+      console.log(`    ✔ ${up.url}  ${review ? 'PRIVATE (review — publish in YouTube Studio)' : publishNow ? 'PUBLIC now' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: 'ok', video: final, url: up.url, publishAt: meta.publishAt });
       if (!dry && !review && /youtu\.be/.test(up.url)) { produced[`${formId}:${lang}`] = { date, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1) + '\n'); }
-      if (cfg.shorts?.enabled) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
+      if (cfg.shorts?.enabled && !noShorts) shortsQueue.push({ row, lang, form, formId, base, final, cues: r.timeline.cues, mainUrl: up.url, meta });
     } catch (e) {
       console.error(`    ✖ ${e.message}`); log.push({ row, status: 'error: ' + e.message });
     }
@@ -157,7 +166,7 @@ function planDay(all, date) {
         tags: j.meta.tags, categoryId: j.meta.categoryId, defaultLanguage: j.lang,
         publishAt: new Date(Date.parse(j.meta.publishAt) + 90 * 60 * 1000).toISOString(),   // 1.5 h after the main video
       };
-      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review, ...guardFor(cfg.channels?.[j.lang] || j.lang) });
+      const up = await upload(cfg.channels?.[j.lang] || j.lang, meta, short.file, null, { dryRun: dry, review, publishNow, ...guardFor(cfg.channels?.[j.lang] || j.lang) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`  ✔ Shorts ${short.seconds}s ${up.url}`);
       log.push({ row: j.row, status: 'ok', kind: 'short', video: short.file, url: up.url, publishAt: meta.publishAt });
