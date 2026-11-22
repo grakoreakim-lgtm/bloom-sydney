@@ -30,6 +30,7 @@ jobs:
         run: for id in $RUN_IDS; do gh run download "$id" -R "$GITHUB_REPOSITORY" -D "artifacts/$id"; done
       - name: Write secrets
         env:
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
           YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
           YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
