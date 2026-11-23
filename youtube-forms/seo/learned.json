@@ -1,6 +1,14 @@
 {
-  "_comment": "Written by upload/seo-review.js every two weeks. terms = real YouTube search terms that brought views (per form/lang), merged into tags and the description of new videos. videos = per-video title variant state.",
-  "updatedAt": null,
-  "terms": {},
-  "videos": {}
+ "_comment": "Written by upload/seo-review.js every two weeks. terms = real YouTube search terms that brought views (per form/lang), merged into tags and the description of new videos. videos = per-video title variant state.",
+ "updatedAt": "2026-11-23T10:47:06.823Z",
+ "terms": {
+  "esim:ko": [],
+  "grab:ko": [],
+  "sgac:ko": [],
+  "mdac:ko": [],
+  "grab:en": [],
+  "sgac:en": [],
+  "mdac:en": []
+ },
+ "videos": {}
 }
