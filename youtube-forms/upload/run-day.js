@@ -206,7 +206,7 @@ function planChannels(date, startSlot) {
       // thumbnail text in the video's language (calendar columns are Korean)
       const thumbCountry = form.country?.[lang] || (lang === 'ko' ? row['국가'].replace(/^\S+\s/, '') : form.country?.en || '');
       const thumbForm = form.title?.[lang] || (lang === 'ko' ? row['서식/주제'] : form.title?.en || row['서식/주제']);
-      const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot, brand: cfg.brands?.[chOf(form, lang)] }, `${base}.png`);
+      const thumb = await thumbnail({ flag: flagEmoji, country: thumbCountry, form: thumbForm, lang, year: date.slice(0, 4), shot, brand: cfg.brands?.[chOf(form, lang)], lines: cfg.thumbText?.[`${formId}:${lang}`] }, `${base}.png`);
       // 5) metadata
       const affSet = cfg.affiliate?.[lang] || cfg.affiliate?.default || {};
       const aff = affSet[cfg.affiliateByForm?.[formId]] || affSet[row['국가'].replace(/^\S+\s/, '')] || cfg.affiliate?.fallback || {};

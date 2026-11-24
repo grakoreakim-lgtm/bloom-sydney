@@ -374,6 +374,26 @@
     }
   },
   "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (secret YT_REFRESH_TOKEN_GOV), apps = \"Copy My Screen: Apps & AI\" (secret YT_REFRESH_TOKEN_APPS).",
+  "thumbText": {
+      "_": "Thumbnail text per form:language = [where (white), what (yellow, biggest), why click (red chip)]. Keep each line short; every claim must be true for the video.",
+      "mdac:ko": ["말레이시아", "입국신고서", "무료 · 5분 완성"],
+      "mdac:en": ["MALAYSIA", "ARRIVAL CARD", "MDAC · FREE · 5 MIN"],
+      "sgac:ko": ["싱가포르", "입국카드", "실제 화면 그대로"],
+      "sgac:en": ["SINGAPORE", "ARRIVAL CARD", "REAL SITE, STEP BY STEP"],
+      "tdac:ko": ["태국", "입국신고서", "종이 카드 폐지 · 무료"],
+      "tdac:en": ["THAILAND", "ARRIVAL CARD", "TDAC · FREE · 5 MIN"],
+      "vjw:ko": ["일본 입국", "QR 등록", "비짓재팬웹 7분 완성"],
+      "vjw:en": ["JAPAN", "ENTRY QR", "VISIT JAPAN WEB · FREE"],
+      "esta:ko": ["미국 ESTA", "직접 신청", "대행 수수료 아끼기"],
+      "esta:en": ["US ESTA", "DO IT YOURSELF", "SKIP THE AGENCY FEE"],
+      "grab:ko": ["공항→시내", "그랩", "가입부터 호출까지"],
+      "grab:en": ["AIRPORT → CITY", "GRAB", "SIGN UP TO FIRST RIDE"],
+      "esim:ko": ["해외여행", "eSIM", "5분 개통 · 로밍 실수 방지"],
+      "esim:en": ["TRAVEL", "eSIM SETUP", "AVOID ROAMING BILLS"],
+      "au-tfn:en": ["AUSTRALIA", "TAX FILE NO.", "FREE · APPLY ONLINE"],
+      "au-mygov:en": ["AUSTRALIA", "myGov SETUP", "LINK ATO · MEDICARE"],
+      "au-vevo:en": ["AUSTRALIA", "VEVO CHECK", "PROVE YOUR WORK RIGHTS"]
+  },
   "brands": {
     "gov": "Copy My Screen: Gov Edition",
     "apps": "Copy My Screen: Apps & AI"

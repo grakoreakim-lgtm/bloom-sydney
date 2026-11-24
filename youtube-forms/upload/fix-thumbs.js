@@ -33,7 +33,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e
           flag: (row['국가'].match(/^\S+/) || [''])[0],
           country: form.country?.[lang] || form.country?.en || row['국가'].replace(/^\S+\s/, ''),
           form: form.title?.[lang] || form.title?.en || row['서식/주제'],
-          lang, year: row['날짜'].slice(0, 4), shot,
+          lang, year: row['날짜'].slice(0, 4), shot, lines: cfg.thumbText?.[`${formId}:${lang}`],
         }, out);
         const yt = google.youtube({ version: 'v3', auth: await authorize(cfg.channels?.[lang] || lang) });
         await yt.thumbnails.set({ videoId: id, media: { body: fs.createReadStream(out) } });
