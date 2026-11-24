@@ -9,6 +9,8 @@
 //   playlists   keep one "travel prep" playlist per country (config.playlists) with our videos in order
 //   affiliate   add the affiliate block (eSIM / airport transfer / tours) to videos that do not have it yet
 //   stats       (only with --only stats) print views per video
+//   subscribe   add the one-tap subscribe link to descriptions that lack it
+//   watermark   (only with --only watermark) set the channel's subscribe watermark from assets/watermark/<channel>.png
 //   links       print where each affiliate short link redirects (to check the mapping)
 const fs = require('fs');
 const path = require('path');
@@ -125,6 +127,27 @@ async function affiliate(yt, videos, lang, seo) {
   }
   console.log(`  affiliate: ${n} video(s) updated`);
 }
+// subscribe: add the one-tap subscribe link to descriptions that lack it (after the "subscribe" sentence, else before hashtags)
+async function subscribeLink(yt, videos, ch, lang) {
+  const { subLine } = require('./metadata'); let n = 0;
+  for (const v of videos) {
+    const sn = v.snippet; if (/sub_confirmation=1/.test(sn.description)) continue;
+    const line = subLine(cfg, ch, (sn.defaultLanguage || lang).slice(0, 2)); if (!line) continue;
+    const d = sn.description.split('\n');
+    let at = d.findIndex((x) => /^(구독하면|Subscribe —)/.test(x)); at = at >= 0 ? at + 1 : d.findIndex((x) => x.trim().startsWith('#'));
+    if (at < 0) d.push('', line); else d.splice(at, 0, line);
+    await yt.videos.update({ part: ['snippet'], requestBody: { id: v.id, snippet: { title: sn.title, description: d.join('\n').slice(0, 4990), tags: sn.tags, categoryId: sn.categoryId, defaultLanguage: sn.defaultLanguage } } });
+    sn.description = d.join('\n'); n++; console.log(`  ✔ subscribe link → ${v.id}  ${sn.title.slice(0, 40)}`);
+  }
+  console.log(`  subscribe: ${n} video(s) updated`);
+}
+// watermark: the small channel button shown on every video (viewers tap it to subscribe). Only with --only watermark.
+async function watermark(yt, ch) {
+  const id = cfg.channelIds?.[ch]; const file = path.join(__dirname, '..', 'assets', 'watermark', `${ch}.png`);
+  if (!id || !fs.existsSync(file)) { console.log(`  watermark: skipped (${!id ? 'no channel id' : 'no image ' + file})`); return; }
+  await yt.watermarks.set({ channelId: id, requestBody: { timing: { type: 'offsetFromStart', offsetMs: 15000 } }, media: { mimeType: 'image/png', body: fs.createReadStream(file) } });
+  console.log(`  ✔ watermark set for ${ch} (appears 15 s into every video)`);
+}
 async function checkLinks() {
   const urls = new Set(); const all = [cfg.affiliate?.fallback, ...Object.values(cfg.affiliate?.default || {})];
   for (const a of all) for (const [k, u] of Object.entries(a || {})) if (/^https?:/.test(u)) urls.add(`${k}|${u}`);
@@ -155,6 +178,8 @@ async function checkLinks() {
       if (want('disclosure')) await disclosure(yt, videos, lang);
       if (want('playlists')) await playlists(yt, videos, lang, seo);
       if (want('affiliate')) await affiliate(yt, videos, lang, seo);
+      if (want('subscribe')) await subscribeLink(yt, videos, ch, lang);
+      if (only && want('watermark')) await watermark(yt, ch);
     } catch (e) { console.error(`  ✖ ${ch}: ${e?.response?.data?.error?.message || e.message}`); process.exitCode = 1; }
   }
 })();
