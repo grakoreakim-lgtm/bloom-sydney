@@ -5,7 +5,7 @@ name: maintain
 on:
   workflow_dispatch:
     inputs:
-      only: { description: 'disclosure, playlists, affiliate, links, stats (comma separated) — empty = all', required: false, default: '' }
+      only: { description: 'disclosure, playlists, affiliate, links, subscribe, stats, watermark (comma separated) — empty = all', required: false, default: '' }
 
 jobs:
   maintain:

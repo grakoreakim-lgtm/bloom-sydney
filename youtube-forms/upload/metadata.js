@@ -11,6 +11,8 @@ const L = {
         outro: 'Subscribe — we re-upload whenever the form changes. Questions in the comments; we answer them in a quarterly Q&A.', sample: 'All personal data on screen is fictional sample data. Only ever submit on the official site.', ai: '🎙 Narration uses an AI voice (Google TTS); the steps and content were checked by us.' },
 };
 const T = (lang) => L[lang] || L.en;
+// one-tap subscribe link for the channel this video goes to (null when the channel id is not known yet)
+const subLine = (cfg, ch, lang) => { const id = cfg?.channelIds?.[ch]; return id ? `${lang === 'ko' ? '🔔 구독하기' : '🔔 Subscribe'}: https://www.youtube.com/channel/${id}?sub_confirmation=1` : null; };
 const FACT_EN = { '무료': 'Free', '도착 3일 전': 'Within 3 days before arrival', '도착 72시간 전': 'Within 72 hours before arrival' };
 
 const mmss = (ms) => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
@@ -53,6 +55,7 @@ function buildMetadata(row, form, timeline, aff, cfg) {
     ...(kw?.questions || []).map((q) => `• ${q}`),
     kw?.questions?.length ? '' : null,
     t.outro,
+    subLine(cfg, form?.channel || lang, lang),
     t.sample,
     t.ai || null,
     '',
@@ -92,4 +95,4 @@ function localToIso(dateStr, hour, tz, minute = 0) {
   return new Date(guess.getTime() - offset).toISOString();
 }
 
-module.exports = { buildMetadata, mmss };
+module.exports = { subLine, buildMetadata, mmss };
