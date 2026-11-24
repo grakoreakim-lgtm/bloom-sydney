@@ -35,15 +35,22 @@ let seq = 0; const tmp = (ext) => path.join(TMP, `${String(++seq).padStart(4, '0
 // ---------- audio: every clip becomes 24 kHz mono WAV so they join without gaps or clicks ----------
 const wav = (src) => { const o = tmp('wav'); sh(`ffmpeg -y -loglevel error -i "${src}" -ar 24000 -ac 1 -c:a pcm_s16le "${o}"`); return o; };
 const silence = (sec) => { const o = tmp('wav'); sh(`ffmpeg -y -loglevel error -f lavfi -i anullsrc=r=24000:cl=mono -t ${sec.toFixed(3)} -c:a pcm_s16le "${o}"`); return o; };
-let fellBack = false;
-async function ko(text) {
-  if (fake) return silence(Math.max(1.2, text.length / 7));
-  const f = tmp('mp3');
-  setBudget(cfg.tts?.maxMinutesPerVideo || 15);
-  try { await synthesize(text, 'ko', f, cfg.tts.voices, cfg.tts?.speakingRate); }
-  catch (e) { if (!cfg.tts?.fallback?.ko) throw e; if (!fellBack) console.log(`VOICE_FALLBACK phrases:${P.id} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`); fellBack = true; setBudget(0); await synthesize(text, 'ko', f, { ko: { ...cfg.tts.fallback.ko, filler: undefined } }, cfg.tts?.speakingRate); }
-  return wav(f);
+let fellBack = false; const koDone = {};
+// All Korean lines are made up front with ONE voice: if the main voice fails or runs past its time budget on any
+// line, every line is redone with the fallback voice, so a video never mixes two voices.
+async function prepareKo(texts) {
+  const uniq = [...new Set(texts.filter(Boolean))];
+  if (fake) { for (const t of uniq) koDone[t] = silence(Math.max(1.2, t.length / 7)); return; }
+  setBudget(cfg.tts?.maxMinutesPerVideo || 15);   // one budget for the whole video
+  try { for (const t of uniq) { const f = tmp('mp3'); await synthesize(t, 'ko', f, cfg.tts.voices, cfg.tts?.speakingRate); koDone[t] = wav(f); } }
+  catch (e) {
+    if (!cfg.tts?.fallback?.ko) throw e;
+    console.log(`VOICE_FALLBACK phrases:${P.id} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`); fellBack = true;
+    for (const t of uniq) { const f = tmp('mp3'); await synthesize(t, 'ko', f, { ko: { ...cfg.tts.fallback.ko, filler: undefined } }, cfg.tts?.speakingRate); koDone[t] = wav(f); }
+  } finally { setBudget(0); }
+  console.log(`  Korean voice: ${fellBack ? 'fallback' : 'main'} (${uniq.length} lines)`);
 }
+async function ko(text) { if (!koDone[text]) throw new Error(`Korean line not prepared: ${text}`); return koDone[text]; }
 const jaCache = {};
 async function target(text, slow) {
   const key = text;
@@ -102,6 +109,8 @@ const recapCard = () => `<body style="margin:0;width:1280px;height:720px;backgro
   if (!P.checkedOn) problems.push('checkedOn is missing');
   if (problems.length) { console.log('QA FAIL (before build)\n' + problems.map((x) => '  ✖ ' + x).join('\n')); process.exit(1); }
 
+  const shortHook = (p) => `${p.short}. ${p.ko}는 이렇게 말해요.`, shortEnd = `전체 ${N}문장은 아래 링크에서 보세요.`;
+  await prepareKo([P.intro.say, ...all.flatMap((p) => [p.when, p.tip]), P.outro.say, ...(flag('no-shorts') ? [] : P.phrases.filter((p) => p.short).flatMap((p) => [shortHook(p), shortEnd]))]);
   const browser = await chromium.launch();
   const page = await browser.newPage();
   const render = async (html, w, h) => { const o = tmp('png'); await page.setViewportSize({ width: w, height: h }); await page.setContent(`<!doctype html><meta charset="utf-8">${html}`); await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: o }); return o; };
@@ -160,8 +169,8 @@ const recapCard = () => `<body style="margin:0;width:1280px;height:720px;backgro
   if (!flag('no-shorts')) for (const [i, p] of P.phrases.entries()) {
     if (!p.short) continue;
     const L = await render(phraseCard(p, i, 'listen', true), 1080, 1920), R = await render(phraseCard(p, i, 'repeat', true), 1080, 1920);
-    const items = [{ img: L, wav: await ko(`${p.short}. ${p.ko}는 이렇게 말해요.`) }, { img: L, wav: silence(0.3) }, { img: L, wav: await target(p.ja) }, { img: L, wav: silence(0.6) }, { img: L, wav: await target(p.ja, true) },
-      { img: R, wav: silence(2.4) }, { img: R, wav: await target(p.ja) }, { img: R, wav: silence(0.6) }, { img: L, wav: await ko(`전체 ${N}문장은 아래 링크에서 보세요.`) }, { img: L, wav: silence(0.8) }];
+    const items = [{ img: L, wav: await ko(shortHook(p)) }, { img: L, wav: silence(0.3) }, { img: L, wav: await target(p.ja) }, { img: L, wav: silence(0.6) }, { img: L, wav: await target(p.ja, true) },
+      { img: R, wav: silence(2.4) }, { img: R, wav: await target(p.ja) }, { img: R, wav: silence(0.6) }, { img: L, wav: await ko(shortEnd) }, { img: L, wav: silence(0.8) }];
     const f = path.join(OUT, `${P.id}.short${i + 1}.mp4`); const r = await build(items, f, `${P.id}-s${i}`);
     if (r.video > 59) { console.log(`  ✖ short ${i + 1} is ${Math.round(r.video)} s — skipped`); continue; }
     shorts.push({ file: f, p, seconds: Math.round(r.video) }); console.log(`  short ${i + 1}: ${Math.round(r.video)} s`);
