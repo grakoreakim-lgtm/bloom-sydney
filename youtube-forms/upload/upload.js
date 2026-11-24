@@ -24,6 +24,7 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
   const dup = await findByTitle(yt, meta.title);
   if (dup) { console.log(`  ⏭ already on the channel: ${meta.title}`); return { id: dup, url: `https://youtu.be/${dup}`, duplicate: true }; }
   const size = fs.statSync(videoFile).size;
+  let shown = 0;
   const res = await yt.videos.insert({
     part: ['snippet', 'status'],
     notifySubscribers: true,
@@ -32,8 +33,7 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
       status: { privacyStatus: opts.publishNow && !opts.review ? 'public' : 'private', ...(opts.review || opts.publishNow ? {} : { publishAt: meta.publishAt }), selfDeclaredMadeForKids: false, containsSyntheticMedia: true, embeddable: true, license: 'youtube' },   // AI narration → disclose
     },
     media: { body: fs.createReadStream(videoFile) },
-  }, { onUploadProgress: (e) => process.stdout.write(`\r  upload ${Math.round((e.bytesRead / size) * 100)}%`) });
-  process.stdout.write('\n');
+  }, { onUploadProgress: (e) => { const q = Math.floor((e.bytesRead / size) * 4); if (q > shown) { shown = q; console.log(`  upload ${Math.min(100, q * 25)}%`); } } });   // 25% steps keep the log readable
   const id = res.data.id;
   if (thumbFile && fs.existsSync(thumbFile)) {
     try { await yt.thumbnails.set({ videoId: id, media: { body: fs.createReadStream(thumbFile) } }); }
