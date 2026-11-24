@@ -8,6 +8,7 @@
 //   disclosure  add the AI-narration line to descriptions that lack it and set containsSyntheticMedia
 //   playlists   keep one "travel prep" playlist per country (config.playlists) with our videos in order
 //   affiliate   add the affiliate block (eSIM / airport transfer / tours) to videos that do not have it yet
+//   stats       (only with --only stats) print views per video
 //   links       print where each affiliate short link redirects (to check the mapping)
 const fs = require('fs');
 const path = require('path');
@@ -34,7 +35,7 @@ async function ourVideos(yt) {
     ids.push(...r.data.items.map((i) => i.contentDetails.videoId)); pageToken = r.data.nextPageToken;
   } while (pageToken && ids.length < 500);
   const out = [];
-  for (let i = 0; i < ids.length; i += 50) out.push(...(await yt.videos.list({ part: ['snippet', 'status', 'contentDetails'], id: ids.slice(i, i + 50) })).data.items);
+  for (let i = 0; i < ids.length; i += 50) out.push(...(await yt.videos.list({ part: ['snippet', 'status', 'contentDetails', 'statistics'], id: ids.slice(i, i + 50) })).data.items);
   return out;
 }
 
@@ -145,6 +146,12 @@ async function checkLinks() {
     try {
       const yt = google.youtube({ version: 'v3', auth: await authorize(ch) });
       const videos = await ourVideos(yt);
+      if (only && want('stats')) {   // read-only: views per video (only when asked: --only stats)
+        let pub = 0, views = 0;
+        for (const v of videos) { const p = v.status.privacyStatus, n = Number(v.statistics?.viewCount || 0); if (p === 'public') { pub++; views += n; }
+          console.log(`  STAT ${ch} ${p.padEnd(8)} ${String(n).padStart(6)} views  ${(v.snippet.publishedAt || '').slice(0, 10)}  ${v.status.publishAt ? '(scheduled ' + v.status.publishAt.slice(0, 16) + ') ' : ''}${v.id}  ${v.snippet.title.slice(0, 60)}`); }
+        console.log(`  STAT ${ch} TOTAL public ${pub} of ${videos.length} uploaded, ${views} views`);
+      }
       if (want('disclosure')) await disclosure(yt, videos, lang);
       if (want('playlists')) await playlists(yt, videos, lang, seo);
       if (want('affiliate')) await affiliate(yt, videos, lang, seo);
