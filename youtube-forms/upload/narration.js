@@ -19,6 +19,8 @@ const VOICES = {   // defaults; config.json → tts.voices overrides (e.g. ko-KR
 // strip emoji / markup that TTS would read aloud
 const clean = (s) => String(s || '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}📌📱🚆🏨👀✅⚠️]/gu, '').replace(/\s+/g, ' ').trim();
 
+const INTRO_SENTENCES = 2;
+
 /** @returns {{id:string,text:string}[]} */
 function buildScript(form, lang, target = 'mock') {
   const t = form.strings[lang];
@@ -28,7 +30,10 @@ function buildScript(form, lang, target = 'mock') {
   for (const step of steps) {
     if (step.type === 'card') {
       const c = step.card[lang];
-      lines.push({ id: `card-${c.id}`, text: clean(c.speech || [c.title, c.subtitle, ...(c.chips || [])].filter(Boolean).join('. ')) });
+      let text = clean(c.speech || [c.title, c.subtitle, ...(c.chips || [])].filter(Boolean).join('. '));
+      // short intro: the hook (first two sentences) and any "unofficial guide" notice, then straight to the screen
+      if (c.id === 'intro') { const ss = text.match(/[^.!?。]+[.!?。]+["'”’]?\s*/g) || [text]; text = ss.filter((x, i) => i < INTRO_SENTENCES || /unofficial|not affiliated|비공식|공식 기관이 아/i.test(x)).join('').trim(); }
+      lines.push({ id: `card-${c.id}`, text });
       continue;
     }
     n += 1;
