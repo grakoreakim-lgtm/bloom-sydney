@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       run_ids: { description: 'daily-videos run IDs (space separated)', required: true }
+      ids: { description: 'only these video ids (comma separated) — empty = all', required: false, default: '' }
 
 permissions:
   actions: read
@@ -27,7 +28,7 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk > /dev/null
       - name: Download artifacts
         env: { GH_TOKEN: '${{ github.token }}', RUN_IDS: '${{ github.event.inputs.run_ids }}' }
-        run: for id in $RUN_IDS; do gh run download "$id" -R "$GITHUB_REPOSITORY" -D "artifacts/$id"; done
+        run: for id in $RUN_IDS; do gh run download "$id" -R "$GITHUB_REPOSITORY" -D "artifacts/$id" || echo "no artifact for run $id"; done
       - name: Write secrets
         env:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -38,4 +39,5 @@ jobs:
           YT_REFRESH_TOKEN_APPS: ${{ secrets.YT_REFRESH_TOKEN_APPS }}
         run: node upload/secrets-from-env.js
       - name: Set thumbnails
-        run: node upload/fix-thumbs.js artifacts --config upload/config.ci.json
+        env: { IDS: '${{ github.event.inputs.ids }}' }
+        run: node upload/fix-thumbs.js artifacts --config upload/config.ci.json ${IDS:+--ids "$IDS"}

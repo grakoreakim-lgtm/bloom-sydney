@@ -11,17 +11,31 @@ const { thumbnail } = require('./thumbnail');
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
 const cfg = JSON.parse(fs.readFileSync(opt('config') || path.join(__dirname, 'config.ci.json'), 'utf8'));
-const root = argv.find((a) => !a.startsWith('--') && a !== opt('config')) || 'artifacts';
+const root = argv.find((a) => !a.startsWith('--') && a !== opt('config') && a !== opt('ids')) || 'artifacts';
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
 
 (async () => {
   const logs = walk(root).filter((f) => path.basename(f) === 'log.json');
   let ok = 0, fail = 0;
+  const seen = new Set(); const onlyIds = opt('ids') ? opt('ids').split(',') : null;   // --ids a,b,c limits the run
   for (const lf of logs) {
     const dayDir = path.dirname(lf);
     for (const e of JSON.parse(fs.readFileSync(lf, 'utf8'))) {
       if (e.status !== 'ok' || !/youtu\.be\//.test(e.url || '')) continue;
-      const id = e.url.split('youtu.be/')[1]; const row = e.row; const lang = row['언어'].toLowerCase(); const slot = row['슬롯'];
+      const id = e.url.split('youtu.be/')[1];
+      if (seen.has(id) || (onlyIds && !onlyIds.includes(id))) continue; seen.add(id);
+      if (e.kind === 'short') {   // a Short keeps a frame of itself (vertical) — never the landscape design of the main video
+        const vid = path.join(dayDir, path.basename(e.video || '')); const frame = path.join(dayDir, `${id}.short.jpg`);
+        try {
+          if (!fs.existsSync(vid)) throw new Error('short video not in the artifacts');
+          require('child_process').execSync(`ffmpeg -y -loglevel error -ss 2 -i "${vid}" -frames:v 1 -q:v 3 "${frame}"`);
+          const yt = google.youtube({ version: 'v3', auth: await authorize(cfg.channels?.[e.row['언어'].toLowerCase()] || e.row['언어'].toLowerCase()) });
+          await yt.thumbnails.set({ videoId: id, media: { body: fs.createReadStream(frame) } });
+          console.log(`✔ short frame set  https://youtu.be/${id}`); ok++;
+        } catch (err) { console.log(`✖ short https://youtu.be/${id}: ${err.message}`); fail++; }
+        continue;
+      }
+ const row = e.row; const lang = row['언어'].toLowerCase(); const slot = row['슬롯'];
       const formId = (cfg.formMap || {})[row['서식/주제']];
       const form = formId ? require(path.join(__dirname, '..', 'forms', `${formId}.js`)) : {};
       const recDir = path.join(dayDir, `rec-${slot}`);
