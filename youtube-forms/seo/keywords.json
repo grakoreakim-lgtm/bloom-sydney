@@ -821,5 +821,79 @@
       ],
       "lead": "How to use SUMIFS with multiple criteria in Excel and Google Sheets, on a practice sheet: SUMIF with one condition, SUMIFS with two, a cell as the condition, operators like \">=10\", and COUNTIFS to count rows. Plus the mistakes that give wrong totals. Unofficial tutorial, not affiliated with Microsoft or Google."
     }
+  },
+  "uk-eta": {
+    "ko": {
+      "primary": "영국 ETA 신청 방법",
+      "hook": "GOV.UK 공식 사이트 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 영국 전자여행허가 ETA, 화면 그대로 따라 하면 끝 (대행 사이트 주의)",
+        "UK ETA 신청 방법 {year} | 공식 비용 20파운드, 여권·얼굴 사진 주의"
+      ],
+      "secondary": [
+        "영국 ETA 신청 방법",
+        "영국 ETA 발급",
+        "영국 전자여행허가",
+        "UK ETA 신청",
+        "영국 ETA 공식 사이트",
+        "영국 ETA 비용",
+        "영국 ETA 20파운드",
+        "영국 무비자 입국",
+        "영국 ETA 대행 사이트",
+        "영국 ETA 유효기간",
+        "영국 ETA 앱",
+        "영국 여행 준비"
+      ],
+      "questions": [
+        "영국 ETA 공식 사이트는? (gov.uk/eta 또는 공식 UK ETA 앱)",
+        "영국 ETA 비용은 얼마인가요? (1인 £20, 2026.4.8~)",
+        "영국 ETA는 언제 신청해야 하나요? (최대 3영업일 걸릴 수 있어 미리)",
+        "영국 ETA 유효기간은? (2년 또는 여권 만료일 중 빠른 날)",
+        "여권을 새로 받으면 ETA도 다시 해야 하나요?",
+        "아기도 ETA가 필요한가요? (1인 1개, 아기 포함)"
+      ],
+      "hashtags": [
+        "영국ETA",
+        "영국여행",
+        "전자여행허가"
+      ]
+    },
+    "en": {
+      "primary": "How to Apply for a UK ETA",
+      "hook": "Step by Step",
+      "titles": [
+        "{primary} {year} | Official GOV.UK {hook}",
+        "UK ETA Application Step by Step {year} — Copy My Screen (Avoid Agency Sites)",
+        "UK ETA {year}: Apply on GOV.UK for £20 — Every Screen Explained"
+      ],
+      "secondary": [
+        "UK ETA application",
+        "UK ETA step by step",
+        "how to apply for UK ETA",
+        "UK electronic travel authorisation",
+        "UK ETA official website",
+        "gov.uk eta",
+        "UK ETA fee",
+        "UK ETA £20",
+        "UK ETA validity",
+        "UK ETA photo",
+        "UK ETA app",
+        "UK travel requirements"
+      ],
+      "questions": [
+        "What is the official UK ETA website? (gov.uk/eta or the official UK ETA app)",
+        "How much is a UK ETA? (£20 per person from 8 April 2026)",
+        "How long does a UK ETA take? (often quick, allow up to 3 working days)",
+        "How long is a UK ETA valid? (2 years or until the passport expires)",
+        "Do I need a new ETA with a new passport?",
+        "Do children and babies need a UK ETA?"
+      ],
+      "hashtags": [
+        "UKETA",
+        "UKTravel",
+        "ETA"
+      ]
+    }
   }
 }
