@@ -13,4 +13,3 @@ The daily report (in the owner's main conversation) reads the latest review and 
 Shared rules (also in the root `CLAUDE.md`): the owner reads Korean, plain words. Never print or commit secrets.
 Recordings use fictional data and never press Submit/Pay. Outward actions need the owner's approval, except what
 each role guide explicitly allows.
-EOF
