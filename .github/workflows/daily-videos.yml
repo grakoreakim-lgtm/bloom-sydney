@@ -8,6 +8,7 @@ on:
                                   # they go public at a random time 06:00–10:00 (publishWindow in config.ci.json)
   workflow_dispatch:
     inputs:
+      phrases_only: { description: 'only the travel-phrase episode (skip tutorials)', type: boolean, default: false }
       date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
       dry: { description: 'Dry run (build everything, upload nothing)', type: boolean, default: false }
       target: { description: 'mock (practice form) or live (real site)', required: false, default: 'mock' }
@@ -62,6 +63,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TZ: Asia/Seoul
         run: |
+          if [ "${{ github.event.inputs.phrases_only }}" = "true" ]; then : > run.log; exit 0; fi
           DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
           DRY=""; [ "${{ github.event.inputs.dry }}" = "true" ] && DRY="--dry"
           FAKE=""; [ -z "$GOOGLE_TTS_API_KEY" ] && FAKE="--fake-tts"
