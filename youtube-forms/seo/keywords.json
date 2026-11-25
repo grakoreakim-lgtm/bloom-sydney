@@ -214,6 +214,80 @@
       ]
     }
   },
+  "vn-evisa": {
+    "ko": {
+      "primary": "베트남 e-Visa 신청 방법",
+      "hook": "공식 사이트 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 베트남 전자비자, 화면 그대로 따라 하면 끝 (대행 사이트 주의)",
+        "베트남 e-Visa 신청 방법 {year} | 공식 수수료 25달러, 사진·날짜 반려 주의"
+      ],
+      "secondary": [
+        "베트남 e-Visa 신청",
+        "베트남 전자비자",
+        "베트남 비자 신청 방법",
+        "베트남 e-Visa 공식 사이트",
+        "evisa.gov.vn",
+        "베트남 전자비자 비용",
+        "베트남 비자 25달러",
+        "베트남 복수비자",
+        "베트남 90일 비자",
+        "베트남 45일 무비자",
+        "베트남 비자 대행 사이트",
+        "베트남 여행 준비"
+      ],
+      "questions": [
+        "베트남 e-Visa 공식 사이트 주소는? (evisa.gov.vn)",
+        "베트남 전자비자 비용은? (단수 USD 25, 복수 USD 50)",
+        "한국인은 베트남 비자가 필요한가요? (45일 이내는 무비자, 그보다 길면 전자비자)",
+        "베트남 전자비자로 최대 며칠 있을 수 있나요? (최대 90일)",
+        "처리 기간은 얼마나 걸리나요? (보통 약 3영업일, 더 걸릴 수 있음)",
+        "중간에 다른 나라에 갔다 다시 들어오면? (복수 비자 필요)"
+      ],
+      "hashtags": [
+        "베트남전자비자",
+        "베트남비자",
+        "베트남여행"
+      ]
+    },
+    "en": {
+      "primary": "How to Apply for a Vietnam e-Visa",
+      "hook": "Step by Step",
+      "titles": [
+        "{primary} {year} | Official Site {hook}",
+        "Vietnam e-Visa Application Step by Step {year} — Copy My Screen (Avoid Agency Sites)",
+        "Vietnam e-Visa {year}: Apply on the Official Site for $25 — Every Screen Explained"
+      ],
+      "secondary": [
+        "Vietnam e-Visa",
+        "Vietnam e-Visa application",
+        "Vietnam evisa step by step",
+        "how to apply for Vietnam visa",
+        "Vietnam e-Visa official website",
+        "evisa.gov.vn",
+        "Vietnam e-Visa fee",
+        "Vietnam visa 90 days",
+        "Vietnam multiple entry visa",
+        "Vietnam e-Visa photo requirements",
+        "Vietnam e-Visa processing time",
+        "Vietnam travel"
+      ],
+      "questions": [
+        "What is the official Vietnam e-Visa website? (evisa.gov.vn)",
+        "How much does a Vietnam e-Visa cost? (USD 25 single entry, USD 50 multiple entry)",
+        "How long can I stay on a Vietnam e-Visa? (up to 90 days)",
+        "How long does a Vietnam e-Visa take? (usually about 3 working days, can be longer)",
+        "Single or multiple entry: which do I need?",
+        "Why do Vietnam e-Visa applications get rejected? (photo, passport scan, wrong dates)"
+      ],
+      "hashtags": [
+        "VietnamEVisa",
+        "VietnamVisa",
+        "VietnamTravel"
+      ]
+    }
+  },
   "tdac": {
     "ko": {
       "primary": "태국 입국신고서 TDAC 작성법",
