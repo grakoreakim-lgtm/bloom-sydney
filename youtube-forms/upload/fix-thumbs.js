@@ -11,12 +11,26 @@ const { thumbnail } = require('./thumbnail');
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
 const cfg = JSON.parse(fs.readFileSync(opt('config') || path.join(__dirname, 'config.ci.json'), 'utf8'));
-const root = argv.find((a) => !a.startsWith('--') && a !== opt('config') && a !== opt('ids')) || 'artifacts';
+const root = argv.find((a) => !a.startsWith('--') && a !== opt('config') && a !== opt('ids') && a !== opt('direct')) || 'artifacts';
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
 
 (async () => {
-  const logs = walk(root).filter((f) => path.basename(f) === 'log.json');
   let ok = 0, fail = 0;
+  // --direct id:form:lang,…  for videos with no saved build: backdrop = a screenshot of the form's practice page
+  for (const d of (opt('direct') || '').split(',').filter(Boolean)) {
+    const [id, formId, lang] = d.split(':'); const form = require(path.join(__dirname, '..', 'forms', `${formId}.js`));
+    const out = path.join(root, `direct-${id}.png`), shot = path.join(root, `direct-${id}-shot.png`);
+    try {
+      fs.mkdirSync(root, { recursive: true });
+      const { chromium } = require('playwright'); const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1024, height: 576 } });
+      await pg.goto(form.url.mock); await pg.waitForTimeout(800); await pg.screenshot({ path: shot }); await b.close();
+      await thumbnail({ flag: form.flag || '', lang, year: '2026', shot, lines: cfg.thumbText?.[`${formId}:${lang}`] }, out);
+      const yt = google.youtube({ version: 'v3', auth: await authorize(cfg.channels?.[lang] || lang) });
+      await yt.thumbnails.set({ videoId: id, media: { body: fs.createReadStream(out) } });
+      console.log(`✔ thumbnail set (direct)  https://youtu.be/${id}  (${lang})`); ok++;
+    } catch (err) { console.log(`✖ direct https://youtu.be/${id}: ${err.message}`); fail++; }
+  }
+  const logs = walk(root).filter((f) => path.basename(f) === 'log.json');
   const seen = new Set(); const onlyIds = opt('ids') ? opt('ids').split(',') : null;   // --ids a,b,c limits the run
   for (const lf of logs) {
     const dayDir = path.dirname(lf);
