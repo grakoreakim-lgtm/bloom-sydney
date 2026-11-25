@@ -85,7 +85,7 @@ jobs:
           DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
           USED=$(grep -cE '✔ (https://youtu\.be|Shorts)' run.log || true)
           LEFT=$(( $(node -e "console.log(require('./upload/config.ci.json').uploadsPerDay||6)") - USED ))
-          node upload/phrases.js --next --date "$DATE" --budget "$LEFT" --config upload/config.ci.json | tee phrases.log
+          node upload/phrases.js --next --upload --date "$DATE" --budget "$LEFT" --config upload/config.ci.json | tee phrases.log
           grep '^VOICE_FALLBACK' phrases.log >> run.log || true
 
       - name: Alert when nothing was made

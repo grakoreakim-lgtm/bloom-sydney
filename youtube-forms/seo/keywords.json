@@ -292,6 +292,84 @@
       ]
     }
   },
+  "china-arrival": {
+    "ko": {
+      "primary": "중국 입국신고서 작성법",
+      "hook": "화면 그대로 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 중국 온라인 입국신고서, 화면 그대로 따라 하면 끝 (QR 코드까지)",
+        "중국 전자 입국카드 {year} 작성 방법 | 상하이·베이징 무료 공식 사이트"
+      ],
+      "secondary": [
+        "중국 입국신고서",
+        "중국 온라인 입국신고서",
+        "중국 입국카드",
+        "중국 전자 입국신고서",
+        "중국 입국신고서 작성",
+        "중국 입국신고서 QR",
+        "중국 입국 준비",
+        "중국 무비자 입국",
+        "상하이 입국신고서",
+        "베이징 입국신고서",
+        "중국 여행 준비물",
+        "중국 입국신고서 무료",
+        "중국 입국신고서 공식 사이트",
+        "외국인 입국카드"
+      ],
+      "questions": [
+        "중국 입국신고서는 어디서 쓰나요? (공식 사이트 s.nia.gov.cn)",
+        "중국 온라인 입국신고서는 무료인가요?",
+        "성과 이름은 어느 칸에 쓰나요?",
+        "경유하면 항공편명은 뭘 넣나요?",
+        "숙소 주소는 어떻게 쓰나요?",
+        "미리 못 냈으면 공항에서 할 수 있나요?"
+      ],
+      "hashtags": [
+        "중국입국신고서",
+        "중국여행",
+        "입국카드"
+      ]
+    },
+    "en": {
+      "primary": "China Online Arrival Card",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | How to Fill It ({hook})",
+        "China Arrival Card How to Fill {year} — Copy My Screen",
+        "China Digital Arrival Card {year}: Fill It Online, Get the QR Code (Avoid These Mistakes)"
+      ],
+      "secondary": [
+        "China arrival card",
+        "China online arrival card",
+        "China digital arrival card",
+        "China arrival card online",
+        "China entry card",
+        "China arrival card QR code",
+        "NIA arrival card",
+        "s.nia.gov.cn",
+        "China arrival card how to fill",
+        "China arrival card official website",
+        "China visa free entry",
+        "Shanghai arrival",
+        "Beijing arrival",
+        "China travel"
+      ],
+      "questions": [
+        "Where do I fill in the China arrival card? (official site s.nia.gov.cn)",
+        "Is the China online arrival card free?",
+        "Which box is last name and which is first name?",
+        "Which flight number do I enter with a connection?",
+        "How do I write my address in China?",
+        "What if I did not file it before I flew?"
+      ],
+      "hashtags": [
+        "ChinaArrivalCard",
+        "ChinaTravel",
+        "ArrivalCard"
+      ]
+    }
+  },
   "vjw": {
     "ko": {
       "primary": "비짓재팬웹 등록 방법",
