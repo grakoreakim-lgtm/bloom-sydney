@@ -16,10 +16,22 @@ const { pickBgm } = require('./mux');
 const argv = process.argv.slice(2);
 const flag = (k) => argv.includes(`--${k}`);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
-const file = argv.find((a) => !a.startsWith('--') && a !== opt('config'));
 const cfg = JSON.parse(fs.readFileSync(opt('config') || path.join(__dirname, 'config.ci.json'), 'utf8'));
 const ROOT = path.join(__dirname, '..');
+// --next --date <YYYY-MM-DD>: take the first episode in config.phraseQueue that is not in plan/produced.json yet
+// (daily production; uploads are scheduled for that date's publish window instead of private)
+const PRODUCED = path.join(ROOT, 'plan', 'produced.json');
+const produced = fs.existsSync(PRODUCED) ? JSON.parse(fs.readFileSync(PRODUCED, 'utf8')) : {};
+let file = argv.find((a) => !a.startsWith('--') && ![opt('config'), opt('date'), opt('budget')].includes(a));
+if (flag('next')) {
+  const id = (cfg.phraseQueue || []).find((x) => !produced[`phrases:${x}`]);
+  if (!id) { console.log('PHRASES none left in config.phraseQueue'); process.exit(0); }
+  file = path.join(ROOT, 'phrases', `${id}.json`);
+}
 const P = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
+const DATE = opt('date');   // with --next: the publish date (KST)
+let BUDGET = opt('budget') != null ? Number(opt('budget')) : 99;   // uploads left today (shared YouTube quota)
+if (flag('next') && BUDGET < 1) { console.log(`PHRASES skipped ${P.id}: no upload budget left today`); process.exit(0); }
 const OUT = path.join(ROOT, 'out', 'phrases', P.id); fs.mkdirSync(OUT, { recursive: true });
 const TMP = path.join(OUT, '_tmp'); fs.mkdirSync(TMP, { recursive: true });
 const sh = (c) => execSync(c, { stdio: ['ignore', 'pipe', 'pipe'], shell: '/bin/bash' }).toString();
@@ -198,14 +210,30 @@ const recapCard = () => `<body style="margin:0;width:1280px;height:720px;backgro
   if (!qa.ok) { console.log('not uploading: QA failed'); process.exit(1); }
   const { upload } = require('./upload');
   const guard = { expectChannel: cfg.channelIds?.[P.channel] || null };
-  const up = await upload(P.channel, { title: P.title.slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko' }, main, thumb, { review: true, ...guard });
-  console.log(`✔ main (private) ${up.url}`);
+  // scheduled (daily production) or private (one-off, owner reviews first)
+  const sched = flag('next') && DATE;
+  let pubAt = null;
+  if (sched) {
+    const { localToIso } = require('./metadata'); const win = cfg.publishWindow?.ko || cfg.publishWindow?.default || { from: 6, to: 10 };
+    const seed = [...`${DATE}|phrases|${P.id}`].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7); const mod = win.from * 60 + (seed % ((win.to - win.from) * 60));
+    pubAt = Date.parse(localToIso(DATE, Math.floor(mod / 60), cfg.timezone?.ko || 'Asia/Seoul', mod % 60)); pubAt = Math.max(pubAt, Date.now() + 30 * 60000);
+  }
+  const opts = (k) => (sched ? { review: false, ...guard } : { review: true, ...guard });
+  const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
+  const up = await upload(P.channel, { title: P.title.slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
+  BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
   const res = { main: up.url, shorts: [] };
-  for (const s of shorts) {
+  if (sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
+  for (const [k, s] of shorts.entries()) {
+    if (BUDGET < 1) { console.log(`  ⏭ short ${s.p.label}: no upload budget left today`); continue; }
     const t = `${s.p.short} | ${s.p.pron} #Shorts`.slice(0, 100);
     const d = [`▶ 전체 ${N}문장 영상: ${up.url}`, '', `${s.p.ja}  ${s.p.pron} — ${s.p.ko}`, '', subLine(cfg, P.channel, 'ko'), '', P.hashtags.map((h) => `#${h}`).join(' ')].filter(Boolean).join('\n');
-    const u = await upload(P.channel, { title: t, description: d, tags: P.tags, categoryId: '19', defaultLanguage: 'ko' }, s.file, null, { review: true, ...guard });
-    console.log(`✔ short (private) ${u.url}  ${t}`); res.shorts.push(u.url);
+    const u = await upload(P.channel, { title: t, description: d, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(k + 1) }, s.file, null, opts(k + 1));
+    BUDGET--; console.log(`✔ short (${sched ? 'scheduled' : 'private'}) ${u.url}  ${t}`); res.shorts.push(u.url);
+    if (sched && /youtu\.be\//.test(u.url)) {   // remember Short → main so the Mac helper can set the related-video link
+      const SH = path.join(ROOT, 'plan', 'shorts.json'); const map = fs.existsSync(SH) ? JSON.parse(fs.readFileSync(SH, 'utf8')) : {};
+      map[u.url.split('youtu.be/')[1]] = { main: up.url.split('youtu.be/')[1], channel: P.channel, lang: 'ko', form: `phrases:${P.id}`, date: DATE }; fs.writeFileSync(SH, JSON.stringify(map, null, 1));
+    }
   }
   fs.writeFileSync(path.join(OUT, `${P.id}.upload.json`), JSON.stringify(res, null, 1));
 })().catch((e) => { console.error(e.stderr?.toString?.() || e); process.exit(1); });

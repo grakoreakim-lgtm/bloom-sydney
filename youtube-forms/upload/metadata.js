@@ -95,4 +95,4 @@ function localToIso(dateStr, hour, tz, minute = 0) {
   return new Date(guess.getTime() - offset).toISOString();
 }
 
-module.exports = { subLine, buildMetadata, mmss };
+module.exports = { localToIso, subLine, buildMetadata, mmss };
