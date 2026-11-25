@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — China Online Arrival Card (not the official site)</title>
+<style>
+  :root { --b: #1f4e8c; --accent: #c8102e; --bg: #eef1f6; --line: #d5dbe5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #b00020; color: #fff; text-align: center; padding: 8px 12px; font-weight: 700; font-size: 13px; line-height: 1.35; }
+  /* phone-width column: full width on a phone, a phone-sized column on a desktop (left of centre, so the
+     tutorial callouts have room on the right) */
+  .phone { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; }
+  @media (min-width: 900px) {
+    .phone { margin: 18px 0 340px max(16px, calc(50% - 470px)); min-height: 0; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,.14); overflow: hidden; border: 1px solid var(--line); }
+  }
+  header { background: var(--b); color: #fff; padding: 14px 16px; border-bottom: 4px solid var(--accent); }
+  header b { font-size: 17px; display: block; } header small { font-size: 11px; opacity: .85; }
+  main { padding: 6px 16px 26px; }
+  main h2 { font-size: 15px; color: var(--b); margin: 22px 0 10px; padding: 8px 10px; background: #eef2f8; border-left: 4px solid var(--b); border-radius: 4px; }
+  main h2 small { display: block; font-weight: 400; color: #555; font-size: 11px; margin-top: 2px; }
+  .f { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  .hint { font-size: 11px; color: #666; margin-top: 3px; }
+  input, select { width: 100%; padding: 10px; border: 1px solid #b9c1cd; border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .note { font-size: 12px; color: #444; background: #f7f9fc; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; margin: 8px 0 4px; line-height: 1.4; }
+  .verify { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+  .verify .code { flex: 0 0 110px; height: 42px; border-radius: 6px; background: repeating-linear-gradient(45deg, #dde3ec 0 6px, #eef1f6 6px 12px); display: flex; align-items: center; justify-content: center; font: italic 700 18px Georgia, serif; color: #8a93a3; letter-spacing: 3px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.4; margin: 14px 0 4px; }
+  .check input { width: 20px; height: 20px; flex: 0 0 20px; margin: 0; }
+  button { width: 100%; margin-top: 16px; background: var(--b); color: #fff; border: 0; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; }
+  footer { text-align: center; font-size: 11px; color: #777; padding: 14px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official National Immigration Administration website and submits nothing</div>
+<div class="phone">
+<header><b>Arrival Card for Foreigners — Practice</b><small>Online Arrival Card · field layout for tutorial recording</small></header>
+<main>
+  <form id="arrival-card" onsubmit="return false;">
+    <!-- 1. Personal / passport information -->
+    <h2>Personal Information<small>Enter exactly as shown in your passport</small></h2>
+    <div class="two">
+      <div class="f"><label for="lastName">Last Name (Surname) <span>*</span></label><input id="lastName" autocomplete="off"></div>
+      <div class="f"><label for="firstName">First Name (Given Names) <span>*</span></label><input id="firstName" autocomplete="off"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="gender">Gender <span>*</span></label>
+        <select id="gender"><option value="">-- Select --</option><option value="MALE">MALE</option><option value="FEMALE">FEMALE</option></select></div>
+      <div class="f"><label for="dob">Date of Birth <span>*</span></label><input id="dob" placeholder="YYYY-MM-DD" autocomplete="off" maxlength="10"></div>
+    </div>
+    <div class="f"><label for="nationality">Country/Region of Citizenship <span>*</span></label>
+      <select id="nationality"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="USA">UNITED STATES</option><option value="GBR">UNITED KINGDOM</option><option value="AUS">AUSTRALIA</option><option value="SGP">SINGAPORE</option><option value="MYS">MALAYSIA</option></select></div>
+    <div class="two">
+      <div class="f"><label for="docType">Type of ID Document <span>*</span></label>
+        <select id="docType"><option value="">-- Select --</option><option value="PASSPORT">PASSPORT</option><option value="OTHER">OTHER TRAVEL DOCUMENT</option></select></div>
+      <div class="f"><label for="passport">ID Number <span>*</span></label><input id="passport" autocomplete="off"></div>
+    </div>
+
+    <!-- 2. Visa / entry permit -->
+    <h2>Visa Information<small>Visa or visa-free entry</small></h2>
+    <div class="f"><label for="visaType">Visa / Entry Permit <span>*</span></label>
+      <select id="visaType"><option value="">-- Select --</option><option value="VISA-FREE">VISA-FREE ENTRY</option><option value="VISA">CHINESE VISA</option><option value="RESIDENCE">RESIDENCE PERMIT</option></select></div>
+    <div class="f"><label for="visaNo">Visa No.</label><input id="visaNo" autocomplete="off"><div class="hint">Only if you hold a Chinese visa or permit</div></div>
+
+    <!-- 3. Trip information -->
+    <h2>Trip Information<small>Have your flight booking ready</small></h2>
+    <div class="f"><label for="entryDate">Date of Entry <span>*</span></label><input id="entryDate" placeholder="YYYY-MM-DD" autocomplete="off" maxlength="10"></div>
+    <div class="f"><label for="flight">Arrival Flight/Train/Vessel No. <span>*</span></label><input id="flight" autocomplete="off"><div class="hint">The flight that lands in China</div></div>
+    <div class="f"><label for="purpose">Purpose of Visit <span>*</span></label>
+      <select id="purpose"><option value="">-- Select --</option><option value="TOURISM">TOURISM</option><option value="BUSINESS">BUSINESS</option><option value="VISITING">VISITING FRIENDS/RELATIVES</option><option value="STUDY">STUDY</option><option value="WORK">WORK</option><option value="TRANSIT">TRANSIT</option><option value="OTHERS">OTHERS</option></select></div>
+
+    <!-- 4. Address in China -->
+    <h2>Address in China<small>Where you stay on your first night</small></h2>
+    <div class="two">
+      <div class="f"><label for="province">Province <span>*</span></label>
+        <select id="province"><option value="">-- Select --</option><option value="SHANGHAI">SHANGHAI</option><option value="BEIJING">BEIJING</option><option value="GUANGDONG">GUANGDONG</option><option value="SHANDONG">SHANDONG</option><option value="SICHUAN">SICHUAN</option></select></div>
+      <div class="f"><label for="city">City/District <span>*</span></label>
+        <select id="city"><option value="">-- Select --</option></select></div>
+    </div>
+    <div class="f"><label for="address">Detailed Address <span>*</span></label><input id="address" autocomplete="off"><div class="hint">Hotel name + street and number</div></div>
+
+    <!-- 5. Declaration and submit -->
+    <h2>Confirm &amp; Submit<small>Check everything before you submit</small></h2>
+    <div class="check" id="declareRow"><input id="declare" type="checkbox"><label for="declare" style="font-weight:400;margin:0">I declare that the information above is true and correct.</label></div>
+    <div class="f" id="captcha"><label for="captchaInput">Verification Code <span>*</span></label>
+      <div class="verify"><div class="code">x7Kq</div><input id="captchaInput" autocomplete="off" placeholder="Enter the code"></div></div>
+    <div><button id="submit" type="submit">Submit</button></div>
+    <div class="note">After submitting, a QR code is generated. Keep it on your phone for the border check.</div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with any government. Official site: s.nia.gov.cn (free).</footer>
+</div>
+<script>
+  // Province → City/District (as on the real form, the second list depends on the first)
+  const AREAS = {
+    'SHANGHAI': ['HUANGPU DISTRICT', 'JING\'AN DISTRICT', 'PUDONG NEW AREA', 'XUHUI DISTRICT'],
+    'BEIJING': ['DONGCHENG DISTRICT', 'CHAOYANG DISTRICT', 'HAIDIAN DISTRICT'],
+    'GUANGDONG': ['GUANGZHOU', 'SHENZHEN'],
+    'SHANDONG': ['QINGDAO', 'JINAN', 'WEIHAI'],
+    'SICHUAN': ['CHENGDU'],
+  };
+  const $ = (id) => document.getElementById(id);
+  $('province').addEventListener('change', () => {
+    $('city').innerHTML = '<option value="">-- Select --</option>' + (AREAS[$('province').value] || []).map((k) => `<option value="${k}">${k}</option>`).join('');
+  });
+</script>
+</body>
+</html>
