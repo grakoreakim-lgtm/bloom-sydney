@@ -120,7 +120,8 @@
     "SG Arrival Card(웹·MyICA)": "sgac",
     "ESTA 전자여행허가": "esta",
     "Visit Japan Web 등록·QR": "vjw",
-    "TDAC 태국 디지털 입국카드": "tdac"
+    "TDAC 태국 디지털 입국카드": "tdac",
+    "중국 온라인 입국신고서": "china-arrival"
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
@@ -161,6 +162,11 @@
         "tour": "https://klook.tpk.lv/OE8h3jHh"
       },
       "일본": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "중국": {
         "esim": "https://airalo.tpk.lv/h6d3oVBn",
         "pickup": "https://klook.tpk.lv/d4yQTZBG",
         "tour": "https://klook.tpk.lv/OE8h3jHh"
@@ -305,6 +311,10 @@
       "일본 여행 준비 (Visit Japan Web·eSIM)": [
         "vjw",
         "esim"
+      ],
+      "중국 여행 준비 (입국신고서·eSIM)": [
+        "china-arrival",
+        "esim"
       ]
     },
     "en": {
@@ -329,6 +339,10 @@
       "Japan Trip Prep (Visit Japan Web, eSIM)": [
         "vjw",
         "esim"
+      ],
+      "China Trip Prep (Arrival Card, eSIM)": [
+        "china-arrival",
+        "esim"
       ]
     }
   },
@@ -349,6 +363,7 @@
     "esta": "미국",
     "tdac": "태국",
     "vjw": "일본",
+    "china-arrival": "중국",
     "au-mygov": "gov-au",
     "au-tfn": "gov-au",
     "au-vevo": "gov-au",
@@ -384,6 +399,8 @@
       "tdac:en": ["THAILAND", "ARRIVAL CARD", "TDAC · FREE · 5 MIN"],
       "vjw:ko": ["일본 입국", "QR 등록", "비짓재팬웹 7분 완성"],
       "vjw:en": ["JAPAN", "ENTRY QR", "VISIT JAPAN WEB · FREE"],
+      "china-arrival:ko": ["중국 입국", "온라인 입국신고서", "공식 사이트 무료 · QR"],
+      "china-arrival:en": ["CHINA", "ARRIVAL CARD", "ONLINE · FREE · QR"],
       "esta:ko": ["미국 ESTA", "직접 신청", "대행 수수료 아끼기"],
       "esta:en": ["US ESTA", "DO IT YOURSELF", "SKIP THE AGENCY FEE"],
       "grab:ko": ["공항→시내", "그랩", "가입부터 호출까지"],
