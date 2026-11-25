@@ -120,7 +120,8 @@
     "SG Arrival Card(웹·MyICA)": "sgac",
     "ESTA 전자여행허가": "esta",
     "Visit Japan Web 등록·QR": "vjw",
-    "TDAC 태국 디지털 입국카드": "tdac"
+    "TDAC 태국 디지털 입국카드": "tdac",
+    "UK ETA 전자여행허가": "uk-eta"
   },
   "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
   "affiliate": {
@@ -161,6 +162,11 @@
         "tour": "https://klook.tpk.lv/OE8h3jHh"
       },
       "일본": {
+        "esim": "https://airalo.tpk.lv/h6d3oVBn",
+        "pickup": "https://klook.tpk.lv/d4yQTZBG",
+        "tour": "https://klook.tpk.lv/OE8h3jHh"
+      },
+      "영국": {
         "esim": "https://airalo.tpk.lv/h6d3oVBn",
         "pickup": "https://klook.tpk.lv/d4yQTZBG",
         "tour": "https://klook.tpk.lv/OE8h3jHh"
@@ -305,6 +311,10 @@
       "일본 여행 준비 (Visit Japan Web·eSIM)": [
         "vjw",
         "esim"
+      ],
+      "영국 여행 준비 (UK ETA·eSIM)": [
+        "uk-eta",
+        "esim"
       ]
     },
     "en": {
@@ -329,6 +339,10 @@
       "Japan Trip Prep (Visit Japan Web, eSIM)": [
         "vjw",
         "esim"
+      ],
+      "UK Trip Prep (ETA, eSIM)": [
+        "uk-eta",
+        "esim"
       ]
     }
   },
@@ -349,6 +363,7 @@
     "esta": "미국",
     "tdac": "태국",
     "vjw": "일본",
+    "uk-eta": "영국",
     "au-mygov": "gov-au",
     "au-tfn": "gov-au",
     "au-vevo": "gov-au",
@@ -386,6 +401,8 @@
       "vjw:en": ["JAPAN", "ENTRY QR", "VISIT JAPAN WEB · FREE"],
       "esta:ko": ["미국 ESTA", "직접 신청", "대행 수수료 아끼기"],
       "esta:en": ["US ESTA", "DO IT YOURSELF", "SKIP THE AGENCY FEE"],
+      "uk-eta:ko": ["영국 ETA", "직접 신청", "공식 £20 · 대행 수수료 아끼기"],
+      "uk-eta:en": ["UK ETA", "DO IT YOURSELF", "OFFICIAL £20 · NO AGENCY FEE"],
       "grab:ko": ["공항→시내", "그랩", "가입부터 호출까지"],
       "grab:en": ["AIRPORT → CITY", "GRAB", "SIGN UP TO FIRST RIDE"],
       "esim:ko": ["해외여행", "eSIM", "5분 개통 · 로밍 실수 방지"],

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — UK ETA Application (not the official site)</title>
+<style>
+  :root { --k: #0b0c0c; --blue: #1d70b8; --green: #00703c; --grey: #f3f2f1; --line: #b1b4b6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #fff; color: var(--k); }
+  .banner { background: #b00020; color: #fff; text-align: center; padding: 8px; font-weight: 700; font-size: 14px; }
+  header { background: var(--k); color: #fff; padding: 14px 28px; font-size: 20px; font-weight: 700; border-bottom: 10px solid var(--blue); }
+  header small { display: block; font-size: 13px; font-weight: 400; opacity: .85; margin-top: 2px; }
+  main { max-width: 960px; margin: 24px auto; padding: 0 36px 40px; }
+  h1 { font-size: 30px; margin: 0 0 12px; }
+  h2 { font-size: 21px; margin: 34px 0 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+  h2 .stepno { display: block; font-size: 15px; color: #505a5f; font-weight: 400; margin-bottom: 2px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+  .full { grid-column: 1 / -1; }
+  label { display: block; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .hint { font-size: 14px; color: #505a5f; font-weight: 400; display: block; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 8px 10px; border: 2px solid var(--k); font-size: 17px; background: #fff; }
+  input:focus, select:focus { outline: 3px solid #fd0; }
+  .box { border-left: 10px solid var(--line); background: var(--grey); padding: 14px 18px; font-size: 16px; line-height: 1.45; }
+  .box ul { margin: 6px 0 0 18px; padding: 0; }
+  .radios { display: flex; gap: 26px; align-items: center; padding: 10px 0 2px; font-size: 17px; }
+  .radios label { display: flex; gap: 8px; align-items: center; font-weight: 400; margin: 0; }
+  .radios input, .check input { width: 22px; height: 22px; flex: none; }
+  .q { padding: 12px 16px; border: 1px solid var(--line); margin-bottom: 10px; font-size: 16px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; margin-top: 12px; }
+  .check label { font-weight: 400; margin: 0; }
+  .upload { border: 3px dashed var(--line); padding: 22px; text-align: center; color: #505a5f; font-size: 15px; background: #fafafa; }
+  .upload b { display: block; color: var(--blue); font-size: 17px; margin-bottom: 4px; }
+  .code { display: flex; gap: 12px; align-items: center; }
+  .code input { width: 180px; letter-spacing: 4px; }
+  .pay { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding: 16px 18px; border: 2px solid var(--k); }
+  .pay .amt { font-size: 24px; font-weight: 700; }
+  button { background: var(--green); color: #fff; border: 0; box-shadow: 0 2px 0 #002d18; padding: 12px 26px; font-size: 18px; font-weight: 700; cursor: pointer; }
+  footer { text-align: center; font-size: 13px; color: #505a5f; margin: 20px; }
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — not the official site, submits nothing</div>
+<header>Apply for an electronic travel authorisation (ETA) — Practice Form<small>Field layout only. The real service is on GOV.UK.</small></header>
+<main>
+  <form id="eta" onsubmit="return false;">
+    <h1>Apply for an ETA</h1>
+    <div id="beforeBox" class="box">
+      <b>Before you start, you will need:</b>
+      <ul>
+        <li>the passport you will travel with</li>
+        <li>an email address</li>
+        <li>a photo of your face (or a device camera)</li>
+        <li>a credit or debit card, Apple Pay or Google Pay</li>
+      </ul>
+      <div style="margin-top:8px">Each person needs their own ETA, including children and babies.</div>
+    </div>
+
+    <h2><span class="stepno">Step 1</span>Who are you applying for?</h2>
+    <div id="applyingForRow" class="q">
+      <div class="radios"><label><input type="radio" name="applyingFor" id="applyingForMe" value="me"> Myself</label><label><input type="radio" name="applyingFor" id="applyingForOther" value="other"> Someone else</label></div>
+    </div>
+
+    <h2><span class="stepno">Step 2</span>Your email address</h2>
+    <div class="row">
+      <div class="full"><label for="email">Email address</label><span class="hint">We will send a security code and your decision to this address.</span><input id="email" type="email" autocomplete="off"></div>
+      <div id="codeRow" class="full"><label for="code">Enter the security code</label><span class="hint">Check your inbox (and spam folder) for a 6-digit code.</span><div class="code"><input id="code" autocomplete="off" placeholder="______"></div></div>
+    </div>
+
+    <h2><span class="stepno">Step 3</span>Upload a photo of your passport</h2>
+    <div id="passportUpload" class="upload"><b>Upload a photo of your passport photo page</b>The whole photo page, in focus, no glare<br><span class="hint">Your passport details are read from the photo</span></div>
+
+    <h2><span class="stepno">Step 4</span>Check your passport details</h2>
+    <div class="row">
+      <div><label for="familyName">Surname (family name)</label><input id="familyName" autocomplete="off"></div>
+      <div><label for="givenName">Given names</label><input id="givenName" autocomplete="off"></div>
+      <div><label for="nationality">Nationality on passport</label>
+        <select id="nationality"><option value="">Select</option><option value="PRK">Korea (North)</option><option value="KOR">Korea (South)</option><option value="USA">United States</option><option value="AUS">Australia</option><option value="FRA">France</option><option value="DEU">Germany</option></select></div>
+      <div><label for="dob">Date of birth</label><span class="hint">For example, 15 05 1990</span><input id="dob" autocomplete="off" placeholder="DD MM YYYY"></div>
+      <div><label for="passport">Passport number</label><input id="passport" autocomplete="off"></div>
+      <div><label for="passportExpiry">Passport expiry date</label><span class="hint">For example, 31 12 2031</span><input id="passportExpiry" autocomplete="off" placeholder="DD MM YYYY"></div>
+    </div>
+
+    <h2><span class="stepno">Step 5</span>Photo of your face</h2>
+    <div id="photoUpload" class="upload"><b>Upload or take a photo of your face</b>Plain background, face the camera, no glasses or hat<br><span class="hint">The photo must meet the rules for digital photos</span></div>
+
+    <h2><span class="stepno">Step 6</span>Your contact details</h2>
+    <div class="row">
+      <div class="full"><label for="homeAddress">Home address</label><input id="homeAddress" autocomplete="off"></div>
+      <div><label for="phone">Phone number</label><span class="hint">Include the country code</span><input id="phone" autocomplete="off"></div>
+    </div>
+
+    <h2><span class="stepno">Step 7</span>Other nationalities</h2>
+    <div id="otherNatRow" class="q">Do you have any other nationalities or citizenships?
+      <div class="radios"><label><input type="radio" name="otherNat" id="otherNatYes" value="Y"> Yes</label><label><input type="radio" name="otherNat" id="otherNatNo" value="N"> No</label></div>
+    </div>
+
+    <h2><span class="stepno">Step 8</span>Your job</h2>
+    <div class="row">
+      <div class="full"><label for="jobTitle">What is your job title?</label><span class="hint">If you do not have a job, write "unemployed", "student" or "retired".</span><input id="jobTitle" autocomplete="off"></div>
+    </div>
+
+    <h2><span class="stepno">Step 9</span>Criminal convictions and other questions</h2>
+    <div id="crimeRow" class="q">Have you ever been convicted of a crime in any country, or received a prison sentence?
+      <div class="radios"><label><input type="radio" name="crime" id="crimeYes" value="Y"> Yes</label><label><input type="radio" name="crime" id="crimeNo" value="N"> No</label></div>
+    </div>
+    <div id="terrorRow" class="q">Have you ever been involved in, or supported, terrorism, war crimes or other activities that might show you are not of good character?
+      <div class="radios"><label><input type="radio" name="terror" id="terrorYes" value="Y"> Yes</label><label><input type="radio" name="terror" id="terrorNo" value="N"> No</label></div>
+    </div>
+
+    <h2><span class="stepno">Step 10</span>Declaration</h2>
+    <div id="declBox" class="box">
+      I confirm the information I have given is true and complete. I understand that giving false information may lead to my application being refused and to future applications being refused.
+      <div class="check"><input id="declaration" type="checkbox"><label for="declaration">I agree to the declaration</label></div>
+    </div>
+
+    <h2><span class="stepno">Step 11</span>Pay for your application</h2>
+    <div class="pay"><div>Application fee (per person)<div class="amt">£20</div><span class="hint">No refund once you have applied</span></div><button id="payNow" type="button">Continue to payment</button></div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with the Home Office or GOV.UK. Apply only on GOV.UK or the official UK ETA app.</footer>
+</body>
+</html>
