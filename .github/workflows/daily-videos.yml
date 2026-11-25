@@ -74,6 +74,27 @@ jobs:
           node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS $FORMS | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 
+      - name: Travel-phrase episode (one per night, within the upload budget)
+        if: success() && github.event.inputs.dry != 'true' && github.event.inputs.forms == ''
+        continue-on-error: true
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TZ: Asia/Seoul
+        run: |
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
+          USED=$(grep -cE '✔ (https://youtu\.be|Shorts)' run.log || true)
+          LEFT=$(( $(node -e "console.log(require('./upload/config.ci.json').uploadsPerDay||6)") - USED ))
+          node upload/phrases.js --next --date "$DATE" --budget "$LEFT" --config upload/config.ci.json | tee phrases.log
+          grep '^VOICE_FALLBACK' phrases.log >> run.log || true
+
+      - name: Alert when nothing was made
+        if: success() && github.event.inputs.dry != 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          grep -qE '✔ (https://youtu\.be|main)' run.log phrases.log 2>/dev/null && exit 0
+          gh issue create -R "$GITHUB_REPOSITORY" --title "제작 0건 ($(date +%F))" --body "$(printf '오늘 밤 만든 영상이 없습니다. 준비된 주제가 바닥났거나 모두 건너뛰었을 수 있습니다.\n\nRun: %s' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
+
       - name: Notify if the voice fell back (e.g. Gemini credits used up)
         if: always()
         env: { GH_TOKEN: '${{ github.token }}' }
