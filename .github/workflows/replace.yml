@@ -1,0 +1,45 @@
+# Re-upload fixed builds (private) from a daily-videos run, or swap them in after the owner approves.
+name: replace
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode: { description: 'upload | swap', required: true, default: 'upload' }
+      run_id: { description: 'upload: daily-videos run ID with the fixed builds', required: false, default: '' }
+      only: { description: 'e.g. esta-ko,esta-en (empty = all in that run / all pending swaps)', required: false, default: '' }
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  replace:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
+      - name: Write secrets
+        env:
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+      - name: Download builds
+        if: github.event.inputs.mode == 'upload'
+        env: { GH_TOKEN: '${{ github.token }}', RUN_ID: '${{ github.event.inputs.run_id }}' }
+        run: gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -D artifacts
+      - name: Run
+        env: { MODE: '${{ github.event.inputs.mode }}', ONLY: '${{ github.event.inputs.only }}' }
+        run: |
+          if [ "$MODE" = "swap" ]; then node upload/replace.js --swap ${ONLY:+--only "$ONLY"}
+          else for d in $(find artifacts -type d -name 'rec-*' -exec dirname {} \; | sort -u); do node upload/replace.js "$d" ${ONLY:+--only "$ONLY"}; done; fi | tee -a $GITHUB_STEP_SUMMARY
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "replace bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plan/replacements.json plan/produced.json 2>/dev/null; git diff --cached --quiet || { git commit -m "replace: $(date +%F) ${{ github.event.inputs.mode }}"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push origin HEAD:"$GITHUB_REF_NAME"; }
