@@ -70,6 +70,18 @@ async function post(file) {
   const offers = JSON.parse(fs.readFileSync(path.join(__dirname, 'offers.json'), 'utf8'));
   const allowed = new Set(offers.offers.flatMap((o) => Object.values(o.link)));
   const j = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
+  // owner's rules: not pushy, not repetitive — checked against this file and every earlier replies-*.json
+  const PUSHY = /지금 바로|놓치지|강추|무조건|최저가|한정|서두르|대박|buy now|don't miss|hurry|limited time|best deal|must[- ]have/i;
+  const sentences = (t) => t.split(/(?<=[.!?。…])\s+|\n+/).map((x) => x.trim()).filter(Boolean);
+  const norm = (x) => x.replace(/[\s.!?。…~,]+/g, ' ').trim().toLowerCase();
+  const earlier = fs.readdirSync(DIR).filter((f) => /^replies-.*\.json$/.test(f) && path.resolve(DIR, f) !== path.resolve(file))
+    .flatMap((f) => { try { return JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf8')).replies || []; } catch { return []; } }).filter((r) => r.postedId);
+  const pool = [...earlier, ...(j.replies || []).filter((r) => r.approved)];
+  const firsts = {}, lasts = {}, longs = {};
+  for (const r of pool) { const ss = sentences(r.reply); if (!ss.length) continue;
+    firsts[norm(ss[0])] = (firsts[norm(ss[0])] || 0) + 1; lasts[norm(ss[ss.length - 1])] = (lasts[norm(ss[ss.length - 1])] || 0) + 1;
+    for (const x of ss) if (x.split(/\s+/).length > 8) longs[norm(x)] = (longs[norm(x)] || 0) + 1; }
+  const withOffer = (j.replies || []).filter((r) => r.approved && r.offer).length, total = (j.replies || []).filter((r) => r.approved).length;
   let posted = 0;
   for (const r of j.replies || []) {
     if (!r.approved || r.postedId) continue;
@@ -80,6 +92,12 @@ async function post(file) {
     if (links.length > 1) problems.push('more than one link');
     if (links.some((l) => !allowed.has(l.replace(/[).,]+$/, '')) && !/youtu\.be\/|youtube\.com\//.test(l))) problems.push('link not in offers.json');
     if (links.some((l) => allowed.has(l.replace(/[).,]+$/, ''))) && !/제휴|affiliate|commission|수수료/i.test(r.reply)) problems.push('affiliate link without disclosure');
+    if (PUSHY.test(r.reply)) problems.push('pushy wording');
+    const ss = sentences(r.reply);
+    if (ss.length && firsts[norm(ss[0])] > 1) problems.push('same opening as another reply');
+    if (ss.length > 1 && lasts[norm(ss[ss.length - 1])] > 1) problems.push('same closing as another reply');
+    if (ss.some((x) => x.split(/\s+/).length > 8 && longs[norm(x)] > 1)) problems.push('repeats a sentence from another reply');
+    if (r.offer && total >= 1 && withOffer > Math.max(1, Math.floor(total / 5))) problems.push(`too many product replies today (${withOffer} of ${total}; max 1 in 5)`);
     if (problems.length) { console.log(`  ✖ #${r.n}: ${problems.join('; ')} — not posted`); continue; }
     try {
       const yt = google.youtube({ version: 'v3', auth: await authorize(r.channel) });
