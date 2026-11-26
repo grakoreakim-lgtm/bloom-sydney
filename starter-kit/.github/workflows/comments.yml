@@ -1,0 +1,47 @@
+# Viewer comments: read new ones into ops/comments/inbox-<date>.json, or post replies the owner approved.
+name: comments
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode: { description: 'scopes | fetch | post', required: true, default: 'fetch' }
+      file: { description: 'post: ops/comments/replies-<date>.json', required: false, default: '' }
+      days: { description: 'fetch: how many days back', required: false, default: '14' }
+
+permissions:
+  contents: write
+
+jobs:
+  comments:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
+      - name: Write secrets
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+          YT_REFRESH_TOKEN_GOV: ${{ secrets.YT_REFRESH_TOKEN_GOV }}
+          YT_REFRESH_TOKEN_APPS: ${{ secrets.YT_REFRESH_TOKEN_APPS }}
+        run: node upload/secrets-from-env.js
+      - name: Run
+        env: { MODE: '${{ github.event.inputs.mode }}', FILE: '${{ github.event.inputs.file }}', DAYS: '${{ github.event.inputs.days }}' }
+        run: |
+          case "$MODE" in
+            scopes) node upload/comments.js scopes ;;
+            fetch)  node upload/comments.js fetch --days "$DAYS" ;;
+            post)   node upload/comments.js post "$FILE" ;;
+            *) echo "unknown mode $MODE"; exit 1 ;;
+          esac | tee -a $GITHUB_STEP_SUMMARY
+      - name: Save inbox / posted state
+        if: always()
+        run: |
+          git config user.name "comments bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ops/comments/ 2>/dev/null; git diff --cached --quiet || { git commit -m "comments: $(date +%F) ${{ github.event.inputs.mode }}"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push origin HEAD:"$GITHUB_REF_NAME"; }

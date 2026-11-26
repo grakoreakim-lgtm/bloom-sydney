@@ -1,0 +1,199 @@
+{
+  "_comment": "Settings for the daily build. Fill channelIds after check-tokens, brands with your channel names, formMap/thumbText per topic. See PLAYBOOK.md.",
+  "calendar": "upload-calendar.csv",
+  "target": "mock",
+  "_target": "Set to \"live\" once forms/<id>.js live selectors are verified; CI runners can reach government sites, but CAPTCHA fields are only shown, never filled.",
+  "channels": {
+    "ko": "ko",
+    "en": "en",
+    "hi": "en",
+    "es": "en",
+    "id": "en",
+    "ja": "en"
+  },
+  "_channels": "language → token file suffix (upload/secrets/token-<suffix>.json). Non-EN/KO languages start on the EN channel.",
+  "timezone": {
+    "ko": "Asia/Seoul",
+    "en": "Asia/Seoul",
+    "hi": "Asia/Seoul",
+    "es": "Asia/Seoul",
+    "id": "Asia/Seoul",
+    "ja": "Asia/Seoul",
+    "default": "Asia/Seoul"
+  },
+  "publishHours": {
+    "ko": [
+      7,
+      12,
+      18,
+      20,
+      22
+    ],
+    "en": [
+      7,
+      11,
+      15,
+      18,
+      21
+    ],
+    "default": [
+      7,
+      11,
+      15,
+      18,
+      21
+    ]
+  },
+  "tts": {
+    "maxMinutesPerVideo": 15,
+    "speakingRate": 1,
+    "voices": {
+      "ko": {
+        "provider": "gemini",
+        "name": "Leda",
+        "model": "gemini-2.5-pro-preview-tts",
+        "split": false,
+        "prompt": "친근하고 차분한 여행 가이드처럼, 또렷하고 자연스럽게, 너무 빠르지 않게 한국어로 읽어 주세요. 지시문은 읽지 말고 아래 문장만 읽으세요:",
+        "filler": {
+          "text": "음…",
+          "volume": 0.35,
+          "every": 4,
+          "onMistakes": true
+        }
+      },
+      "en": {
+        "provider": "gemini",
+        "name": "Leda",
+        "model": "gemini-2.5-pro-preview-tts",
+        "split": false,
+        "prompt": "Read the following like a friendly, calm travel guide: clear, natural and not too fast. Do not read this instruction, only the text below:",
+        "filler": {
+          "text": "Hmm…",
+          "volume": 0.35,
+          "every": 4,
+          "onMistakes": true
+        }
+      },
+      "hi": {
+        "languageCode": "hi-IN",
+        "name": "hi-IN-Neural2-A"
+      },
+      "es": {
+        "languageCode": "es-ES",
+        "name": "es-ES-Neural2-A"
+      },
+      "id": {
+        "languageCode": "id-ID",
+        "name": "id-ID-Wavenet-A"
+      },
+      "ja": {
+        "languageCode": "ja-JP",
+        "name": "ja-JP-Neural2-B"
+      }
+    },
+    "fallback": {
+      "ko": {
+        "languageCode": "ko-KR",
+        "name": "ko-KR-Chirp3-HD-Kore",
+        "filler": {
+          "text": "음…",
+          "volume": 0.35,
+          "atPauses": true
+        }
+      },
+      "en": {
+        "languageCode": "en-US",
+        "name": "en-US-Chirp3-HD-Leda",
+        "filler": {
+          "text": "Hmm…",
+          "volume": 0.35,
+          "every": 4,
+          "onMistakes": true
+        }
+      }
+    },
+    "_fallback": "If Gemini TTS fails (e.g. prepaid credits used up), the video is made with these voices instead and an issue is opened to notify the owner."
+  },
+  "bgm": "assets/bgm",
+  "formMap": {
+    "TDAC 태국 디지털 입국카드": "tdac"
+  },
+  "_formMap": "calendar 서식/주제 → forms/<id>.js. Add a line each time you create a form definition.",
+  "affiliate": {
+    "_comment": "Your affiliate links. Keys under default = country column of the calendar.",
+    "fallback": {},
+    "default": {}
+  },
+  "_affiliate": "Travelpayouts / Impact tracking links per country. Keys are the 국가 column without the flag.",
+  "hashtags": {
+    "ko": ["입국신고서", "전자비자", "해외여행준비", "따라하면끝"],
+    "en": ["arrivalcard", "evisa", "travelprep", "copymyscreen"]
+  },
+  "tags": {
+    "ko": ["입국신고서", "전자입국카드", "비자 신청", "해외여행 준비", "공항 입국심사", "따라하기"],
+    "en": ["arrival card", "digital arrival card", "e-visa", "how to fill", "step by step", "travel documents", "immigration"]
+  },
+  "publishWindow": {
+    "default": {
+      "from": 6,
+      "to": 10
+    }
+  },
+  "_publishWindow": "Each video goes public at a random time between from:00 and to:00 in its channel timezone (KO: Asia/Seoul, EN: America/New_York).",
+  "_timezone": "All channels publish on Korean time (06:00-10:00 KST window).",
+  "seo": {
+    "keywords": "seo/keywords.json",
+    "learned": "seo/learned.json",
+    "lockedVideos": [],
+    "_lockedVideos": "Video IDs whose title must not be auto-rotated (e.g. while a YouTube Studio A/B test runs). Tell Claude the ID when you start a test."
+  },
+  "shorts": {
+    "enabled": true
+  },
+  "_shorts": "One vertical Shorts clip (common-mistake moments) per main video, uploaded 1.5 h after it, within uploadsPerDay.",
+  "uploadsPerDay": 6,
+  "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase.",
+  "fillEmptySlots": true,
+  "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json).",
+  "channelIds": {},
+  "_channelIds": "Token key (ko, en, …) → YouTube channel id (UC…). Run the check-tokens workflow and copy the ids here; uploads refuse to go to a channel not listed for that token.",
+  "bgmVolume": 0.14,
+  "_bgm": "Folder of background tracks (see assets/bgm/README.md). Empty folder = no music.",
+  "extraTopics": [],
+  "_extraTopics": "Tutorials outside the calendar (\"after you arrive\" series). Produced before the calendar backlog; skipped until forms/<form>.js exists.",
+  "maxVideosPerDay": 3,
+  "_maxVideosPerDay": "Cap on main videos per day (quality over volume until monetization review). Raise later.",
+  "playlists": {
+    "ko": {
+      "태국 여행 준비": ["tdac"]
+    },
+    "en": {
+      "Thailand Trip Prep": ["tdac"]
+    }
+  },
+  "playlistDescription": {
+    "ko": "",
+    "en": ""
+  },
+  "_playlists": "Per-channel \"trip prep\" playlists, videos in this order (upload/maintain.js).",
+  "liveForms": [],
+  "_liveForms": "Forms recorded on the real website (form.stepsLive). Others use the practice page.",
+  "affiliateByForm": {
+    "tdac": "태국"
+  },
+  "channelSchedule": {},
+  "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"My Channel: Gov\" (secret YT_REFRESH_TOKEN_GOV), apps = \"My Channel: Apps & AI\" (secret YT_REFRESH_TOKEN_APPS).",
+  "phraseQueue": ["jp-restaurant"],
+  "_phraseQueue": "Travel-phrase episodes built one per night (upload/phrases.js --next), after the tutorials, within the shared upload budget.",
+  "thumbText": {
+    "_": "Thumbnail text per form:language = [where (white), what (yellow, biggest), why click (red chip)]. Keep each line short; every claim must be true for the video.",
+    "tdac:ko": ["태국", "입국신고서", "종이 카드 폐지 · 무료"],
+    "tdac:en": ["THAILAND", "ARRIVAL CARD", "TDAC · FREE · 5 MIN"]
+  },
+  "brands": {
+    "ko": "My Channel (KO)",
+    "en": "My Channel (EN)"
+  },
+  "parkedTopics": [],
+  "_parkedTopics": "Finished tutorials that are not scheduled (the Apps & AI channel changed focus to AI assistants). Move back into extraTopics to publish."
+}

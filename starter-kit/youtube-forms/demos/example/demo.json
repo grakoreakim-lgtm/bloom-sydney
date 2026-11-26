@@ -1,0 +1,18 @@
+{
+  "id": "example-demo",
+  "channel": "en",
+  "lang": "en",
+  "title": "Example: turn a receipt photo into a spreadsheet with an AI chat app",
+  "lead": "Shows the format only. Replace with your own recording (screen.mp4 next to this file) and what really happened in it.",
+  "tags": ["example"],
+  "hashtags": ["Example"],
+  "checkedOn": "2026-12-01",
+  "sources": ["https://example.com/official-help-page"],
+  "intro": { "title": "Receipt photo → spreadsheet", "say": "Today we try one real feature, step by step." },
+  "segments": [
+    { "from": 2, "to": 22, "caption": "Open a new chat and attach the photo", "say": "First, open a new chat and attach the photo of the receipt." },
+    { "from": 25, "to": 50, "caption": "Ask for a table: date, item, price", "say": "Now ask for a table with the date, the item and the price." },
+    { "from": 52, "to": 78, "caption": "Download it as a spreadsheet", "say": "Finally, download the result as a spreadsheet file." }
+  ],
+  "outro": { "title": "Try it yourself", "say": "That is all. Questions? Ask in the comments." }
+}

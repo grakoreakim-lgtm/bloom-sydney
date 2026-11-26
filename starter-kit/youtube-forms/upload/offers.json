@@ -1,0 +1,31 @@
+{
+  "_": "What a comment reply may recommend. One entry per product/service. Replies may only link to offers listed here, and only when the offer truly fits the commenter's situation. 'fits' and 'notFor' are what the reply writer matches against. Add a new channel's products (e.g. AI glasses) the same way.",
+  "disclosure": {
+    "ko": "(제휴 링크라 구매 시 채널에 수수료가 지급될 수 있어요. 가격은 같아요.)",
+    "en": "(Affiliate link: the channel may earn a commission at no extra cost to you.)"
+  },
+  "offers": [
+    {
+      "id": "example-esim",
+      "category": "esim",
+      "name": {
+        "ko": "예시 eSIM",
+        "en": "Example eSIM"
+      },
+      "link": {
+        "default": "https://example.com/your-affiliate-link"
+      },
+      "fits": [
+        "phone supports eSIM",
+        "wants data from landing"
+      ],
+      "notFor": [
+        "phone without eSIM"
+      ],
+      "facts": {
+        "ko": "출국 전에 설치합니다.",
+        "en": "Install before you fly."
+      }
+    }
+  ]
+}
