@@ -330,7 +330,7 @@
     }
   },
   "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (secret YT_REFRESH_TOKEN_GOV), apps = \"Copy My Screen: Apps & AI\" (secret YT_REFRESH_TOKEN_APPS).",
-  "phraseQueue": ["jp-restaurant", "jp-convenience", "jp-transport"],
+  "phraseQueue": ["jp-restaurant", "jp-convenience", "jp-transport", "jp-hotel"],
   "_phraseQueue": "Travel-phrase episodes built one per night (upload/phrases.js --next), after the tutorials, within the shared upload budget.",
   "thumbText": {
     "_": "Thumbnail text per form:language = [where (white), what (yellow, biggest), why click (red chip)]. Keep each line short; every claim must be true for the video.",
