@@ -214,7 +214,7 @@ function planChannels(date, startSlot) {
       fs.writeFileSync(`${base}.meta.json`, JSON.stringify(meta, null, 1));
       // 6) upload (private + publishAt)
       const hold = review || !check.ok;   // never auto-publish a video that failed QA
-      const up = await upload(chOf(form, lang), meta, final, thumb, { dryRun: dry, review: hold, publishNow: publishNow && !hold, ...guardFor(chOf(form, lang)) });
+      const up = await upload(chOf(form, lang), meta, final, thumb, { dryRun: dry, review: hold, allowDuplicate: flag('redo'), publishNow: publishNow && !hold, ...guardFor(chOf(form, lang)) });
       if (!up.duplicate && !dry) uploads++;
       console.log(`    ✔ ${up.url}  ${!check.ok ? 'PRIVATE — QA failed, needs a fix' : review ? 'PRIVATE (review — publish in YouTube Studio)' : publishNow ? 'PUBLIC now' : 'publishAt=' + meta.publishAt}`);
       log.push({ row, status: check.ok ? 'ok' : 'qa-failed', qa: check, video: final, url: up.url, publishAt: meta.publishAt });

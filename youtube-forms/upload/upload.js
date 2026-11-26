@@ -21,7 +21,7 @@ async function upload(channel, meta, videoFile, thumbFile, opts = {}) {
     }
   }
   // duplicate guard: a manual run and the scheduled run must not post the same video twice
-  const dup = await findByTitle(yt, meta.title);
+  const dup = opts.allowDuplicate ? null : await findByTitle(yt, meta.title);   // allowDuplicate: a fixed re-upload of an existing video
   if (dup) { console.log(`  ⏭ already on the channel: ${meta.title}`); return { id: dup, url: `https://youtu.be/${dup}`, duplicate: true }; }
   const size = fs.statSync(videoFile).size;
   let shown = 0;
