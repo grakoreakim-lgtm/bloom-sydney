@@ -42,7 +42,7 @@ DB = [
  ('미국','🇺🇸','S',[('ESTA','ESTA 전자여행허가','https://esta.cbp.dhs.gov','$40','2년, 출발 72시간 전 권장','있음','사기 대행 사이트 多'),
                    ('DS160','DS-160 관광비자 신청서','https://ceac.state.gov/genniv','$185','인터뷰 예약 별도','있음','사진 규격 자주 반려'),
                    ('I94','I-94 입국기록 확인·출력','https://i94.cbp.dhs.gov','무료','체류기간 확인용','없음','')],[]),
- ('영국','🇬🇧','S',[('UKETA','UK ETA 전자여행허가','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta','£16','2년, 앱 신청','없음(앱)','한국인 2025~ 필수'),
+ ('영국','🇬🇧','S',[('UKETA','UK ETA 전자여행허가','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta','£20','2년 (여권 만료 시 종료)','없음(앱)','한국인 2025~ 필수'),
                    ('UKVISA','영국 방문비자 온라인 신청','https://www.gov.uk/standard-visitor','£127~',V,'없음','인도·필리핀 등')],[]),
  ('EU 쉥겐','🇪🇺','S',[('SCHENGEN','쉥겐 비자 신청서 작성','https://home-affairs.ec.europa.eu','€90',V,'없음','인도·필리핀·인니 등 비자 필요국'),
                       ('EES','EES 생체정보 등록 절차','https://travel-europe.europa.eu/ees_en','무료','2025.10~ 시행','없음','공항 키오스크 안내'),
