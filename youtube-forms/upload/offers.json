@@ -1,0 +1,30 @@
+{
+  "_": "What a comment reply may recommend. One entry per product/service. Replies may only link to offers listed here, and only when the offer truly fits the commenter's situation. 'fits' and 'notFor' are what the reply writer matches against. Add a new channel's products (e.g. AI glasses) the same way.",
+  "disclosure": {
+    "ko": "(제휴 링크라 구매 시 채널에 수수료가 지급될 수 있어요. 가격은 같아요.)",
+    "en": "(Affiliate link: the channel may earn a commission at no extra cost to you.)"
+  },
+  "offers": [
+    {
+      "id": "airalo-esim", "category": "esim", "name": { "ko": "Airalo eSIM", "en": "Airalo eSIM" },
+      "link": { "default": "https://airalo.tpk.lv/h6d3oVBn", "싱가포르": "https://airalo.tpk.lv/b2F6T6Nm", "말레이시아": "https://airalo.tpk.lv/PLqWjcrm" },
+      "fits": ["phone supports eSIM", "wants data from landing", "keeps home number active", "short trips"],
+      "notFor": ["phone without eSIM support", "needs a local phone number for calls/SMS"],
+      "facts": { "ko": "앱에서 나라별 데이터 요금을 골라 출국 전에 설치합니다.", "en": "Pick a country data plan in the app and install it before you fly." }
+    },
+    {
+      "id": "klook-transfer", "category": "pickup", "name": { "ko": "Klook 공항 픽업·교통", "en": "Klook airport transfers" },
+      "link": { "default": "https://klook.tpk.lv/d4yQTZBG" },
+      "fits": ["arrives late at night", "family or lots of luggage", "wants a fixed price"],
+      "notFor": ["budget traveller happy with train/Grab"],
+      "facts": { "ko": "미리 예약하면 기사님이 공항에서 기다립니다.", "en": "Book ahead and a driver waits at arrivals." }
+    },
+    {
+      "id": "klook-tours", "category": "tour", "name": { "ko": "Klook 투어·입장권", "en": "Klook tours & tickets" },
+      "link": { "default": "https://klook.tpk.lv/OE8h3jHh" },
+      "fits": ["asks about attractions, passes, day trips"],
+      "notFor": ["questions about visas or forms"],
+      "facts": { "ko": "관광지 입장권과 투어를 미리 예약할 수 있습니다.", "en": "Book attraction tickets and tours ahead." }
+    }
+  ]
+}

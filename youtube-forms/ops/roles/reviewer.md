@@ -28,6 +28,10 @@ every finding names the file/video, the exact wrong text, why it is wrong, and t
   audio), hold it: `node upload/set-public.js --privacy private <id>` (via the `set-public` workflow) and say so in the report.
   Holding is allowed; publishing is not. Never edit titles/descriptions of videos that are already public — propose instead.
 
+## 2b. Comments that report a problem
+Read the newest `ops/comments/inbox-*.json` and `replies-*.json`: comments typed `problem` ("the site looks different", "error at step N")
+are leads — check that step against the source and fix the definition if the comment is right.
+
 ## 3. Write the report
 `ops/reviews/<date>.md` in Korean, plain words, short:
 - 통과 / 고친 것 / 보류한 영상 / 확인 못 한 것 / 대표님 판단이 필요한 것

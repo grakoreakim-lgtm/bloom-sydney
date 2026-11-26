@@ -201,6 +201,7 @@ const recapCard = () => `<body style="margin:0;width:1280px;height:720px;backgro
     ...(P.bonus ? [`+ ${P.bonus.ja}  ${P.bonus.pron} — ${P.bonus.ko}`] : []), '',
     ...(aff.esim || aff.tour ? ['※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', ...(aff.esim ? [`📱 eSIM: ${aff.esim}`] : []), ...(aff.tour ? [`🎟 투어·입장권: ${aff.tour}`] : []), ''] : []),
     '⏱ 구간', ...chapters.map((c) => `${mmss(c.t)} ${c.label}`), '',
+    '💬 이런 상황엔 뭐라고 해요? 궁금한 표현을 댓글로 남겨 주시면 답해 드려요.',
     subLine(cfg, P.channel, 'ko'),
     '🎙 내레이션과 현지어 발음은 AI 음성입니다. 문장은 일반적인 여행 회화 표현으로 확인했습니다.', '',
     P.hashtags.map((h) => `#${h}`).join(' '),

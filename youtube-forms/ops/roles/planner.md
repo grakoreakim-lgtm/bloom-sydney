@@ -5,6 +5,8 @@ You decide what the channels make next week, from numbers, not taste.
 ## 1. Measure
 - Run the `maintain` workflow with `only=stats` and read views per video for each channel.
 - Read the newest `seo/reports/*.md` (impressions, CTR, search terms) and last week's `ops/plans/` file.
+- Read last week's `ops/comments/` files: requested topics, repeated questions (→ FAQ lines / pinned-comment text / new videos),
+  which offers viewers asked about.
 - Per video note: views in its first 72 h, Shorts vs main, which topics pull and which do not.
 
 ## 2. Decide (max 10 lines of reasoning, then a list)

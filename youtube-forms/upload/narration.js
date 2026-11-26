@@ -34,7 +34,7 @@ function buildScript(form, lang, target = 'mock') {
       // short intro: the hook (first two sentences) and any "unofficial guide" notice, then straight to the screen
       if (c.id === 'intro') { const ss = text.match(/[^.!?。]+[.!?。]+["'”’]?\s*/g) || [text]; text = ss.filter((x, i) => i < INTRO_SENTENCES || /unofficial|not affiliated|비공식|공식 기관이 아/i.test(x)).join('').trim(); }
       // one short spoken reason to subscribe at the very end (skipped when the outro already asks)
-      if (c.id === 'outro' && !/구독|subscribe/i.test(text)) text += lang === 'ko' ? ' 도움이 됐다면 구독해 두세요. 서식이 바뀌면 새 영상으로 알려 드려요.' : ' If this helped, subscribe. When the form changes, we post an updated video.';
+      if (c.id === 'outro' && !/구독|subscribe/i.test(text)) text += lang === 'ko' ? ' 궁금한 건 댓글로 물어보세요, 답해 드려요. 도움이 됐다면 구독도 해 두세요.' : ' Questions? Ask in the comments and we will answer. If this helped, subscribe.';
       lines.push({ id: `card-${c.id}`, text });
       continue;
     }
