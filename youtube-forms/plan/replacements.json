@@ -1,0 +1,16 @@
+{
+ "esta:ko": {
+  "channel": "ko",
+  "old": "https://youtu.be/OLowVqk_iM0",
+  "new": "https://youtu.be/V2NznO17sXg",
+  "uploaded": "2026-11-26T14:26:26.212Z",
+  "sync": "PASS — 22 steps, 33 cues, 22 on-screen checks, sync 33/33 (max shift 52.7 s)"
+ },
+ "esta:en": {
+  "channel": "en",
+  "old": "https://youtu.be/kiRQGdWdGZ4",
+  "new": "https://youtu.be/JCnzjqHT070",
+  "uploaded": "2026-11-26T14:26:30.420Z",
+  "sync": "PASS — 22 steps, 33 cues, 22 on-screen checks, sync 33/33 (max shift 43.8 s)"
+ }
+}
