@@ -1,0 +1,32 @@
+# Check narration ↔ screen sync of finished builds (daily-videos artifacts). Results go to the sync-output branch.
+name: sync-check
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_ids: { description: 'daily-videos run IDs (space separated)', required: true }
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: Download artifacts
+        env: { GH_TOKEN: '${{ github.token }}', RUN_IDS: '${{ github.event.inputs.run_ids }}' }
+        run: for id in $RUN_IDS; do gh run download "$id" -R "$GITHUB_REPOSITORY" -D "artifacts/$id" || echo "no artifact for $id"; done
+      - name: Check
+        run: |
+          mkdir -p sync-out
+          for d in $(find artifacts -type d -path '*/days/*' -maxdepth 6 | grep -E '/days/[0-9-]+$'); do
+            node upload/sync-check.js "$d" --out "sync-out/$(echo $d | tr '/' '_')" | tee -a $GITHUB_STEP_SUMMARY
+          done
+      - name: Publish to sync-output branch
+        run: |
+          cd sync-out && git init -q && git checkout -q -b sync-output && git add -A && git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "sync check" && git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sync-output
