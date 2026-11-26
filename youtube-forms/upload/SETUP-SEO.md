@@ -13,7 +13,9 @@
 https://console.cloud.google.com/auth/scopes → **범위 추가 또는 삭제** → 아래 값을 직접 입력해 추가 → **저장**
 ```
 https://www.googleapis.com/auth/yt-analytics.readonly
+https://www.googleapis.com/auth/youtube.force-ssl
 ```
+(youtube.force-ssl: 댓글에 답글 달기)
 ⚠ 앱 상태는 **프로덕션**으로 그대로 두세요. 테스트로 바꾸면 안 됩니다.
 
 ## 3. 토큰 다시 발급 (채널마다 한 번씩, 지난번과 같은 방법)
@@ -21,7 +23,7 @@ https://www.googleapis.com/auth/yt-analytics.readonly
 2. ⚙(오른쪽 위)에서 **Use your own OAuth credentials**가 체크돼 있는지 확인합니다. 풀렸으면 지난번처럼 다시 입력합니다.
 3. 왼쪽 아래 입력칸에 아래 한 줄을 그대로 붙여 넣고 **Authorize APIs**를 누릅니다.
    ```
-   https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/yt-analytics.readonly
+   https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/yt-analytics.readonly
    ```
 4. grakorea.kim 계정을 고른 뒤 채널 **따라하면 끝**을 선택하고 모두 허용합니다. "확인되지 않은 앱" 경고가 나오면 **고급 → 이동**을 누르세요.
 5. **Exchange authorization code for tokens**를 누르고 Refresh token을 복사합니다. 채팅이나 스크린샷에는 남기지 마세요.
