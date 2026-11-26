@@ -24,9 +24,9 @@ jobs:
       - name: Check
         run: |
           mkdir -p sync-out
-          for d in $(find artifacts -type d -path '*/days/*' -maxdepth 6 | grep -E '/days/[0-9-]+$'); do
+          for d in $(find artifacts -type d -name 'rec-*' -exec dirname {} \; | sort -u); do
             node upload/sync-check.js "$d" --out "sync-out/$(echo $d | tr '/' '_')" | tee -a $GITHUB_STEP_SUMMARY
           done
       - name: Publish to sync-output branch
         run: |
-          cd sync-out && git init -q && git checkout -q -b sync-output && git add -A && git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "sync check" && git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sync-output
+          ls -R sync-out | head -50; cd sync-out && git init -q && git checkout -q -b sync-output && git add -A && git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "sync check" && git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sync-output
