@@ -228,14 +228,14 @@ module.exports = {
 
     // ---------- OUTRO (ticket) ----------
     { type: 'card', hold: 5000, card: {
-      ko: { id: 'outro', speech: '끝났어요. 큐알 코드 캡처는 휴대폰에 저장해 두고, 입국 심사에서 여권이랑 같이 준비하세요. 다음은 중국 무비자 입국 조건이랑 해외여행 이심 개통이에요. 설명란에 링크 있습니다.',
+      ko: { id: 'outro', speech: '끝났어요. 큐알 코드 캡처는 휴대폰에 저장해 두고, 입국 심사에서 여권이랑 같이 준비하세요. 해외여행 이심 개통 영상은 설명란에 링크 있습니다.',
             route, title: '끝. **이제 이것만 준비하세요**', subtitle: '입국신고서 QR은 휴대폰에 저장. 입국 심사에서 여권과 함께.',
             meta: [{ k: '설명란 1줄', v: '공식 사이트' }, { k: '설명란 2줄', v: 'eSIM' }, { k: '설명란 3줄', v: '공항 이동' }], stamp: '제출\n완료', flag: '🇨🇳',
-            rightTitle: '다음 영상', rightText: '', next: ['🇨🇳 중국 무비자 입국 조건', '📱 해외여행 eSIM 5분 개통', '🔔 서식 바뀌면 최신판 알림'], brand: '▶ 따라하면 끝 · 입국신고서·비자' },
-      en: { id: 'outro', speech: 'Done. Keep the QR code screenshot on your phone and have it ready with your passport at immigration. Up next: China visa-free entry rules, and a travel eSIM in five minutes. Links are in the description.',
+            rightTitle: '다음 영상', rightText: '', next: ['📱 해외여행 eSIM 5분 개통', '🔔 서식 바뀌면 최신판 알림'], brand: '▶ 따라하면 끝 · 입국신고서·비자' },
+      en: { id: 'outro', speech: 'Done. Keep the QR code screenshot on your phone and have it ready with your passport at immigration. A travel eSIM video is linked in the description.',
             route, title: 'Done. **Only these left**', subtitle: 'Keep the arrival card QR on your phone, ready with your passport.',
             meta: [{ k: 'LINE 1', v: 'Official site' }, { k: 'LINE 2', v: 'eSIM' }, { k: 'LINE 3', v: 'Transfer' }], stamp: 'SUB\nMITTED', flag: '🇨🇳',
-            rightTitle: 'Up next', rightText: '', next: ['🇨🇳 China visa-free entry', '📱 Travel eSIM in 5 min', '🔔 Subscribe for updates'], brand: '▶ Copy My Screen' },
+            rightTitle: 'Up next', rightText: '', next: ['📱 Travel eSIM in 5 min', '🔔 Subscribe for updates'], brand: '▶ Copy My Screen' },
     }},
   ],
 };

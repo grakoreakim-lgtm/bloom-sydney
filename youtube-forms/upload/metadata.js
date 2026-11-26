@@ -4,16 +4,16 @@
 const { loadSeo, entryFor, fillTitle, fitTags } = require('./seo');
 const L = {
   ko: { official: '📌 공식 사이트(무료)', disclosure: '※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', chapters: '⏱ 구간', esim: '📱 eSIM', hotel: '🏨 호텔', pickup: '🚆 공항 픽업·교통', tour: '🎟 투어·입장권',
-        lead: (p, c, f) => `${p} — ${c} 가기 전 꼭 해야 하는 ${f}, 실제 화면 그대로 따라 하면 5분이면 끝납니다.`, faq: '🔎 이 영상에서 답하는 질문', search: '함께 찾는 검색어',
+        lead: (p, c, f, live) => `${p} — ${c} 가기 전 꼭 해야 하는 ${f}, ${live ? '실제 사이트 화면 그대로' : '화면 그대로'} 따라 하면 끝납니다.`, faq: '🔎 이 영상에서 답하는 질문', search: '함께 찾는 검색어',
         outro: '💬 내 상황(경유, 아이 동반, 여권 종류 등)을 댓글로 남겨 주시면 맞는 방법을 답해 드려요. 구독하면 서식이 바뀔 때 최신판을 보내드립니다.', sample: '영상 속 개인정보는 모두 가상의 샘플입니다. 제출은 반드시 공식 사이트에서만 하세요.', ai: '🎙 내레이션은 AI 음성(Google TTS)이며, 화면과 내용은 직접 확인해 만들었습니다.' },
   en: { official: '📌 Official site (free)', disclosure: '※ Links below may earn this channel a commission at no extra cost to you.', chapters: '⏱ Chapters', esim: '📱 eSIM', hotel: '🏨 Hotels', pickup: '🚆 Airport transfer', tour: '🎟 Tours & tickets',
-        lead: (p, c, f) => `${p} — fill in the ${f} for ${c} by copying the real screen, step by step, in about 5 minutes.`, faq: '🔎 Questions answered in this video', search: 'Related searches',
+        lead: (p, c, f, live) => `${p} — fill in the ${f} for ${c} step by step, copying ${live ? 'the real site' : 'the screen'}.`, faq: '🔎 Questions answered in this video', search: 'Related searches',
         outro: '💬 Tell us your situation in the comments (transit, kids, passport type…) and we will reply with what fits. Subscribe — we re-upload whenever the form changes.', sample: 'All personal data on screen is fictional sample data. Only ever submit on the official site.', ai: '🎙 Narration uses an AI voice (Google TTS); the steps and content were checked by us.' },
 };
 const T = (lang) => L[lang] || L.en;
 // one-tap subscribe link for the channel this video goes to (null when the channel id is not known yet)
 const subLine = (cfg, ch, lang) => { const id = cfg?.channelIds?.[ch]; return id ? `${lang === 'ko' ? '🔔 구독하기' : '🔔 Subscribe'}: https://www.youtube.com/channel/${id}?sub_confirmation=1` : null; };
-const FACT_EN = { '무료': 'Free', '도착 3일 전': 'Within 3 days before arrival', '도착 72시간 전': 'Within 72 hours before arrival' };
+const FACT_EN = { '무료': 'Free', '도착 3일 전': 'Within 3 days before arrival', '도착 72시간 전': 'Within 72 hours before arrival', '출발 전 미리 (공식 사이트 무료)': 'Before you fly (free on the official site)', '2년 (여권 만료 시 종료)': '2 years (ends if your passport expires)' };
 
 const mmss = (ms) => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
@@ -35,9 +35,10 @@ function buildMetadata(row, form, timeline, aff, cfg) {
   const title = (kw ? fillTitle((kw.titles && kw.titles[0]) || '{primary} {year} | {hook}', kw, year) : row['제목(초안)']).slice(0, 100);
   const chapters = [{ t: 0, label: lang === 'ko' ? '시작' : 'Intro' }, ...(timeline?.chapters || [])];
   const affLines = [aff.esim && `${t.esim}: ${aff.esim}`, aff.pickup && `${t.pickup}: ${aff.pickup}`, aff.hotel && `${t.hotel}: ${aff.hotel}`, aff.tour && `${t.tour}: ${aff.tour}`].filter(Boolean);
-  const tr = (v) => (lang === 'ko' ? v : (FACT_EN[v] || v));
-  const facts = [row['비용'] && row['비용'] !== '-' ? `💰 ${tr(row['비용'])}` : null, row['제출 시점·유효'] && row['제출 시점·유효'] !== '-' ? `🗓 ${tr(row['제출 시점·유효'])}` : null].filter(Boolean).join('   ');
-  const lead = kw?.lead || (kw && t.lead ? t.lead(kw.primary, form?.country?.[lang] || country, formName) : null);   // keywords.json may give its own first line
+  // English descriptions never get untranslated Korean (calendar columns are Korean)
+  const tr = (v) => (lang === 'ko' ? v : (FACT_EN[v] || (/[가-힣]/.test(v) ? null : v)));
+  const facts = [row['비용'] && row['비용'] !== '-' && tr(row['비용']) ? `💰 ${tr(row['비용'])}` : null, row['제출 시점·유효'] && row['제출 시점·유효'] !== '-' && tr(row['제출 시점·유효']) ? `🗓 ${tr(row['제출 시점·유효'])}` : null].filter(Boolean).join('   ');
+  const lead = kw?.lead || (kw && t.lead ? t.lead(kw.primary, form?.country?.[lang] || country, formName, (cfg.liveForms || []).includes(form?.id)) : null);   // keywords.json may give its own first line
   const hashtags = [...new Set([...(kw?.hashtags || []), ...(cfg.hashtags?.[lang] || cfg.hashtags?.en || [])])].slice(0, 8);
   const searchTerms = kw ? [...new Set([...(kw.learned || []), ...(kw.secondary || [])])].slice(0, 12) : [];
   const description = [
