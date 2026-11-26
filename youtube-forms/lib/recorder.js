@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const overlay = require('./overlay');
+const { align } = require('./align');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -42,7 +43,8 @@ class Recorder {
   }
 
   wait(ms) { return sleep(ms * this.speed); }
-  cue(id) { if (this.t0 == null) this.t0 = Date.now(); this.cues.push({ id, t: Date.now() - this.t0 }); }
+  // every cue also changes the corner sync marker (index = cue number + 1; 0 = before the first cue)
+  cue(id) { if (this.t0 == null) this.t0 = Date.now(); this.cues.push({ id, t: Date.now() - this.t0, mark: this.cues.length + 1 }); this.page.evaluate((n) => window.__ytOverlay.mark(n), this.cues.length).catch(() => {}); }
   // hold for the longer of the designed pause and the narration clip (+ a beat)
   holdFor(id, designedMs) { const n = this.narration[id]; return this.wait(n ? Math.max(designedMs, n / this.speed + 400) : designedMs); }
 
@@ -64,6 +66,7 @@ class Recorder {
     if (this.target === 'live') for (const p of this.form.livePre || []) { if (p.goto) await this.page.goto(p.goto, { waitUntil: 'networkidle' }); else await this.page.locator(p.click).first().click({ timeout: 15000 }); await this.page.waitForLoadState('networkidle').catch(() => {}); await sleep(1500); }
     await this.page.evaluate(() => window.__ytOverlay.install());
     await this.ov('setZoom', this.zoom);
+    await this.ov('mark', 0);
   }
 
   // close pop-ups such as a language-suggestion dialog that would block clicks
@@ -285,15 +288,21 @@ class Recorder {
     let mp4 = null;
     try {
       mp4 = path.join(this.outDir, `${base}.mp4`);
-      const scale = this.size.width !== this.outSize.width ? `-vf scale=${this.outSize.width}:${this.outSize.height}:flags=lanczos ` : '';
-      execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" ${scale}-c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
+      // scale to the output size and hide the corner sync marker (copy the strip just above it over it)
+      const W = this.outSize.width, H = this.outSize.height, mw = Math.ceil(72 * W / this.size.width) + 2, mh = Math.ceil(12 * H / this.size.height) + 2;
+      const vf = `scale=${W}:${H}:flags=lanczos,split[a][b];[b]crop=${mw}:${mh}:0:${H - 2 * mh}[p];[a][p]overlay=0:${H - mh}`;
+      execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" -filter_complex "${vf}" -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
     } catch (e) { mp4 = null; }
+    // put every cue on the video's own clock (see lib/align.js)
+    let sync = null;
+    try { const r = align(finalWebm, this.cues); this.cues = r.cues; sync = { found: r.found, total: r.total, maxShiftMs: r.maxShiftMs }; }
+    catch (e) { sync = { error: e.message.split('\n')[0] }; }
     // cue timeline (for narration muxing + chapter timestamps)
     const steps = this.steps.filter((s) => s.type !== 'card');
     const chapters = this.cues.filter((c) => /^s\d+-tip$/.test(c.id)).map((c) => {
       const i = Number(c.id.match(/^s(\d+)-/)[1]); return { t: c.t, label: steps[i - 1].text[this.lang].label };
     });
-    const timeline = { cues: this.cues, chapters, checks: this.checks, steps: steps.map((st, i) => ({ n: i + 1, field: st.field, type: st.type, hasTip: !!(st.text[this.lang].speech?.tip || st.text[this.lang].tip), hasMistake: !!(st.text[this.lang].speech?.mistake || st.text[this.lang].mistake) })) };
+    const timeline = { cues: this.cues, sync, chapters, checks: this.checks, steps: steps.map((st, i) => ({ n: i + 1, field: st.field, type: st.type, hasTip: !!(st.text[this.lang].speech?.tip || st.text[this.lang].tip), hasMistake: !!(st.text[this.lang].speech?.mistake || st.text[this.lang].mistake) })) };
     fs.writeFileSync(path.join(this.outDir, `${base}.timeline.json`), JSON.stringify(timeline, null, 1));
     return { webm: finalWebm, mp4, shots: this.shots, timeline };
   }
