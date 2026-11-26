@@ -148,7 +148,7 @@ function planChannels(date, startSlot) {
   if (onlyForms) {
     const pend = [];
     for (const f of onlyForms) for (const l of ['ko', 'en']) {
-      if (produced[`${f}:${l}`]) continue;
+      if (produced[`${f}:${l}`] && !flag('redo')) continue;   // --redo: rebuild topics already on YouTube (e.g. to fix them)
       const r = all.find((x) => FORM_MAP[x['서식/주제']] === f && x['언어'].toLowerCase() === l && x['유형'].startsWith('본편'));
       if (r) pend.push({ ...r, '날짜': date, '슬롯': String(pend.length + 1), '_filled': true });
     }
