@@ -30,6 +30,11 @@ function qa(timeline, clips, videoFile, { toleranceMs = 150 } = {}) {
     if (next && c.t + clip.durationMs > next.t + toleranceMs) problems.push(`cue ${c.id}: narration (${clip.durationMs} ms) runs ${c.t + clip.durationMs - next.t} ms into the next step (${next.id})`);
     const m = c.id.match(/^s(\d+)-/); if (m) { const n = Number(m[1]); if (n < lastStep) problems.push(`cue ${c.id}: out of order`); lastStep = n; }
   });
+  // 0) cues are on the video's own clock (sync markers found) — otherwise the voice can drift away from the screen
+  if (timeline.sync) {
+    if (timeline.sync.error) problems.push(`sync markers could not be read: ${timeline.sync.error}`);
+    else if (timeline.sync.found < Math.ceil(timeline.sync.total * 0.9)) problems.push(`sync markers found for only ${timeline.sync.found} of ${timeline.sync.total} cues`);
+  } else if (!timeline.noVideo) problems.push('no sync information (recording made without sync markers)');
   // 4) read-back of values on screen
   for (const ch of timeline.checks || []) if (!ch.ok) problems.push(`step ${ch.step} (${ch.field}): screen shows "${ch.actual ?? ch.why}" but narration expects "${ch.expected}"`);
   // 5) audio fits the video
@@ -40,7 +45,8 @@ function qa(timeline, clips, videoFile, { toleranceMs = 150 } = {}) {
   }
   const ok = problems.length === 0;
   const steps = (timeline.steps || []).length, checked = (timeline.checks || []).length;
-  return { ok, problems, summary: `${ok ? 'PASS' : 'FAIL'} — ${steps} steps, ${cues.length} cues, ${checked} on-screen checks${ok ? '' : `, ${problems.length} problem(s)`}` };
+  const sy = timeline.sync && !timeline.sync.error ? `, sync ${timeline.sync.found}/${timeline.sync.total} (max shift ${(timeline.sync.maxShiftMs / 1000).toFixed(1)} s)` : '';
+  return { ok, problems, summary: `${ok ? 'PASS' : 'FAIL'} — ${steps} steps, ${cues.length} cues, ${checked} on-screen checks${sy}${ok ? '' : `, ${problems.length} problem(s)`}` };
 }
 
 module.exports = { qa };

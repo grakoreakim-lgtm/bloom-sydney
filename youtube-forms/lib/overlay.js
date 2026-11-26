@@ -151,6 +151,15 @@ function callout(selector, { kind = 'tip', title, body, bad, good }) {
   }
 }
 // browser-style zoom of the page content (not the overlay) so form fields are readable on a phone
+// sync marker: two small solid-colour squares in the bottom-left corner that change at every narration cue.
+// After recording, upload/align.js finds the frame where each marker appears and places the voice there
+// (the recorded video's clock can run slower than the real clock on busy machines). The marker is erased afterwards.
+const MARK_COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff', '#000000'];
+function syncMark(n) {
+  let m = document.getElementById('yt-mark');
+  if (!m) { m = document.createElement('div'); m.id = 'yt-mark'; m.style.cssText = 'position:fixed;left:0;bottom:0;width:32px;height:16px;z-index:2147483647;display:flex;pointer-events:none'; m.innerHTML = '<i style="flex:1"></i><i style="flex:1"></i>'; document.documentElement.appendChild(m); }
+  const [a, b] = m.children; a.style.background = MARK_COLORS[n % 8]; b.style.background = MARK_COLORS[Math.floor(n / 8) % 8];
+}
 function setZoom(z) { if (document.body) document.body.style.zoom = String(z || 1); }
 function pause(text, sub) { install(); const p = document.getElementById('yt-pause'); p.innerHTML = esc(text) + (sub ? `<small>${esc(sub)}</small>` : ''); p.className = 'yt-ov on'; }
 function hidePause() { install(); document.getElementById('yt-pause').className = 'yt-ov'; }
@@ -176,8 +185,8 @@ module.exports = {
       const OVERLAY_CSS = ${JSON.stringify(OVERLAY_CSS)}; const CURSOR_SVG = ${JSON.stringify(CURSOR_SVG)};
       ${install.toString()} const esc = ${esc.toString()}; const mark = ${mark.toString()};
       ${setStep.toString()} ${setEasyPill.toString()} ${findEl.toString()} ${rectOf.toString()} ${highlight.toString()} ${clearHighlight.toString()}
-      ${callout.toString()} ${pause.toString()} ${hidePause.toString()} ${card.toString()} ${hideCard.toString()} ${moveCursor.toString()} ${clickCursor.toString()} ${setStrings.toString()} ${setZoom.toString()}
-      return { install, setStep, setEasyPill, setStrings, highlight, clearHighlight, callout, pause, hidePause, card, hideCard, moveCursor, clickCursor, setZoom };
+      ${callout.toString()} ${pause.toString()} ${hidePause.toString()} ${card.toString()} ${hideCard.toString()} ${moveCursor.toString()} ${clickCursor.toString()} ${setStrings.toString()} ${setZoom.toString()} const MARK_COLORS = ${JSON.stringify(MARK_COLORS)}; ${syncMark.toString()}
+      return { install, setStep, setEasyPill, setStrings, highlight, clearHighlight, callout, pause, hidePause, card, hideCard, moveCursor, clickCursor, setZoom, mark: syncMark };
     })();
   `,
 };
