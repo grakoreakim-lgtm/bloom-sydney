@@ -157,6 +157,8 @@ function planChannels(date, startSlot) {
   const cap = Math.max(minSlots, cfg.maxVideosPerDay || 99);
   let rows = (onlyForms ? all : planDay(all, date)).slice(0, cap);
   if (!onlyForms) rows = rows.concat(planChannels(date, rows.length));
+  // pauseTutorials: no new tutorials from the calendar (e.g. while existing videos are being re-made); --forms still works
+  if (cfg.pauseTutorials && !onlyForms) { console.log(`⏸ tutorials paused (config.pauseTutorials) — ${rows.length} planned row(s) skipped`); rows = []; }
   rows = rows.filter((r) => !onlyRow || Number(r['슬롯']) === onlyRow);
   if (flag('plan')) { rows.forEach((r) => console.log(`  ${r['슬롯']}. ${r['서식/주제']} · ${r['언어']}${r._filled ? '  (filled)' : ''}`)); return; }   // --plan: show the day, do nothing
   if (!rows.length) { console.log(`no calendar rows for ${date}`); return; }
