@@ -1,0 +1,45 @@
+# Travel-phrase lesson (+ Shorts) from youtube-forms/phrases/<id>.json. Uploads are PRIVATE — publish after the owner approves.
+name: phrases
+
+on:
+  workflow_dispatch:
+    inputs:
+      file: { description: 'phrases/<id>.json', required: true, default: 'phrases/jp-restaurant.json' }
+      upload: { description: 'upload (private)', type: boolean, default: true }
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk > /dev/null
+      - name: Write secrets
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+        run: node upload/secrets-from-env.js
+      - name: Build (and upload private)
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FILE: ${{ github.event.inputs.file }}
+          UP: ${{ github.event.inputs.upload }}
+        run: node upload/phrases.js "$FILE" --config upload/config.ci.json $([ "$UP" = "true" ] && echo --upload) | tee -a $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: 'phrases-${{ github.run_id }}', path: 'youtube-forms/out/phrases/**', retention-days: 7, if-no-files-found: ignore }

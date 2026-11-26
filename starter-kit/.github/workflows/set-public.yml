@@ -1,0 +1,32 @@
+# Change visibility of given videos immediately (public / private / unlisted).
+name: set-public
+
+on:
+  workflow_dispatch:
+    inputs:
+      videos: { description: 'Video IDs or youtu.be links (space or comma separated)', required: true }
+      privacy: { description: 'public, private or unlisted', required: false, default: 'public' }
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
+      - name: Write secrets
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+          YT_REFRESH_TOKEN_GOV: ${{ secrets.YT_REFRESH_TOKEN_GOV }}
+          YT_REFRESH_TOKEN_APPS: ${{ secrets.YT_REFRESH_TOKEN_APPS }}
+        run: node upload/secrets-from-env.js
+      - name: Set public
+        env: { VIDEOS: '${{ github.event.inputs.videos }}', PRIVACY: '${{ github.event.inputs.privacy }}' }
+        run: node upload/set-public.js --privacy "${PRIVACY:-public}" $VIDEOS

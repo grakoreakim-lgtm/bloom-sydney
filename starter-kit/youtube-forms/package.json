@@ -1,0 +1,14 @@
+{
+  "name": "youtube-forms-recorder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright-driven screen recordings of entry-form / visa tutorials with highlights, callouts and common-mistake warnings.",
+  "scripts": {
+    "mdac": "node record.js mdac",
+    "mdac:en": "node record.js mdac --lang en",
+    "mdac:fast": "node record.js mdac --speed 0.4"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0"
+  }
+}

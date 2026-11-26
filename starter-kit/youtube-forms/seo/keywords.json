@@ -1,0 +1,81 @@
+{
+  "_comment": "Search keyword bank per form + language. primary = the exact phrase people type (goes first in the title, first line of the description and first tag). titles = A/B title templates; the biweekly review rotates to the next one when CTR is low. Placeholders: {primary} {year} {hook}. learned.json (written by seo-review) adds real search terms on top of this.",
+  "tdac": {
+    "ko": {
+      "primary": "태국 입국신고서 TDAC 작성법",
+      "hook": "5분 따라하기",
+      "titles": [
+        "{primary} {year} | {hook}",
+        "{year} 태국 디지털 입국카드 TDAC, 화면 그대로 따라 하면 끝 (실수 TOP6)",
+        "TDAC 태국 전자입국신고서 {year} 신청 방법 | 방콕·푸껫·파타야 무료 공식 사이트"
+      ],
+      "secondary": [
+        "태국 입국신고서",
+        "TDAC",
+        "TDAC 작성법",
+        "TDAC 신청",
+        "태국 디지털 입국카드",
+        "태국 전자입국신고서",
+        "태국 입국카드 작성",
+        "태국 입국 준비",
+        "방콕 입국신고서",
+        "푸껫 입국신고서",
+        "파타야 입국",
+        "태국 여행 준비물",
+        "TDAC 무료",
+        "TDAC 공식 사이트"
+      ],
+      "questions": [
+        "TDAC는 언제 신청하나요? (도착 3일 전부터)",
+        "태국 입국신고서는 무료인가요? 돈 내는 사이트는 뭔가요?",
+        "성과 이름은 어느 칸에 쓰나요?",
+        "파타야 숙소는 주를 뭘로 고르나요?",
+        "건강 신고에는 어떤 나라를 넣나요?",
+        "확인 메일이 안 오면 어떻게 하나요?"
+      ],
+      "hashtags": [
+        "태국입국신고서",
+        "TDAC",
+        "태국여행"
+      ]
+    },
+    "en": {
+      "primary": "Thailand Digital Arrival Card TDAC",
+      "hook": "Step-by-Step",
+      "titles": [
+        "{primary} {year} | How to Fill It ({hook})",
+        "TDAC Thailand How to Fill {year} — My Channel",
+        "Thailand Arrival Card Online {year}: TDAC in 5 Minutes (Avoid These 6 Mistakes)"
+      ],
+      "secondary": [
+        "TDAC",
+        "TDAC Thailand",
+        "TDAC Thailand how to fill",
+        "Thailand digital arrival card",
+        "Thailand arrival card",
+        "Thailand arrival card online",
+        "TDAC form",
+        "TDAC registration",
+        "TDAC official website",
+        "Thailand TM6 online",
+        "Thailand entry requirements",
+        "Bangkok arrival",
+        "Thailand immigration",
+        "Thailand travel"
+      ],
+      "questions": [
+        "When can I submit the TDAC? (within 3 days before arrival)",
+        "Is the Thailand Digital Arrival Card free?",
+        "Which box is family name and which is first name?",
+        "Which province do I pick for Pattaya?",
+        "Which countries go in the health declaration?",
+        "What if I don't get the confirmation email?"
+      ],
+      "hashtags": [
+        "TDAC",
+        "ThailandArrivalCard",
+        "ThailandTravel"
+      ]
+    }
+  }
+}

@@ -1,0 +1,302 @@
+// Recorder: drives Playwright through a form definition and records the video.
+// Node side. The overlay (lib/overlay.js) is injected into the page.
+
+const { chromium } = require('playwright');
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+const overlay = require('./overlay');
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+class Recorder {
+  /**
+   * @param {object} form   form definition (see forms/mdac.js)
+   * @param {object} opts   { target: 'mock'|'live', lang: 'ko'|'en', outDir, speed, size }
+   */
+  constructor(form, opts = {}) {
+    this.form = form;
+    this.target = opts.target || 'mock';
+    this.lang = opts.lang || 'ko';
+    this.speed = opts.speed ?? 1;            // 1 = normal, 0.5 = twice as fast
+    this.outSize = opts.size || { width: 1280, height: 720 };   // final video size
+    // live sites: CSS zoom breaks their pop-up positioning (dropdown lists open off-screen), so instead render a
+    // smaller viewport and scale the video up — same "zoomed in" look, real layout untouched
+    this.size = opts.target === 'live' ? { width: 1024, height: 576 } : this.outSize;
+    this.outDir = opts.outDir || path.join(__dirname, '..', 'out');
+    this.t = form.strings[this.lang];
+    this.selectors = form.selectors[this.target];
+    this.url = form.url[this.target];
+    this.stepIndex = 0;
+    // a live site can need its own step list (different controls / order than the practice page)
+    this.steps = (this.target === 'live' && form.stepsLive) || form.steps;
+    this.totalSteps = this.steps.filter((s) => s.type !== 'card').length;
+    this.shots = [];
+    // narration: { [cueId]: durationMs } — when present, each cue holds at least that long
+    this.narration = opts.narration || {};
+    this.cues = [];            // [{ id, t }]  t = ms since recording start
+    this.checks = [];          // per-step QA: { step, field, ok, expected, actual }
+    this.t0 = null;
+    // page zoom (overlay unaffected) so fields stay readable on phones; mock pages are small, so zoom more
+    this.zoom = opts.zoom ?? form.zoom?.[this.target] ?? (this.target === 'mock' ? 1.5 : 1);
+  }
+
+  wait(ms) { return sleep(ms * this.speed); }
+  cue(id) { if (this.t0 == null) this.t0 = Date.now(); this.cues.push({ id, t: Date.now() - this.t0 }); }
+  // hold for the longer of the designed pause and the narration clip (+ a beat)
+  holdFor(id, designedMs) { const n = this.narration[id]; return this.wait(n ? Math.max(designedMs, n / this.speed + 400) : designedMs); }
+
+  async start() {
+    fs.mkdirSync(this.outDir, { recursive: true });
+    this.browser = await chromium.launch({ headless: true });
+    this.context = await this.browser.newContext({
+      viewport: this.size,
+      deviceScaleFactor: 1,
+      recordVideo: { dir: this.outDir, size: this.size },
+      // live sites: keep the browser in the site's language (the narration names its English labels)
+      locale: this.target === 'live' ? (this.form.liveLocale || 'en-US') : (this.lang === 'ko' ? 'ko-KR' : 'en-US'),
+    });
+    await this.context.addInitScript(overlay.bundle);
+    this.page = await this.context.newPage();
+    this.t0 = Date.now();                       // video recording starts with the page
+    await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
+    if (this.target === 'live') await this.dismissDialogs();
+    if (this.target === 'live') for (const p of this.form.livePre || []) { if (p.goto) await this.page.goto(p.goto, { waitUntil: 'networkidle' }); else await this.page.locator(p.click).first().click({ timeout: 15000 }); await this.page.waitForLoadState('networkidle').catch(() => {}); await sleep(1500); }
+    await this.page.evaluate(() => window.__ytOverlay.install());
+    await this.ov('setZoom', this.zoom);
+  }
+
+  // close pop-ups such as a language-suggestion dialog that would block clicks
+  async dismissDialogs() {
+    await sleep(1500);
+    for (let i = 0; i < 3; i++) {
+      const dlg = this.page.locator('.cdk-overlay-container mat-dialog-container, .cdk-overlay-container [role="dialog"]');
+      if (!(await dlg.count())) return;
+      const btn = dlg.locator('button', { hasText: /no|cancel|close|english|stay|keep|dismiss|ok/i }).first();
+      if (await btn.count()) await btn.click().catch(() => {}); else await this.page.keyboard.press('Escape');
+      await sleep(800);
+    }
+  }
+
+  // ---- overlay helpers --------------------------------------------------
+  ov(fn, ...args) {
+    return this.page.evaluate(([fn, args]) => window.__ytOverlay[fn](...args), [fn, args]);
+  }
+
+  async card(c, holdMs = 3000) {
+    await this.ov('card', c);
+    this.cue(`card-${c.id || this.stepIndex}`);
+    await this.shot(`card-${c.id || this.stepIndex}`);
+    await this.holdFor(`card-${c.id || this.stepIndex}`, holdMs);
+    await this.ov('hideCard');
+  }
+
+  async shot(name) {
+    await new Promise((r) => setTimeout(r, 450));   // let entrance animations finish
+    const file = path.join(this.outDir, `${String(this.shots.length + 1).padStart(2, '0')}-${name}.png`);
+    await this.page.screenshot({ path: file });
+    this.shots.push(file);
+  }
+
+  // ---- step runner ------------------------------------------------------
+  async run() {
+    await this.start();
+    for (const step of this.steps) {
+      if (step.type === 'card') { await this.card(step.card[this.lang], step.hold ?? 3000); continue; }
+      this.stepIndex += 1;
+      await this.runStep(step);
+    }
+    return this.finish();
+  }
+
+  async runStep(step) {
+    const sel = this.selectors[step.field];
+    const hsel = (step.hl && this.selectors[step.hl]) || sel;   // what to frame (e.g. the whole question row)
+    const text = step.text[this.lang];
+    if (!sel) throw new Error(`No selector for field "${step.field}" on target "${this.target}"`);
+
+    await this.ov('setStep', this.stepIndex, this.totalSteps, text.label);
+    await this.ov('setStrings', this.t.easyPill, this.t.mistakeTitle);
+    await this.ov('moveCursor', sel);
+    await this.ov('highlight', hsel, true);
+    await this.wait(700);
+
+    // 1) explain the field (tip) before touching it
+    if (text.tip) {
+      await this.ov('callout', hsel, { kind: 'tip', title: text.label, body: text.tip });
+      this.cue(`s${this.stepIndex}-tip`);
+      await this.holdFor(`s${this.stepIndex}-tip`, step.tipHold ?? 2200);
+    }
+
+    // 2) do the action, slowly, so viewers can follow
+    await this.ov('clickCursor');
+    await this.act(step, sel);
+    await this.wait(600);
+    // QA: did the screen really end up with what the narration says?
+    this.checks.push({ step: this.stepIndex, field: step.field, ...(await this.verify(step, sel).catch((e) => ({ ok: false, why: e.message.split('\n')[0] }))) });
+
+    // 3) common mistake callout (if any) — shown AFTER the correct value is in
+    if (text.mistake) {
+      await this.ov('callout', hsel, { kind: 'warn', title: this.t.mistakeTitle, body: text.mistake, bad: text.bad, good: text.good });
+      this.cue(`s${this.stepIndex}-mistake`);
+      await this.shot(`step${this.stepIndex}-${step.field}`);
+      await this.holdFor(`s${this.stepIndex}-mistake`, step.mistakeHold ?? 3800);
+    } else {
+      await this.shot(`step${this.stepIndex}-${step.field}`);
+      await this.wait(400);
+    }
+    await this.ov('clearHighlight');
+    // pause card: give the viewer time to type the same thing
+    if (!['manual', 'stop', 'next'].includes(step.type) && !step.noPause && this.t.pause) {
+      await this.ov('pause', this.t.pause, this.t.pauseSub); await this.wait(step.pauseHold ?? 1800); await this.ov('hidePause');
+    }
+  }
+
+  // overlay-style selector → Playwright locator ("css@@2", "a || b" → first part, "btn:Next")
+  loc(sel) {
+    const first = sel.split('||')[0].trim();
+    if (first.startsWith('btn:')) return this.page.locator('button', { hasText: new RegExp(`^\\s*${first.slice(4).trim()}\\s*$`, 'i') }).first();
+    const m = first.match(/^(.*)@@(\d+)$/);
+    return m ? this.page.locator(m[1]).nth(Number(m[2])) : this.page.locator(first).first();
+  }
+
+  async act(step, sel) {
+    const page = this.page;
+    const loc = this.loc(sel);
+    const value = typeof step.value === 'function' ? step.value() : step.value;
+    switch (step.type) {
+      case 'choose': {     // Angular Material radio group: click the option whose label matches
+        const opt = typeof value === 'number' ? loc.locator('mat-radio-button').nth(value) : loc.locator('mat-radio-button', { hasText: new RegExp(`^\\s*${value}`, 'i') }).first();
+        await opt.click();
+        break;
+      }
+      case 'auto': {       // autocomplete: type slowly, then pick the matching option
+        await loc.click(); await loc.fill('');
+        await loc.pressSequentially(String(value), { delay: 110 * this.speed });
+        await this.wait(1300);
+        const opts = page.locator('mat-option, [role="option"]');
+        await opts.first().waitFor({ timeout: 10000 });
+        // match on the option's trimmed text (Playwright's hasText sees surrounding whitespace)
+        const texts = (await opts.allInnerTexts()).map((t) => t.trim());
+        const re = step.pick ? new RegExp(step.pick, 'i') : null;
+        const idx = texts.findIndex((t) => (re ? re.test(t) : t.toUpperCase().includes(String(value).toUpperCase())));
+        if (idx < 0) throw new Error(`no option matching ${step.pick || value} in [${texts.join(' | ')}]`);
+        const opt = opts.nth(idx);
+        await this.wait(500); await opt.click();
+        break;
+      }
+      case 'date3': {      // three boxes DD / MM / YYYY that share ids — step.n picks which date on the page
+        const [d, mo, y] = String(value).split('/');
+        for (const [part, v] of [['day', d], ['month', mo], ['year', y]]) {
+          const box = page.locator(`#${step.idPrefix || 'traveller-0-input'}-${part}`).nth(step.n || 0);
+          await box.click(); await box.fill(''); await box.pressSequentially(v, { delay: 120 * this.speed }); await this.wait(150);
+        }
+        break;
+      }
+      case 'tick':         // Material checkbox: click its label/box
+        await loc.click();
+        break;
+      case 'next':         // wizard "Next" — moves to the next page of the same form (never Submit)
+        await loc.click();
+        await page.waitForLoadState('networkidle').catch(() => {});
+        await this.wait(1800);
+        await page.evaluate(() => window.scrollTo(0, 0));
+        break;
+      case 'type': {
+        if (typeof step.value === 'function') step = { ...step, value };
+        await loc.click();
+        const inputType = await loc.evaluate((el) => (el.getAttribute('type') || 'text').toLowerCase());
+        if (inputType === 'date') {
+          // native date pickers cannot be typed into reliably; they need ISO yyyy-mm-dd
+          const v = String(step.value);
+          const iso = /^\d{2}\/\d{2}\/\d{4}$/.test(v) ? v.split('/').reverse().join('-') : v;
+          await loc.fill(iso);
+        } else {
+          await loc.fill('');
+          await loc.pressSequentially(String(step.value), { delay: 90 * this.speed });
+        }
+        break;
+      }
+      case 'select':
+        await loc.click();
+        await this.wait(400);
+        await loc.selectOption(step.value);
+        break;
+      case 'radio':
+      case 'check':
+        await loc.check();
+        break;
+      case 'click':
+        await loc.click();
+        break;
+      case 'manual':           // e.g. CAPTCHA — we do not automate it, we only point at it
+        break;
+      case 'stop':             // final "do not submit" step — point at the button, never click
+        break;
+      default:
+        throw new Error(`Unknown step type ${step.type}`);
+    }
+  }
+
+  // read back the field after the action (case-insensitive; sites often upper-case input)
+  async verify(step, sel) {
+    const page = this.page; const loc = this.loc(sel);
+    const value = typeof step.value === 'function' ? step.value() : step.value;
+    const norm = (x) => String(x ?? '').replace(/\s+/g, ' ').trim().toUpperCase();
+    switch (step.type) {
+      case 'type': {
+        const v = await loc.inputValue().catch(() => '');
+        const okv = norm(v) === norm(value) || norm(v).replace(/\D/g, '') === norm(value).replace(/\D/g, '') && /^\d+$/.test(String(value)) || norm(v).endsWith(norm(value));
+        return { ok: !!okv, expected: value, actual: v };
+      }
+      case 'select': { const v = await loc.inputValue().catch(() => ''); return { ok: norm(v) === norm(value), expected: value, actual: v }; }
+      case 'radio': case 'check': case 'tick': {
+        const c = await loc.evaluate((e) => e.matches('input') ? e.checked : !!(e.querySelector('input:checked') || e.classList.contains('mat-mdc-checkbox-checked') || e.getAttribute('aria-checked') === 'true'));
+        return { ok: c, expected: 'checked', actual: c ? 'checked' : 'not checked' };
+      }
+      case 'choose': {
+        const v = await loc.evaluate((g) => { const i = g.querySelector('input:checked'); return i ? (i.closest('mat-radio-button')?.innerText || i.value || '').trim() : ''; });
+        const okv = typeof value === 'number' ? !!v : norm(v).startsWith(norm(value));
+        return { ok: okv, expected: value, actual: v };
+      }
+      case 'auto': {
+        const v = await loc.inputValue().catch(() => '');
+        return { ok: step.pick ? new RegExp(step.pick, 'i').test(v.trim()) : norm(v).includes(norm(value)), expected: step.pick || value, actual: v };
+      }
+      case 'date3': {
+        const got = []; for (const part of ['day', 'month', 'year']) got.push(await page.locator(`#${step.idPrefix || 'traveller-0-input'}-${part}`).nth(step.n || 0).inputValue().catch(() => ''));
+        const exp = String(value).split('/');
+        return { ok: got.every((g, i) => Number(g) === Number(exp[i])), expected: value, actual: got.join('/') };
+      }
+      case 'next': return { ok: true, expected: 'next page', actual: page.url() };
+      default: return { ok: true, expected: '-', actual: '-' };   // manual / stop / click: nothing to read back
+    }
+  }
+
+  async finish() {
+    const video = this.page.video();
+    await this.context.close();
+    const webm = await video.path();
+    await this.browser.close();
+
+    const base = `${this.form.id}-${this.target}-${this.lang}`;
+    const finalWebm = path.join(this.outDir, `${base}.webm`);
+    fs.renameSync(webm, finalWebm);
+    let mp4 = null;
+    try {
+      mp4 = path.join(this.outDir, `${base}.mp4`);
+      const scale = this.size.width !== this.outSize.width ? `-vf scale=${this.outSize.width}:${this.outSize.height}:flags=lanczos ` : '';
+      execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" ${scale}-c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
+    } catch (e) { mp4 = null; }
+    // cue timeline (for narration muxing + chapter timestamps)
+    const steps = this.steps.filter((s) => s.type !== 'card');
+    const chapters = this.cues.filter((c) => /^s\d+-tip$/.test(c.id)).map((c) => {
+      const i = Number(c.id.match(/^s(\d+)-/)[1]); return { t: c.t, label: steps[i - 1].text[this.lang].label };
+    });
+    const timeline = { cues: this.cues, chapters, checks: this.checks, steps: steps.map((st, i) => ({ n: i + 1, field: st.field, type: st.type, hasTip: !!(st.text[this.lang].speech?.tip || st.text[this.lang].tip), hasMistake: !!(st.text[this.lang].speech?.mistake || st.text[this.lang].mistake) })) };
+    fs.writeFileSync(path.join(this.outDir, `${base}.timeline.json`), JSON.stringify(timeline, null, 1));
+    return { webm: finalWebm, mp4, shots: this.shots, timeline };
+  }
+}
+
+module.exports = { Recorder };

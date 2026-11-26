@@ -1,0 +1,133 @@
+# Daily video factory: records, narrates, muxes, thumbnails and schedules today's calendar rows on YouTube.
+# Runs at 06:00 KST every day; can also be started by hand (any date, dry run).
+name: daily-videos
+
+on:
+  schedule:
+    - cron: '0 11 * * *'          # 11:00 UTC = 20:00 KST — builds TOMORROW's videos the evening before;
+                                  # they go public at a random time 06:00–10:00 (publishWindow in config.ci.json)
+  workflow_dispatch:
+    inputs:
+      phrases_only: { description: 'only the travel-phrase episode (skip tutorials)', type: boolean, default: false }
+      date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
+      dry: { description: 'Dry run (build everything, upload nothing)', type: boolean, default: false }
+      target: { description: 'mock (practice form) or live (real site)', required: false, default: 'mock' }
+      review: { description: 'Upload as private for review (no auto-publish)', type: boolean, default: false }
+      now: { description: 'Publish immediately (no scheduled time)', type: boolean, default: false }
+      slots: { description: 'Make at least this many videos (top up from the backlog)', required: false, default: '' }
+      shorts: { description: 'Also make Shorts', type: boolean, default: true }
+      forms: { description: 'Only these forms, e.g. sgac (re-record), ignoring the calendar', required: false, default: '' }
+
+permissions:
+  contents: write   # commits plan/produced.json back so the next day knows what is already on YouTube
+  issues: write     # opens an issue (→ email/app notification) when the voice had to fall back
+
+concurrency: { group: daily-videos, cancel-in-progress: false }
+
+jobs:
+  produce:
+    runs-on: ubuntu-24.04   # Playwright 1.50 does not support ubuntu-latest (26.04) yet
+    timeout-minutes: 300
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.50.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk > /dev/null
+
+      - name: Write secrets
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          YT_TOKEN_KO_JSON: ${{ secrets.YT_TOKEN_KO_JSON }}
+          YT_TOKEN_EN_JSON: ${{ secrets.YT_TOKEN_EN_JSON }}
+          YT_REFRESH_TOKEN_KO: ${{ secrets.YT_REFRESH_TOKEN_KO }}
+          YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
+          YT_REFRESH_TOKEN_GOV: ${{ secrets.YT_REFRESH_TOKEN_GOV }}
+          YT_REFRESH_TOKEN_APPS: ${{ secrets.YT_REFRESH_TOKEN_APPS }}
+        run: node upload/secrets-from-env.js
+
+      - name: Produce & schedule uploads
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          CLOVA_CLIENT_ID: ${{ secrets.CLOVA_CLIENT_ID }}
+          CLOVA_CLIENT_SECRET: ${{ secrets.CLOVA_CLIENT_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TZ: Asia/Seoul
+        run: |
+          if [ "${{ github.event.inputs.phrases_only }}" = "true" ]; then : > run.log; exit 0; fi
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
+          DRY=""; [ "${{ github.event.inputs.dry }}" = "true" ] && DRY="--dry"
+          FAKE=""; [ -z "$GOOGLE_TTS_API_KEY" ] && FAKE="--fake-tts"
+          TARGET="${{ github.event.inputs.target }}"; [ -z "$TARGET" ] && TARGET=mock
+          REVIEW=""; [ "${{ github.event.inputs.review }}" = "true" ] && REVIEW="--review"
+          NOW=""; [ "${{ github.event.inputs.now }}" = "true" ] && NOW="--now"
+          SLOTS=""; [ -n "${{ github.event.inputs.slots }}" ] && SLOTS="--slots ${{ github.event.inputs.slots }}"
+          SHORTS=""; [ "${{ github.event.inputs.shorts }}" = "false" ] && SHORTS="--no-shorts"
+          FORMS=""; [ -n "${{ github.event.inputs.forms }}" ] && FORMS="--forms ${{ github.event.inputs.forms }}"
+          node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS $FORMS | tee run.log
+          echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Travel-phrase episode (one per night, within the upload budget)
+        if: success() && github.event.inputs.dry != 'true' && github.event.inputs.forms == ''
+        continue-on-error: true
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TZ: Asia/Seoul
+        run: |
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
+          USED=$(grep -cE '✔ (https://youtu\.be|Shorts)' run.log || true)
+          LEFT=$(( $(node -e "console.log(require('./upload/config.ci.json').uploadsPerDay||6)") - USED ))
+          node upload/phrases.js --next --upload --date "$DATE" --budget "$LEFT" --config upload/config.ci.json | tee phrases.log
+          grep '^VOICE_FALLBACK' phrases.log >> run.log || true
+
+      - name: Alert when nothing was made
+        if: success() && github.event.inputs.dry != 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          grep -qE '✔ (https://youtu\.be|main)' run.log phrases.log 2>/dev/null && exit 0
+          gh issue create -R "$GITHUB_REPOSITORY" --title "제작 0건 ($(date +%F))" --body "$(printf '오늘 밤 만든 영상이 없습니다. 준비된 주제가 바닥났거나 모두 건너뛰었을 수 있습니다.\n\nRun: %s' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")"
+
+      - name: Notify if the voice fell back (e.g. Gemini credits used up)
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          [ -f run.log ] && grep -q '^VOICE_FALLBACK' run.log || exit 0
+          BODY=$(printf 'Gemini Leda 음성을 쓸 수 없어 오늘 영상은 Kore 음성(쉼표마다 작은 음)으로 만들었습니다.\n\n가장 흔한 원인: AI Studio 선불 크레딧 소진 → https://ai.studio/projects 에서 your project 충전.\n\n```\n%s\n```\n\nRun: %s' "$(grep '^VOICE_FALLBACK' run.log | head -20)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")
+          N=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "음성 대체 in:title" --json number -q '.[0].number')
+          if [ -n "$N" ]; then gh issue comment "$N" -R "$GITHUB_REPOSITORY" --body "$BODY"; else gh issue create -R "$GITHUB_REPOSITORY" --title "음성 대체: Gemini → Kore ($(date +%F))" --body "$BODY"; fi
+
+      - name: Playlists & disclosure
+        if: success() && github.event.inputs.dry != 'true'
+        continue-on-error: true
+        run: node upload/maintain.js --config upload/config.ci.json
+
+      - name: Remember produced videos
+        if: always()
+        run: |
+          git config user.name "daily-videos bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plan/produced.json plan/shorts.json 2>/dev/null || git add plan/produced.json
+          git diff --cached --quiet || { git commit -m "produced: $(date +%F)"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push origin HEAD:"$GITHUB_REF_NAME"; }
+
+      - name: Keep outputs for 7 days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ github.run_id }}
+          path: |
+            youtube-forms/out/days/**/*.mp4
+            youtube-forms/out/days/**/*.png
+            youtube-forms/out/days/**/*.json
+          retention-days: 7
+          if-no-files-found: ignore

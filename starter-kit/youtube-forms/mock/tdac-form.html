@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRACTICE FORM — Thailand Digital Arrival Card (not the official site)</title>
+<style>
+  :root { --b: #2d2a7b; --a: #a51931; --bg: #f2f3f8; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: #222; }
+  .banner { background: #b00020; color: #fff; text-align: center; padding: 8px; font-weight: 700; font-size: 14px; }
+  header { background: var(--b); color: #fff; padding: 16px 28px; font-size: 22px; font-weight: 700; border-bottom: 4px solid var(--a); }
+  header small { display: block; font-size: 13px; font-weight: 400; opacity: .85; margin-top: 2px; }
+  main { max-width: 980px; margin: 24px auto; background: #fff; padding: 28px 36px 40px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  h2 { font-size: 17px; border-bottom: 2px solid var(--b); padding-bottom: 6px; margin: 28px 0 14px; color: var(--b); }
+  h3 { font-size: 14px; margin: 18px 0 10px; color: #444; }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px 24px; }
+  .row.two { grid-template-columns: 1fr 1fr; }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  label span { color: #c00; }
+  .hint { font-size: 11px; color: #777; margin-top: 3px; }
+  input, select { width: 100%; padding: 9px 10px; border: 1px solid #bbb; border-radius: 4px; font-size: 15px; background: #fff; }
+  input[readonly] { background: #f1f1f1; color: #555; }
+  select[multiple] { height: 118px; padding: 4px; }
+  input:focus, select:focus { outline: 2px solid var(--b); }
+  .full { grid-column: 1 / -1; } .span2 { grid-column: span 2; }
+  .phone { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-top: 10px; } .check input { width: 18px; height: 18px; margin-top: 1px; }
+  .verify { display: inline-flex; gap: 12px; align-items: center; border: 1px solid #ccc; background: #fafafa; padding: 12px 16px; border-radius: 4px; margin-top: 14px; font-size: 14px; }
+  .verify .box { width: 24px; height: 24px; border: 2px solid #999; border-radius: 3px; background: #fff; }
+  .verify small { color: #888; margin-left: 18px; font-size: 11px; }
+  button { margin-top: 24px; background: var(--b); color: #fff; border: 0; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 4px; }
+  footer { text-align: center; font-size: 12px; color: #777; margin: 20px 20px 300px; }  /* room so the Submit row can scroll to mid-screen */
+</style>
+</head>
+<body>
+<div class="banner">PRACTICE FORM FOR VIDEO RECORDING ONLY — this is NOT the official Thai Immigration website and submits nothing</div>
+<header>Thailand Digital Arrival Card — Practice Form<small>TDAC · field layout for tutorial recording</small></header>
+<main>
+  <form id="tdac" onsubmit="return false;">
+    <h2>Personal Information</h2>
+    <div class="row">
+      <div><label for="familyName">Family Name <span>*</span></label><input id="familyName" autocomplete="off"></div>
+      <div><label for="firstName">First Name <span>*</span></label><input id="firstName" autocomplete="off"></div>
+      <div><label for="middleName">Middle Name</label><input id="middleName" autocomplete="off"></div>
+      <div><label for="passport">Passport No. <span>*</span></label><input id="passport" autocomplete="off"></div>
+      <div><label for="nationality">Nationality/Citizenship <span>*</span></label>
+        <select id="nationality"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="CHN">CHINA</option><option value="IND">INDIA</option><option value="USA">UNITED STATES OF AMERICA</option><option value="GBR">UNITED KINGDOM</option><option value="AUS">AUSTRALIA</option></select></div>
+      <div><label for="dob">Date of Birth <span>*</span></label><input id="dob" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="occupation">Occupation <span>*</span></label><input id="occupation" autocomplete="off"></div>
+      <div><label for="gender">Gender <span>*</span></label>
+        <select id="gender"><option value="">-- Select --</option><option value="MALE">MALE</option><option value="FEMALE">FEMALE</option><option value="UNDEFINED">UNDEFINED</option></select></div>
+      <div><label for="visa">Visa No.</label><input id="visa" autocomplete="off"><div class="hint">Only if you hold a Thai visa</div></div>
+      <div><label for="residence">Country/Territory of Residence <span>*</span></label>
+        <select id="residence"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="CHN">CHINA</option><option value="USA">UNITED STATES OF AMERICA</option><option value="AUS">AUSTRALIA</option></select></div>
+      <div><label for="city">City/State of Residence <span>*</span></label>
+        <select id="city"><option value="">-- Select --</option><option value="SEOUL">SEOUL</option><option value="BUSAN">BUSAN</option><option value="INCHEON">INCHEON</option><option value="DAEGU">DAEGU</option><option value="GYEONGGI-DO">GYEONGGI-DO</option><option value="OTHERS">OTHERS (PLEASE SPECIFY)</option></select></div>
+      <div><label for="phone">Phone No. <span>*</span></label>
+        <div class="phone"><select id="phoneCode"><option value="82">+82</option><option value="66">+66</option><option value="81">+81</option><option value="86">+86</option><option value="1">+1</option><option value="61">+61</option></select><input id="phone" autocomplete="off"></div></div>
+    </div>
+
+    <h2>Trip &amp; Accommodation Information</h2>
+    <h3>Trip Information</h3>
+    <div class="row">
+      <div><label for="arrival">Date of Arrival <span>*</span></label><input id="arrival" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div><label for="boarded">Country/Territory where you Boarded <span>*</span></label>
+        <select id="boarded"><option value="">-- Select --</option><option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="VNM">VIET NAM</option><option value="SGP">SINGAPORE</option><option value="MYS">MALAYSIA</option><option value="CHN">CHINA</option></select></div>
+      <div><label for="purpose">Purpose of Travel <span>*</span></label>
+        <select id="purpose"><option value="">-- Select --</option><option value="HOLIDAY">HOLIDAY</option><option value="MEETING">MEETING</option><option value="SPORTS">SPORTS</option><option value="BUSINESS">BUSINESS</option><option value="INCENTIVE">INCENTIVE</option><option value="MEDICAL">MEDICAL &amp; WELLNESS</option><option value="EDUCATION">EDUCATION</option><option value="CONVENTION">CONVENTION</option><option value="EMPLOYMENT">EMPLOYMENT</option><option value="EXHIBITION">EXHIBITION</option><option value="OTHERS">OTHERS</option></select></div>
+      <div><label for="travelMode">Mode of Travel <span>*</span></label>
+        <select id="travelMode"><option value="">-- Select --</option><option value="AIR">AIR</option><option value="LAND">LAND</option><option value="SEA">SEA</option></select></div>
+      <div><label for="transportMode">Mode of Transport <span>*</span></label>
+        <select id="transportMode"><option value="">-- Select --</option><option value="COMMERCIAL">COMMERCIAL FLIGHT</option><option value="PRIVATE">PRIVATE / CHARTER FLIGHT</option><option value="OTHERS">OTHERS</option></select></div>
+      <div><label for="flight">Flight No./Vehicle No. <span>*</span></label><input id="flight" autocomplete="off"></div>
+      <div><label for="departure">Date of Departure</label><input id="departure" placeholder="DD/MM/YYYY" autocomplete="off" maxlength="10"></div>
+      <div class="span2"><label for="depFlight">Flight No./Vehicle No. (Departure)</label><input id="depFlight" autocomplete="off"></div>
+    </div>
+    <div class="check"><input id="transit" type="checkbox"><label for="transit" style="font-weight:400">I am on transit, I do not stay in Thailand</label></div>
+
+    <h3>Accommodation Information</h3>
+    <div class="row">
+      <div><label for="accType">Type of Accommodation <span>*</span></label>
+        <select id="accType"><option value="">-- Select --</option><option value="HOTEL">HOTEL</option><option value="HOSTEL">YOUTH HOSTEL</option><option value="GUESTHOUSE">GUEST HOUSE</option><option value="FRIEND">FRIEND'S HOUSE</option><option value="APARTMENT">APARTMENT</option><option value="OTHERS">OTHERS</option></select></div>
+      <div><label for="province">Province <span>*</span></label>
+        <select id="province"><option value="">-- Select --</option><option value="BANGKOK">BANGKOK</option><option value="CHIANG MAI">CHIANG MAI</option><option value="CHON BURI">CHON BURI</option><option value="PHUKET">PHUKET</option><option value="KRABI">KRABI</option><option value="SURAT THANI">SURAT THANI</option></select></div>
+      <div><label for="district">District/Area <span>*</span></label>
+        <select id="district"><option value="">-- Select --</option></select></div>
+      <div><label for="subDistrict">Sub-District/Sub-Area <span>*</span></label>
+        <select id="subDistrict"><option value="">-- Select --</option></select></div>
+      <div><label for="postcode">Post Code <span>*</span></label><input id="postcode" readonly placeholder="auto"></div>
+      <div class="full"><label for="address">Address <span>*</span></label><input id="address" autocomplete="off"></div>
+    </div>
+
+    <h2>Health Declaration</h2>
+    <div id="healthRow">
+      <label for="health">Countries/Territories where you stayed within two weeks before arrival <span>*</span></label>
+      <select id="health" multiple>
+        <option value="KOR">KOREA, REPUBLIC OF</option><option value="JPN">JAPAN</option><option value="VNM">VIET NAM</option><option value="SGP">SINGAPORE</option><option value="MYS">MALAYSIA</option><option value="CHN">CHINA</option><option value="KEN">KENYA</option><option value="BRA">BRAZIL</option>
+      </select>
+      <div class="hint">Select all that apply (hold Ctrl / ⌘). Include the country you depart from.</div>
+    </div>
+
+    <h2>Review &amp; Submit</h2>
+    <div class="row two">
+      <div><label for="email">Email <span>*</span></label><input id="email" type="email" autocomplete="off"><div class="hint">Your confirmation (TDAC No. + QR) is sent here</div></div>
+    </div>
+    <div class="verify" id="captcha"><div class="box"></div>Verify you are human<small>security check</small></div>
+    <div><button id="submit" type="submit">Submit</button></div>
+  </form>
+</main>
+<footer>Practice form for tutorial recording. Field layout only — not affiliated with any government. Official site: tdac.immigration.go.th (free).</footer>
+<script>
+  // Province → District → Sub-district → Post Code (auto-filled, as on the real form)
+  const AREAS = {
+    'BANGKOK': { 'KHLONG TOEI': { 'KHLONG TOEI NUEA': '10110', 'KHLONG TAN': '10110' }, 'PATHUM WAN': { 'LUMPHINI': '10330', 'RONG MUEANG': '10330' }, 'PHRA NAKHON': { 'CHANA SONGKHRAM': '10200' }, 'WATTHANA': { 'KHLONG TAN NUEA': '10110' } },
+    'CHIANG MAI': { 'MUEANG CHIANG MAI': { 'SI PHUM': '50200' } },
+    'CHON BURI': { 'BANG LAMUNG': { 'NONG PRUE': '20150' } },
+    'PHUKET': { 'KATHU': { 'PATONG': '83150' } },
+    'KRABI': { 'MUEANG KRABI': { 'AO NANG': '81180' } },
+    'SURAT THANI': { 'KO SAMUI': { 'BO PHUT': '84320' } },
+  };
+  const $ = (id) => document.getElementById(id);
+  const fill = (sel, keys) => { sel.innerHTML = '<option value="">-- Select --</option>' + keys.map((k) => `<option value="${k}">${k}</option>`).join(''); };
+  // the tutorial narrates both boxes in one step: AIR → COMMERCIAL FLIGHT
+  $('travelMode').addEventListener('change', () => { if ($('travelMode').value === 'AIR' && !$('transportMode').value) $('transportMode').value = 'COMMERCIAL'; });
+  $('province').addEventListener('change', () => { fill($('district'), Object.keys(AREAS[$('province').value] || {})); fill($('subDistrict'), []); $('postcode').value = ''; });
+  $('district').addEventListener('change', () => { fill($('subDistrict'), Object.keys((AREAS[$('province').value] || {})[$('district').value] || {})); $('postcode').value = ''; });
+  $('subDistrict').addEventListener('change', () => { $('postcode').value = ((AREAS[$('province').value] || {})[$('district').value] || {})[$('subDistrict').value] || ''; });
+</script>
+</body>
+</html>
