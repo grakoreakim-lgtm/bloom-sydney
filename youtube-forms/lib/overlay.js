@@ -151,14 +151,15 @@ function callout(selector, { kind = 'tip', title, body, bad, good }) {
   }
 }
 // browser-style zoom of the page content (not the overlay) so form fields are readable on a phone
-// sync marker: two small solid-colour squares in the bottom-left corner that change at every narration cue.
-// After recording, upload/align.js finds the frame where each marker appears and places the voice there
+// sync marker: six small black/white squares (6 bits) in the bottom-left corner that change at every narration cue.
+// After recording, lib/align.js finds the frame where each cue's pattern appears and places the voice there
 // (the recorded video's clock can run slower than the real clock on busy machines). The marker is erased afterwards.
-const MARK_COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff', '#000000'];
+// Black/white only: video keeps brightness at full detail, while colours bleed into each other.
+const MARK_COLORS = ['#000000', '#ffffff'];
 function syncMark(n) {
   let m = document.getElementById('yt-mark');
-  if (!m) { m = document.createElement('div'); m.id = 'yt-mark'; m.style.cssText = 'position:fixed;left:0;bottom:0;width:32px;height:16px;z-index:2147483647;display:flex;pointer-events:none'; m.innerHTML = '<i style="flex:1"></i><i style="flex:1"></i>'; document.documentElement.appendChild(m); }
-  const [a, b] = m.children; a.style.background = MARK_COLORS[n % 8]; b.style.background = MARK_COLORS[Math.floor(n / 8) % 8];
+  if (!m) { m = document.createElement('div'); m.id = 'yt-mark'; m.style.cssText = 'position:fixed;left:0;bottom:0;width:72px;height:12px;z-index:2147483647;display:flex;pointer-events:none'; m.innerHTML = '<b style="flex:1"></b>'.repeat(6); document.documentElement.appendChild(m); }
+  [...m.children].forEach((el, i) => { el.style.background = MARK_COLORS[(n >> i) & 1]; });
 }
 function setZoom(z) { if (document.body) document.body.style.zoom = String(z || 1); }
 function pause(text, sub) { install(); const p = document.getElementById('yt-pause'); p.innerHTML = esc(text) + (sub ? `<small>${esc(sub)}</small>` : ''); p.className = 'yt-ov on'; }

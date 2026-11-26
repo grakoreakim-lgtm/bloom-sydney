@@ -8,6 +8,7 @@ on:
                                   # they go public at a random time 06:00–10:00 (publishWindow in config.ci.json)
   workflow_dispatch:
     inputs:
+      redo: { description: 'rebuild topics already on YouTube (with forms)', type: boolean, default: false }
       phrases_only: { description: 'only the travel-phrase episode (skip tutorials)', type: boolean, default: false }
       date: { description: 'Calendar date (YYYY-MM-DD). Empty = today (KST)', required: false, default: '' }
       dry: { description: 'Dry run (build everything, upload nothing)', type: boolean, default: false }
@@ -73,6 +74,7 @@ jobs:
           SLOTS=""; [ -n "${{ github.event.inputs.slots }}" ] && SLOTS="--slots ${{ github.event.inputs.slots }}"
           SHORTS=""; [ "${{ github.event.inputs.shorts }}" = "false" ] && SHORTS="--no-shorts"
           FORMS=""; [ -n "${{ github.event.inputs.forms }}" ] && FORMS="--forms ${{ github.event.inputs.forms }}"
+          [ "${{ github.event.inputs.redo }}" = "true" ] && FORMS="$FORMS --redo"
           node upload/run-day.js --date "$DATE" --config upload/config.ci.json --target "$TARGET" $DRY $FAKE $REVIEW $NOW $SLOTS $SHORTS $FORMS | tee run.log
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 

@@ -289,7 +289,7 @@ class Recorder {
     try {
       mp4 = path.join(this.outDir, `${base}.mp4`);
       // scale to the output size and hide the corner sync marker (copy the strip just above it over it)
-      const W = this.outSize.width, H = this.outSize.height, mw = Math.ceil(32 * W / this.size.width) + 2, mh = Math.ceil(16 * H / this.size.height) + 2;
+      const W = this.outSize.width, H = this.outSize.height, mw = Math.ceil(72 * W / this.size.width) + 2, mh = Math.ceil(12 * H / this.size.height) + 2;
       const vf = `scale=${W}:${H}:flags=lanczos,split[a][b];[b]crop=${mw}:${mh}:0:${H - 2 * mh}[p];[a][p]overlay=0:${H - mh}`;
       execSync(`ffmpeg -y -loglevel error -i "${finalWebm}" -filter_complex "${vf}" -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart "${mp4}"`);
     } catch (e) { mp4 = null; }

@@ -4,22 +4,17 @@
 // wall-clock cue times drift; these times do not.
 const { execSync } = require('child_process');
 
-const PALETTE = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [255, 0, 255], [0, 255, 255], [255, 255, 255], [0, 0, 0]];
 const FPS = 25;
 
-function classify(r, g, b) {
-  let best = -1, bd = 1e9;
-  PALETTE.forEach(([pr, pg, pb], i) => { const d = (r - pr) ** 2 + (g - pg) ** 2 + (b - pb) ** 2; if (d < bd) { bd = d; best = i; } });
-  return bd < 90 * 90 * 3 ? best : -1;
-}
-
-/** codes per frame (0..63, or -1 when unreadable) from the bottom-left 32x16 marker of the original recording */
+/** codes per frame (0..63, or -1 when unreadable) from the bottom-left 72x12 marker of the original recording */
 function readMarks(video) {
-  const buf = execSync(`ffmpeg -v error -i "${video}" -vf "fps=${FPS},crop=32:16:0:ih-16,crop=24:8:4:4,scale=2:1:flags=area" -f rawvideo -pix_fmt rgb24 -`, { maxBuffer: 1 << 28 });
+  // average each 12x8 block's brightness: 6 values per frame
+  const buf = execSync(`ffmpeg -v error -i "${video}" -vf "fps=${FPS},crop=72:12:0:ih-12,crop=72:8:0:2,scale=6:1:flags=area,format=gray" -f rawvideo -pix_fmt gray -`, { maxBuffer: 1 << 28 });
   const codes = [];
   for (let i = 0; i + 6 <= buf.length; i += 6) {
-    const a = classify(buf[i], buf[i + 1], buf[i + 2]), b = classify(buf[i + 3], buf[i + 4], buf[i + 5]);
-    codes.push(a < 0 || b < 0 ? -1 : a + 8 * b);
+    let code = 0, ok = true;
+    for (let b = 0; b < 6; b++) { const v = buf[i + b]; if (v > 170) code |= 1 << b; else if (v >= 85) ok = false; }
+    codes.push(ok ? code : -1);
   }
   return codes;
 }
