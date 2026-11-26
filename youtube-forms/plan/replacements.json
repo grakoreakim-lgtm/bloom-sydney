@@ -20,13 +20,15 @@
   "old": "https://youtu.be/z3QmJ8RzpgM",
   "new": "https://youtu.be/6REe9A48WZk",
   "uploaded": "2026-11-26T19:42:46.258Z",
-  "sync": "PASS — 22 steps, 36 cues, 22 on-screen checks, sync 36/36 (max shift 43.4 s)"
+  "sync": "PASS — 22 steps, 36 cues, 22 on-screen checks, sync 36/36 (max shift 43.4 s)",
+  "swapped": "2026-11-26T19:45:04.333Z"
  },
  "mdac:en": {
   "channel": "en",
   "old": "https://youtu.be/AuksnY9CriU",
   "new": "https://youtu.be/IF_NHM_lRrA",
   "uploaded": "2026-11-26T19:42:55.870Z",
-  "sync": "PASS — 22 steps, 36 cues, 22 on-screen checks, sync 36/36 (max shift 39.9 s)"
+  "sync": "PASS — 22 steps, 36 cues, 22 on-screen checks, sync 36/36 (max shift 39.9 s)",
+  "swapped": "2026-11-26T19:45:06.102Z"
  }
 }
