@@ -160,10 +160,10 @@ const steps = (route) => [
 
   // ---------- PAGE 3: review ----------
   { type: 'stop', field: 'submit', tipHold: 3200, text: T(
-    { label: '확인 후 제출', speech: { tip: '마지막 확인 화면이에요. 이름 순서, 여권번호, 날짜를 한 번 더 보시고, 고칠 게 있으면 에딧을 누르세요. 아래 동의에 체크하고 서브밋을 누르면 끝이에요. 오늘은 예시라 여기서 멈출게요.', mistake: '일행이 있으면 한 명씩 각각 내야 해요. 제출하면 확인 메일이 오니까 휴대폰에 남겨 두세요.' },
-      tip: '**Edit**로 수정 → 동의 체크 → **Submit**', mistake: '일행은 **한 명씩 각각** 제출합니다.' },
-    { label: 'Review & submit', speech: { tip: 'The review page. Check the name order, passport number and dates, and press edit to fix anything. Then tick the declaration and press submit. This is a demo, so I stop here.', mistake: 'Every traveller needs their own card. Keep the confirmation email on your phone.' },
-      tip: '**Edit** to fix → tick → **Submit**', mistake: 'Every traveller files **their own** card.' }) },
+    { label: '확인 후 제출', speech: { tip: '마지막 확인 화면이에요. 이름 순서, 여권번호, 날짜를 한 번 더 보시고, 고칠 게 있으면 에딧을 누르세요. 아래 동의에 체크하고 서브밋을 누르면 끝이에요. 오늘은 예시라 여기서 멈출게요.', mistake: '일행도 한 사람씩 모두 카드가 있어야 해요. 같이 가는 일행은 열 명까지 한 번에 묶어서 낼 수 있어요. 제출하면 확인 메일이 오니까 휴대폰에 남겨 두세요.' },
+      tip: '**Edit**로 수정 → 동의 체크 → **Submit**', mistake: '일행도 **모두** 필요. 같은 여정이면 **최대 10명** 한 번에 제출 가능.' },
+    { label: 'Review & submit', speech: { tip: 'The review page. Check the name order, passport number and dates, and press edit to fix anything. Then tick the declaration and press submit. This is a demo, so I stop here.', mistake: 'Every traveller needs a card. People on the same trip can be sent together, up to ten in one go. Keep the confirmation email on your phone.' },
+      tip: '**Edit** to fix → tick → **Submit**', mistake: 'Every traveller needs a card; **up to 10** on the same trip can go in one submission.' }) },
 ];
 
 module.exports = { live, steps };
