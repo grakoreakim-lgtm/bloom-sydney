@@ -1,0 +1,3 @@
+1-esim-en.mp4: video 528.1 s, last cue 457.3 s, recording drift check: 18 tip cues → 1-esim-en.mp4.sheet.png (row n should show step n)
+2-esta-en.mp4: video 459.4 s, last cue 389.6 s, recording drift check: 22 tip cues → 2-esta-en.mp4.sheet.png (row n should show step n)
+3-esta-ko.mp4: video 221.8 s, last cue 194.1 s, recording drift check: 22 tip cues → 3-esta-ko.mp4.sheet.png (row n should show step n)

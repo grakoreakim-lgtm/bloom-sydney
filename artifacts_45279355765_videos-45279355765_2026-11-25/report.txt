@@ -1,0 +1,2 @@
+1-tdac-ko.mp4: video 545.8 s, last cue 472.7 s, recording drift check: 24 tip cues → 1-tdac-ko.mp4.sheet.png (row n should show step n)
+2-tdac-en.mp4: video 481.5 s, last cue 418.1 s, recording drift check: 24 tip cues → 2-tdac-en.mp4.sheet.png (row n should show step n)

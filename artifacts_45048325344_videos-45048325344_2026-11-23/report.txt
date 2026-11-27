@@ -1,0 +1,2 @@
+1-grab-en.mp4: video 453.6 s, last cue 388.4 s, recording drift check: 18 tip cues → 1-grab-en.mp4.sheet.png (row n should show step n)
+2-esim-ko.mp4: video 189.1 s, last cue 165.0 s, recording drift check: 18 tip cues → 2-esim-ko.mp4.sheet.png (row n should show step n)

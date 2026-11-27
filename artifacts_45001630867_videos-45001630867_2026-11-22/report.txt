@@ -1,0 +1,2 @@
+1-sgac-ko.mp4: video 491.9 s, last cue 423.0 s, recording drift check: 28 tip cues → 1-sgac-ko.mp4.sheet.png (row n should show step n)
+2-sgac-en.mp4: video 403.6 s, last cue 349.5 s, recording drift check: 28 tip cues → 2-sgac-en.mp4.sheet.png (row n should show step n)
