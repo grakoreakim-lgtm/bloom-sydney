@@ -26,11 +26,16 @@ async function setPrivacy(ch, videoId, privacy) {
 (async () => {
   if (argv.includes('--swap')) {
     for (const [key, r] of Object.entries(repl)) {
-      if (r.swapped || (only && !only.includes(key.replace(':', '-')))) continue;
+      if (r.swapped || (only && !only.includes(key.replace(/:/g, '-')))) continue;
       try {
         await setPrivacy(r.channel, id(r.new), 'public'); console.log(`✔ ${key}: new ${r.new} → PUBLIC`);
         if (r.old) { await setPrivacy(r.channel, id(r.old), 'private'); console.log(`  old ${r.old} → private`); }
-        produced[key] = { ...(produced[key] || {}), url: r.new, replaced: r.old || null };
+        if (key.endsWith(':short')) {   // keep plan/shorts.json pointing at the new Short and the new main video
+          const SH = path.join(ROOT, 'plan', 'shorts.json'); const map = JSON.parse(fs.readFileSync(SH, 'utf8'));
+          const prev = r.old ? map[id(r.old)] : null; if (r.old) delete map[id(r.old)];
+          map[id(r.new)] = { ...(prev || {}), main: id(r.main), channel: r.channel, lang: r.channel, form: key.split(':')[0], replaced: id(r.old) };
+          fs.writeFileSync(SH, JSON.stringify(map, null, 1) + '\n');
+        } else produced[key] = { ...(produced[key] || {}), url: r.new, replaced: r.old || null };
         r.swapped = new Date().toISOString();
       } catch (e) { console.log(`✖ ${key}: ${e?.response?.data?.error?.message || e.message}`); process.exitCode = 1; }
     }
@@ -38,6 +43,30 @@ async function setPrivacy(ch, videoId, privacy) {
     return;
   }
   const dir = path.resolve(argv.find((a) => !a.startsWith('--') && ![opt('only'), opt('config')].includes(a)));
+  if (argv.includes('--shorts')) {   // re-cut Shorts from fixed main builds (main must already be swapped in)
+    const { makeShort } = require('./shorts');
+    const shortsMap = JSON.parse(fs.readFileSync(path.join(ROOT, 'plan', 'shorts.json'), 'utf8'));
+    for (const f of fs.readdirSync(dir).filter((x) => /^\d+-.+-(ko|en)\.mp4$/.test(x) && !x.includes('.short'))) {
+      const base = f.replace(/\.mp4$/, ''); const [, slot, form, lang] = base.match(/^(\d+)-(.+)-(ko|en)$/);
+      const key = `${form}:${lang}:short`; if (only && !only.includes(`${form}-${lang}-short`)) continue;
+      if (repl[key] && !repl[key].swapped) { console.log(`⏭ ${key}: already re-uploaded`); continue; }
+      const main = repl[`${form}:${lang}`]; if (!main?.swapped) { console.log(`⏭ ${key}: main video not swapped yet`); continue; }
+      const tl = fs.readdirSync(path.join(dir, `rec-${slot}`)).find((x) => x.endsWith('.timeline.json'));
+      const cues = JSON.parse(fs.readFileSync(path.join(dir, `rec-${slot}`, tl), 'utf8')).cues;
+      const fdef = require(path.join(ROOT, 'forms', `${form}.js`));
+      const short = makeShort(path.join(dir, f), cues, { lang, short: fdef.shortTitle?.[lang] || fdef.country?.[lang], country: fdef.country?.[lang] || '', form: fdef.shortTitle?.[lang] || fdef.title?.[lang] || form }, path.join(dir, `${base}.short.mp4`));
+      if (!short) { console.log(`⏭ ${key}: no mistake moments`); continue; }
+      const meta = JSON.parse(fs.readFileSync(path.join(dir, `${base}.meta.json`), 'utf8'));
+      const full = lang === 'ko' ? '▶ 전체 따라하기 영상' : '▶ Full step-by-step video';
+      const smeta = { title: short.title, description: [`${full}: ${main.new}`, '', meta.description.split('\n')[0], '', meta.description.split('\n').filter((l) => l.startsWith('#')).pop() || ''].join('\n'), tags: meta.tags, categoryId: meta.categoryId, defaultLanguage: lang };
+      const oldShort = Object.entries(shortsMap).find(([, v]) => v.form === form && v.lang === lang)?.[0];
+      const up = await upload(lang, smeta, short.file, null, { review: true, allowDuplicate: true, expectChannel: cfg.channelIds?.[lang] || null });
+      repl[key] = { channel: lang, old: oldShort ? `https://youtu.be/${oldShort}` : null, new: up.url, main: main.new, uploaded: new Date().toISOString() };
+      console.log(`✔ ${key}: new PRIVATE ${up.url}  (old ${repl[key].old || '-'})`);
+      fs.writeFileSync(REPL, JSON.stringify(repl, null, 1) + '\n');
+    }
+    return;
+  }
   for (const f of fs.readdirSync(dir).filter((x) => /^\d+-.+-(ko|en)\.mp4$/.test(x) && !x.includes('.short'))) {
     const base = f.replace(/\.mp4$/, ''); const [, form, lang] = base.match(/^\d+-(.+)-(ko|en)$/);
     const key = `${form}:${lang}`; if (only && !only.includes(`${form}-${lang}`)) continue;

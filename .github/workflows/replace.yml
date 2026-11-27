@@ -4,7 +4,7 @@ name: replace
 on:
   workflow_dispatch:
     inputs:
-      mode: { description: 'upload | swap', required: true, default: 'upload' }
+      mode: { description: 'upload | shorts | swap', required: true, default: 'upload' }
       run_id: { description: 'upload: daily-videos run ID with the fixed builds', required: false, default: '' }
       only: { description: 'e.g. esta-ko,esta-en (empty = all in that run / all pending swaps)', required: false, default: '' }
 
@@ -22,6 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm install --no-audit --no-fund
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk > /dev/null
       - name: Write secrets
         env:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -30,14 +31,14 @@ jobs:
           YT_REFRESH_TOKEN_EN: ${{ secrets.YT_REFRESH_TOKEN_EN }}
         run: node upload/secrets-from-env.js
       - name: Download builds
-        if: github.event.inputs.mode == 'upload'
+        if: github.event.inputs.mode != 'swap'
         env: { GH_TOKEN: '${{ github.token }}', RUN_ID: '${{ github.event.inputs.run_id }}' }
         run: gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -D artifacts
       - name: Run
         env: { MODE: '${{ github.event.inputs.mode }}', ONLY: '${{ github.event.inputs.only }}' }
         run: |
           if [ "$MODE" = "swap" ]; then node upload/replace.js --swap ${ONLY:+--only "$ONLY"}
-          else for d in $(find artifacts -type d -name 'rec-*' -exec dirname {} \; | sort -u); do node upload/replace.js "$d" ${ONLY:+--only "$ONLY"}; done; fi | tee -a $GITHUB_STEP_SUMMARY
+          else for d in $(find artifacts -type d -name 'rec-*' -exec dirname {} \; | sort -u); do node upload/replace.js "$d" ${ONLY:+--only "$ONLY"} $([ "$MODE" = shorts ] && echo --shorts); done; fi | tee -a $GITHUB_STEP_SUMMARY
       - name: Save state
         if: always()
         run: |
