@@ -197,10 +197,10 @@ module.exports = {
       en: { label: 'Declaration', speech: { tip: 'Tick the box.' }, tip: 'Tick the box' },
     }},
     { type: 'stop', field: 'submit', tipHold: 3200, text: {
-      ko: { label: '제출', speech: { tip: '여기서 제출을 누르면 끝이에요.', mistake: '제출하면 확인 메일이 와요. 공항에서는 보통 여권만 내면 되는데, 혹시 모르니 메일은 휴대폰에 남겨 두세요. 그리고 일행이 있으면 한 명씩 따로 내야 해요.' },
-            tip: 'Submit 누르면 **끝**', mistake: '일행은 **한 명씩 각각** 제출해야 합니다.' },
-      en: { label: 'Submit', speech: { tip: 'Press submit and you are done.', mistake: 'A confirmation email arrives. At the airport you usually only show your passport, but keep the email on your phone. And every traveller needs their own card.' },
-            tip: 'Press submit, **done**', mistake: 'Every traveller files **their own** card.' },
+      ko: { label: '제출', speech: { tip: '여기서 제출을 누르면 끝이에요.', mistake: '제출하면 확인 메일이 와요. 공항에서는 보통 여권만 내면 되는데, 혹시 모르니 메일은 휴대폰에 남겨 두세요. 그리고 일행도 한 사람씩 모두 카드가 있어야 해요. 같이 가는 일행은 열 명까지 한 번에 묶어서 낼 수 있어요.' },
+            tip: 'Submit 누르면 **끝**', mistake: '일행도 **모두** 필요. 같은 여정이면 **최대 10명** 한 번에 제출 가능.' },
+      en: { label: 'Submit', speech: { tip: 'Press submit and you are done.', mistake: 'A confirmation email arrives. At the airport you usually only show your passport, but keep the email on your phone. And every traveller needs a card. People on the same trip can be sent together, up to ten in one go.' },
+            tip: 'Press submit, **done**', mistake: 'Every traveller needs a card; **up to 10** on the same trip can go in one submission.' },
     }},
 
     // ---------- OUTRO (ticket) ----------
