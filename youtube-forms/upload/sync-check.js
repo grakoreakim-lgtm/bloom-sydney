@@ -23,6 +23,22 @@ for (const rec of fs.readdirSync(dir).filter((d) => /^rec-\d+$/.test(d))) {
   const ins = frames.map((f) => `-i "${f}"`).join(' ');
   if (frames.length) execSync(`ffmpeg -y -loglevel error ${ins} -filter_complex "${frames.map((_, i) => `[${i}]`).join('')}vstack=inputs=${frames.length}" "${sheet}"`);
   frames.forEach((f) => fs.unlinkSync(f));
+  // Shorts: the first mistake moments (same choice as upload/shorts.js) — screen at cue+1 s and at the end of each cut
+  const { segments } = require('./shorts');
+  const mistakes = t.cues.filter((c) => /-mistake$/.test(c.id));
+  const segs = segments(t.cues);
+  const rows = [];
+  segs.forEach((sg, k) => {
+    const c = mistakes.find((m) => Math.max(0, m.t - 1800) === sg.start) || mistakes[k];
+    const step = (c?.id.match(/^s(\d+)-/) || [])[1] || '?';
+    for (const [tag, at] of [['start', (c ? c.t : sg.start) + 1000], ['end', Math.min(sg.end - 2500, (c ? c.t : sg.start) + 5000)]]) {
+      const f = path.join(out, `${final}-short${k}-${tag}.png`);
+      const label = `short cut ${k + 1} (${tag}) - should be step ${step}`;
+      execSync(`ffmpeg -y -loglevel error -ss ${(at / 1000).toFixed(2)} -i "${vid}" -frames:v 1 -vf "crop=iw/2:ih/8:0:0,scale=480:-1,pad=480:ih+30:0:30:black,drawtext=text='${label}':fontcolor=yellow:fontsize=18:x=6:y=6" "${f}"`);
+      rows.push(f);
+    }
+  });
+  if (rows.length) { const sh = path.join(out, `${final}.shorts.png`); execSync(`ffmpeg -y -loglevel error ${rows.map((f) => `-i "${f}"`).join(' ')} -filter_complex "${rows.map((_, i) => `[${i}]`).join('')}vstack=inputs=${rows.length}" "${sh}"`); rows.forEach((f) => fs.unlinkSync(f)); }
   const line = `${final}: video ${vd.toFixed(1)} s, last cue ${last.toFixed(1)} s, recording drift check: ${tips.length} tip cues → ${path.basename(sheet)} (row n should show step n)`;
   console.log(line); report.push(line);
 }
