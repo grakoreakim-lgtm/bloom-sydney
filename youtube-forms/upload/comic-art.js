@@ -23,9 +23,17 @@ const key = process.env.GEMINI_API_KEY; if (!key) { console.log('GEMINI_API_KEY 
 
 const castText = C.cast.map((c) => `- ${c.name}: ${c.look}`).join('\n');
 const NO_TEXT = 'Absolutely no text, letters, numbers, signs with writing, logos or speech bubbles anywhere in the image.';
+// monthly image budget (OWNER-RULES 6c): plan/image-usage.json counts every image made; stop at config imageMonthlyCap
+const USAGE = path.join(__dirname, '..', 'plan', 'image-usage.json');
+const MONTH = new Date().toISOString().slice(0, 7);
+const usage = fs.existsSync(USAGE) ? JSON.parse(fs.readFileSync(USAGE, 'utf8')) : {};
+const CAP = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'config.ci.json'), 'utf8')).imageMonthlyCap || 200; } catch { return 200; } })();
+const countImage = (model) => { const m = (usage[MONTH] ||= { images: 0, byModel: {} }); m.images++; m.byModel[model] = (m.byModel[model] || 0) + 1; fs.writeFileSync(USAGE, JSON.stringify(usage, null, 1) + '\n'); };
+const overCap = () => (usage[MONTH]?.images || 0) >= CAP;
 let working = null; let capHit = false;   // the project's monthly spend cap: never keep retrying past it   // first model that answers is used for the rest
 
 async function gen(prompt, ref, outFile, o = {}) {
+  if (overCap()) throw new Error(`MONTHLY IMAGE CAP: ${CAP} images already made in ${MONTH} — ask the owner before making more`);
   const parts = [{ text: prompt }];
   if (ref) parts.push({ inline_data: { mime_type: 'image/jpeg', data: fs.readFileSync(ref).toString('base64') } });
   let last = '';
@@ -49,6 +57,7 @@ async function gen(prompt, ref, outFile, o = {}) {
         const img = j.candidates?.[0]?.content?.parts?.find((p) => p.inlineData || p.inline_data);
         if (!img) { last = `${model}: no image (${j.candidates?.[0]?.finishReason || 'no candidates'})`; break; }
         const d = img.inlineData || img.inline_data;
+        countImage(model);
         if (o.keep) { fs.writeFileSync(outFile, Buffer.from(d.data, 'base64')); working = model; return model; }   // full-size original (a whole page)
         const raw = `${outFile}.raw`; fs.writeFileSync(raw, Buffer.from(d.data, 'base64'));
         // every panel is exactly 1280x720 (cover-crop), JPEG to keep the repository small

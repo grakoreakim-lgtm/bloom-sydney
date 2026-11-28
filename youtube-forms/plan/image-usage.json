@@ -1,0 +1,10 @@
+{
+ "2026-11": {
+  "images": 45,
+  "byModel": {
+   "gemini-3-pro-image-preview": 42,
+   "gemini-2.5-flash-image": 3
+  },
+  "_note": "estimated from today's runs"
+ }
+}
