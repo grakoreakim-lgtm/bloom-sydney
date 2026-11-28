@@ -25,14 +25,14 @@ const castText = C.cast.map((c) => `- ${c.name}: ${c.look}`).join('\n');
 const NO_TEXT = 'Absolutely no text, letters, numbers, signs with writing, logos or speech bubbles anywhere in the image.';
 let working = null;   // first model that answers is used for the rest
 
-async function gen(prompt, ref, outFile) {
+async function gen(prompt, ref, outFile, o = {}) {
   const parts = [{ text: prompt }];
   if (ref) parts.push({ inline_data: { mime_type: 'image/jpeg', data: fs.readFileSync(ref).toString('base64') } });
   let last = '';
   for (const model of working ? [working] : [...new Set(MODELS)]) {
     for (const withRatio of [true, false]) {
       for (let attempt = 0; attempt < 4; attempt++) {
-        const body = { contents: [{ parts }], generationConfig: { responseModalities: ['TEXT', 'IMAGE'], ...(withRatio ? { imageConfig: { aspectRatio: '16:9' } } : {}) } };
+        const body = { contents: [{ parts }], generationConfig: { responseModalities: ['TEXT', 'IMAGE'], ...(withRatio ? { imageConfig: { aspectRatio: '16:9', ...(o.size ? { imageSize: o.size } : {}) } } : {}) } };
         let res;
         try {
           res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -45,6 +45,7 @@ async function gen(prompt, ref, outFile) {
         const img = j.candidates?.[0]?.content?.parts?.find((p) => p.inlineData || p.inline_data);
         if (!img) { last = `${model}: no image (${j.candidates?.[0]?.finishReason || 'no candidates'})`; break; }
         const d = img.inlineData || img.inline_data;
+        if (o.keep) { fs.writeFileSync(outFile, Buffer.from(d.data, 'base64')); working = model; return model; }   // full-size original (a whole page)
         const raw = `${outFile}.raw`; fs.writeFileSync(raw, Buffer.from(d.data, 'base64'));
         // every panel is exactly 1280x720 (cover-crop), JPEG to keep the repository small
         execSync(`ffmpeg -y -loglevel error -i "${raw}" -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720" -q:v 3 "${outFile}"`);
@@ -68,8 +69,43 @@ async function styleTest() {
   }
 }
 
+// --page: the whole episode as ONE image (a grid of equal panels), then cut into p<n>.jpg — about 1/10 of the cost.
+// Output goes to art/<id>/page/ for review; copy the panels up one level once they pass.
+function cuts(gray, len, other, n, along) {   // find n-1 white gutters along one axis of a downscaled grey page
+  const white = [];
+  for (let a = 0; a < len; a++) { let w = 0; for (let b = 0; b < other; b++) { const v = along === 'x' ? gray[b * len + a] : gray[a * other + b]; if (v > 228) w++; } white.push(w / other > 0.93); }
+  const bands = []; for (let a = 0; a < len; a++) if (white[a]) { const st = a; while (a < len && white[a]) a++; bands.push([st, a]); }
+  const inner = bands.filter(([a, b]) => a > len * 0.05 && b < len * 0.95);
+  const want = Array.from({ length: n - 1 }, (_, k) => ((k + 1) * len) / n);
+  return want.map((t) => { const near = inner.map(([a, b]) => [(a + b) / 2, a, b]).sort((p, q) => Math.abs(p[0] - t) - Math.abs(q[0] - t))[0]; return near && Math.abs(near[0] - t) < len * 0.08 ? [near[1], near[2]] : [t - 2, t + 2]; });
+}
+async function pageMode() {
+  const all = [...P.phrases, ...(P.bonus ? [P.bonus] : [])]; const n = all.length;
+  const cols = n <= 4 ? 2 : 3, rows = Math.ceil(n / cols);
+  const dir = path.join(OUT, 'page'); fs.mkdirSync(dir, { recursive: true });
+  const cast = C.castFrom ? path.join(OUT, '..', C.castFrom, 'cast.jpg') : path.join(OUT, 'cast.jpg');
+  const list = all.map((p, i) => `Panel ${i + 1} (row ${Math.floor(i / cols) + 1}, column ${(i % cols) + 1}): ${p.scene}`).join('\n');
+  const prompt = `${C.style}\nUse exactly the characters from the attached reference sheet (same faces, hair, clothes, colours).\n${castText}\n\nDraw ONE comic page that is a strict grid of ${cols} columns x ${rows} rows of EQUAL-SIZE wide 16:9 panels, separated by clean pure-white gutters of equal width, read left to right, top to bottom. Every panel is a complete scene on its own. Setting for all panels: ${C.setting}\n${C.layout || ''}\nIn every panel keep the upper left quarter calm and empty (plain wall) for a speech bubble that will be added later.\n${list}\n${n < cols * rows ? 'Leave the remaining grid cells plain white.\n' : ''}${NO_TEXT} No panel numbers, no captions.`;
+  const page = path.join(dir, 'page.png');
+  const m = await gen(prompt, cast, page, { size: '4K', keep: true }); console.log(`✔ page (${m})`);
+  const [W, H] = execSync(`ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "${page}"`).toString().trim().split(',').map(Number);
+  const w = 800, h = Math.round((H / W) * w);
+  const gray = execSync(`ffmpeg -loglevel error -i "${page}" -vf scale=${w}:${h},format=gray -f rawvideo -`, { maxBuffer: 64 * 1024 * 1024 });
+  const cx = cuts(gray, w, h, cols, 'x'), cy = cuts(gray, h, w, rows, 'y');
+  const xs = [[0, cx[0]?.[0] ?? w]].concat(cx.map((c, k) => [c[1], cx[k + 1]?.[0] ?? w]));
+  const ys = [[0, cy[0]?.[0] ?? h]].concat(cy.map((c, k) => [c[1], cy[k + 1]?.[0] ?? h]));
+  const sx = W / w, sy = H / h, pad = 6;
+  for (let i = 0; i < n; i++) {
+    const [x0, x1] = xs[i % cols], [y0, y1] = ys[Math.floor(i / cols)];
+    const X = Math.round((x0 + pad) * sx), Y = Math.round((y0 + pad) * sy), CW = Math.round((x1 - x0 - 2 * pad) * sx), CH = Math.round((y1 - y0 - 2 * pad) * sy);
+    execSync(`ffmpeg -y -loglevel error -i "${page}" -vf "crop=${CW}:${CH}:${X}:${Y},scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720" -q:v 3 "${path.join(dir, `p${i + 1}.jpg`)}"`);
+  }
+  console.log(`✔ cut into ${n} panels (${W}x${H}, grid ${cols}x${rows}) → phrases/art/${P.id}/page/`);
+}
+
 (async () => {
   if (argv.includes('--styles')) return styleTest();
+  if (argv.includes('--page')) return pageMode();
   const log = fs.existsSync(path.join(OUT, 'art.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'art.json'), 'utf8')) : {};
   // a series shares one cast: "castFrom": "jp-restaurant" reuses that episode's character sheet
   const cast = C.castFrom ? path.join(OUT, '..', C.castFrom, 'cast.jpg') : path.join(OUT, 'cast.jpg');
