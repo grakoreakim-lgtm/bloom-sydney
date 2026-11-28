@@ -29,6 +29,13 @@ if (flag('next')) {
   file = path.join(ROOT, 'phrases', `${id}.json`);
 }
 const P = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
+// daily mode: a comic episode waits until its reviewed art is committed (never ship it as plain cards by accident)
+if (flag('next') && P.comic) {
+  const artDir = path.join(ROOT, 'phrases', 'art', P.comic.artFrom || P.id);
+  const need = P.phrases.length + (P.bonus ? 1 : 0);
+  const have = Array.from({ length: need }, (_, i) => fs.existsSync(path.join(artDir, `p${i + 1}.jpg`))).filter(Boolean).length;
+  if (have < need) { console.log(`PHRASES waiting for art: ${P.id} (${have}/${need} panels in phrases/art/${P.comic.artFrom || P.id})`); process.exit(0); }
+}
 const DATE = opt('date');   // with --next: the publish date (KST)
 let BUDGET = opt('budget') != null ? Number(opt('budget')) : 99;   // uploads left today (shared YouTube quota)
 if (flag('next') && BUDGET < 1) { console.log(`PHRASES skipped ${P.id}: no upload budget left today`); process.exit(0); }
@@ -61,11 +68,11 @@ async function prepareKo(texts) {
   const uniq = [...new Set(texts.filter(Boolean))];
   if (fake) { for (const t of uniq) koDone[t] = silence(Math.max(1.2, t.length / 7)); return; }
   setBudget(cfg.tts?.maxMinutesPerVideo || 15);   // one budget for the whole video
-  try { for (const t of uniq) koDone[t] = await cachedTts(t, 'ko', cfg.tts.voices, cfg.tts?.speakingRate); }
+  try { for (const t of uniq) koDone[t] = await cachedTts(t, LANG, cfg.tts.voices, cfg.tts?.speakingRate); }
   catch (e) {
-    if (!cfg.tts?.fallback?.ko) throw e;
+    if (!cfg.tts?.fallback?.[LANG]) throw e;
     console.log(`VOICE_FALLBACK phrases:${P.id} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`); fellBack = true;
-    for (const t of uniq) koDone[t] = await cachedTts(t, 'ko', { ko: { ...cfg.tts.fallback.ko, filler: undefined } }, cfg.tts?.speakingRate);
+    for (const t of uniq) koDone[t] = await cachedTts(t, LANG, { [LANG]: { ...cfg.tts.fallback[LANG], filler: undefined } }, cfg.tts?.speakingRate);
   } finally { setBudget(0); }
   console.log(`  Korean voice: ${fellBack ? 'fallback' : 'main'} (${uniq.length} lines)`);
 }
@@ -87,27 +94,50 @@ async function target(text, slow) {
 
 // ---------- cards (HTML → PNG) ----------
 const FONT = "'Noto Sans CJK KR','Noto Sans CJK JP','Pretendard','Noto Sans KR',system-ui,sans-serif";
-const BRAND = cfg.brandsKo || '따라하면 끝 · 도착 후 가이드';
-const STATE = { listen: ['🔊', '들어 보세요', '#2f6bff'], repeat: ['🗣', '따라 말해 보세요', '#ff2d2d'], tip: ['💡', '알아 두면 좋아요', '#11a36a'] };
+
+// on-screen and description wording per narration language (P.lang: "ko" default, "en" for the Copy My Screen edition)
+const LANG = P.lang || 'ko';
+const UI = {
+  ko: { bonus: '보너스', topic: '식당 회화', listen: '들어 보세요', repeat: '따라 말해 보세요', tip: '알아 두면 좋아요', staffFirst: '직원이 먼저:',
+    fullN: (n) => `▶ 전체 ${n}문장은 설명란 링크`, fullComic: '▶ 전체 만화 회화는 설명란 링크', subscribe: '🔔 구독하면 다음 회화도 받아 보세요',
+    ask: (h) => `🤔 ${h}는 뭐라고 말할까요?`, askShort: '🤔 뭐라고 말할까요?', quiz: '⏱ 3초 안에 먼저 말해 보세요', inTarget: '일본어로?',
+    hookComic: (p) => `${p.short}. ${p.ko}, 일본어로 뭐라고 할까요?`, hookCard: (p) => `${p.short}. ${p.ko}는 이렇게 말해요.`, shortEnd: (n) => `전체 ${n}문장은 아래 링크에서 보세요.`,
+    recallSay: '이제 기억 테스트예요. 그림을 보고 먼저 말해 보세요. 정답은 3초 뒤에 나와요.', recallTitle: '기억 테스트: **먼저 말해 보세요**',
+    start: '시작', recall: '기억 테스트', recap: '정리', brand: '따라하면 끝', heroDefault: '나',
+    phrasesHead: '🗣 오늘의 문장 (한글 발음)', affNote: '※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', esim: '📱 eSIM', tour: '🎟 투어·입장권',
+    chapters: '⏱ 구간', ask4comments: '💬 이런 상황엔 뭐라고 해요? 궁금한 표현을 댓글로 남겨 주시면 답해 드려요.',
+    aiNote: '🎙 내레이션과 현지어 발음은 AI 음성입니다. 문장은 일반적인 여행 회화 표현으로 확인했습니다.', fullVideo: (n) => `▶ 전체 ${n}문장 영상`, category: '19' },
+  en: { bonus: 'Bonus', topic: 'Restaurant phrases', listen: 'Listen', repeat: 'Say it with me', tip: 'Good to know', staffFirst: 'Staff says first:',
+    fullN: (n) => `▶ All ${n} phrases: link in description`, fullComic: '▶ Full comic lesson: link in description', subscribe: '🔔 Subscribe for the next lesson',
+    ask: (h) => `🤔 What would ${h} say?`, askShort: '🤔 What would you say?', quiz: '⏱ Say it before the answer (3 s)', inTarget: 'in Japanese?',
+    hookComic: (p) => `${p.short}. How do you say "${p.ko}" in Japanese?`, hookCard: (p) => `${p.short}. Here is how to say it.`, shortEnd: (n) => `All ${n} phrases are in the full video, link below.`,
+    recallSay: "Memory test time. Look at each picture and say the line first. The answer comes after three seconds.", recallTitle: 'Memory test: **say it first**',
+    start: 'Start', recall: 'Memory test', recap: 'Recap', brand: 'Copy My Screen', heroDefault: 'you',
+    phrasesHead: "🗣 Today's phrases (with romaji)", affNote: '※ Affiliate links: the channel may earn a commission at no extra cost to you.', esim: '📱 eSIM', tour: '🎟 Tours & tickets',
+    chapters: '⏱ Chapters', ask4comments: '💬 What would you like to say in Japan? Ask in the comments and we will answer.',
+    aiNote: '🎙 Narration and Japanese audio are AI voices. Phrases are standard travel Japanese.', fullVideo: (n) => `▶ Full video (${n} phrases)`, category: '19' },
+}[LANG];
+const BRAND = LANG === 'ko' ? (cfg.brandsKo || '따라하면 끝 · 도착 후 가이드') : UI.brand;
+const STATE = { listen: ['🔊', UI.listen, '#2f6bff'], repeat: ['🗣', UI.repeat, '#ff2d2d'], tip: ['💡', UI.tip, '#11a36a'] };
 function phraseCard(p, i, state, vertical) {
   const [ic, word, col] = STATE[state];
-  const n = p.bonus ? '보너스' : `${i + 1} / ${N}`;
+  const n = p.bonus ? UI.bonus : `${i + 1} / ${N}`;
   const W = vertical ? 1080 : 1280, H = vertical ? 1920 : 720, s = vertical ? 1.45 : 1;
   const jaSize = Math.round((p.ja.length > 12 ? (p.ja.length > 16 ? 58 : 68) : 92) * s);
   return `<body style="margin:0;width:${W}px;height:${H}px;background:#0a0f1f;color:#fff;font-family:${FONT};position:relative;overflow:hidden">
   <div style="position:absolute;left:0;right:0;top:0;height:${Math.round(84 * s)}px;background:#111a33;display:flex;align-items:center;justify-content:space-between;padding:0 ${Math.round(40 * s)}px;font-size:${Math.round(30 * s)}px;font-weight:800">
-    <span>${P.flag} ${esc(P.country)} 식당 회화</span><span style="opacity:.8">${n}</span></div>
+    <span>${P.flag} ${esc(P.country)} ${esc(P.topic || UI.topic)}</span><span style="opacity:.8">${n}</span></div>
   <div style="position:absolute;left:${Math.round(56 * s)}px;right:${Math.round(56 * s)}px;top:${vertical ? 300 : 120}px">
     <div style="display:inline-block;background:#ffe100;color:#111;font-weight:900;font-size:${Math.round(34 * s)}px;padding:${Math.round(6 * s)}px ${Math.round(20 * s)}px;border-radius:12px">${esc(p.label)}</div>
     <div lang="ja" style="font-family:'Noto Sans CJK JP',${FONT};font-weight:900;font-size:${jaSize}px;line-height:1.15;margin-top:${Math.round(28 * s)}px;letter-spacing:-.01em">${esc(p.ja)}</div>
     <div style="font-weight:900;font-size:${Math.round(64 * s)}px;color:#ffe100;margin-top:${Math.round(18 * s)}px;line-height:1.15">${esc(p.pron)}</div>
     <div style="font-weight:700;font-size:${Math.round(44 * s)}px;margin-top:${Math.round(14 * s)}px;opacity:.95">= ${esc(p.ko)}</div>
-    ${p.hear && state !== 'repeat' ? `<div style="margin-top:${Math.round(22 * s)}px;font-size:${Math.round(28 * s)}px;background:#1c2748;border-radius:14px;padding:${Math.round(12 * s)}px ${Math.round(18 * s)}px;display:inline-block">👂 직원이 먼저: <span lang="ja" style="font-family:'Noto Sans CJK JP',${FONT}">${esc(p.hear)}</span></div>` : ''}
+    ${p.hear && state !== 'repeat' ? `<div style="margin-top:${Math.round(22 * s)}px;font-size:${Math.round(28 * s)}px;background:#1c2748;border-radius:14px;padding:${Math.round(12 * s)}px ${Math.round(18 * s)}px;display:inline-block">👂 ${UI.staffFirst} <span lang="ja" style="font-family:'Noto Sans CJK JP',${FONT}">${esc(p.hear)}</span></div>` : ''}
     ${state === 'tip' && p.tip ? `<div style="margin-top:${Math.round(22 * s)}px;font-size:${Math.round(30 * s)}px;line-height:1.4;background:#0f3b2a;border-left:8px solid #11a36a;border-radius:10px;padding:${Math.round(12 * s)}px ${Math.round(20 * s)}px">${esc(p.tip)}</div>` : ''}
   </div>
   <div style="position:absolute;left:0;right:0;bottom:0;height:${Math.round(96 * s)}px;background:${col};display:flex;align-items:center;justify-content:center;gap:16px;font-size:${Math.round(42 * s)}px;font-weight:900">${ic} ${word}</div>
   ${vertical ? `<div style="position:absolute;left:0;right:0;top:150px;text-align:center;font-size:50px;font-weight:900;padding:0 50px;line-height:1.25">${esc(p.short || p.label)}</div>
-  <div style="position:absolute;left:0;right:0;bottom:180px;text-align:center;font-size:40px;font-weight:800;opacity:.85">▶ 전체 ${N}문장은 설명란 링크</div>` : `<div style="position:absolute;right:40px;bottom:112px;font-size:24px;font-weight:800;opacity:.6">▶ ${esc(BRAND)}</div>`}
+  <div style="position:absolute;left:0;right:0;bottom:180px;text-align:center;font-size:40px;font-weight:800;opacity:.85">${UI.fullN(N)}</div>` : `<div style="position:absolute;right:40px;bottom:112px;font-size:24px;font-weight:800;opacity:.6">▶ ${esc(BRAND)}</div>`}
   </body>`;
 }
 const titleCard = (c) => `<body style="margin:0;width:1280px;height:720px;background:#0a0f1f;color:#fff;font-family:${FONT};display:flex;flex-direction:column;justify-content:center;padding:0 80px;box-sizing:border-box">
@@ -118,15 +148,15 @@ const titleCard = (c) => `<body style="margin:0;width:1280px;height:720px;backgr
 const recapCard = () => `<body style="margin:0;width:1280px;height:720px;background:#0a0f1f;color:#fff;font-family:${FONT};padding:40px 70px;box-sizing:border-box">
   <div style="font-size:52px;font-weight:900">${bold(P.outro.title).replace(/<b>/g, '<b style="color:#ffe100">')}</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;margin-top:26px">${P.phrases.map((p, i) => `<div style="font-size:28px;line-height:1.3"><b style="color:#ffe100">${i + 1}.</b> ${esc(p.pron)} <span style="opacity:.7">· ${esc(p.ko)}</span></div>`).join('')}</div>
-  <div style="position:absolute;left:70px;bottom:40px;font-size:30px;font-weight:900;background:#ff2d2d;padding:8px 22px;border-radius:12px">🔔 구독하면 다음 회화도 받아 보세요</div></body>`;
+  <div style="position:absolute;left:70px;bottom:40px;font-size:30px;font-weight:900;background:#ff2d2d;padding:8px 22px;border-radius:12px">${UI.subscribe}</div></body>`;
 
 // ---------- comic mode: phrases/art/<id>/p<n>.jpg exist for every phrase (made by upload/comic-art.js) ----------
 // Learning design: a picture per situation (dual coding), a "what would you say?" beat before the answer
 // (pretesting), the bubble sits right on the picture (contiguity), and a recall round at the end (retrieval practice).
-const ART = path.join(ROOT, 'phrases', 'art', P.id);
+const ART = path.join(ROOT, 'phrases', 'art', P.comic?.artFrom || P.id);   // artFrom: reuse another edition's pictures
 const artOf = (i) => path.join(ART, `p${i + 1}.jpg`);
 const COMIC = !!P.comic && !flag('no-comic') && all.every((_, i) => fs.existsSync(artOf(i)));
-const HERO = P.comic?.heroKo || '나';
+const HERO = P.comic?.hero || P.comic?.heroKo || UI.heroDefault;
 const img64 = (f) => `data:image/jpeg;base64,${fs.readFileSync(f).toString('base64')}`;
 const COMIC_CSS = `<style>
  .bub{position:absolute;background:#fff;color:#111;border:5px solid #111;border-radius:34px;padding:18px 30px;box-shadow:0 8px 0 rgba(0,0,0,.25);max-width:76%}
@@ -140,7 +170,7 @@ function bubblePos(p, vertical) { const b = p.bubble || 'tl'; const y = vertical
 function staffPos(p) { return (p.bubble || 'tl') === 'tr' ? 'left:40px;top:40px' : 'right:40px;top:40px'; }
 // state: ask (bubble "?") | listen | repeat | tip | quiz (recall round, "?") | answer (recall round)
 function comicPanel(p, i, state) {
-  const W = 1280, H = 720; const n = p.bonus ? '보너스' : `${i + 1} / ${N}`;
+  const W = 1280, H = 720; const n = p.bonus ? UI.bonus : `${i + 1} / ${N}`;
   const hidden = state === 'ask' || state === 'quiz';
   const jaSize = Math.min(70, Math.floor(860 / p.ja.length));   // one line in the bubble
   const bubble = hidden
@@ -148,11 +178,11 @@ function comicPanel(p, i, state) {
     : `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p)}"><div class="ja" lang="ja" style="font-size:${jaSize}px">${esc(p.ja)}</div><div style="font-size:40px;font-weight:900;color:#e0457b;margin-top:6px">${esc(p.pron)}</div></div>`;
   const staff = p.hear && state !== 'quiz' && state !== 'answer' ? `<div class="bub staff ${(p.bubble || 'tl') === 'tr' ? 'tl' : 'tr'}" style="${staffPos(p)};max-width:42%">👩‍🍳 <span lang="ja" class="ja" style="font-weight:700">${esc(p.hear)}</span></div>` : '';
   const bar = {
-    ask: ['#7a3cff', `🤔 ${HERO}는 뭐라고 말할까요?`],
+    ask: ['#7a3cff', UI.ask(HERO)],
     listen: ['#2f6bff', `🔊 = ${esc(p.ko)}`],
-    repeat: ['#ff2d2d', `🗣 따라 말해 보세요 · ${esc(p.ko)}`],
+    repeat: ['#ff2d2d', `🗣 ${UI.repeat} · ${esc(p.ko)}`],
     tip: ['#11a36a', `💡 ${esc(p.tip || '')}`],
-    quiz: ['#7a3cff', `⏱ 3초 안에 먼저 말해 보세요 · ${esc(p.label)}`],
+    quiz: ['#7a3cff', `${UI.quiz} · ${esc(p.label)}`],
     answer: ['#2f6bff', `✅ ${esc(p.pron)} = ${esc(p.ko)}`],
   }[state];
   const long = state === 'tip' && (p.tip || '').length > 34;
@@ -178,17 +208,17 @@ function comicPage(filled, title) {
 // vertical Short: the panel on top, a quiz beat, then the answer below it
 function comicShort(p, i, state) {
   const hidden = state === 'ask';
-  const bar = { ask: ['#7a3cff', '🤔 뭐라고 말할까요?'], listen: ['#2f6bff', '🔊 들어 보세요'], repeat: ['#ff2d2d', '🗣 따라 말해 보세요'] }[state];
+  const bar = { ask: ['#7a3cff', UI.askShort], listen: ['#2f6bff', `🔊 ${UI.listen}`], repeat: ['#ff2d2d', `🗣 ${UI.repeat}`] }[state];
   return `${COMIC_CSS}<body style="margin:0;width:1080px;height:1920px;background:#0a0f1f;color:#fff;font-family:${FONT};position:relative;overflow:hidden">
   <div style="position:absolute;left:0;right:0;top:150px;text-align:center;font-size:58px;font-weight:900;padding:0 50px;line-height:1.25">${esc(p.short || p.label)}</div>
   <div style="position:absolute;left:0;top:420px;width:1080px;height:608px"><img src="${img64(artOf(i))}" style="width:100%;height:100%;object-fit:cover">
     ${hidden ? `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p, true)};font-size:90px;font-weight:900;padding:4px 48px">?</div>` : ''}</div>
   <div style="position:absolute;left:60px;right:60px;top:1090px;text-align:center">
-    ${hidden ? `<div style="font-size:64px;font-weight:900;color:#ffe100">${esc(p.ko)}</div><div style="font-size:46px;font-weight:800;opacity:.85;margin-top:20px">일본어로?</div>`
+    ${hidden ? `<div style="font-size:64px;font-weight:900;color:#ffe100">${esc(p.ko)}</div><div style="font-size:46px;font-weight:800;opacity:.85;margin-top:20px">${UI.inTarget}</div>`
       : `<div class="ja" lang="ja" style="font-size:${p.ja.length > 12 ? 70 : 92}px">${esc(p.ja)}</div><div style="font-size:74px;font-weight:900;color:#ffe100;margin-top:18px">${esc(p.pron)}</div><div style="font-size:50px;font-weight:700;margin-top:14px">= ${esc(p.ko)}</div>`}
   </div>
   <div style="position:absolute;left:0;right:0;bottom:300px;height:120px;background:${bar[0]};display:flex;align-items:center;justify-content:center;font-size:54px;font-weight:900">${bar[1]}</div>
-  <div style="position:absolute;left:0;right:0;bottom:180px;text-align:center;font-size:40px;font-weight:800;opacity:.85">▶ 전체 만화 회화는 설명란 링크</div></body>`;
+  <div style="position:absolute;left:0;right:0;bottom:180px;text-align:center;font-size:40px;font-weight:800;opacity:.85">${UI.fullComic}</div></body>`;
 }
 
 (async () => {
@@ -199,9 +229,9 @@ function comicShort(p, i, state) {
   if (problems.length) { console.log('QA FAIL (before build)\n' + problems.map((x) => '  ✖ ' + x).join('\n')); process.exit(1); }
 
   const CM = P.comic || {};
-  const shortHook = (p) => (COMIC ? `${p.short}. ${p.ko}, 일본어로 뭐라고 할까요?` : `${p.short}. ${p.ko}는 이렇게 말해요.`), shortEnd = `전체 ${N}문장은 아래 링크에서 보세요.`;
+  const shortHook = (p) => (COMIC ? UI.hookComic(p) : UI.hookCard(p)), shortEnd = UI.shortEnd(N);
   const introSay = COMIC && CM.introSay ? CM.introSay : P.intro.say, outroSay = COMIC && CM.outroSay ? CM.outroSay : P.outro.say;
-  const recallSay = CM.recallSay || '이제 기억 테스트예요. 그림을 보고 먼저 말해 보세요. 정답은 3초 뒤에 나와요.';
+  const recallSay = CM.recallSay || UI.recallSay;
   console.log(`  layout: ${COMIC ? 'comic (' + all.length + ' panels)' : 'cards'}`);
   await prepareKo([introSay, outroSay, ...(COMIC ? [recallSay] : []), P.intro.say, ...all.flatMap((p) => [p.when, p.tip]), P.outro.say, ...(flag('no-shorts') ? [] : P.phrases.filter((p) => p.short).flatMap((p) => [shortHook(p), shortEnd]))]);
   const browser = await chromium.launch();
@@ -212,10 +242,10 @@ function comicShort(p, i, state) {
   const tl = []; const chapters = []; const at = () => tl.reduce((a, x) => a + dur(x.wav), 0);
   const push = (img, w) => tl.push({ img, wav: w });
   const intro = await render(COMIC ? comicPage(false, CM.pageTitle || P.intro.title.replace(/\n/g, ' ')) : titleCard(P.intro), 1280, 720);
-  chapters.push({ t: 0, label: '시작' }); push(intro, await ko(introSay)); push(intro, silence(0.4));
+  chapters.push({ t: 0, label: UI.start }); push(intro, await ko(introSay)); push(intro, silence(0.4));
   let firstCard = null;
   for (const [i, p] of all.entries()) {
-    const lab = p.bonus ? `보너스 · ${p.label}` : `${i + 1}. ${p.label}`;
+    const lab = p.bonus ? `${UI.bonus} · ${p.label}` : `${i + 1}. ${p.label}`;
     if (i === 0) chapters[0].label = lab; else chapters.push({ t: at(), label: lab });   // the short intro belongs to the first chapter
     if (COMIC) {
       const Q = await render(comicPanel(p, i, 'ask'), 1280, 720), L = await render(comicPanel(p, i, 'listen'), 1280, 720), R = await render(comicPanel(p, i, 'repeat'), 1280, 720);
@@ -233,8 +263,8 @@ function comicShort(p, i, state) {
     if (p.tip) { const T = await render(phraseCard(p, i, 'tip'), 1280, 720); push(T, await ko(p.tip)); push(T, silence(0.5)); } else push(R, silence(0.4));
   }
   if (COMIC) {   // recall round: picture first, 3 seconds to say it, then the answer once
-    chapters.push({ t: at(), label: '기억 테스트' });
-    const start = await render(comicPage(false, CM.recallTitle || '기억 테스트: **먼저 말해 보세요**'), 1280, 720);
+    chapters.push({ t: at(), label: UI.recall });
+    const start = await render(comicPage(false, CM.recallTitle || UI.recallTitle), 1280, 720);
     push(start, await ko(recallSay)); push(start, silence(0.5));
     for (const [i, p] of all.entries()) {
       push(await render(comicPanel(p, i, 'quiz'), 1280, 720), silence(3.0));
@@ -242,7 +272,7 @@ function comicShort(p, i, state) {
     }
   }
   const recap = await render(COMIC ? comicPage(true, P.outro.title) : recapCard(), 1280, 720);
-  chapters.push({ t: at(), label: '정리' }); push(recap, await ko(outroSay)); push(recap, silence(1.5));
+  chapters.push({ t: at(), label: UI.recap }); push(recap, await ko(outroSay)); push(recap, silence(1.5));
 
   async function build(items, outFile, musicKey) {
     const aList = tmp('txt'), vList = tmp('txt');
@@ -273,7 +303,7 @@ function comicShort(p, i, state) {
 
   // thumbnail
   let thumb = null;
-  try { const { thumbnail } = require('./thumbnail'); thumb = await thumbnail({ flag: P.flag, lang: 'ko', year: P.checkedOn.slice(0, 4), shot: firstCard, lines: P.thumb, brand: '따라하면 끝' }, path.join(OUT, `${P.id}.png`)); } catch (e) { console.log('  thumbnail skipped:', e.message.split('\n')[0]); }
+  try { const { thumbnail } = require('./thumbnail'); thumb = await thumbnail({ flag: P.flag, lang: LANG, year: P.checkedOn.slice(0, 4), shot: firstCard, lines: P.thumb, brand: UI.brand }, path.join(OUT, `${P.id}.png`)); } catch (e) { console.log('  thumbnail skipped:', e.message.split('\n')[0]); }
 
   // Shorts: one phrase each, vertical
   const shorts = [];
@@ -300,17 +330,17 @@ function comicShort(p, i, state) {
 
   // ---------- metadata + upload (PRIVATE; publishing needs the owner's OK) ----------
   const { subLine } = require('./metadata');
-  const aff = cfg.affiliate?.default?.[P.country] || cfg.affiliate?.fallback || {};
+  const aff = cfg.affiliate?.default?.[P.affCountry || P.country] || cfg.affiliate?.fallback || {};
   const description = [
     P.lead, '',
-    '🗣 오늘의 문장 (한글 발음)',
+    UI.phrasesHead,
     ...P.phrases.map((p, i) => `${i + 1}. ${p.ja}  ${p.pron} — ${p.ko}`),
     ...(P.bonus ? [`+ ${P.bonus.ja}  ${P.bonus.pron} — ${P.bonus.ko}`] : []), '',
-    ...(aff.esim || aff.tour ? ['※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', ...(aff.esim ? [`📱 eSIM: ${aff.esim}`] : []), ...(aff.tour ? [`🎟 투어·입장권: ${aff.tour}`] : []), ''] : []),
-    '⏱ 구간', ...chapters.map((c) => `${mmss(c.t)} ${c.label}`), '',
-    '💬 이런 상황엔 뭐라고 해요? 궁금한 표현을 댓글로 남겨 주시면 답해 드려요.',
-    subLine(cfg, P.channel, 'ko'),
-    '🎙 내레이션과 현지어 발음은 AI 음성입니다. 문장은 일반적인 여행 회화 표현으로 확인했습니다.', '',
+    ...(aff.esim || aff.tour ? [UI.affNote, ...(aff.esim ? [`${UI.esim}: ${aff.esim}`] : []), ...(aff.tour ? [`${UI.tour}: ${aff.tour}`] : []), ''] : []),
+    UI.chapters, ...chapters.map((c) => `${mmss(c.t)} ${c.label}`), '',
+    UI.ask4comments,
+    subLine(cfg, P.channel, LANG),
+    UI.aiNote, '',
     P.hashtags.map((h) => `#${h}`).join(' '),
   ].filter((x) => x !== null).join('\n').slice(0, 4900);
   fs.writeFileSync(path.join(OUT, `${P.id}.description.txt`), description);
@@ -322,25 +352,25 @@ function comicShort(p, i, state) {
   const sched = flag('next') && DATE;
   let pubAt = null;
   if (sched) {
-    const { localToIso } = require('./metadata'); const win = cfg.publishWindow?.ko || cfg.publishWindow?.default || { from: 6, to: 10 };
+    const { localToIso } = require('./metadata'); const win = cfg.publishWindow?.[LANG] || cfg.publishWindow?.default || { from: 6, to: 10 };
     const seed = [...`${DATE}|phrases|${P.id}`].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7); const mod = win.from * 60 + (seed % ((win.to - win.from) * 60));
-    pubAt = Date.parse(localToIso(DATE, Math.floor(mod / 60), cfg.timezone?.ko || 'Asia/Seoul', mod % 60)); pubAt = Math.max(pubAt, Date.now() + 30 * 60000);
+    pubAt = Date.parse(localToIso(DATE, Math.floor(mod / 60), cfg.timezone?.[LANG] || 'Asia/Seoul', mod % 60)); pubAt = Math.max(pubAt, Date.now() + 30 * 60000);
   }
   const opts = (k) => (sched ? { review: false, ...guard } : { review: true, ...guard });
   const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
-  const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
+  const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(0) }, main, thumb, opts(0));
   BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
   const res = { main: up.url, shorts: [] };
   if (sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
   for (const [k, s] of shorts.entries()) {
     if (BUDGET < 1) { console.log(`  ⏭ short ${s.p.label}: no upload budget left today`); continue; }
     const t = `${s.p.short} | ${s.p.pron} #Shorts`.slice(0, 100);
-    const d = [`▶ 전체 ${N}문장 영상: ${up.url}`, '', `${s.p.ja}  ${s.p.pron} — ${s.p.ko}`, '', subLine(cfg, P.channel, 'ko'), '', P.hashtags.map((h) => `#${h}`).join(' ')].filter(Boolean).join('\n');
-    const u = await upload(P.channel, { title: t, description: d, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(k + 1) }, s.file, null, opts(k + 1));
+    const d = [`${UI.fullVideo(N)}: ${up.url}`, '', `${s.p.ja}  ${s.p.pron} — ${s.p.ko}`, '', subLine(cfg, P.channel, LANG), '', P.hashtags.map((h) => `#${h}`).join(' ')].filter(Boolean).join('\n');
+    const u = await upload(P.channel, { title: t, description: d, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(k + 1) }, s.file, null, opts(k + 1));
     BUDGET--; console.log(`✔ short (${sched ? 'scheduled' : 'private'}) ${u.url}  ${t}`); res.shorts.push(u.url);
     if (sched && /youtu\.be\//.test(u.url)) {   // remember Short → main so the Mac helper can set the related-video link
       const SH = path.join(ROOT, 'plan', 'shorts.json'); const map = fs.existsSync(SH) ? JSON.parse(fs.readFileSync(SH, 'utf8')) : {};
-      map[u.url.split('youtu.be/')[1]] = { main: up.url.split('youtu.be/')[1], channel: P.channel, lang: 'ko', form: `phrases:${P.id}`, date: DATE }; fs.writeFileSync(SH, JSON.stringify(map, null, 1));
+      map[u.url.split('youtu.be/')[1]] = { main: up.url.split('youtu.be/')[1], channel: P.channel, lang: LANG, form: `phrases:${P.id}`, date: DATE }; fs.writeFileSync(SH, JSON.stringify(map, null, 1));
     }
   }
   fs.writeFileSync(path.join(OUT, `${P.id}.upload.json`), JSON.stringify(res, null, 1));
