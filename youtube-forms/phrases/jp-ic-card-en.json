@@ -1,0 +1,159 @@
+{
+ "id": "jp-ic-card-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "IC card phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-ic-card (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for IC Cards (Suica) in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Buying and charging a Suica-type IC card, getting stuck at the gate and more, in nine comic scenes at a Japanese station. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan IC card",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "suica",
+  "ic card japan",
+  "how to charge suica",
+  "japan train",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "suica"
+ ],
+ "intro": {
+  "title": "Japan IC card\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes with an IC card at a Japanese station. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Buying an IC card",
+   "ja": "ICカードはどこで買えますか？",
+   "pron": "Ai-shii kaado wa doko de kaemasu ka?",
+   "ko": "Where can I buy an IC card?",
+   "when": "Want a transit card? Ask this.",
+   "tip": "In Japan, cards like Suica and Pasmo are called IC cards.",
+   "short": "Buy a Suica-type card in Japan",
+   "scene": "In the station concourse, Jiwoo holds up a blank plain card shape between two fingers and asks the station attendant, who points toward a row of ticket machines; Minjun stands behind Jiwoo with a backpack.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Asking for help",
+   "ja": "使い方を教えてもらえますか？",
+   "pron": "Tsukaikata o oshiete moraemasu ka?",
+   "ko": "Could you show me how to use this?",
+   "when": "Can't work out the machine? Ask the staff like this.",
+   "tip": "Machines at big stations can usually switch to English.",
+   "scene": "In front of a ticket machine with a blank glowing touch screen, Jiwoo looks puzzled and asks the attendant, who leans in and points at the screen with a gloved finger.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Topping up",
+   "ja": "チャージしたいです。",
+   "pron": "Chaaji shitai desu.",
+   "ko": "I'd like to top up my card.",
+   "when": "Want to add money to your card? Say this.",
+   "tip": "In Japan, topping up is called chaaji. Station machines usually take cash for it.",
+   "scene": "At the ticket machine, Jiwoo holds her new IC card in one hand and a banknote in the other, looking at the attendant with a questioning smile; the attendant nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Stuck at the gate",
+   "ja": "改札を通れません。",
+   "pron": "Kaisatsu o tooremasen.",
+   "ko": "I can't get through the gate.",
+   "when": "If the gate closes on you, tell the staff like this.",
+   "tip": "The gate closes if your balance is too low. Top up at the fare adjustment machine next to the gates.",
+   "short": "Stuck at a ticket gate in Japan?",
+   "scene": "At an automatic ticket gate with its little flaps closed, Jiwoo holds her IC card over the reader with a surprised face; the attendant comes over from the right; Minjun has already passed through and looks back.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Checking the balance",
+   "ja": "残高を確認したいんですが。",
+   "pron": "Zandaka o kakunin shitai n desu ga.",
+   "ko": "I'd like to check my balance.",
+   "when": "Want to see how much is left on the card? Say this.",
+   "tip": "Zandaka means balance. The gate screen also shows it briefly when you tap through.",
+   "scene": "At a ticket machine, Jiwoo holds her IC card and points at the card slot with a curious look; the attendant shows her where to place the card.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Shopping with it",
+   "ja": "このカードで買い物もできますか？",
+   "pron": "Kono kaado de kaimono mo dekimasu ka?",
+   "ko": "Can I also shop with this card?",
+   "when": "Wondering if you can pay with your card? Ask this.",
+   "tip": "You can pay with an IC card at many convenience stores and station vending machines.",
+   "scene": "Near a drink vending machine with plain bottles in the station, Jiwoo holds up her IC card and asks the attendant, who nods and points at the round card reader on the machine.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Other cities",
+   "ja": "このカードは大阪でも使えますか？",
+   "pron": "Kono kaado wa Oosaka demo tsukaemasu ka?",
+   "ko": "Can I use this card in Osaka too?",
+   "when": "Going to another city? Ask if your card works there.",
+   "tip": "Swap in the city you are going to. Trains in the big cities mostly take the same cards.",
+   "scene": "At the staffed ticket window, Jiwoo holds up her IC card and mimes a train travelling far with her other hand; the attendant behind the window smiles and nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Getting a refund",
+   "ja": "払い戻しはできますか？",
+   "pron": "Haraimodoshi wa dekimasu ka?",
+   "ko": "Can I get a refund?",
+   "when": "Trip over and want to return the card? Ask this.",
+   "tip": "Refunds depend on the type of card. Ask at the station window.",
+   "scene": "On the last day, at the staffed ticket window, Jiwoo slides her IC card across the counter with her suitcase beside her and asks; the attendant takes the card with both gloved hands.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Day pass",
+  "ja": "一日乗車券はありますか？",
+  "pron": "Ichinichi jousha-ken wa arimasu ka?",
+  "ko": "Do you have a one-day pass?",
+  "when": "Finally, riding a lot today? Ask if there is a one-day pass.",
+  "tip": "",
+  "scene": "At the staffed ticket window, Jiwoo holds up one finger with a hopeful smile, Minjun beside her; the attendant smiles and reaches for a plain paper ticket.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-ic-card",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo gets an IC card: **fill the bubbles**",
+  "introSay": "Join Jiwoo as she gets a transit IC card at a Japanese station. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for IC Cards (Suica) in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🚉"
+ }
+}

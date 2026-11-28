@@ -1,0 +1,160 @@
+{
+ "id": "jp-taxi-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Taxi phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-taxi (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Taxis in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Loading your bag, giving the address, directions, stopping and paying, everything for a taxi in Japan in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan taxi",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan taxi",
+  "taxi in japanese",
+  "koko made onegai shimasu",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese",
+  "tokyo taxi"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan taxi\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese taxi. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "The trunk",
+   "ja": "トランクを開けてもらえますか？",
+   "pron": "Toranku o akete moraemasu ka?",
+   "ko": "Could you open the trunk?",
+   "when": "Got a big bag? Ask this before you get in.",
+   "tip": "Japanese taxis have rear doors that open and close by themselves. No need to touch them.",
+   "scene": "At the curb beside the taxi, Jiwoo stands with a big rolling suitcase and points at the car's trunk; the driver has stepped out on the right and touches his cap politely; Minjun holds a second bag.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Where to",
+   "ja": "ここまでお願いします。",
+   "pron": "Koko made onegai shimasu.",
+   "ko": "To here, please.",
+   "when": "When the driver asks where to, show the map and say this.",
+   "tip": "Showing the address or a map on your phone is the surest way.",
+   "hear": "どちらまでですか？ (Dochira made desu ka?) = Where to?",
+   "short": "The one phrase you need in a Japanese taxi",
+   "scene": "In the back seat on the left, Jiwoo leans forward and shows her phone with a simple map pin on the screen (no writing); the driver on the right turns his head to look.",
+   "bubble": "tl"
+  },
+  {
+   "label": "How long",
+   "ja": "何分ぐらいかかりますか？",
+   "pron": "Nanpun gurai kakarimasu ka?",
+   "ko": "About how many minutes will it take?",
+   "when": "Want to know how long the ride is? Ask this.",
+   "tip": "For hours, say nanjikan gurai. Gurai means about.",
+   "scene": "In the back seat, Jiwoo taps her wristwatch and leans forward to ask; the driver on the right, hands on the wheel, answers with a calm smile.",
+   "bubble": "tl"
+  },
+  {
+   "label": "I'm in a hurry",
+   "ja": "急いでいます。",
+   "pron": "Isoide imasu.",
+   "ko": "I'm in a hurry.",
+   "when": "Short on time? Tell the driver this.",
+   "tip": "Showing the time you need to arrive on your phone helps too.",
+   "scene": "In the back seat, Jiwoo clasps her hands together with an anxious, pleading face while Minjun checks his phone; the driver on the right nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Giving directions",
+   "ja": "次の信号を右に曲がってください。",
+   "pron": "Tsugi no shingou o migi ni magatte kudasai.",
+   "ko": "Please turn right at the next light.",
+   "when": "Want to give directions yourself? Say this.",
+   "tip": "Left is hidari, straight is massugu. Massugu itte kudasai means please go straight.",
+   "scene": "From the back seat, Jiwoo points forward and to the right between the front seats; through the windshield a traffic light is ahead; the driver on the right nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Stopping here",
+   "ja": "ここで止めてください。",
+   "pron": "Koko de tomete kudasai.",
+   "ko": "Please stop here.",
+   "when": "When you get where you want to go, say this.",
+   "tip": "You can also say koko de ii desu, here is fine.",
+   "short": "Get your taxi to stop in Japan",
+   "scene": "Jiwoo points out of the left window at a quiet street corner and raises her other hand; the driver on the right slows down with a nod.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Paying by card",
+   "ja": "カードは使えますか？",
+   "pron": "Kaado wa tsukaemasu ka?",
+   "ko": "Can I use a card?",
+   "when": "Want to pay by card? Ask this.",
+   "tip": "Many taxis in Japan now take cards and IC cards. Still, keep a little cash.",
+   "scene": "The taxi has stopped; Jiwoo holds up a credit card between the front seats; the driver on the right turns and points at a small card reader near the dashboard.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Receipt",
+   "ja": "領収書をください。",
+   "pron": "Ryoushuusho o kudasai.",
+   "ko": "A receipt, please.",
+   "when": "Need a receipt? Say this.",
+   "tip": "Ryoushuusho means receipt. Reshiito works too.",
+   "scene": "The driver on the right hands back the credit card with a white-gloved hand; Jiwoo holds out her open palm with a polite smile.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Saying goodbye",
+  "ja": "ありがとうございました。",
+  "pron": "Arigatou gozaimashita.",
+  "ko": "Thank you very much.",
+  "when": "Finally, thank the driver like this as you get out.",
+  "tip": "",
+  "scene": "Standing on the sidewalk with her suitcase, Jiwoo bows slightly and waves as the rear door closes by itself; Minjun bows too; the driver on the right touches his cap.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-taxi",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo takes a taxi in Japan: **fill the bubbles**",
+  "introSay": "Join Jiwoo in a taxi in Japan. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Taxis in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🚕"
+ }
+}

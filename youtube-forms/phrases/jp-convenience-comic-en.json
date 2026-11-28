@@ -1,0 +1,161 @@
+{
+ "id": "jp-convenience-comic-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Convenience store phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-convenience-comic (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Convenience Stores in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "From finding an item to paying at the counter, everything you need in a Japanese convenience store, in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan konbini",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan convenience store",
+  "konbini japanese",
+  "atatamete kudasai",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese",
+  "konbini"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "konbini"
+ ],
+ "intro": {
+  "title": "Japan konbini\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese convenience store. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Do you have this?",
+   "ja": "これはありますか？",
+   "pron": "Kore wa arimasu ka?",
+   "ko": "Do you have this?",
+   "when": "Can't find something? Show a photo and ask this.",
+   "tip": "Showing a photo on your phone is the fastest way.",
+   "scene": "In a snack aisle, Jiwoo holds up her phone with a photo of a snack bag on the screen and shows it to the clerk, who is stocking a shelf on the right; Minjun peers at the shelves behind Jiwoo.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Finding the ATM",
+   "ja": "ATMはどこですか？",
+   "pron": "Ee-tii-emu wa doko desu ka?",
+   "ko": "Where is the ATM?",
+   "when": "Need cash? Ask where the ATM is.",
+   "tip": "Many convenience stores in Japan have ATMs that take foreign cards.",
+   "scene": "Near the store entrance, Jiwoo opens an empty wallet with a worried face and asks the clerk; the clerk smiles and points with an open hand toward a plain grey machine in the corner.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Using the restroom",
+   "ja": "トイレを借りてもいいですか？",
+   "pron": "Toire o karite mo ii desu ka?",
+   "ko": "May I use the restroom?",
+   "when": "Want to use the restroom? Ask first, like this.",
+   "tip": "It's polite to ask the staff before you use it. Some stores don't have one for customers.",
+   "scene": "At the end of the counter, Jiwoo leans in politely with a slightly urgent smile and asks the clerk; the clerk nods and gestures toward a plain door at the back.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Point card?",
+   "ja": "持っていません。",
+   "pron": "Motte imasen.",
+   "ko": "I don't have one.",
+   "when": "At the register, the clerk asks if you have a point card. If not, answer like this.",
+   "tip": "You'll hear this question at almost every convenience store. A small wave of the hand works too.",
+   "hear": "ポイントカードはお持ちですか？ (Pointo kaado wa omochi desu ka?) = Do you have a point card?",
+   "short": "The question every konbini asks you",
+   "scene": "At the checkout counter, Jiwoo has put a bento box and a drink down; the clerk behind the register asks a question, and Jiwoo answers with a small apologetic wave of one hand; Minjun stands behind her holding a bottle of tea.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Heating it up",
+   "ja": "温めてください。",
+   "pron": "Atatamete kudasai.",
+   "ko": "Please heat it up.",
+   "when": "To get a bento or a bun heated, say this.",
+   "tip": "The clerk may ask first: atatamemasu ka. Then just say hai, onegai shimasu.",
+   "short": "Get your konbini bento heated",
+   "scene": "At the counter, Jiwoo slides a bento box toward the clerk and points at a small microwave behind the counter; the clerk takes the bento with both hands.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Chopsticks",
+   "ja": "お箸をください。",
+   "pron": "Ohashi o kudasai.",
+   "ko": "Chopsticks, please.",
+   "when": "If you need chopsticks, say this.",
+   "tip": "A spoon is supuun, a fork is fooku. Just swap them in for ohashi.",
+   "scene": "At the counter, Jiwoo mimes eating with chopsticks with one hand while the clerk reaches under the counter for a pair of wrapped wooden chopsticks.",
+   "bubble": "tl"
+  },
+  {
+   "label": "No bag",
+   "ja": "袋はいりません。",
+   "pron": "Fukuro wa irimasen.",
+   "ko": "I don't need a bag.",
+   "when": "The clerk asks if you need a bag. If you don't, answer like this.",
+   "tip": "If you do want one, say fukuro o kudasai. Bags at convenience stores usually cost a little extra.",
+   "hear": "袋はご利用ですか？ (Fukuro wa goriyou desu ka?) = Do you need a bag?",
+   "scene": "At the counter, the clerk holds up a folded plastic bag with a questioning look; Jiwoo smiles, shakes her hand gently and opens her own cloth tote bag.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Paying by card",
+   "ja": "カードでお願いします。",
+   "pron": "Kaado de onegai shimasu.",
+   "ko": "By card, please.",
+   "when": "To pay by card, say this.",
+   "tip": "Most convenience stores take cards and transit IC cards.",
+   "scene": "At the register, Jiwoo holds out a credit card toward a small card reader on the counter; the clerk gestures toward the reader with an open hand.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Saying thanks",
+  "ja": "ありがとうございます。",
+  "pron": "Arigatou gozaimasu.",
+  "ko": "Thank you.",
+  "when": "Finally, when you have paid, say thank you like this.",
+  "tip": "",
+  "scene": "Jiwoo takes her tote bag and the warm bento, bowing slightly with a smile; Minjun waves; the clerk bows back behind the counter.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-convenience-comic",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo at a Japanese convenience store: **fill the bubbles**",
+  "introSay": "Join Jiwoo at a Japanese convenience store. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Convenience Stores in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🧑‍💼"
+ }
+}

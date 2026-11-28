@@ -1,0 +1,160 @@
+{
+ "id": "jp-hotel-comic-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Hotel phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-hotel-comic (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Hotels in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Check-in, breakfast, Wi-Fi, a broken air conditioner and leaving your bags, everything for a Japanese hotel in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan hotel",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan hotel",
+  "hotel check in japanese",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese",
+  "onegai shimasu",
+  "japan trip"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan hotel\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese hotel. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Checking in",
+   "ja": "チェックインお願いします。",
+   "pron": "Chekku-in onegai shimasu.",
+   "ko": "I'd like to check in, please.",
+   "when": "At the front desk, say this.",
+   "tip": "Show your passport at the same time. Hotels in Japan check the passports of foreign guests.",
+   "short": "Check in at a Japanese hotel",
+   "scene": "At the wooden front desk, Jiwoo stands with a rolling suitcase and holds out her passport with a smile; the clerk behind the counter greets her with a small bow; Minjun stands behind Jiwoo with a backpack.",
+   "bubble": "tl"
+  },
+  {
+   "label": "I have a booking",
+   "ja": "予約しています。キムです。",
+   "pron": "Yoyaku shite imasu. Kimu desu.",
+   "ko": "I have a reservation. My name is Kim.",
+   "when": "When the clerk asks for your name, give the name on the booking like this.",
+   "tip": "Put your own family name where it says Kimu. You can also show the booking on your phone.",
+   "hear": "お名前をお願いします。 (Onamae o onegai shimasu.) = Your name, please.",
+   "scene": "At the front desk, the clerk asks a question with an open hand; Jiwoo points to herself and then shows a booking screen on her phone (no readable writing).",
+   "bubble": "tl"
+  },
+  {
+   "label": "Breakfast time",
+   "ja": "朝食は何時からですか？",
+   "pron": "Choushoku wa nanji kara desu ka?",
+   "ko": "What time does breakfast start?",
+   "when": "To ask when breakfast starts, say this.",
+   "tip": "Nanji kara means from what time, and nanji made means until what time.",
+   "scene": "At the front desk, the clerk hands Jiwoo a key card in a small plain envelope; Jiwoo takes it and asks with a curious look, miming eating with chopsticks.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Wi-Fi password",
+   "ja": "Wi-Fiのパスワードは何ですか？",
+   "pron": "Wai-fai no pasuwaado wa nan desu ka?",
+   "ko": "What's the Wi-Fi password?",
+   "when": "To ask for the Wi-Fi password, say this.",
+   "tip": "It is often written in the room guide or on the key card envelope.",
+   "scene": "Still at the front desk, Jiwoo holds up her phone showing a blank Wi-Fi symbol and asks; the clerk smiles and points to a small plain card on the counter.",
+   "bubble": "tl"
+  },
+  {
+   "label": "One more, please",
+   "ja": "タオルをもう一枚ください。",
+   "pron": "Taoru o mou ichimai kudasai.",
+   "ko": "One more towel, please.",
+   "when": "Need another towel? Say this.",
+   "tip": "Mou ichimai means one more sheet. Swap taoru for other things too.",
+   "scene": "In the hotel corridor outside her room door, Jiwoo holds up one finger and a single folded towel, asking the clerk who is passing by on the right.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Something is broken",
+   "ja": "エアコンが動きません。",
+   "pron": "Eakon ga ugokimasen.",
+   "ko": "The air conditioner isn't working.",
+   "when": "If something in your room is broken, say this.",
+   "tip": "Swap eakon for other things, like terebi, the TV.",
+   "short": "Something broken in your hotel room?",
+   "scene": "In the compact guest room, Jiwoo holds a remote control and points at the silent wall-mounted air conditioner, fanning her face; the clerk has come to the room and looks up at the unit on the right.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Checking out",
+   "ja": "チェックアウトお願いします。",
+   "pron": "Chekku-auto onegai shimasu.",
+   "ko": "I'd like to check out, please.",
+   "when": "When you leave, hand back the key and say this.",
+   "tip": "Some hotels have a box for key cards instead. Just follow what the front desk says.",
+   "scene": "Back at the front desk in the morning, Jiwoo places a key card on the counter with her suitcase beside her; the clerk takes it with both hands and bows slightly.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Leaving your bags",
+   "ja": "荷物を預かってもらえますか？",
+   "pron": "Nimotsu o azukatte moraemasu ka?",
+   "ko": "Could you keep my luggage?",
+   "when": "After checking out, want to leave your bags and go sightseeing? Ask this.",
+   "tip": "Many hotels keep bags before check-in and after check-out. Keep the claim tag they give you.",
+   "scene": "At the front desk, Jiwoo pats the handle of her rolling suitcase and asks; the clerk nods and holds out a small plain claim tag; Minjun holds a city guidebook with a blank cover.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Calling a taxi",
+  "ja": "タクシーを呼んでもらえますか？",
+  "pron": "Takushii o yonde moraemasu ka?",
+  "ko": "Could you call a taxi for me?",
+  "when": "Finally, if you need a taxi, ask the front desk like this.",
+  "tip": "",
+  "scene": "At the front desk, Jiwoo mimes holding a steering wheel with a hopeful smile; the clerk picks up a desk phone with a nod.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-hotel-comic",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo at a Japanese hotel: **fill the bubbles**",
+  "introSay": "Join Jiwoo at a hotel in Japan. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Hotels in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🛎"
+ }
+}

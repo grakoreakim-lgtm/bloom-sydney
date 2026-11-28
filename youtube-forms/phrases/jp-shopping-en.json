@@ -1,0 +1,160 @@
+{
+ "id": "jp-shopping-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Shopping phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-shopping (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Shopping in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Browsing, trying things on, sizes and colours, tax-free, gift wrapping and bags, everything for shopping in Japan in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan shopping",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "shopping in japan",
+  "tax free japan",
+  "japanese sizes",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese",
+  "japan shopping"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "japanshopping"
+ ],
+ "intro": {
+  "title": "Japan shopping\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese clothes shop. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Just looking",
+   "ja": "見ているだけです。",
+   "pron": "Mite iru dake desu.",
+   "ko": "I'm just looking.",
+   "when": "If a clerk asks what you are looking for and you are only browsing, answer like this.",
+   "tip": "Say it with a smile and the staff will let you browse in peace.",
+   "hear": "何かお探しですか？ (Nanika osagashi desu ka?) = Are you looking for something?",
+   "short": "When a shop clerk talks to you in Japan",
+   "scene": "Between clothing racks, Jiwoo browses a rail of sweaters; the clerk approaches from the right with a helpful smile, and Jiwoo answers with a friendly little wave; Minjun looks at jackets behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Other colours",
+   "ja": "ほかの色はありますか？",
+   "pron": "Hoka no iro wa arimasu ka?",
+   "ko": "Do you have other colours?",
+   "when": "Like it but want a different colour? Ask this.",
+   "tip": "Black is kuro, white is shiro. You can ask kuro wa arimasu ka.",
+   "scene": "Jiwoo holds up a mustard-coloured sweater and points at it with a questioning look; the clerk on the right holds up the same sweater folded in indigo and grey.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Trying it on",
+   "ja": "試着してもいいですか？",
+   "pron": "Shichaku shite mo ii desu ka?",
+   "ko": "Can I try this on?",
+   "when": "Want to try something on? Ask this.",
+   "tip": "Shichaku means trying on. In many shops you take your shoes off before stepping into the fitting room.",
+   "scene": "Jiwoo holds the indigo sweater against her body and points toward a fitting room with a curtain; the clerk nods and gestures toward it with an open hand.",
+   "bubble": "tl"
+  },
+  {
+   "label": "A bigger size",
+   "ja": "もっと大きいサイズはありますか？",
+   "pron": "Motto ookii saizu wa arimasu ka?",
+   "ko": "Do you have a bigger size?",
+   "when": "Too small? Ask this.",
+   "tip": "Smaller is motto chiisai saizu. Japanese sizes can run a little small.",
+   "scene": "Jiwoo peeks out from the fitting room curtain, the sweater sleeves too short on her arms, and asks the clerk waiting outside on the right; Minjun laughs in the background.",
+   "bubble": "tl"
+  },
+  {
+   "label": "I'll take it",
+   "ja": "これにします。",
+   "pron": "Kore ni shimasu.",
+   "ko": "I'll take this one.",
+   "when": "Decided? Say this.",
+   "tip": "You can use the same phrase when choosing from a menu.",
+   "scene": "Now wearing a sweater that fits, Jiwoo stands in front of a mirror and gives a happy thumbs-up, holding the sweater out to the clerk.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Tax-free",
+   "ja": "免税できますか？",
+   "pron": "Menzei dekimasu ka?",
+   "ko": "Can I get it tax-free?",
+   "when": "At the checkout, ask if you can buy it tax-free.",
+   "tip": "You need your passport for tax-free shopping. Not every shop offers it.",
+   "short": "Ask for tax-free in Japan",
+   "scene": "At the checkout counter, Jiwoo holds out her passport with both hands and asks the clerk behind the counter, the folded sweater between them.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Gift wrapping",
+   "ja": "プレゼント用に包んでもらえますか？",
+   "pron": "Purezento-you ni tsutsunde moraemasu ka?",
+   "ko": "Could you wrap it as a gift?",
+   "when": "Buying a gift? Ask for wrapping like this.",
+   "tip": "Purezento-you means for a present. Many shops will wrap it for you.",
+   "scene": "At the counter, Jiwoo holds a small plain box and mimes tying a ribbon with her fingers; the clerk smiles and holds up a sheet of plain wrapping paper.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Separate bags",
+   "ja": "袋を分けてもらえますか？",
+   "pron": "Fukuro o wakete moraemasu ka?",
+   "ko": "Could you put them in separate bags?",
+   "when": "Want the gift in a separate bag? Ask this.",
+   "tip": "If you don't need a bag, say fukuro wa irimasen. Some shops charge for bags.",
+   "scene": "At the counter, Jiwoo points at the sweater and then at the wrapped gift box, holding her hands apart; the clerk holds up two plain paper shopping bags.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "When you leave",
+  "ja": "また来ます。",
+  "pron": "Mata kimasu.",
+  "ko": "I'll come again.",
+  "when": "Finally, say this as you leave the shop. The staff will love it.",
+  "tip": "",
+  "scene": "At the shop door, Jiwoo holds two paper shopping bags and waves happily; Minjun carries another bag; the clerk bows on the right.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-shopping",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo goes shopping in Japan: **fill the bubbles**",
+  "introSay": "Join Jiwoo in a clothes shop in Japan. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Shopping in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🛍"
+ }
+}

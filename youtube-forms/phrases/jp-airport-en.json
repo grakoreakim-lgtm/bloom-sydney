@@ -1,0 +1,162 @@
+{
+ "id": "jp-airport-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Airport phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-airport (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for the Airport in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Landing in Japan: immigration, baggage, customs, money exchange and the train into the city, in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan airport",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan airport",
+  "japan immigration",
+  "arriving in japan",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese",
+  "narita haneda"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan airport\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes from landing in Japan. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Purpose of visit",
+   "ja": "観光です。",
+   "pron": "Kankou desu.",
+   "ko": "Sightseeing.",
+   "when": "At immigration, if they ask why you are visiting, answer like this.",
+   "tip": "Officers often ask in English too. For work, say shigoto desu.",
+   "hear": "旅行の目的は何ですか？ (Ryokou no mokuteki wa nan desu ka?) = What is the purpose of your trip?",
+   "short": "The question you hear at Japan immigration",
+   "scene": "At an immigration booth, the staff member, here an immigration officer behind the booth window, holds Jiwoo's passport and asks a question; Jiwoo answers with a bright smile, a camera hanging from her neck; Minjun waits behind a floor line.",
+   "bubble": "tl"
+  },
+  {
+   "label": "How long you stay",
+   "ja": "五日間です。",
+   "pron": "Itsukakan desu.",
+   "ko": "Five days.",
+   "when": "If they ask how long you are staying, answer like this.",
+   "tip": "Three days is mikkakan, one week is isshuukan. Showing fingers works too.",
+   "hear": "滞在は何日間ですか？ (Taizai wa nan-nichikan desu ka?) = How many days are you staying?",
+   "scene": "At the same immigration booth, the officer asks another question; Jiwoo holds up five fingers with her other hand on the booth counter.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Missing bag",
+   "ja": "荷物が出てきません。",
+   "pron": "Nimotsu ga dete kimasen.",
+   "ko": "My bag hasn't come out.",
+   "when": "If your bag never comes out, tell the staff like this.",
+   "tip": "Show the baggage claim tag you got when you checked in.",
+   "scene": "Beside an empty, slowly turning baggage carousel, Jiwoo holds up a small baggage claim sticker with a worried face; the staff member on the right leans in to look; Minjun already has his suitcase.",
+   "bubble": "tl"
+  },
+  {
+   "label": "At customs",
+   "ja": "いいえ、ありません。",
+   "pron": "Iie, arimasen.",
+   "ko": "No, nothing.",
+   "when": "At customs they ask if you have anything to declare. If not, answer like this.",
+   "tip": "If you do, say hai, arimasu. If they ask to open your bag, just open it and show them.",
+   "hear": "申告するものはありますか？ (Shinkoku suru mono wa arimasu ka?) = Anything to declare?",
+   "scene": "At a customs counter, the staff member, here a customs officer, asks a question; Jiwoo stands beside her suitcase and shakes her head gently with a polite smile.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Money exchange",
+   "ja": "両替はどこですか？",
+   "pron": "Ryougae wa doko desu ka?",
+   "ko": "Where can I exchange money?",
+   "when": "Need yen? Ask where to exchange money like this.",
+   "tip": "Ryougae means money exchange. Arrival halls usually have exchange counters and ATMs.",
+   "scene": "In the arrivals hall, Jiwoo holds a few foreign banknotes and asks the staff member at an information counter, who points to the left with an open hand.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Where to get the train",
+   "ja": "電車はどこから乗れますか？",
+   "pron": "Densha wa doko kara noremasu ka?",
+   "ko": "Where can I get the train?",
+   "when": "Want the train into the city? Ask this.",
+   "tip": "At big airports the station is usually downstairs or right next door. Follow the train pictograms.",
+   "short": "Find the train from a Japanese airport",
+   "scene": "At the information counter, Jiwoo pulls her suitcase and mimes a train with one flat hand gliding forward; the staff member points toward a down escalator.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Asking the fare",
+   "ja": "東京駅までいくらですか？",
+   "pron": "Toukyou-eki made ikura desu ka?",
+   "ko": "How much is it to Tokyo Station?",
+   "when": "Want to know the fare? Ask like this.",
+   "tip": "Swap in the station you want. Made means up to or as far as.",
+   "scene": "At a railway ticket counter in the airport station, Jiwoo leans toward the window and asks; the staff member behind the counter taps a small fare calculator with no readable numbers.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Next train",
+   "ja": "次の電車は何時ですか？",
+   "pron": "Tsugi no densha wa nanji desu ka?",
+   "ko": "What time is the next train?",
+   "when": "Want to know when the next train leaves? Ask this.",
+   "tip": "Tsugi no means the next. For a bus: tsugi no basu wa nanji desu ka.",
+   "scene": "At the same ticket counter, Jiwoo holds her new ticket and points at her wristwatch with a questioning look; the staff member smiles and gestures toward the platform.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Finding the restroom",
+  "ja": "トイレはどこですか？",
+  "pron": "Toire wa doko desu ka?",
+  "ko": "Where is the restroom?",
+  "when": "Finally, the first thing many people look for at the airport. Ask for the restroom like this.",
+  "tip": "",
+  "scene": "In the arrivals hall, Jiwoo shifts from foot to foot with an urgent smile and asks; the staff member points down a corridor with a toilet pictogram; Minjun laughs, holding both suitcases.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-airport",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo lands in Japan: **fill the bubbles**",
+  "introSay": "Join Jiwoo as she lands in Japan. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for the Airport in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🛂"
+ }
+}
