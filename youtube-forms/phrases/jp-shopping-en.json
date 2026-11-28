@@ -107,7 +107,7 @@
    "pron": "Menzei dekimasu ka?",
    "ko": "Can I get it tax-free?",
    "when": "At the checkout, ask if you can buy it tax-free.",
-   "tip": "You need your passport for tax-free shopping. Not every shop offers it.",
+   "tip": "Now you pay the tax at the till and get it back at airport customs when you leave Japan. Bring your actual passport.",
    "short": "Ask for tax-free in Japan",
    "scene": "At the checkout counter, Jiwoo holds out her passport with both hands and asks the clerk behind the counter, the folded sweater between them.",
    "bubble": "tl"
