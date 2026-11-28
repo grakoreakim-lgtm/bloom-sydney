@@ -1,36 +1,169 @@
 {
-  "id": "jp-restaurant",
-  "channel": "ko",
-  "country": "일본",
-  "flag": "🇯🇵",
-  "target": { "lang": "ja", "voice": { "languageCode": "ja-JP", "name": "ja-JP-Chirp3-HD-Leda" }, "fallbackVoice": { "languageCode": "ja-JP", "name": "ja-JP-Neural2-B" } },
-  "checkedOn": "2026-11-25",
-  "_note": "Phrasebook-level standard Japanese only. Each phrase: ja (shown + spoken), pron (Korean reading), ko (meaning), when (situation, spoken), tip (spoken after). Keep tips to facts that hold in Japan generally.",
-  "title": "일본 식당 주문 일본어 8문장 | 한글 발음으로 따라 말하기 (여행 회화)",
-  "lead": "일본 식당에서 들어가서 계산하고 나올 때까지, 이 여덟 문장이면 충분해요. 한글 발음과 함께 두 번씩 들려 드립니다.",
-  "thumb": ["일본 식당", "주문 회화", "8문장이면 끝"],
-  "tags": ["일본어 회화", "일본 여행 일본어", "일본 식당 주문", "여행 일본어", "일본어 기초", "일본 여행 준비", "스미마셍", "오카이케", "한글 발음 일본어", "일본 맛집"],
-  "hashtags": ["일본여행", "일본어회화", "여행일본어"],
-  "intro": { "title": "일본 식당에서\n**이 8문장이면 끝**", "sub": "한글 발음 · 두 번씩 · 따라 말하기", "say": "일본 식당에서 이 여덟 문장이면 충분해요. 두 번씩 들려 드릴 테니 따라 말해 보세요." },
-  "phrases": [
-    { "label": "직원 부를 때", "ja": "すみません！", "pron": "스미마셍!", "ko": "저기요! / 실례합니다",
-      "when": "직원을 부를 때는 이렇게 말해요.", "tip": "손을 살짝 들면서 말하면 돼요. 사과할 때도 쓰는 만능 표현이에요.", "short": "일본 식당에서 직원 부를 때 이 한마디" },
-    { "label": "인원 말하기", "ja": "二人です。", "pron": "후타리데스", "ko": "두 명이에요",
-      "when": "들어가면 직원이 몇 분이냐고 물어요. 두 명이면 이렇게 답해요.", "tip": "직원은 난메-사마데스카, 라고 물어요. 혼자면 히토리데스, 세 명이면 산닌데스. 손가락으로 보여 줘도 돼요.", "hear": "何名様ですか？ (난메-사마데스카) = 몇 분이세요?" },
-    { "label": "영어 메뉴", "ja": "英語のメニューはありますか？", "pron": "에이고노 메뉴-와 아리마스카?", "ko": "영어 메뉴 있어요?",
-      "when": "메뉴가 일본어뿐이면 이렇게 물어봐요.", "tip": "관광지 식당은 영어나 한국어 메뉴가 있는 곳이 많아요. 사진 메뉴만 있어도 다음 문장으로 해결돼요." },
-    { "label": "이거 주세요", "ja": "これをください。", "pron": "코레오 쿠다사이", "ko": "이거 주세요",
-      "when": "메뉴를 손가락으로 가리키면서 이렇게 말해요.", "tip": "두 개면 코레오 후타츠 쿠다사이. 이 문장 하나로 대부분 주문할 수 있어요.", "short": "일본어 몰라도 주문 끝나는 한마디" },
-    { "label": "추천 메뉴", "ja": "おすすめは何ですか？", "pron": "오스스메와 난데스카?", "ko": "추천 메뉴가 뭐예요?",
-      "when": "뭘 먹을지 모르겠으면 추천을 받아요.", "tip": "직원이 가리키는 메뉴에 그대로 코레오 쿠다사이, 하면 돼요." },
-    { "label": "빼 달라고 할 때", "ja": "わさび抜きでお願いします。", "pron": "와사비누키데 오네가이시마스", "ko": "와사비 빼 주세요",
-      "when": "초밥집에서 와사비를 빼고 싶으면 이렇게 말해요.", "tip": "누키는 빼다는 뜻이에요. 와사비 자리에 다른 재료를 넣어도 돼요. 파는 네기, 네기누키데 오네가이시마스.", "short": "초밥집에서 와사비 빼 달라고 할 때" },
-    { "label": "계산할 때", "ja": "お会計お願いします。", "pron": "오카이케- 오네가이시마스", "ko": "계산해 주세요",
-      "when": "다 먹고 계산할 때는 이렇게 말해요.", "tip": "일본은 자리에서 내지 않고 계산대에서 내는 식당이 많아요. 팁은 주지 않아요." },
-    { "label": "카드 되나요", "ja": "カードで払えますか？", "pron": "카-도데 하라에마스카?", "ko": "카드로 낼 수 있어요?",
-      "when": "카드를 쓰고 싶으면 먼저 물어봐요.", "tip": "작은 식당이나 라멘집은 현금만 받는 곳이 아직 있어요. 현금은 조금 들고 다니세요." }
-  ],
-  "bonus": { "label": "나갈 때 한마디", "ja": "ごちそうさまでした。", "pron": "고치소-사마데시타", "ko": "잘 먹었습니다",
-    "when": "마지막으로, 나갈 때 이 말을 하면 직원들이 정말 좋아해요.", "tip": "" },
-  "outro": { "title": "정리: **이 8문장**", "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 다음은 일본 편의점과 교통 회화예요. 도움이 됐다면 구독해 두세요." }
+ "id": "jp-restaurant",
+ "channel": "ko",
+ "country": "일본",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-25",
+ "_note": "Phrasebook-level standard Japanese only. Each phrase: ja (shown + spoken), pron (Korean reading), ko (meaning), when (situation, spoken), tip (spoken after). Keep tips to facts that hold in Japan generally.",
+ "title": "일본 식당 주문 일본어 8문장 | 한글 발음으로 따라 말하기 (여행 회화)",
+ "lead": "일본 식당에서 들어가서 계산하고 나올 때까지, 이 여덟 문장이면 충분해요. 한글 발음과 함께 두 번씩 들려 드립니다.",
+ "thumb": [
+  "일본 식당",
+  "주문 회화",
+  "8문장이면 끝"
+ ],
+ "tags": [
+  "일본어 회화",
+  "일본 여행 일본어",
+  "일본 식당 주문",
+  "여행 일본어",
+  "일본어 기초",
+  "일본 여행 준비",
+  "스미마셍",
+  "오카이케",
+  "한글 발음 일본어",
+  "일본 맛집"
+ ],
+ "hashtags": [
+  "일본여행",
+  "일본어회화",
+  "여행일본어"
+ ],
+ "intro": {
+  "title": "일본 식당에서\n**이 8문장이면 끝**",
+  "sub": "한글 발음 · 두 번씩 · 따라 말하기",
+  "say": "일본 식당에서 이 여덟 문장이면 충분해요. 두 번씩 들려 드릴 테니 따라 말해 보세요."
+ },
+ "phrases": [
+  {
+   "label": "직원 부를 때",
+   "ja": "すみません！",
+   "pron": "스미마셍!",
+   "ko": "저기요! / 실례합니다",
+   "when": "직원을 부를 때는 이렇게 말해요.",
+   "tip": "손을 살짝 들면서 말하면 돼요. 사과할 때도 쓰는 만능 표현이에요.",
+   "short": "일본 식당에서 직원 부를 때 이 한마디",
+   "scene": "At the entrance under a plain dark-blue fabric door curtain, Jiwoo raises one hand slightly and calls toward the waitress inside; Minjun stands behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "인원 말하기",
+   "ja": "二人です。",
+   "pron": "후타리데스",
+   "ko": "두 명이에요",
+   "when": "들어가면 직원이 몇 분이냐고 물어요. 두 명이면 이렇게 답해요.",
+   "tip": "직원은 난메-사마데스카, 라고 물어요. 혼자면 히토리데스, 세 명이면 산닌데스. 손가락으로 보여 줘도 돼요.",
+   "hear": "何名様ですか？ (난메-사마데스카) = 몇 분이세요?",
+   "scene": "Just inside the door, the waitress asks a question with a polite gesture; Jiwoo answers holding up two fingers, Minjun next to her nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "영어 메뉴",
+   "ja": "英語のメニューはありますか？",
+   "pron": "에이고노 메뉴-와 아리마스카?",
+   "ko": "영어 메뉴 있어요?",
+   "when": "메뉴가 일본어뿐이면 이렇게 물어봐요.",
+   "tip": "관광지 식당은 영어나 한국어 메뉴가 있는 곳이 많아요. 사진 메뉴만 있어도 다음 문장으로 해결돼요.",
+   "scene": "Seated at a wooden table, Jiwoo holds an open menu covered in illegible squiggles and looks puzzled, asking the waitress standing beside the table.",
+   "bubble": "tl"
+  },
+  {
+   "label": "이거 주세요",
+   "ja": "これをください。",
+   "pron": "코레오 쿠다사이",
+   "ko": "이거 주세요",
+   "when": "메뉴를 손가락으로 가리키면서 이렇게 말해요.",
+   "tip": "두 개면 코레오 후타츠 쿠다사이. 이 문장 하나로 대부분 주문할 수 있어요.",
+   "short": "일본어 몰라도 주문 끝나는 한마디",
+   "scene": "Jiwoo points at a photo of a bowl of food on the open menu, smiling at the waitress who holds a small order pad.",
+   "bubble": "tl"
+  },
+  {
+   "label": "추천 메뉴",
+   "ja": "おすすめは何ですか？",
+   "pron": "오스스메와 난데스카?",
+   "ko": "추천 메뉴가 뭐예요?",
+   "when": "뭘 먹을지 모르겠으면 추천을 받아요.",
+   "tip": "직원이 가리키는 메뉴에 그대로 코레오 쿠다사이, 하면 돼요.",
+   "scene": "Jiwoo looks up curiously at the waitress, who smiles and gestures with an open hand toward a wall of food photos.",
+   "bubble": "tr"
+  },
+  {
+   "label": "빼 달라고 할 때",
+   "ja": "わさび抜きでお願いします。",
+   "pron": "와사비누키데 오네가이시마스",
+   "ko": "와사비 빼 주세요",
+   "when": "초밥집에서 와사비를 빼고 싶으면 이렇게 말해요.",
+   "tip": "누키는 빼다는 뜻이에요. 와사비 자리에 다른 재료를 넣어도 돼요. 파는 네기, 네기누키데 오네가이시마스.",
+   "short": "초밥집에서 와사비 빼 달라고 할 때",
+   "scene": "Sushi set on the table; Jiwoo makes a gentle 'no thanks' gesture with both hands at a tiny green dab of wasabi on a plate, Minjun laughs.",
+   "bubble": "tl"
+  },
+  {
+   "label": "계산할 때",
+   "ja": "お会計お願いします。",
+   "pron": "오카이케- 오네가이시마스",
+   "ko": "계산해 주세요",
+   "when": "다 먹고 계산할 때는 이렇게 말해요.",
+   "tip": "일본은 자리에서 내지 않고 계산대에서 내는 식당이 많아요. 팁은 주지 않아요.",
+   "scene": "After the meal, empty bowls on the table; Jiwoo raises her hand politely toward the waitress across the room.",
+   "bubble": "tl"
+  },
+  {
+   "label": "카드 되나요",
+   "ja": "カードで払えますか？",
+   "pron": "카-도데 하라에마스카?",
+   "ko": "카드로 낼 수 있어요?",
+   "when": "카드를 쓰고 싶으면 먼저 물어봐요.",
+   "tip": "작은 식당이나 라멘집은 현금만 받는 곳이 아직 있어요. 현금은 조금 들고 다니세요.",
+   "scene": "At a small cash register counter, Jiwoo holds up a credit card and asks the waitress behind the counter.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "나갈 때 한마디",
+  "ja": "ごちそうさまでした。",
+  "pron": "고치소-사마데시타",
+  "ko": "잘 먹었습니다",
+  "when": "마지막으로, 나갈 때 이 말을 하면 직원들이 정말 좋아해요.",
+  "tip": "",
+  "scene": "Leaving through the fabric door curtain, Jiwoo and Minjun bow slightly and smile; the waitress bows back warmly.",
+  "bubble": "tr"
+ },
+ "outro": {
+  "title": "정리: **이 8문장**",
+  "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 다음은 일본 편의점과 교통 회화예요. 도움이 됐다면 구독해 두세요."
+ },
+ "comic": {
+  "style": "Warm Korean webtoon style illustration, clean bold outlines, soft cel shading, cozy pastel colour palette, expressive friendly faces, simple uncluttered backgrounds, consistent character design across panels.",
+  "setting": "A small, cosy Japanese set-meal restaurant with wooden tables, a short counter and warm lighting.",
+  "cast": [
+   {
+    "id": "me",
+    "name": "Jiwoo",
+    "look": "Korean woman in her twenties, short black bob haircut, mustard-yellow jacket over a white T-shirt, small brown crossbody bag"
+   },
+   {
+    "id": "friend",
+    "name": "Minjun",
+    "look": "Korean man in his twenties, short wavy brown hair, round glasses, navy hoodie"
+   },
+   {
+    "id": "staff",
+    "name": "Staff",
+    "look": "Japanese waitress in her thirties, black hair in a neat bun, dark indigo apron over a white shirt, kind smile"
+   }
+  ]
+ }
 }

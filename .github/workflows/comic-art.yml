@@ -1,0 +1,36 @@
+# Comic panel art for a phrase episode (Gemini image model). Output goes to the art-output branch for review;
+# approved art is then committed to phrases/art/<id>/ on main.
+name: comic-art
+
+on:
+  workflow_dispatch:
+    inputs:
+      file: { description: 'phrases/<id>.json', required: true, default: 'phrases/jp-restaurant.json' }
+      only: { description: 'panel numbers, e.g. 3,5 (empty = all missing)', required: false, default: '' }
+      force: { description: 'redo existing panels', type: boolean, default: false }
+
+permissions:
+  contents: write
+
+jobs:
+  art:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults: { run: { working-directory: youtube-forms } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: Generate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FILE: ${{ github.event.inputs.file }}
+          ONLY: ${{ github.event.inputs.only }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) | tee -a $GITHUB_STEP_SUMMARY
+      - name: Publish to art-output branch
+        if: always()
+        run: |
+          ls -la phrases/art/* || exit 0
+          cp -r phrases/art /tmp/art-out && cd /tmp/art-out && git init -q && git checkout -q -b art-output && git add -A && git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "comic art" && git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" art-output
