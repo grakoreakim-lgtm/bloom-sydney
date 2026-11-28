@@ -11,6 +11,8 @@ so their checks are independent. Everything else stays in the daily pipeline and
 
 The daily report (in the owner's main conversation) reads the latest review and plan and passes on what matters.
 
+Every role reads `../OWNER-RULES.md` (the owner's instructions and decisions) before working.
+
 Shared rules (also in the root `CLAUDE.md`): the owner reads Korean, plain words. Never print or commit secrets.
 Recordings use fictional data and never press Submit/Pay. Outward actions need the owner's approval, except what
 each role guide explicitly allows.

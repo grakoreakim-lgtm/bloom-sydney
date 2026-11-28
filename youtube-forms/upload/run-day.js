@@ -16,6 +16,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const { Recorder } = require('../lib/recorder');
 const { narrate, setBudget } = require('./narration');
+let voiceFellBack = false;   // once the main voice fails tonight, the rest of the night uses the fallback voice
 const { mux, pickBgm } = require('./mux');
 const { thumbnail } = require('./thumbnail');
 const { buildMetadata } = require('./metadata');
@@ -183,12 +184,12 @@ function planChannels(date, startSlot) {
       const target = (cfg.liveForms || []).includes(formId) ? 'live' : (cfg.target || 'mock');   // real site where mapped
       let clips;
       setBudget(cfg.tts?.maxMinutesPerVideo || 0);
-      try { clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate, target }); }
+      try { if (voiceFellBack) throw new Error('main voice already failed earlier tonight'); clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts?.voices, speakingRate: cfg.tts?.speakingRate, target }); }
       catch (e) {   // e.g. no GEMINI_API_KEY yet → fall back to the Google voice so the day still ships
         if (!cfg.tts?.fallback?.[lang]) throw e;
         console.warn(`    voice fallback (${e.message.slice(0, 120)})`);
         console.log(`VOICE_FALLBACK ${formId}:${lang} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`);   // picked up by the workflow → notification
-        setBudget(0);
+        setBudget(0); voiceFellBack = true;
         clips = await narrate(form, lang, path.join(ROOT, 'out', 'tts-cache'), { dryRun: fakeTts, voices: cfg.tts.fallback, speakingRate: cfg.tts?.speakingRate, target });
       }
       const narration = Object.fromEntries(Object.entries(clips).map(([k, v]) => [k, v.durationMs]));

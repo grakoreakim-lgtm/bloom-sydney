@@ -35,7 +35,13 @@ async function setPrivacy(ch, videoId, privacy) {
           const prev = r.old ? map[id(r.old)] : null; if (r.old) delete map[id(r.old)];
           map[id(r.new)] = { ...(prev || {}), main: id(r.main), channel: r.channel, lang: r.channel, form: key.split(':')[0], replaced: id(r.old) };
           fs.writeFileSync(SH, JSON.stringify(map, null, 1) + '\n');
-        } else produced[key] = { ...(produced[key] || {}), url: r.new, replaced: r.old || null };
+        } else {
+          produced[key] = { ...(produced[key] || {}), url: r.new, replaced: r.old || null };
+          // Shorts that still point at the old (now private) main get the new main, so their related-video link works
+          const SH = path.join(ROOT, 'plan', 'shorts.json'); const map = JSON.parse(fs.readFileSync(SH, 'utf8')); let n = 0;
+          for (const s of Object.values(map)) if (r.old && s.main === id(r.old)) { s.main = id(r.new); s.relink = true; n++; }
+          if (n) { fs.writeFileSync(SH, JSON.stringify(map, null, 1) + '\n'); console.log(`  ${n} Short(s) now point at the new main (related link needs re-setting)`); }
+        }
         r.swapped = new Date().toISOString();
       } catch (e) { console.log(`✖ ${key}: ${e?.response?.data?.error?.message || e.message}`); process.exitCode = 1; }
     }

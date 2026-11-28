@@ -1,10 +1,11 @@
 {
  "WsFYnd_4Tvc": {
-  "main": "z3QmJ8RzpgM",
+  "main": "6REe9A48WZk",
   "channel": "ko",
   "lang": "ko",
   "form": "mdac",
-  "date": "2026-11-22"
+  "date": "2026-11-22",
+  "relink": true
  },
  "w7GyGPs8py0": {
   "main": "gSK27VswUug",
@@ -28,25 +29,28 @@
   "date": "2026-11-24"
  },
  "arT6ZQAwqCU": {
-  "main": "kiRQGdWdGZ4",
+  "main": "JCnzjqHT070",
   "channel": "en",
   "lang": "en",
   "form": "esta",
-  "date": "2026-11-24"
+  "date": "2026-11-24",
+  "relink": true
  },
  "TU9fAqa2aVI": {
-  "main": "OLowVqk_iM0",
+  "main": "V2NznO17sXg",
   "channel": "ko",
   "lang": "ko",
   "form": "esta",
-  "date": "2026-11-24"
+  "date": "2026-11-24",
+  "relink": true
  },
  "fHhn_b5e8m8": {
-  "main": "lYUi6QIrcT8",
+  "main": "UVLGSUosRic",
   "channel": "ko",
   "lang": "ko",
   "form": "tdac",
-  "date": "2026-11-25"
+  "date": "2026-11-25",
+  "relink": true
  },
  "91QQWFQv4EU": {
   "main": "wARGzCv0yTY",
