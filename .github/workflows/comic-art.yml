@@ -35,6 +35,11 @@ jobs:
           PAGE: ${{ github.event.inputs.page }}
           MODEL: ${{ github.event.inputs.model }}
         run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) $([ "$STYLES" = "true" ] && echo --styles) $([ "$PAGE" = "true" ] && echo --page) $([ -n "$MODEL" ] && echo --model "$MODEL") | tee -a $GITHUB_STEP_SUMMARY
+      - name: Remember image usage (monthly cap)
+        if: always()
+        run: |
+          git config user.name "comic-art bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plan/image-usage.json && { git diff --cached --quiet || { git commit -qm "image usage: $(date +%F)"; git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin HEAD:"$GITHUB_REF_NAME"; }; } || true
       - name: Publish to art-output branch
         if: always()
         run: |

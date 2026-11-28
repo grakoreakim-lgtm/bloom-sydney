@@ -586,5 +586,7 @@
       "esta"
     ]
   },
-  "_tutorialRules": "Owner decision 2026-11-28: fewer uploads (KO 1 main/day + 1-2 Shorts), no hi/es/id/ja uploads (use auto dubbing instead), EN channel only fast-changing forms (re-evaluate 2027-01-27)."
+  "_tutorialRules": "Owner decision 2026-11-28: fewer uploads (KO 1 main/day + 1-2 Shorts), no hi/es/id/ja uploads (use auto dubbing instead), EN channel only fast-changing forms (re-evaluate 2027-01-27).",
+  "imageMonthlyCap": 200,
+  "_imageMonthlyCap": "Owner budget 2026-11-28: comic images per month (counted in plan/image-usage.json); comic-art stops at this number."
 }
