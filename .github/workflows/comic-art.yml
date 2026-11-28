@@ -8,6 +8,7 @@ on:
       file: { description: 'phrases/<id>.json', required: true, default: 'phrases/jp-restaurant.json' }
       only: { description: 'panel numbers, e.g. 3,5 (empty = all missing)', required: false, default: '' }
       force: { description: 'redo existing panels', type: boolean, default: false }
+      styles: { description: 'style test: one panel in every comic.styleOptions style', type: boolean, default: false }
 
 permissions:
   contents: write
@@ -28,7 +29,8 @@ jobs:
           FILE: ${{ github.event.inputs.file }}
           ONLY: ${{ github.event.inputs.only }}
           FORCE: ${{ github.event.inputs.force }}
-        run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) | tee -a $GITHUB_STEP_SUMMARY
+          STYLES: ${{ github.event.inputs.styles }}
+        run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) $([ "$STYLES" = "true" ] && echo --styles) | tee -a $GITHUB_STEP_SUMMARY
       - name: Publish to art-output branch
         if: always()
         run: |

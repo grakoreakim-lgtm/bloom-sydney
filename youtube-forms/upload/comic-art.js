@@ -12,7 +12,7 @@ const { execSync } = require('child_process');
 
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
-const file = argv.find((a) => !a.startsWith('--') && a !== opt('only') && a !== opt('model'));
+const file = argv.find((a) => !a.startsWith('--') && a !== opt('only') && a !== opt('model') && a !== opt('panel'));
 const P = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
 const C = P.comic; if (!C) { console.log(`no "comic" section in ${file}`); process.exit(1); }
 const OUT = path.join(__dirname, '..', 'phrases', 'art', P.id); fs.mkdirSync(OUT, { recursive: true });
@@ -57,7 +57,19 @@ async function gen(prompt, ref, outFile) {
   throw new Error(last);
 }
 
+// --styles: draw one panel (--panel, default 2) in every comic.styleOptions style → art/<id>/styles/<key>.jpg (for choosing a style)
+async function styleTest() {
+  const n = Number(opt('panel') || 2); const p = [...P.phrases, ...(P.bonus ? [P.bonus] : [])][n - 1];
+  const dir = path.join(OUT, 'styles'); fs.mkdirSync(dir, { recursive: true });
+  const cast = C.castFrom ? path.join(OUT, '..', C.castFrom, 'cast.jpg') : path.join(OUT, 'cast.jpg');
+  for (const [k, st] of Object.entries(C.styleOptions || {})) {
+    const prompt = `${st}\nThe attached sheet only shows WHO the characters are (faces, hair, clothes, colours); do NOT copy its drawing style.\n${castText}\n\nScene: ${C.setting} ${p.scene}\n${C.layout || ''}\nComposition: wide 16:9 panel, characters in the lower two thirds, keep the upper left quarter calm and empty.\n${NO_TEXT}`;
+    try { const m = await gen(prompt, cast, path.join(dir, `${k}.jpg`)); console.log(`✔ style ${k} (${m})`); } catch (e) { console.log(`✖ style ${k}: ${e.message}`); }
+  }
+}
+
 (async () => {
+  if (argv.includes('--styles')) return styleTest();
   const log = fs.existsSync(path.join(OUT, 'art.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'art.json'), 'utf8')) : {};
   // a series shares one cast: "castFrom": "jp-restaurant" reuses that episode's character sheet
   const cast = C.castFrom ? path.join(OUT, '..', C.castFrom, 'cast.jpg') : path.join(OUT, 'cast.jpg');
