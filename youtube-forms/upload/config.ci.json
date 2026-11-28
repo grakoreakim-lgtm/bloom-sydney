@@ -53,26 +53,14 @@
         "name": "Leda",
         "model": "gemini-2.5-pro-preview-tts",
         "split": false,
-        "prompt": "친근하고 차분한 여행 가이드처럼, 또렷하고 자연스럽게, 너무 빠르지 않게 한국어로 읽어 주세요. 지시문은 읽지 말고 아래 문장만 읽으세요:",
-        "filler": {
-          "text": "음…",
-          "volume": 0.35,
-          "every": 4,
-          "onMistakes": true
-        }
+        "prompt": "친근하고 차분한 여행 가이드처럼, 또렷하고 자연스럽게, 너무 빠르지 않게 한국어로 읽어 주세요. 지시문은 읽지 말고 아래 문장만 읽으세요:"
       },
       "en": {
         "provider": "gemini",
         "name": "Leda",
         "model": "gemini-2.5-pro-preview-tts",
         "split": false,
-        "prompt": "Read the following like a friendly, calm travel guide: clear, natural and not too fast. Do not read this instruction, only the text below:",
-        "filler": {
-          "text": "Hmm…",
-          "volume": 0.35,
-          "every": 4,
-          "onMistakes": true
-        }
+        "prompt": "Read the following like a friendly, calm travel guide: clear, natural and not too fast. Do not read this instruction, only the text below:"
       },
       "hi": {
         "languageCode": "hi-IN",
@@ -94,25 +82,15 @@
     "fallback": {
       "ko": {
         "languageCode": "ko-KR",
-        "name": "ko-KR-Chirp3-HD-Kore",
-        "filler": {
-          "text": "음…",
-          "volume": 0.35,
-          "atPauses": true
-        }
+        "name": "ko-KR-Chirp3-HD-Kore"
       },
       "en": {
         "languageCode": "en-US",
-        "name": "en-US-Chirp3-HD-Leda",
-        "filler": {
-          "text": "Hmm…",
-          "volume": 0.35,
-          "every": 4,
-          "onMistakes": true
-        }
+        "name": "en-US-Chirp3-HD-Leda"
       }
     },
-    "_fallback": "If Gemini TTS fails (e.g. prepaid credits used up), the video is made with these voices instead and an issue is opened to notify the owner."
+    "_fallback": "If Gemini TTS fails (e.g. prepaid credits used up), the video is made with these voices instead and an issue is opened to notify the owner.",
+    "_filler": "Removed 2026-11-28 (owner approved): the fake '음…/Hmm…' hesitation sounded artificial."
   },
   "bgm": "assets/bgm",
   "formMap": {
@@ -189,12 +167,37 @@
   },
   "_affiliate": "Travelpayouts / Impact tracking links per country. Keys are the 국가 column without the flag.",
   "hashtags": {
-    "ko": ["입국신고서", "전자비자", "해외여행준비", "따라하면끝"],
-    "en": ["arrivalcard", "evisa", "travelprep", "copymyscreen"]
+    "ko": [
+      "입국신고서",
+      "전자비자",
+      "해외여행준비",
+      "따라하면끝"
+    ],
+    "en": [
+      "arrivalcard",
+      "evisa",
+      "travelprep",
+      "copymyscreen"
+    ]
   },
   "tags": {
-    "ko": ["입국신고서", "전자입국카드", "비자 신청", "해외여행 준비", "공항 입국심사", "따라하기"],
-    "en": ["arrival card", "digital arrival card", "e-visa", "how to fill", "step by step", "travel documents", "immigration"]
+    "ko": [
+      "입국신고서",
+      "전자입국카드",
+      "비자 신청",
+      "해외여행 준비",
+      "공항 입국심사",
+      "따라하기"
+    ],
+    "en": [
+      "arrival card",
+      "digital arrival card",
+      "e-visa",
+      "how to fill",
+      "step by step",
+      "travel documents",
+      "immigration"
+    ]
   },
   "publishWindow": {
     "default": {
@@ -216,7 +219,7 @@
   "_shorts": "One vertical Shorts clip (common-mistake moments) per main video, uploaded 1.5 h after it, within uploadsPerDay.",
   "uploadsPerDay": 2,
   "pauseTutorials": true,
-  "_pauseTutorials": "Set 2026-11-26 while the sync-drifted tutorials are re-made and replaced (replace workflow uses ~4 uploads/day). Restore uploadsPerDay 6 and remove this when done.",
+  "_pauseTutorials": "Set 2026-11-26 while the sync-drifted tutorials are re-made and replaced. When done: remove this and set uploadsPerDay to 4 (KO main + EN main + Shorts), per tutorialRules.",
   "_uploadsPerDay": "YouTube Data API default quota (10,000 units) ≈ 6 uploads/day per Google Cloud project. Raise after a quota increase.",
   "fillEmptySlots": true,
   "_fillEmptySlots": "Calendar slots whose form is not defined yet get the next not-yet-produced video (plan/produced.json).",
@@ -232,33 +235,45 @@
       "form": "grab",
       "topic": "그랩 사용법(공항→시내)",
       "country": "🚕 싱가포르·말레이시아",
-      "langs": ["ko", "en"]
+      "langs": [
+        "ko",
+        "en"
+      ]
     },
     {
       "form": "esim",
       "topic": "여행 eSIM 구매·설치",
       "country": "📱 해외여행",
-      "langs": ["ko", "en"]
+      "langs": [
+        "ko",
+        "en"
+      ]
     },
     {
       "form": "au-mygov",
       "topic": "Australia: myGov account + linking",
       "country": "🇦🇺 Australia",
-      "langs": ["en"],
+      "langs": [
+        "en"
+      ],
       "channel": "gov"
     },
     {
       "form": "au-tfn",
       "topic": "Australia: TFN application",
       "country": "🇦🇺 Australia",
-      "langs": ["en"],
+      "langs": [
+        "en"
+      ],
       "channel": "gov"
     },
     {
       "form": "au-vevo",
       "topic": "Australia: VEVO visa check",
       "country": "🇦🇺 Australia",
-      "langs": ["en"],
+      "langs": [
+        "en"
+      ],
       "channel": "gov"
     }
   ],
@@ -267,24 +282,76 @@
   "_maxVideosPerDay": "Cap on main videos per day (quality over volume until monetization review). Raise later.",
   "playlists": {
     "ko": {
-      "싱가포르 여행 준비 (입국카드·eSIM·그랩)": ["sgac", "esim", "grab"],
-      "말레이시아 여행 준비 (MDAC·eSIM·그랩)": ["mdac", "esim", "grab"],
-      "미국 여행 준비 (ESTA·eSIM)": ["esta", "esim"],
-      "태국 여행 준비 (TDAC·eSIM)": ["tdac", "esim"],
-      "일본 여행 준비 (Visit Japan Web·eSIM)": ["vjw", "esim"],
-      "중국 여행 준비 (입국신고서·eSIM)": ["china-arrival", "esim"],
-      "영국 여행 준비 (UK ETA·eSIM)": ["uk-eta", "esim"],
-      "베트남 여행 준비 (e-Visa·eSIM)": ["vn-evisa", "esim"]
+      "싱가포르 여행 준비 (입국카드·eSIM·그랩)": [
+        "sgac",
+        "esim",
+        "grab"
+      ],
+      "말레이시아 여행 준비 (MDAC·eSIM·그랩)": [
+        "mdac",
+        "esim",
+        "grab"
+      ],
+      "미국 여행 준비 (ESTA·eSIM)": [
+        "esta",
+        "esim"
+      ],
+      "태국 여행 준비 (TDAC·eSIM)": [
+        "tdac",
+        "esim"
+      ],
+      "일본 여행 준비 (Visit Japan Web·eSIM)": [
+        "vjw",
+        "esim"
+      ],
+      "중국 여행 준비 (입국신고서·eSIM)": [
+        "china-arrival",
+        "esim"
+      ],
+      "영국 여행 준비 (UK ETA·eSIM)": [
+        "uk-eta",
+        "esim"
+      ],
+      "베트남 여행 준비 (e-Visa·eSIM)": [
+        "vn-evisa",
+        "esim"
+      ]
     },
     "en": {
-      "Singapore Trip Prep (Arrival Card, eSIM, Grab)": ["sgac", "esim", "grab"],
-      "Malaysia Trip Prep (MDAC, eSIM, Grab)": ["mdac", "esim", "grab"],
-      "USA Trip Prep (ESTA, eSIM)": ["esta", "esim"],
-      "Thailand Trip Prep (TDAC, eSIM)": ["tdac", "esim"],
-      "Japan Trip Prep (Visit Japan Web, eSIM)": ["vjw", "esim"],
-      "China Trip Prep (Arrival Card, eSIM)": ["china-arrival", "esim"],
-      "UK Trip Prep (ETA, eSIM)": ["uk-eta", "esim"],
-      "Vietnam Trip Prep (e-Visa, eSIM)": ["vn-evisa", "esim"]
+      "Singapore Trip Prep (Arrival Card, eSIM, Grab)": [
+        "sgac",
+        "esim",
+        "grab"
+      ],
+      "Malaysia Trip Prep (MDAC, eSIM, Grab)": [
+        "mdac",
+        "esim",
+        "grab"
+      ],
+      "USA Trip Prep (ESTA, eSIM)": [
+        "esta",
+        "esim"
+      ],
+      "Thailand Trip Prep (TDAC, eSIM)": [
+        "tdac",
+        "esim"
+      ],
+      "Japan Trip Prep (Visit Japan Web, eSIM)": [
+        "vjw",
+        "esim"
+      ],
+      "China Trip Prep (Arrival Card, eSIM)": [
+        "china-arrival",
+        "esim"
+      ],
+      "UK Trip Prep (ETA, eSIM)": [
+        "uk-eta",
+        "esim"
+      ],
+      "Vietnam Trip Prep (e-Visa, eSIM)": [
+        "vn-evisa",
+        "esim"
+      ]
     }
   },
   "playlistDescription": {
@@ -292,7 +359,9 @@
     "en": "Everything to do before you fly, in order: arrival form → eSIM → airport to city. Just copy the screen."
   },
   "_playlists": "Per-channel \"trip prep\" playlists, videos in this order (upload/maintain.js).",
-  "liveForms": ["sgac"],
+  "liveForms": [
+    "sgac"
+  ],
   "_liveForms": "Forms recorded on the real website (form.stepsLive). Others use the practice page.",
   "affiliateByForm": {
     "sgac": "싱가포르",
@@ -330,33 +399,130 @@
     }
   },
   "_channelSchedule": "Extra channels: weekdays (0=Sun) and videos per day. gov = \"Copy My Screen: Gov Edition\" (secret YT_REFRESH_TOKEN_GOV), apps = \"Copy My Screen: Apps & AI\" (secret YT_REFRESH_TOKEN_APPS).",
-  "phraseQueue": ["jp-restaurant", "jp-convenience", "jp-transport", "jp-hotel"],
+  "phraseQueue": [
+    "jp-restaurant",
+    "jp-convenience",
+    "jp-transport",
+    "jp-hotel"
+  ],
   "_phraseQueue": "Travel-phrase episodes built one per night (upload/phrases.js --next), after the tutorials, within the shared upload budget.",
   "thumbText": {
     "_": "Thumbnail text per form:language = [where (white), what (yellow, biggest), why click (red chip)]. Keep each line short; every claim must be true for the video.",
-    "mdac:ko": ["말레이시아", "입국신고서", "무료 · 5분 완성"],
-    "mdac:en": ["MALAYSIA", "ARRIVAL CARD", "MDAC · FREE · 5 MIN"],
-    "sgac:ko": ["싱가포르", "입국카드", "실제 화면 그대로"],
-    "sgac:en": ["SINGAPORE", "ARRIVAL CARD", "REAL SITE, STEP BY STEP"],
-    "tdac:ko": ["태국", "입국신고서", "종이 카드 폐지 · 무료"],
-    "tdac:en": ["THAILAND", "ARRIVAL CARD", "TDAC · FREE · 5 MIN"],
-    "vjw:ko": ["일본 입국", "QR 등록", "비짓재팬웹 7분 완성"],
-    "vjw:en": ["JAPAN", "ENTRY QR", "VISIT JAPAN WEB · FREE"],
-    "china-arrival:ko": ["중국 입국", "온라인 입국신고서", "공식 사이트 무료 · QR"],
-    "china-arrival:en": ["CHINA", "ARRIVAL CARD", "ONLINE · FREE · QR"],
-    "esta:ko": ["미국 ESTA", "직접 신청", "대행 수수료 아끼기"],
-    "esta:en": ["US ESTA", "DO IT YOURSELF", "SKIP THE AGENCY FEE"],
-    "grab:ko": ["공항→시내", "그랩", "가입부터 호출까지"],
-    "grab:en": ["AIRPORT → CITY", "GRAB", "SIGN UP TO FIRST RIDE"],
-    "esim:ko": ["해외여행", "eSIM", "5분 개통 · 로밍 실수 방지"],
-    "esim:en": ["TRAVEL", "eSIM SETUP", "AVOID ROAMING BILLS"],
-    "au-tfn:en": ["AUSTRALIA", "TAX FILE NO.", "FREE · APPLY ONLINE"],
-    "au-mygov:en": ["AUSTRALIA", "myGov SETUP", "LINK ATO · MEDICARE"],
-    "au-vevo:en": ["AUSTRALIA", "VEVO CHECK", "PROVE YOUR WORK RIGHTS"],
-    "uk-eta:ko": ["영국 ETA", "직접 신청", "공식 £20 · 대행 수수료 아끼기"],
-    "uk-eta:en": ["UK ETA", "DO IT YOURSELF", "OFFICIAL £20 · NO AGENCY FEE"],
-    "vn-evisa:ko": ["베트남", "전자비자", "공식 $25 · 대행비 아끼기"],
-    "vn-evisa:en": ["VIETNAM", "e-VISA", "OFFICIAL SITE · $25"]
+    "mdac:ko": [
+      "말레이시아",
+      "입국신고서",
+      "무료 · 5분 완성"
+    ],
+    "mdac:en": [
+      "MALAYSIA",
+      "ARRIVAL CARD",
+      "MDAC · FREE · 5 MIN"
+    ],
+    "sgac:ko": [
+      "싱가포르",
+      "입국카드",
+      "실제 화면 그대로"
+    ],
+    "sgac:en": [
+      "SINGAPORE",
+      "ARRIVAL CARD",
+      "REAL SITE, STEP BY STEP"
+    ],
+    "tdac:ko": [
+      "태국",
+      "입국신고서",
+      "종이 카드 폐지 · 무료"
+    ],
+    "tdac:en": [
+      "THAILAND",
+      "ARRIVAL CARD",
+      "TDAC · FREE · 5 MIN"
+    ],
+    "vjw:ko": [
+      "일본 입국",
+      "QR 등록",
+      "비짓재팬웹 7분 완성"
+    ],
+    "vjw:en": [
+      "JAPAN",
+      "ENTRY QR",
+      "VISIT JAPAN WEB · FREE"
+    ],
+    "china-arrival:ko": [
+      "중국 입국",
+      "온라인 입국신고서",
+      "공식 사이트 무료 · QR"
+    ],
+    "china-arrival:en": [
+      "CHINA",
+      "ARRIVAL CARD",
+      "ONLINE · FREE · QR"
+    ],
+    "esta:ko": [
+      "미국 ESTA",
+      "직접 신청",
+      "대행 수수료 아끼기"
+    ],
+    "esta:en": [
+      "US ESTA",
+      "DO IT YOURSELF",
+      "SKIP THE AGENCY FEE"
+    ],
+    "grab:ko": [
+      "공항→시내",
+      "그랩",
+      "가입부터 호출까지"
+    ],
+    "grab:en": [
+      "AIRPORT → CITY",
+      "GRAB",
+      "SIGN UP TO FIRST RIDE"
+    ],
+    "esim:ko": [
+      "해외여행",
+      "eSIM",
+      "5분 개통 · 로밍 실수 방지"
+    ],
+    "esim:en": [
+      "TRAVEL",
+      "eSIM SETUP",
+      "AVOID ROAMING BILLS"
+    ],
+    "au-tfn:en": [
+      "AUSTRALIA",
+      "TAX FILE NO.",
+      "FREE · APPLY ONLINE"
+    ],
+    "au-mygov:en": [
+      "AUSTRALIA",
+      "myGov SETUP",
+      "LINK ATO · MEDICARE"
+    ],
+    "au-vevo:en": [
+      "AUSTRALIA",
+      "VEVO CHECK",
+      "PROVE YOUR WORK RIGHTS"
+    ],
+    "uk-eta:ko": [
+      "영국 ETA",
+      "직접 신청",
+      "공식 £20 · 대행 수수료 아끼기"
+    ],
+    "uk-eta:en": [
+      "UK ETA",
+      "DO IT YOURSELF",
+      "OFFICIAL £20 · NO AGENCY FEE"
+    ],
+    "vn-evisa:ko": [
+      "베트남",
+      "전자비자",
+      "공식 $25 · 대행비 아끼기"
+    ],
+    "vn-evisa:en": [
+      "VIETNAM",
+      "e-VISA",
+      "OFFICIAL SITE · $25"
+    ]
   },
   "brands": {
     "gov": "Copy My Screen: Gov Edition",
@@ -367,16 +533,40 @@
       "form": "sheet-xlookup",
       "topic": "Sheets: XLOOKUP",
       "country": "📊 Excel & Google Sheets",
-      "langs": ["en"],
+      "langs": [
+        "en"
+      ],
       "channel": "apps"
     },
     {
       "form": "sheet-sumifs",
       "topic": "Sheets: SUMIFS",
       "country": "📊 Excel & Google Sheets",
-      "langs": ["en"],
+      "langs": [
+        "en"
+      ],
       "channel": "apps"
     }
   ],
-  "_parkedTopics": "Finished tutorials that are not scheduled (the Apps & AI channel changed focus to AI assistants). Move back into extraTopics to publish."
+  "_parkedTopics": "Finished tutorials that are not scheduled (the Apps & AI channel changed focus to AI assistants). Move back into extraTopics to publish.",
+  "tutorialRules": {
+    "skipLangs": [
+      "hi",
+      "es",
+      "id",
+      "ja"
+    ],
+    "perLang": {
+      "ko": 1,
+      "en": 1
+    },
+    "enForms": [
+      "tdac",
+      "mdac",
+      "sgac",
+      "vjw",
+      "esta"
+    ]
+  },
+  "_tutorialRules": "Owner decision 2026-11-28: fewer uploads (KO 1 main/day + 1-2 Shorts), no hi/es/id/ja uploads (use auto dubbing instead), EN channel only fast-changing forms (re-evaluate 2027-01-27)."
 }

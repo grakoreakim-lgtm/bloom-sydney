@@ -146,7 +146,7 @@
   "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 다음은 일본 편의점과 교통 회화예요. 도움이 됐다면 구독해 두세요."
  },
  "comic": {
-  "style": "Warm Korean webtoon style illustration, clean bold outlines, soft cel shading, cozy pastel colour palette, expressive friendly faces, simple uncluttered backgrounds, consistent character design across panels.",
+  "style": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients. Single wide panel filling the whole frame (no panel borders, no split frames, no notebook).",
   "setting": "A small, cosy Japanese set-meal restaurant with wooden tables, a short counter and warm lighting.",
   "cast": [
    {
@@ -175,6 +175,7 @@
    "A-watercolor": "Hand-painted picture-book illustration: real watercolour washes with uneven edges and blooms, light pencil under-drawing still visible, cold-press paper texture, muted natural colours, slightly imperfect proportions like a human illustrator's sketchbook. Not glossy, not airbrushed, no digital gradients.",
    "B-ink-diary": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients.",
    "C-pencil-sketch": "Travel sketchbook drawing in coloured pencils and fine liner: loose sketchy strokes, visible pencil grain and paper tooth, white paper showing through, soft hand-coloured areas that do not fill every line, a few construction lines left in. Like an urban sketcher drew it on the spot."
-  }
+  },
+  "_style": "Owner chose style B (ink diary comic) on 2026-11-28."
  }
 }
