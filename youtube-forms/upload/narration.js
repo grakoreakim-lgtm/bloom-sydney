@@ -53,6 +53,9 @@ function buildScript(form, lang, target = 'mock') {
 // one chunk of text → mp3 Buffer, for each provider
 // optional time budget for the Gemini voice: setBudget(15) → after 15 minutes synthChunk throws and the caller falls back
 const budget = { until: 0, minutes: 0 };
+// when Gemini says the DAILY quota is used up, every later call (this process and the next ones today) skips it at once
+const EXHAUSTED = () => path.join(__dirname, '..', 'out', `gemini-exhausted-${new Date().toISOString().slice(0, 10)}`);
+const geminiExhausted = () => fs.existsSync(EXHAUSTED());
 const setBudget = (minutes) => { budget.minutes = minutes || 0; budget.until = minutes ? Date.now() + minutes * 60000 : 0; };
 
 async function synthChunk(voice, t, speakingRate) {
@@ -71,8 +74,9 @@ async function synthChunk(voice, t, speakingRate) {
     const models = [voice.model, 'gemini-2.5-pro-preview-tts', 'gemini-2.5-flash-preview-tts'].filter(Boolean);
     const say = voice.prompt ? `${voice.prompt}\n\n${t}` : t;
     let lastErr = '';
+    if (geminiExhausted()) throw new Error('Gemini TTS daily quota used up (skipped; marker out/gemini-exhausted-<date>)');
     for (const model of [...new Set(models)]) {
-      for (let attempt = 0; attempt < 6; attempt++) {
+      for (let attempt = 0; attempt < 3; attempt++) {
         // time budget per video (set by the caller): a slow or rate-limited service must not stall the whole day
         if (budget.until && Date.now() > budget.until) throw new Error(`Gemini TTS too slow — over the ${budget.minutes}-minute budget (${lastErr || 'slow responses'})`);
         let res;
@@ -81,7 +85,15 @@ async function synthChunk(voice, t, speakingRate) {
           body: JSON.stringify({ contents: [{ parts: [{ text: say }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice.name || 'Leda' } } } } }),
           signal: AbortSignal.timeout(180000),
         }); } catch (e) { lastErr = `${model} ${e.name === 'TimeoutError' ? 'no answer in 3 minutes' : e.message}`; continue; }
-        if (res.status === 429 || res.status >= 500) { lastErr = `${model} ${res.status}`; await new Promise((r) => setTimeout(r, 5000 * (attempt + 1))); continue; }
+        if (res.status === 429) {
+          const body = await res.text().catch(() => '');
+          if (/per ?day|PerDay|daily/i.test(body)) {   // daily quota: waiting will not help today
+            fs.mkdirSync(path.dirname(EXHAUSTED()), { recursive: true }); fs.writeFileSync(EXHAUSTED(), body.slice(0, 500));
+            throw new Error(`Gemini TTS daily quota used up (${model})`);
+          }
+          lastErr = `${model} 429`; await new Promise((r) => setTimeout(r, 8000 * (attempt + 1))); continue;
+        }
+        if (res.status >= 500) { lastErr = `${model} ${res.status}`; await new Promise((r) => setTimeout(r, 5000 * (attempt + 1))); continue; }
         if (!res.ok) { lastErr = `${model} ${res.status}: ${(await res.text()).slice(0, 200)}`; break; }   // e.g. model name not available → next model
         const part = (await res.json()).candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
         if (!part) { lastErr = `${model}: no audio in response`; break; }
@@ -214,7 +226,7 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   const fcfg = ((opts.voices || VOICES)[lang] || {}).filler || {};
   for (const line of script) {
     const h = crypto.createHash('sha1').update(`${lang}|${(opts.voices || VOICES)[lang]?.name}|p3|${JSON.stringify((opts.voices || VOICES)[lang] || {})}|${line.text}`).digest('hex').slice(0, 12);
-    const file = path.join(cacheDir, `${lang}-${h}.mp3`);
+    const file = path.join(cacheDir, `${opts.dryRun ? 'fake-' : ''}${lang}-${h}.mp3`);   // silent test clips never pose as real ones in the cache
     if (!fs.existsSync(file)) {
       if (opts.dryRun) {
         const sec = Math.max(1.2, Math.min(12, line.text.length / (lang === 'ko' ? 5.5 : 14)));   // rough speaking time
@@ -234,4 +246,4 @@ async function narrate(form, lang, cacheDir, opts = {}) {
   return clips;
 }
 
-module.exports = { setBudget, buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, fillersAtPauses, VOICES };
+module.exports = { geminiExhausted, setBudget, buildScript, narrate, synthesize, splitSentences, fillerClip, withFiller, fillersAtPauses, VOICES };

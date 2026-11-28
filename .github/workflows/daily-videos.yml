@@ -28,7 +28,7 @@ concurrency: { group: daily-videos, cancel-in-progress: false }
 jobs:
   produce:
     runs-on: ubuntu-24.04   # Playwright 1.50 does not support ubuntu-latest (26.04) yet
-    timeout-minutes: 300
+    timeout-minutes: 200
     defaults: { run: { working-directory: youtube-forms } }
     steps:
       - uses: actions/checkout@v4
@@ -36,12 +36,32 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
 
+      # nothing to make tonight (tutorials paused and every phrase episode done) → skip the heavy install and build
+      - name: Anything to make tonight?
+        id: gate
+        env: { FORMS: '${{ github.event.inputs.forms }}' }
+        run: |
+          node -e "const c=require('./upload/config.ci.json'),p=require('./plan/produced.json');const left=(c.phraseQueue||[]).filter(x=>!p['phrases:'+x]).length;const work=!!process.env.FORMS||!c.pauseTutorials||left>0;console.log('work='+work);require('fs').appendFileSync(process.env.GITHUB_OUTPUT,'work='+work+'\\n')"
+
+      # spoken lines are cached by voice+text, so a remake or retry does not pay for the same TTS twice
+      - uses: actions/cache@v4
+        if: steps.gate.outputs.work == 'true'
+        with:
+          path: youtube-forms/out/tts-cache
+          key: tts-${{ github.run_id }}
+          restore-keys: tts-
+
       - name: Install
+        if: steps.gate.outputs.work == 'true'
         run: |
           npm install --no-audit --no-fund
           npm install --no-save playwright@1.50.0
           npx playwright install --with-deps chromium
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk > /dev/null
+
+      - name: Light install (maintenance only tonight)
+        if: steps.gate.outputs.work != 'true'
+        run: npm install --no-audit --no-fund
 
       - name: Write secrets
         env:
@@ -56,6 +76,7 @@ jobs:
         run: node upload/secrets-from-env.js
 
       - name: Produce & schedule uploads
+        if: steps.gate.outputs.work == 'true'
         env:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
           CLOVA_CLIENT_ID: ${{ secrets.CLOVA_CLIENT_ID }}
@@ -79,7 +100,7 @@ jobs:
           echo "## $DATE" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat run.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Travel-phrase episode (one per night, within the upload budget)
-        if: success() && github.event.inputs.dry != 'true' && github.event.inputs.forms == ''
+        if: success() && steps.gate.outputs.work == 'true' && github.event.inputs.dry != 'true' && github.event.inputs.forms == ''
         continue-on-error: true
         env:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
@@ -93,7 +114,7 @@ jobs:
           grep '^VOICE_FALLBACK' phrases.log >> run.log || true
 
       - name: Alert when nothing was made
-        if: success() && github.event.inputs.dry != 'true'
+        if: success() && steps.gate.outputs.work == 'true' && github.event.inputs.dry != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
           grep -qE '✔ (https://youtu\.be|main)' run.log phrases.log 2>/dev/null && exit 0
@@ -130,5 +151,6 @@ jobs:
             youtube-forms/out/days/**/*.mp4
             youtube-forms/out/days/**/*.png
             youtube-forms/out/days/**/*.json
+            !youtube-forms/out/days/**/rec-*/*.mp4
           retention-days: 7
           if-no-files-found: ignore

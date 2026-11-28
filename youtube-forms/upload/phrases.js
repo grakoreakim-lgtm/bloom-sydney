@@ -48,17 +48,24 @@ let seq = 0; const tmp = (ext) => path.join(TMP, `${String(++seq).padStart(4, '0
 const wav = (src) => { const o = tmp('wav'); sh(`ffmpeg -y -loglevel error -i "${src}" -ar 24000 -ac 1 -c:a pcm_s16le "${o}"`); return o; };
 const silence = (sec) => { const o = tmp('wav'); sh(`ffmpeg -y -loglevel error -f lavfi -i anullsrc=r=24000:cl=mono -t ${sec.toFixed(3)} -c:a pcm_s16le "${o}"`); return o; };
 let fellBack = false; const koDone = {};
+const CACHE = path.join(ROOT, 'out', 'tts-cache'); fs.mkdirSync(CACHE, { recursive: true });
+async function cachedTts(text, lang, voices, rate) {   // → wav; the same line in the same voice is made only once, ever
+  const h = require('crypto').createHash('sha1').update(`ph|${lang}|${JSON.stringify(voices[lang] || voices)}|${rate || 1}|${text}`).digest('hex').slice(0, 14);
+  const f = path.join(CACHE, `ph-${lang}-${h}.mp3`);
+  if (!fs.existsSync(f)) { const t = tmp('mp3'); await synthesize(text, lang, t, voices, rate); fs.copyFileSync(t, f); }
+  return wav(f);
+}
 // All Korean lines are made up front with ONE voice: if the main voice fails or runs past its time budget on any
 // line, every line is redone with the fallback voice, so a video never mixes two voices.
 async function prepareKo(texts) {
   const uniq = [...new Set(texts.filter(Boolean))];
   if (fake) { for (const t of uniq) koDone[t] = silence(Math.max(1.2, t.length / 7)); return; }
   setBudget(cfg.tts?.maxMinutesPerVideo || 15);   // one budget for the whole video
-  try { for (const t of uniq) { const f = tmp('mp3'); await synthesize(t, 'ko', f, cfg.tts.voices, cfg.tts?.speakingRate); koDone[t] = wav(f); } }
+  try { for (const t of uniq) koDone[t] = await cachedTts(t, 'ko', cfg.tts.voices, cfg.tts?.speakingRate); }
   catch (e) {
     if (!cfg.tts?.fallback?.ko) throw e;
     console.log(`VOICE_FALLBACK phrases:${P.id} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`); fellBack = true;
-    for (const t of uniq) { const f = tmp('mp3'); await synthesize(t, 'ko', f, { ko: { ...cfg.tts.fallback.ko, filler: undefined } }, cfg.tts?.speakingRate); koDone[t] = wav(f); }
+    for (const t of uniq) koDone[t] = await cachedTts(t, 'ko', { ko: { ...cfg.tts.fallback.ko, filler: undefined } }, cfg.tts?.speakingRate);
   } finally { setBudget(0); }
   console.log(`  Korean voice: ${fellBack ? 'fallback' : 'main'} (${uniq.length} lines)`);
 }
@@ -69,10 +76,9 @@ async function target(text, slow) {
   if (!jaCache[key]) {
     if (fake) jaCache[key] = silence(Math.max(0.8, text.length / 5));
     else {
-      const f = tmp('mp3'); const L = P.target.lang;
-      try { await synthesize(text, L, f, { [L]: { ...P.target.voice, split: false } }); }
-      catch (e) { console.log(`  target voice fallback: ${e.message.slice(0, 120)}`); await synthesize(text, L, f, { [L]: { ...P.target.fallbackVoice, split: false } }); }
-      jaCache[key] = wav(f);
+      const L = P.target.lang;
+      try { jaCache[key] = await cachedTts(text, L, { [L]: { ...P.target.voice, split: false } }); }
+      catch (e) { console.log(`  target voice fallback: ${e.message.slice(0, 120)}`); jaCache[key] = await cachedTts(text, L, { [L]: { ...P.target.fallbackVoice, split: false } }); }
     }
   }
   if (!slow) return jaCache[key];
@@ -271,8 +277,10 @@ function comicShort(p, i, state) {
 
   // Shorts: one phrase each, vertical
   const shorts = [];
+  const maxShorts = flag('next') && flag('upload') ? Math.max(0, BUDGET - 1) : 99;   // no point rendering Shorts that cannot be uploaded today
   if (!flag('no-shorts')) for (const [i, p] of P.phrases.entries()) {
     if (!p.short) continue;
+    if (shorts.length >= maxShorts) { console.log(`  ⏭ short ${i + 1}: no upload budget today`); continue; }
     const L = await render(COMIC ? comicShort(p, i, 'listen') : phraseCard(p, i, 'listen', true), 1080, 1920), R = await render(COMIC ? comicShort(p, i, 'repeat') : phraseCard(p, i, 'repeat', true), 1080, 1920);
     const items = [];
     if (COMIC) {   // quiz Short: question with the picture → 1.8 s to guess → answer, slow, repeat, answer again

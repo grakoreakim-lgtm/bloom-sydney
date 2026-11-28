@@ -47,7 +47,8 @@ async function disclosure(yt, videos, lang) {
     const sn = v.snippet, st = v.status;
     const needDesc = !sn.description.includes('AI');
     // the API does not echo containsSyntheticMedia back, so only (re)send the flag for recent uploads — otherwise every video costs quota every day
-    const needFlag = st.containsSyntheticMedia !== true && Date.now() - new Date(sn.publishedAt).getTime() < 3 * 86400000;
+    // our uploads already set it in upload.js, so only the description line is checked here (saves ~50 units per video per day)
+    const needFlag = false;
     if (!needDesc && !needFlag) continue;
     const parts = [];
     if (needDesc) {
