@@ -170,6 +170,11 @@
   "pageTitle": "지우의 일본 식당, **말풍선을 채워 보세요**",
   "introSay": "지우와 함께 일본 식당에 가 볼게요. 장면마다 뭐라고 말할지 먼저 생각해 보고, 마지막엔 그림만 보고 말해 보는 테스트도 있어요.",
   "outroSay": "몇 개나 맞혔는지 댓글로 알려 주세요. 다음은 지우의 일본 편의점 편이에요. 구독해 두시면 바로 받아 보실 수 있어요.",
-  "title": "일본 식당 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)"
+  "title": "일본 식당 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+  "styleOptions": {
+   "A-watercolor": "Hand-painted picture-book illustration: real watercolour washes with uneven edges and blooms, light pencil under-drawing still visible, cold-press paper texture, muted natural colours, slightly imperfect proportions like a human illustrator's sketchbook. Not glossy, not airbrushed, no digital gradients.",
+   "B-ink-diary": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients.",
+   "C-pencil-sketch": "Travel sketchbook drawing in coloured pencils and fine liner: loose sketchy strokes, visible pencil grain and paper tooth, white paper showing through, soft hand-coloured areas that do not fill every line, a few construction lines left in. Like an urban sketcher drew it on the spot."
+  }
  }
 }
