@@ -7,6 +7,7 @@ on:
       file: { description: 'phrases/<id>.json', required: true, default: 'phrases/jp-restaurant.json' }
       upload: { description: 'upload (private)', type: boolean, default: true }
       shorts: { description: 'make Shorts too', type: boolean, default: true }
+      new_copy: { description: 'upload even if the same title exists (redrawn edition)', type: boolean, default: false }
 
 permissions:
   contents: read
@@ -45,7 +46,8 @@ jobs:
           FILE: ${{ github.event.inputs.file }}
           UP: ${{ github.event.inputs.upload }}
           SH: ${{ github.event.inputs.shorts }}
-        run: node upload/phrases.js "$FILE" --config upload/config.ci.json $([ "$UP" = "true" ] && echo --upload) $([ "$SH" = "false" ] && echo --no-shorts) | tee -a $GITHUB_STEP_SUMMARY
+          NC: ${{ github.event.inputs.new_copy }}
+        run: node upload/phrases.js "$FILE" --config upload/config.ci.json $([ "$UP" = "true" ] && echo --upload) $([ "$SH" = "false" ] && echo --no-shorts) $([ "$NC" = "true" ] && echo --new-copy) | tee -a $GITHUB_STEP_SUMMARY
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: 'phrases-${{ github.run_id }}', path: 'youtube-forms/out/phrases/**', retention-days: 7, if-no-files-found: ignore }
