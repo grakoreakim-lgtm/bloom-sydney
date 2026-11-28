@@ -23,7 +23,7 @@ const key = process.env.GEMINI_API_KEY; if (!key) { console.log('GEMINI_API_KEY 
 
 const castText = C.cast.map((c) => `- ${c.name}: ${c.look}`).join('\n');
 const NO_TEXT = 'Absolutely no text, letters, numbers, signs with writing, logos or speech bubbles anywhere in the image.';
-let working = null;   // first model that answers is used for the rest
+let working = null; let capHit = false;   // the project's monthly spend cap: never keep retrying past it   // first model that answers is used for the rest
 
 async function gen(prompt, ref, outFile, o = {}) {
   const parts = [{ text: prompt }];
@@ -39,7 +39,11 @@ async function gen(prompt, ref, outFile, o = {}) {
             method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body), signal: AbortSignal.timeout(240000),
           });
         } catch (e) { last = `${model}: ${e.name === 'TimeoutError' ? 'no answer in 4 minutes' : e.message}`; continue; }
-        if (res.status === 429 || res.status >= 500) { last = `${model} ${res.status}: ${(await res.text()).replace(/\s+/g, ' ').slice(0, 200)}`; await new Promise((r) => setTimeout(r, 15000 * (attempt + 1))); continue; }
+        if (res.status === 429 || res.status >= 500) {
+          last = `${model} ${res.status}: ${(await res.text()).replace(/\s+/g, ' ').slice(0, 200)}`;
+          if (/spend(ing)? cap|billing/i.test(last)) { capHit = true; throw new Error(`SPEND CAP reached — stop and ask the owner (${last.slice(0, 160)})`); }
+          await new Promise((r) => setTimeout(r, 15000 * (attempt + 1))); continue;
+        }
         if (!res.ok) { last = `${model} ${res.status}: ${(await res.text()).replace(/\s+/g, ' ').slice(0, 200)}`; break; }
         const j = await res.json();
         const img = j.candidates?.[0]?.content?.parts?.find((p) => p.inlineData || p.inline_data);
@@ -122,6 +126,7 @@ async function pageMode() {
     if (!p.scene) { console.log(`✖ p${n}: no "scene"`); fails++; continue; }
     const space = { tl: 'upper left', tr: 'upper right', tc: 'top centre' }[p.bubble || 'tl'];
     const prompt = `${C.style}\nUse exactly the characters from the attached reference sheet (same faces, hair, clothes, colours).\n${castText}\n\nScene: ${C.setting} ${p.scene}\n${C.layout || ''}\nComposition: wide 16:9 comic panel, characters in the lower two thirds, keep the ${space} quarter of the image calm and empty (plain wall or sky) for a speech bubble that will be added later.\n${NO_TEXT}`;
+    if (capHit) { console.log(`⏭ p${n}: spend cap reached`); fails++; continue; }
     try { const m = await gen(prompt, cast, f); log[`p${n}`] = { model: m, at: new Date().toISOString() }; console.log(`✔ p${n} (${m})`); }
     catch (e) { fails++; console.log(`✖ p${n}: ${e.message}`); }
     fs.writeFileSync(path.join(OUT, 'art.json'), JSON.stringify(log, null, 1));
