@@ -87,7 +87,7 @@ async function synthChunk(voice, t, speakingRate) {
         }); } catch (e) { lastErr = `${model} ${e.name === 'TimeoutError' ? 'no answer in 3 minutes' : e.message}`; continue; }
         if (res.status === 429) {
           const body = await res.text().catch(() => '');
-          if (/per ?day|PerDay|daily/i.test(body)) {   // daily quota: waiting will not help today
+          if (/per ?day|PerDay|daily|spend(ing)? cap/i.test(body)) {   // daily quota or the monthly spend cap: waiting will not help today
             fs.mkdirSync(path.dirname(EXHAUSTED()), { recursive: true }); fs.writeFileSync(EXHAUSTED(), body.slice(0, 500));
             throw new Error(`Gemini TTS daily quota used up (${model})`);
           }
