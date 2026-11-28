@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+// Comic panel art for phrase episodes (phrases/<id>.json → phrases/art/<id>/p<n>.jpg).
+// The pictures carry NO text: speech bubbles, Japanese and Korean are drawn by phrases.js on top, so spelling is
+// always right. Consistency: a character sheet (cast.jpg) is made first and passed as a reference to every panel.
+//
+//   GEMINI_API_KEY=… node upload/comic-art.js phrases/jp-restaurant.json [--only 3,5] [--force]
+//
+// Art is generated once, reviewed, then committed; video builds only read the files (no image calls at build time).
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const argv = process.argv.slice(2);
+const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
+const file = argv.find((a) => !a.startsWith('--') && a !== opt('only') && a !== opt('model'));
+const P = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
+const C = P.comic; if (!C) { console.log(`no "comic" section in ${file}`); process.exit(1); }
+const OUT = path.join(__dirname, '..', 'phrases', 'art', P.id); fs.mkdirSync(OUT, { recursive: true });
+const only = opt('only') ? opt('only').split(',').map(Number) : null;
+const force = argv.includes('--force');
+const MODELS = [opt('model'), 'gemini-3-pro-image-preview', 'gemini-2.5-flash-image', 'gemini-2.5-flash-image-preview'].filter(Boolean);
+const key = process.env.GEMINI_API_KEY; if (!key) { console.log('GEMINI_API_KEY is not set'); process.exit(1); }
+
+const castText = C.cast.map((c) => `- ${c.name}: ${c.look}`).join('\n');
+const NO_TEXT = 'Absolutely no text, letters, numbers, signs with writing, logos or speech bubbles anywhere in the image.';
+let working = null;   // first model that answers is used for the rest
+
+async function gen(prompt, ref, outFile) {
+  const parts = [{ text: prompt }];
+  if (ref) parts.push({ inline_data: { mime_type: 'image/jpeg', data: fs.readFileSync(ref).toString('base64') } });
+  let last = '';
+  for (const model of working ? [working] : [...new Set(MODELS)]) {
+    for (const withRatio of [true, false]) {
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const body = { contents: [{ parts }], generationConfig: { responseModalities: ['TEXT', 'IMAGE'], ...(withRatio ? { imageConfig: { aspectRatio: '16:9' } } : {}) } };
+        let res;
+        try {
+          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+            method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body), signal: AbortSignal.timeout(240000),
+          });
+        } catch (e) { last = `${model}: ${e.name === 'TimeoutError' ? 'no answer in 4 minutes' : e.message}`; continue; }
+        if (res.status === 429 || res.status >= 500) { last = `${model} ${res.status}: ${(await res.text()).replace(/\s+/g, ' ').slice(0, 200)}`; await new Promise((r) => setTimeout(r, 15000 * (attempt + 1))); continue; }
+        if (!res.ok) { last = `${model} ${res.status}: ${(await res.text()).replace(/\s+/g, ' ').slice(0, 200)}`; break; }
+        const j = await res.json();
+        const img = j.candidates?.[0]?.content?.parts?.find((p) => p.inlineData || p.inline_data);
+        if (!img) { last = `${model}: no image (${j.candidates?.[0]?.finishReason || 'no candidates'})`; break; }
+        const d = img.inlineData || img.inline_data;
+        const raw = `${outFile}.raw`; fs.writeFileSync(raw, Buffer.from(d.data, 'base64'));
+        // every panel is exactly 1280x720 (cover-crop), JPEG to keep the repository small
+        execSync(`ffmpeg -y -loglevel error -i "${raw}" -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720" -q:v 3 "${outFile}"`);
+        fs.unlinkSync(raw); working = model;
+        return model;
+      }
+      if (!/400/.test(last)) break;   // only a 400 can be about imageConfig → retry without it
+    }
+  }
+  throw new Error(last);
+}
+
+(async () => {
+  const log = fs.existsSync(path.join(OUT, 'art.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'art.json'), 'utf8')) : {};
+  const cast = path.join(OUT, 'cast.jpg');
+  if (!fs.existsSync(cast) || (force && !only)) {
+    const m = await gen(`${C.style}\nCharacter reference sheet on a plain light background: each character standing side by side, full body, front view, friendly neutral expression.\n${castText}\n${NO_TEXT}`, null, cast);
+    log.cast = { model: m, at: new Date().toISOString() }; console.log(`✔ cast.jpg (${m})`);
+  }
+  const all = [...P.phrases, ...(P.bonus ? [P.bonus] : [])];
+  let fails = 0;
+  for (const [i, p] of all.entries()) {
+    const n = i + 1; if (only && !only.includes(n)) continue;
+    const f = path.join(OUT, `p${n}.jpg`);
+    if (fs.existsSync(f) && !force) { console.log(`· p${n} exists`); continue; }
+    if (!p.scene) { console.log(`✖ p${n}: no "scene"`); fails++; continue; }
+    const space = { tl: 'upper left', tr: 'upper right', tc: 'top centre' }[p.bubble || 'tl'];
+    const prompt = `${C.style}\nUse exactly the characters from the attached reference sheet (same faces, hair, clothes, colours).\n${castText}\n\nScene: ${C.setting} ${p.scene}\nComposition: wide 16:9 comic panel, characters in the lower two thirds, keep the ${space} quarter of the image calm and empty (plain wall or sky) for a speech bubble that will be added later.\n${NO_TEXT}`;
+    try { const m = await gen(prompt, cast, f); log[`p${n}`] = { model: m, at: new Date().toISOString() }; console.log(`✔ p${n} (${m})`); }
+    catch (e) { fails++; console.log(`✖ p${n}: ${e.message}`); }
+    fs.writeFileSync(path.join(OUT, 'art.json'), JSON.stringify(log, null, 1));
+  }
+  fs.writeFileSync(path.join(OUT, 'art.json'), JSON.stringify(log, null, 1));
+  console.log(fails ? `ART ${fails} panel(s) failed` : 'ART done');
+  process.exit(fails ? 1 : 0);
+})().catch((e) => { console.log(`ART FAIL ${e.message}`); process.exit(1); });
