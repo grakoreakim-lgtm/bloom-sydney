@@ -94,7 +94,7 @@
   {
    "label": "How many stops",
    "ja": "渋谷はいくつ目の駅ですか？",
-   "pron": "Shibuya wa ikutsu-me desu ka?",
+   "pron": "Shibuya wa ikutsu-me no eki desu ka?",
    "ko": "How many stops to Shibuya?",
    "when": "Want to know how many stops until yours? Ask this.",
    "tip": "Ikutsu-me means which number in order. The answer sounds like mittsu-me, the third one.",

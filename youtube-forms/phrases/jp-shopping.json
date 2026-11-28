@@ -106,7 +106,7 @@
    "pron": "멘제- 데키마스카?",
    "ko": "면세 돼요?",
    "when": "계산할 때 면세가 되는지 이렇게 물어봐요.",
-   "tip": "면세를 받으려면 여권이 필요해요. 면세가 안 되는 가게도 있어요.",
+   "tip": "지금은 계산할 때 세금까지 내고, 일본을 떠날 때 공항 세관에서 확인받으면 돌려받아요. 여권 원본이 꼭 필요해요.",
    "short": "일본 쇼핑 면세 물어볼 때",
    "scene": "At the checkout counter, Jiwoo holds out her passport with both hands and asks the clerk behind the counter, the folded sweater between them.",
    "bubble": "tl"
