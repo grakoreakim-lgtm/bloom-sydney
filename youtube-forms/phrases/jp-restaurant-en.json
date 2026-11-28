@@ -1,0 +1,159 @@
+{
+ "id": "jp-restaurant-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Restaurant phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-restaurant (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Restaurants in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Everything you need to say in a Japanese restaurant, from the door to the bill, in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan restaurant",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan restaurant",
+  "how to order in japanese",
+  "sumimasen",
+  "kore o kudasai",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan restaurant\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese restaurant. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "ja": "すみません！",
+   "scene": "At the entrance under a plain dark-blue fabric door curtain, Jiwoo raises one hand slightly and calls toward the waitress inside; Minjun stands behind her.",
+   "bubble": "tl",
+   "label": "Calling the staff",
+   "pron": "Sumimasen!",
+   "ko": "Excuse me!",
+   "when": "To call a server over, say this.",
+   "tip": "Raise your hand a little as you say it. It also means sorry, so you will use it everywhere.",
+   "short": "Call a server in a Japanese restaurant"
+  },
+  {
+   "ja": "二人です。",
+   "scene": "Just inside the door, the waitress asks a question with a polite gesture; Jiwoo answers holding up two fingers, Minjun next to her nods.",
+   "bubble": "tl",
+   "label": "How many people",
+   "pron": "Futari desu.",
+   "ko": "Two people, please.",
+   "when": "At the door, the server asks how many people. For two, answer like this.",
+   "tip": "The server asks: nanmei-sama desu ka. Alone, say hitori desu. Three people, sannin desu. Showing fingers works too.",
+   "hear": "何名様ですか？ (Nanmei-sama desu ka?) = How many people?"
+  },
+  {
+   "ja": "英語のメニューはありますか？",
+   "scene": "Seated at a wooden table, Jiwoo holds an open menu covered in illegible squiggles and looks puzzled, asking the waitress standing beside the table.",
+   "bubble": "tl",
+   "label": "English menu",
+   "pron": "Eigo no menyuu wa arimasu ka?",
+   "ko": "Do you have an English menu?",
+   "when": "If the menu is only in Japanese, ask this.",
+   "tip": "Many restaurants in tourist areas have an English menu. If there are only photos, the next phrase is all you need."
+  },
+  {
+   "ja": "これをください。",
+   "scene": "Jiwoo points at a photo of a bowl of food on the open menu, smiling at the waitress who holds a small order pad.",
+   "bubble": "tl",
+   "label": "I'll have this",
+   "pron": "Kore o kudasai.",
+   "ko": "This one, please.",
+   "when": "Point at the menu and say this.",
+   "tip": "For two, say kore o futatsu kudasai. With this one phrase you can order almost anything.",
+   "short": "Order anything in Japan with one phrase"
+  },
+  {
+   "ja": "おすすめは何ですか？",
+   "scene": "Jiwoo looks up curiously at the waitress, who smiles and gestures with an open hand toward a wall of food photos.",
+   "bubble": "tl",
+   "label": "Recommendation",
+   "pron": "Osusume wa nan desu ka?",
+   "ko": "What do you recommend?",
+   "when": "Not sure what to eat? Ask for a recommendation.",
+   "tip": "When the server points at a dish, just say kore o kudasai."
+  },
+  {
+   "ja": "わさび抜きでお願いします。",
+   "scene": "Sushi set on the table; Jiwoo makes a gentle 'no thanks' gesture with both hands at a tiny green dab of wasabi on a plate, Minjun laughs.",
+   "bubble": "tl",
+   "label": "Without wasabi",
+   "pron": "Wasabi-nuki de onegai shimasu.",
+   "ko": "No wasabi, please.",
+   "when": "At a sushi place, if you don't want wasabi, say this.",
+   "tip": "Nuki means without. Swap in other things too: green onion is negi, so negi-nuki de onegai shimasu.",
+   "short": "No wasabi, please, in Japanese"
+  },
+  {
+   "ja": "お会計お願いします。",
+   "scene": "After the meal, empty bowls on the table; Jiwoo raises her hand politely toward the waitress across the room.",
+   "bubble": "tl",
+   "label": "The bill",
+   "pron": "Okaikei onegai shimasu.",
+   "ko": "Check, please.",
+   "when": "When you have finished eating, ask for the bill like this.",
+   "tip": "In many restaurants in Japan you pay at the counter, not at the table. There is no tipping."
+  },
+  {
+   "ja": "カードで払えますか？",
+   "scene": "At a small cash register counter, Jiwoo holds up a credit card and asks the waitress behind the counter.",
+   "bubble": "tl",
+   "label": "Paying by card",
+   "pron": "Kaado de haraemasu ka?",
+   "ko": "Can I pay by card?",
+   "when": "If you want to pay by card, ask first.",
+   "tip": "Some small restaurants and ramen shops still take cash only, so carry a little cash."
+  }
+ ],
+ "bonus": {
+  "ja": "ごちそうさまでした。",
+  "scene": "Leaving through the fabric door curtain, Jiwoo and Minjun bow slightly and smile; the waitress bows back warmly.",
+  "bubble": "tl",
+  "label": "When you leave",
+  "pron": "Gochisousama deshita.",
+  "ko": "Thank you for the meal.",
+  "when": "Finally, say this on your way out. The staff will really appreciate it.",
+  "tip": ""
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Next: the convenience store. Subscribe so you don't miss it."
+ },
+ "comic": {
+  "artFrom": "jp-restaurant",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo in a Japanese restaurant: **fill the bubbles**",
+  "introSay": "Join Jiwoo in a Japanese restaurant. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Next is Jiwoo at a Japanese convenience store. Subscribe so you get it.",
+  "title": "Japanese for Restaurants in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)"
+ }
+}
