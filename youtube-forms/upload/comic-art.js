@@ -72,7 +72,7 @@ async function gen(prompt, ref, outFile) {
     if (fs.existsSync(f) && !force) { console.log(`· p${n} exists`); continue; }
     if (!p.scene) { console.log(`✖ p${n}: no "scene"`); fails++; continue; }
     const space = { tl: 'upper left', tr: 'upper right', tc: 'top centre' }[p.bubble || 'tl'];
-    const prompt = `${C.style}\nUse exactly the characters from the attached reference sheet (same faces, hair, clothes, colours).\n${castText}\n\nScene: ${C.setting} ${p.scene}\nComposition: wide 16:9 comic panel, characters in the lower two thirds, keep the ${space} quarter of the image calm and empty (plain wall or sky) for a speech bubble that will be added later.\n${NO_TEXT}`;
+    const prompt = `${C.style}\nUse exactly the characters from the attached reference sheet (same faces, hair, clothes, colours).\n${castText}\n\nScene: ${C.setting} ${p.scene}\n${C.layout || ''}\nComposition: wide 16:9 comic panel, characters in the lower two thirds, keep the ${space} quarter of the image calm and empty (plain wall or sky) for a speech bubble that will be added later.\n${NO_TEXT}`;
     try { const m = await gen(prompt, cast, f); log[`p${n}`] = { model: m, at: new Date().toISOString() }; console.log(`✔ p${n} (${m})`); }
     catch (e) { fails++; console.log(`✖ p${n}: ${e.message}`); }
     fs.writeFileSync(path.join(OUT, 'art.json'), JSON.stringify(log, null, 1));
