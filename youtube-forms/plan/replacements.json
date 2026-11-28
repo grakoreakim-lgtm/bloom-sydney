@@ -54,5 +54,19 @@
   "uploaded": "2026-11-27T10:16:30.190Z",
   "sync": "PASS — 24 steps, 35 cues, 24 on-screen checks, sync 35/35 (max shift 23.5 s)",
   "swapped": "2026-11-27T10:19:08.194Z"
+ },
+ "esta:ko:short": {
+  "channel": "ko",
+  "old": "https://youtu.be/TU9fAqa2aVI",
+  "new": "https://youtu.be/1d4Efxav_DE",
+  "main": "https://youtu.be/V2NznO17sXg",
+  "uploaded": "2026-11-28T08:47:12.265Z"
+ },
+ "esta:en:short": {
+  "channel": "en",
+  "old": "https://youtu.be/arT6ZQAwqCU",
+  "new": "https://youtu.be/vaKIpRQWx_U",
+  "main": "https://youtu.be/JCnzjqHT070",
+  "uploaded": "2026-11-28T08:47:26.839Z"
  }
 }
