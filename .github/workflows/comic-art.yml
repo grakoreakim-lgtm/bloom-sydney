@@ -10,6 +10,7 @@ on:
       force: { description: 'redo existing panels', type: boolean, default: false }
       styles: { description: 'style test: one panel in every comic.styleOptions style', type: boolean, default: false }
       page: { description: 'whole episode as one image, cut into panels (cheap)', type: boolean, default: false }
+      model: { description: 'image model to try first (empty = default)', required: false, default: '' }
 
 permissions:
   contents: write
@@ -32,7 +33,8 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
           STYLES: ${{ github.event.inputs.styles }}
           PAGE: ${{ github.event.inputs.page }}
-        run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) $([ "$STYLES" = "true" ] && echo --styles) $([ "$PAGE" = "true" ] && echo --page) | tee -a $GITHUB_STEP_SUMMARY
+          MODEL: ${{ github.event.inputs.model }}
+        run: node upload/comic-art.js "$FILE" $([ -n "$ONLY" ] && echo --only "$ONLY") $([ "$FORCE" = "true" ] && echo --force) $([ "$STYLES" = "true" ] && echo --styles) $([ "$PAGE" = "true" ] && echo --page) $([ -n "$MODEL" ] && echo --model "$MODEL") | tee -a $GITHUB_STEP_SUMMARY
       - name: Publish to art-output branch
         if: always()
         run: |
