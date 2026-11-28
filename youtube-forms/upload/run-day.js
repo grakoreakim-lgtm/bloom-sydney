@@ -157,6 +157,18 @@ function planChannels(date, startSlot) {
   }
   const cap = Math.max(minSlots, cfg.maxVideosPerDay || 99);
   let rows = (onlyForms ? all : planDay(all, date)).slice(0, cap);
+  // owner's volume rules (tutorialRules): skip some languages, at most N mains per language, EN only for listed forms
+  const TR = cfg.tutorialRules;
+  if (TR && !onlyForms) {
+    const per = {}; const before = rows.length;
+    rows = rows.filter((r) => {
+      const l = r['언어'].toLowerCase(), f = FORM_MAP[r['서식/주제']];
+      if ((TR.skipLangs || []).includes(l)) return false;
+      if (l === 'en' && TR.enForms && !TR.enForms.includes(f)) return false;
+      per[l] = (per[l] || 0) + 1; return !TR.perLang?.[l] || per[l] <= TR.perLang[l];
+    });
+    if (rows.length < before) console.log(`  tutorialRules: ${before - rows.length} row(s) left out`);
+  }
   if (!onlyForms) rows = rows.concat(planChannels(date, rows.length));
   // pauseTutorials: no new tutorials from the calendar (e.g. while existing videos are being re-made); --forms still works
   if (cfg.pauseTutorials && !onlyForms) { console.log(`⏸ tutorials paused (config.pauseTutorials) — ${rows.length} planned row(s) skipped`); rows = []; }
