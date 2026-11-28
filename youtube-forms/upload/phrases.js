@@ -74,7 +74,7 @@ async function prepareKo(texts) {
     console.log(`VOICE_FALLBACK phrases:${P.id} — ${e.message.replace(/\s+/g, ' ').slice(0, 160)}`); fellBack = true;
     for (const t of uniq) koDone[t] = await cachedTts(t, LANG, { [LANG]: { ...cfg.tts.fallback[LANG], filler: undefined } }, cfg.tts?.speakingRate);
   } finally { setBudget(0); }
-  console.log(`  Korean voice: ${fellBack ? 'fallback' : 'main'} (${uniq.length} lines)`);
+  console.log(`  narration voice (${LANG}): ${fellBack ? 'fallback' : 'main'} (${uniq.length} lines)`);
 }
 async function ko(text) { if (!koDone[text]) throw new Error(`Korean line not prepared: ${text}`); return koDone[text]; }
 const jaCache = {};
@@ -356,7 +356,7 @@ function comicShort(p, i, state) {
     const seed = [...`${DATE}|phrases|${P.id}`].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7); const mod = win.from * 60 + (seed % ((win.to - win.from) * 60));
     pubAt = Date.parse(localToIso(DATE, Math.floor(mod / 60), cfg.timezone?.[LANG] || 'Asia/Seoul', mod % 60)); pubAt = Math.max(pubAt, Date.now() + 30 * 60000);
   }
-  const opts = (k) => (sched ? { review: false, ...guard } : { review: true, ...guard });
+  const opts = (k) => ({ review: !sched, ...guard, ...(flag('new-copy') ? { allowDuplicate: true } : {}) });   // --new-copy: upload even if a video with this title exists (e.g. a redrawn edition)
   const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
   const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(0) }, main, thumb, opts(0));
   BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
