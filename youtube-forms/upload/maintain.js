@@ -80,8 +80,11 @@ async function playlists(yt, videos, lang, seo) {
     const f = guessForm(seo, lang, `${v.snippet.title} ${(v.snippet.tags || []).join(' ')}`);
     if (f && !byForm[f]) byForm[f] = v;
   }
+  // "phrases:<id>" entries (phrase/comic series) are matched by video id from plan/produced.json or config.comicMains
+  const prod = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'plan', 'produced.json'), 'utf8'));
+  const idOf = (key) => { const id = key.slice(8); const u = cfg.comicMains?.[id] || prod[key]?.url || ''; return u.split('youtu.be/')[1] || null; };
   for (const [title, forms] of Object.entries(plan)) {
-    const vids = forms.map((f) => byForm[f]).filter(Boolean);
+    const vids = forms.map((f) => (f.startsWith('phrases:') ? videos.find((v) => v.id === idOf(f) && !(v.status.privacyStatus === 'private' && !v.status.publishAt)) : byForm[f])).filter(Boolean);
     if (!vids.length) continue;
     let pl = mine.find((p) => p.snippet.title === title), fresh = false;
     if (!pl) {

@@ -315,6 +315,18 @@
       "베트남 여행 준비 (e-Visa·eSIM)": [
         "vn-evisa",
         "esim"
+      ],
+      "일본 여행 회화 (만화로 따라 말하기)": [
+        "phrases:jp-restaurant",
+        "phrases:jp-convenience-comic",
+        "phrases:jp-airport",
+        "phrases:jp-transport-comic",
+        "phrases:jp-ic-card",
+        "phrases:jp-izakaya",
+        "phrases:jp-hotel-comic",
+        "phrases:jp-taxi",
+        "phrases:jp-shopping",
+        "phrases:jp-pharmacy"
       ]
     },
     "en": {
@@ -351,6 +363,18 @@
       "Vietnam Trip Prep (e-Visa, eSIM)": [
         "vn-evisa",
         "esim"
+      ],
+      "Travel Japanese Phrases (Comic Lessons)": [
+        "phrases:jp-restaurant-en",
+        "phrases:jp-convenience-comic-en",
+        "phrases:jp-airport-en",
+        "phrases:jp-transport-comic-en",
+        "phrases:jp-ic-card-en",
+        "phrases:jp-izakaya-en",
+        "phrases:jp-hotel-comic-en",
+        "phrases:jp-taxi-en",
+        "phrases:jp-shopping-en",
+        "phrases:jp-pharmacy-en"
       ]
     }
   },
@@ -588,5 +612,9 @@
   },
   "_tutorialRules": "Owner decision 2026-11-28: fewer uploads (KO 1 main/day + 1-2 Shorts), no hi/es/id/ja uploads (use auto dubbing instead), EN channel only fast-changing forms (re-evaluate 2027-01-27).",
   "imageMonthlyCap": 200,
-  "_imageMonthlyCap": "Owner budget 2026-11-28: comic images per month (counted in plan/image-usage.json); comic-art stops at this number."
+  "_imageMonthlyCap": "Owner budget 2026-11-28: comic images per month (counted in plan/image-usage.json); comic-art stops at this number.",
+  "comicMains": {
+    "jp-restaurant-en": "https://youtu.be/Uv5GdSIs0Vg"
+  },
+  "_comicMains": "Comic main videos made by hand (not via the daily queue): quiz Shorts link here. Add the KO jp-restaurant comic once it is public."
 }
