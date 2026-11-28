@@ -320,7 +320,7 @@ function comicShort(p, i, state) {
   }
   const opts = (k) => (sched ? { review: false, ...guard } : { review: true, ...guard });
   const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
-  const up = await upload(P.channel, { title: P.title.slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
+  const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
   BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
   const res = { main: up.url, shorts: [] };
   if (sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
