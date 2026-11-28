@@ -1,0 +1,159 @@
+{
+ "id": "jp-transport-comic-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Train phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-transport-comic (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Trains in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Finding the station, buying a ticket, changing trains and getting out at the right exit, in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan trains",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan train",
+  "tokyo subway",
+  "asking directions in japanese",
+  "doko desu ka",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan trains\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes on Japanese trains. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Finding the station",
+   "ja": "新宿駅はどこですか？",
+   "pron": "Shinjuku-eki wa doko desu ka?",
+   "ko": "Where is Shinjuku Station?",
+   "when": "Looking for a station? Ask like this.",
+   "tip": "Swap Shinjuku for the station you want. Doko desu ka means where is it.",
+   "short": "Ask for directions in Japan",
+   "scene": "On a city sidewalk near a station entrance, Jiwoo holds a folded paper map and asks the station attendant standing by the entrance; the attendant points down the street with a gloved hand; Minjun looks around behind Jiwoo.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Buying a ticket",
+   "ja": "切符はどこで買えますか？",
+   "pron": "Kippu wa doko de kaemasu ka?",
+   "ko": "Where can I buy a ticket?",
+   "when": "Need a ticket but can't find the machines? Ask this.",
+   "tip": "With an IC card like Suica, you can skip the ticket and just tap in.",
+   "scene": "In the station concourse, Jiwoo looks around, confused, and asks the attendant; the attendant gestures toward a row of ticket machines with blank glowing screens.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Which platform",
+   "ja": "渋谷行きは何番線ですか？",
+   "pron": "Shibuya-yuki wa nanban-sen desu ka?",
+   "ko": "Which platform is for Shibuya?",
+   "when": "Not sure which platform to go to? Ask this.",
+   "tip": "Yuki means bound for, and bansen means platform number. Platform three is sanban-sen.",
+   "scene": "Past the ticket gates, Jiwoo holds a small paper ticket and asks the attendant; the attendant holds up three fingers and points toward a staircase leading up to a platform.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Does this train go?",
+   "ja": "この電車は渋谷に行きますか？",
+   "pron": "Kono densha wa Shibuya ni ikimasu ka?",
+   "ko": "Does this train go to Shibuya?",
+   "when": "Not sure it is the right train? Ask before you get on.",
+   "tip": "For a bus, say basu instead of densha: kono basu wa Shibuya ni ikimasu ka.",
+   "short": "Check you are on the right train",
+   "scene": "On the platform beside a silver commuter train with its doors open, Jiwoo points at the train and asks the attendant, who nods with a smile; Minjun waits by the door.",
+   "bubble": "tl"
+  },
+  {
+   "label": "How many stops",
+   "ja": "渋谷はいくつ目の駅ですか？",
+   "pron": "Shibuya wa ikutsu-me desu ka?",
+   "ko": "How many stops to Shibuya?",
+   "when": "Want to know how many stops until yours? Ask this.",
+   "tip": "Ikutsu-me means which number in order. The answer sounds like mittsu-me, the third one.",
+   "scene": "On the platform, Jiwoo counts on her fingers with a curious look and asks the attendant, who counts on her gloved fingers too.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Changing trains",
+   "ja": "乗り換えはどこですか？",
+   "pron": "Norikae wa doko desu ka?",
+   "ko": "Where do I change trains?",
+   "when": "Changing lines and lost? Ask this.",
+   "tip": "Norikae means transfer. Big stations show signs in English too.",
+   "scene": "In a wide underground passage, Jiwoo pulls a small suitcase and asks the attendant, who points toward a corridor with a pictogram arrow sign showing a train symbol.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Getting off",
+   "ja": "降ります！",
+   "pron": "Orimasu!",
+   "ko": "I'm getting off!",
+   "when": "Train too crowded to get out? Say this.",
+   "tip": "Say sumimasen, orimasu, and people will make way for you.",
+   "scene": "Inside a crowded train car, Jiwoo squeezes toward the open door with one hand raised politely; faceless commuters on the right step aside; Minjun follows close behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Finding the exit",
+   "ja": "東口はどこですか？",
+   "pron": "Higashi-guchi wa doko desu ka?",
+   "ko": "Where is the east exit?",
+   "when": "In a big station, ask for your exit like this.",
+   "tip": "Big stations have many exits. West is nishi, south is minami, north is kita.",
+   "scene": "In the station concourse after the gates, Jiwoo looks at a compass app on her phone (no writing) and asks the attendant, who points to the right with a gloved hand.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "After getting help",
+  "ja": "助かりました。",
+  "pron": "Tasukarimashita.",
+  "ko": "That really helped.",
+  "when": "Finally, say this to someone who helped you find the way. They will love it.",
+  "tip": "",
+  "scene": "Outside the station exit in daylight, Jiwoo bows slightly with a relieved smile and Minjun gives a thumbs-up; the attendant bows back.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-transport-comic",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo on a Japanese train: **fill the bubbles**",
+  "introSay": "Join Jiwoo on the trains in Japan. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Trains in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🚉"
+ }
+}

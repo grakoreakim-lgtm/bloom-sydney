@@ -1,0 +1,177 @@
+{
+ "id": "jp-ic-card",
+ "channel": "ko",
+ "country": "일본",
+ "topic": "교통카드 회화",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "Phrasebook-level standard Japanese only. Each phrase: ja (shown + spoken), pron (Korean reading), ko (meaning), when (situation, spoken), tip (spoken after). Keep tips to facts that hold in Japan generally.",
+ "title": "일본 교통카드 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+ "lead": "스이카 같은 일본 교통카드를 사고, 충전하고, 개찰구에서 막혔을 때까지, 지우와 함께 9장면으로 배워요. 먼저 말해 보고, 두 번 듣고, 따라 말해 보세요.",
+ "thumb": [
+  "일본 교통카드",
+  "만화 9장면",
+  "먼저 말해 보기"
+ ],
+ "tags": [
+  "일본어 회화",
+  "일본 교통카드",
+  "스이카",
+  "스이카 충전",
+  "여행 일본어",
+  "만화 일본어",
+  "일본 전철",
+  "일본 여행 준비",
+  "한글 발음 일본어",
+  "일본 여행"
+ ],
+ "hashtags": [
+  "일본여행",
+  "스이카",
+  "여행일본어"
+ ],
+ "intro": {
+  "title": "일본 교통카드\n**만화 9장면**",
+  "sub": "그림 보고 · 먼저 말하고 · 따라 말하기",
+  "say": "일본 교통카드를 쓸 때 꼭 필요한 아홉 문장이에요. 장면마다 먼저 말해 보세요."
+ },
+ "phrases": [
+  {
+   "label": "교통카드 사기",
+   "ja": "ICカードはどこで買えますか？",
+   "pron": "아이시-카-도와 도코데 카에마스카?",
+   "ko": "교통카드는 어디서 사요?",
+   "when": "교통카드를 사고 싶으면 이렇게 물어봐요.",
+   "tip": "스이카나 파스모 같은 교통카드를 일본에서는 아이시-카-도라고 불러요.",
+   "short": "일본 교통카드 살 때 이 한마디",
+   "scene": "In the station concourse, Jiwoo holds up a blank plain card shape between two fingers and asks the station attendant, who points toward a row of ticket machines; Minjun stands behind Jiwoo with a backpack.",
+   "bubble": "tl"
+  },
+  {
+   "label": "사용법 묻기",
+   "ja": "使い方を教えてもらえますか？",
+   "pron": "츠카이카타오 오시에테 모라에마스카?",
+   "ko": "사용법 좀 알려 주실 수 있어요?",
+   "when": "매표기 쓰는 법을 모르겠으면 직원에게 이렇게 부탁해요.",
+   "tip": "큰 역의 매표기는 화면에서 영어로 바꿀 수 있는 경우가 많아요.",
+   "scene": "In front of a ticket machine with a blank glowing touch screen, Jiwoo looks puzzled and asks the attendant, who leans in and points at the screen with a gloved finger.",
+   "bubble": "tl"
+  },
+  {
+   "label": "충전하기",
+   "ja": "チャージしたいです。",
+   "pron": "차-지 시타이데스",
+   "ko": "충전하고 싶어요",
+   "when": "교통카드에 돈을 충전하고 싶으면 이렇게 말해요.",
+   "tip": "일본에서는 충전을 차-지라고 해요. 역 매표기에서는 보통 현금으로 충전해요.",
+   "short": "일본 교통카드 충전할 때 이 한마디",
+   "scene": "At the ticket machine, Jiwoo holds her new IC card in one hand and a banknote in the other, looking at the attendant with a questioning smile; the attendant nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "개찰구에서 막혔을 때",
+   "ja": "改札を通れません。",
+   "pron": "카이사츠오 토-레마셍",
+   "ko": "개찰구를 못 지나가요",
+   "when": "개찰구에서 문이 닫혀서 못 나가면 직원에게 이렇게 말해요.",
+   "tip": "잔액이 모자라면 개찰구가 닫혀요. 개찰구 옆 정산기에서 충전하면 돼요.",
+   "short": "일본 개찰구에서 막혔을 때",
+   "scene": "At an automatic ticket gate with its little flaps closed, Jiwoo holds her IC card over the reader with a surprised face; the attendant comes over from the right; Minjun has already passed through and looks back.",
+   "bubble": "tl"
+  },
+  {
+   "label": "잔액 확인",
+   "ja": "残高を確認したいんですが。",
+   "pron": "잔다카오 카쿠닌 시타인데스가",
+   "ko": "잔액을 확인하고 싶어요",
+   "when": "카드에 돈이 얼마나 남았는지 보고 싶으면 이렇게 말해요.",
+   "tip": "잔다카는 잔액이에요. 개찰구를 지날 때도 화면에 잔액이 잠깐 나와요.",
+   "scene": "At a ticket machine, Jiwoo holds her IC card and points at the card slot with a curious look; the attendant shows her where to place the card.",
+   "bubble": "tl"
+  },
+  {
+   "label": "물건도 살 수 있어요?",
+   "ja": "このカードで買い物もできますか？",
+   "pron": "코노 카-도데 카이모노모 데키마스카?",
+   "ko": "이 카드로 물건도 살 수 있어요?",
+   "when": "교통카드로 결제도 되는지 궁금하면 이렇게 물어봐요.",
+   "tip": "편의점이나 역 안 자판기에서 교통카드로 낼 수 있는 곳이 많아요.",
+   "scene": "Near a drink vending machine with plain bottles in the station, Jiwoo holds up her IC card and asks the attendant, who nods and points at the round card reader on the machine.",
+   "bubble": "tl"
+  },
+  {
+   "label": "다른 도시에서도?",
+   "ja": "このカードは大阪でも使えますか？",
+   "pron": "코노 카-도와 오-사카데모 츠카에마스카?",
+   "ko": "이 카드 오사카에서도 쓸 수 있어요?",
+   "when": "다른 도시에서도 쓸 수 있는지 이렇게 물어봐요.",
+   "tip": "오-사카 자리에 가려는 도시 이름을 넣으면 돼요. 큰 도시의 전철은 대부분 같은 카드를 쓸 수 있어요.",
+   "scene": "At the staffed ticket window, Jiwoo holds up her IC card and mimes a train travelling far with her other hand; the attendant behind the window smiles and nods.",
+   "bubble": "tl"
+  },
+  {
+   "label": "환불",
+   "ja": "払い戻しはできますか？",
+   "pron": "하라이모도시와 데키마스카?",
+   "ko": "환불할 수 있어요?",
+   "when": "여행이 끝나서 카드를 돌려주고 싶으면 이렇게 물어봐요.",
+   "tip": "카드 종류에 따라 환불 방법이 달라요. 역 창구에서 물어보면 알려 줘요.",
+   "scene": "On the last day, at the staffed ticket window, Jiwoo slides her IC card across the counter with her suitcase beside her and asks; the attendant takes the card with both gloved hands.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "1일 승차권",
+  "ja": "一日乗車券はありますか？",
+  "pron": "이치니치 조-샤켄와 아리마스카?",
+  "ko": "1일 승차권 있어요?",
+  "when": "마지막으로, 하루 종일 많이 탈 거라면 1일 승차권이 있는지 물어봐요.",
+  "tip": "",
+  "scene": "At the staffed ticket window, Jiwoo holds up one finger with a hopeful smile, Minjun beside her; the attendant smiles and reaches for a plain paper ticket.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "정리: **이 9문장**",
+  "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 도움이 됐다면 구독해 두세요."
+ },
+ "comic": {
+  "style": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients. Single wide panel filling the whole frame (no panel borders, no split frames, no notebook).",
+  "setting": "A busy Japanese train station concourse with a row of ticket machines with touch screens (screens show only simple shapes, no readable writing), automatic ticket gates and a staffed ticket window.",
+  "cast": [
+   {
+    "id": "me",
+    "name": "Jiwoo",
+    "look": "Korean woman in her twenties, short black bob haircut, mustard-yellow jacket over a white T-shirt, small brown crossbody bag"
+   },
+   {
+    "id": "friend",
+    "name": "Minjun",
+    "look": "Korean man in his twenties, short wavy brown hair, round glasses, navy hoodie"
+   },
+   {
+    "id": "staff",
+    "name": "Staff",
+    "look": "Japanese station attendant in her thirties, black hair in a neat bun, navy station uniform jacket and a navy cap, white gloves, kind smile"
+   }
+  ],
+  "castFrom": "jp-restaurant",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "heroKo": "지우",
+  "pageTitle": "지우의 일본 교통카드, **말풍선을 채워 보세요**",
+  "introSay": "지우와 함께 일본 역에서 교통카드를 사 볼게요. 장면마다 뭐라고 말할지 먼저 생각해 보고, 마지막엔 그림만 보고 말해 보는 테스트도 있어요.",
+  "outroSay": "몇 개나 맞혔는지 댓글로 알려 주세요. 다음 편에서도 지우와 함께 일본 여행을 이어 가요. 구독해 두시면 바로 받아 보실 수 있어요.",
+  "title": "일본 교통카드 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+  "staffIcon": "🚉"
+ }
+}

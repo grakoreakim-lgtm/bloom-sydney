@@ -1,0 +1,160 @@
+{
+ "id": "jp-izakaya-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Izakaya phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-izakaya (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for Izakaya in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Getting a table, ordering draft beer, the surprise starter, food, refills and the bill, everything for a Japanese izakaya in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan izakaya",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "izakaya",
+  "japanese bar",
+  "how to order beer in japanese",
+  "kanpai",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "izakaya"
+ ],
+ "intro": {
+  "title": "Japan izakaya\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese izakaya. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Any seats?",
+   "ja": "二人ですが、空いていますか？",
+   "pron": "Futari desu ga, aite imasu ka?",
+   "ko": "There are two of us. Do you have a table?",
+   "when": "Walking in without a booking? Ask like this.",
+   "tip": "Aite imasu ka means is anything free. For three people, start with sannin desu ga.",
+   "scene": "At the entrance, Jiwoo pushes aside the plain fabric curtain and holds up two fingers with a hopeful look; the server inside turns with a cheerful grin; Minjun peeks in behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Ordering draft beer",
+   "ja": "生ビールを二つください。",
+   "pron": "Nama-biiru o futatsu kudasai.",
+   "ko": "Two draft beers, please.",
+   "when": "Once you sit down, the server asks about drinks first. For two draft beers, say this.",
+   "tip": "Nama-biiru is draft beer. One is hitotsu, three is mittsu.",
+   "hear": "お飲み物は何になさいますか？ (Onomimono wa nani ni nasaimasu ka?) = What would you like to drink?",
+   "short": "Your first order at a Japanese izakaya",
+   "scene": "Seated at a small wooden table, Jiwoo holds up two fingers and mimes lifting a beer mug; the server stands on the right holding a small order pad; Minjun nods eagerly.",
+   "bubble": "tl"
+  },
+  {
+   "label": "What is this?",
+   "ja": "これは何ですか？",
+   "pron": "Kore wa nan desu ka?",
+   "ko": "What is this?",
+   "when": "A little dish you didn't order just arrived? Ask this.",
+   "tip": "It is called otoshi, a small starter. It usually works like a table charge on your bill.",
+   "short": "A dish you didn't order in an izakaya?",
+   "scene": "The server places a tiny bowl of a simple side dish in front of Jiwoo; Jiwoo points at it with a surprised, curious face; Minjun leans in to look.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Non-alcoholic drinks",
+   "ja": "ノンアルコールの飲み物はありますか？",
+   "pron": "Non-arukooru no nomimono wa arimasu ka?",
+   "ko": "Do you have non-alcoholic drinks?",
+   "when": "If someone in your group doesn't drink, ask this.",
+   "tip": "Most places also have oolong tea, uuron-cha, and juice.",
+   "scene": "Jiwoo gestures toward Minjun, who makes a small cross with his arms and a sheepish smile, and asks the server, who holds up a glass of tea on a tray.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Ordering a platter",
+   "ja": "焼き鳥の盛り合わせをください。",
+   "pron": "Yakitori no moriawase o kudasai.",
+   "ko": "An assorted yakitori platter, please.",
+   "when": "Want to try a bit of everything? Order a platter.",
+   "tip": "Moriawase means an assortment. A sashimi platter is sashimi moriawase.",
+   "scene": "Jiwoo points at a picture of skewers on a menu card (no readable writing) and smiles at the server, who writes on his pad.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Same again",
+   "ja": "同じものをもう一つください。",
+   "pron": "Onaji mono o mou hitotsu kudasai.",
+   "ko": "One more of the same, please.",
+   "when": "Want another of the same drink? Hold up your empty glass and say this.",
+   "tip": "Onaji mono means the same thing. It works for food too.",
+   "scene": "Jiwoo holds up her empty beer mug with one finger raised; a plate of grilled chicken skewers sits on the table; the server gives a thumbs-up on the right.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Last orders",
+   "ja": "ラストオーダーは何時ですか？",
+   "pron": "Rasuto oodaa wa nanji desu ka?",
+   "ko": "What time is last order?",
+   "when": "Planning to stay late? Ask when last orders are.",
+   "tip": "After last order you cannot order more. Staff often tell you when it is coming.",
+   "scene": "Later in the evening, Jiwoo taps her wristwatch and asks the server, who is clearing plates and answers with a friendly nod.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Paying separately",
+   "ja": "別々に払えますか？",
+   "pron": "Betsubetsu ni haraemasu ka?",
+   "ko": "Can we pay separately?",
+   "when": "Want to split the bill? Ask this.",
+   "tip": "Many izakaya prefer one bill per table. If so, one person pays and you split it.",
+   "scene": "At the register by the door, Jiwoo points at herself and then at Minjun, each holding a wallet, and asks the server behind the register.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Cheers",
+  "ja": "乾杯！",
+  "pron": "Kanpai!",
+  "ko": "Cheers!",
+  "when": "Finally, when everyone clinks glasses, say this. You will hear it all evening in an izakaya.",
+  "tip": "",
+  "scene": "Jiwoo and Minjun clink their beer and tea glasses together with big smiles over the table full of food; the server on the right laughs and claps.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-izakaya",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo at a Japanese izakaya: **fill the bubbles**",
+  "introSay": "Join Jiwoo and Minjun at a Japanese izakaya. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for Izakaya in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "🍶"
+ }
+}

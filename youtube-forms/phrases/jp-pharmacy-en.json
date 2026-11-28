@@ -1,0 +1,161 @@
+{
+ "id": "jp-pharmacy-en",
+ "lang": "en",
+ "channel": "en",
+ "country": "Japan",
+ "affCountry": "일본",
+ "topic": "Pharmacy phrases",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "English edition of jp-pharmacy (same comic art via comic.artFrom). pron = romaji, ko = English meaning (field name kept for the engine).",
+ "title": "Japanese for the Pharmacy in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+ "lead": "Caught a cold on your trip? Describe your symptoms and buy medicine at a Japanese pharmacy, in nine comic scenes. Guess first, then listen twice and say it.",
+ "thumb": [
+  "Japan pharmacy",
+  "9 phrases",
+  "say it first"
+ ],
+ "tags": [
+  "japanese phrases",
+  "travel japanese",
+  "japanese for travelers",
+  "japan pharmacy",
+  "japan drugstore",
+  "symptoms in japanese",
+  "cold medicine japan",
+  "japanese for beginners",
+  "japan travel tips",
+  "learn japanese"
+ ],
+ "hashtags": [
+  "japantravel",
+  "learnjapanese",
+  "travelphrases"
+ ],
+ "intro": {
+  "title": "Japan pharmacy\n**9 phrases**",
+  "sub": "guess · listen · say it",
+  "say": "Nine scenes in a Japanese pharmacy. Guess each line before the answer."
+ },
+ "phrases": [
+  {
+   "label": "Cold medicine",
+   "ja": "風邪薬はありますか？",
+   "pron": "Kazegusuri wa arimasu ka?",
+   "ko": "Do you have cold medicine?",
+   "when": "Looking for cold medicine? Ask like this.",
+   "tip": "Kaze is a cold and kusuri is medicine. Tell the staff your symptoms and let them help you choose.",
+   "short": "Buy cold medicine in Japan",
+   "scene": "At the pharmacy counter, Jiwoo wears a white face mask pulled down under her chin and sniffles, asking the pharmacist behind the counter; Minjun stands behind her holding a tissue box.",
+   "bubble": "tl"
+  },
+  {
+   "label": "I have a fever",
+   "ja": "熱があります。",
+   "pron": "Netsu ga arimasu.",
+   "ko": "I have a fever.",
+   "when": "When they ask what is wrong, say this if you have a fever.",
+   "tip": "If the fever is high or lasts for days, see a doctor rather than relying on medicine.",
+   "hear": "どうされましたか？ (Dou saremashita ka?) = What seems to be the problem?",
+   "scene": "At the counter, the pharmacist asks with a concerned look; Jiwoo touches her forehead with the back of her hand, cheeks a little flushed.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Sore throat",
+   "ja": "喉が痛いです。",
+   "pron": "Nodo ga itai desu.",
+   "ko": "My throat hurts.",
+   "when": "If your throat hurts, say this.",
+   "tip": "Itai desu means it hurts. Head is atama, stomach is onaka: atama ga itai desu.",
+   "short": "Say what hurts in Japanese",
+   "scene": "At the counter, Jiwoo gently touches her throat with a pained little face; the pharmacist nods and listens carefully.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Allergies",
+   "ja": "アレルギーはありません。",
+   "pron": "Arerugii wa arimasen.",
+   "ko": "I don't have any allergies.",
+   "when": "The pharmacist asks if you have allergies. If not, answer like this.",
+   "tip": "If you do have one, write it in Japanese on your phone beforehand and show it.",
+   "hear": "アレルギーはありますか？ (Arerugii wa arimasu ka?) = Do you have any allergies?",
+   "scene": "The pharmacist holds a small plain medicine box and asks a question; Jiwoo shakes her head lightly with a reassuring hand gesture.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Will it make me sleepy?",
+   "ja": "この薬は眠くなりますか？",
+   "pron": "Kono kusuri wa nemuku narimasu ka?",
+   "ko": "Does this medicine make you drowsy?",
+   "when": "Want to know if it causes drowsiness? Ask this.",
+   "tip": "Many cold and travel-sickness medicines can make you sleepy. Always ask if you plan to drive.",
+   "scene": "Jiwoo holds the small plain medicine box and mimes a sleepy face with her head resting on her hands; the pharmacist smiles and answers.",
+   "bubble": "tl"
+  },
+  {
+   "label": "How often",
+   "ja": "一日何回飲めばいいですか？",
+   "pron": "Ichinichi nankai nomeba ii desu ka?",
+   "ko": "How many times a day should I take it?",
+   "when": "Ask how many times a day to take it like this.",
+   "tip": "After meals is shokugo, before meals is shokuzen.",
+   "scene": "Jiwoo holds up the medicine box and counts on her fingers with a questioning look; the pharmacist holds up three fingers.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Travel-sickness pills",
+   "ja": "酔い止めはありますか？",
+   "pron": "Yoidome wa arimasu ka?",
+   "ko": "Do you have anything for motion sickness?",
+   "when": "Need something before a boat or bus ride? Ask this.",
+   "tip": "Most motion-sickness medicine is taken before you travel.",
+   "scene": "Jiwoo points at Minjun, who looks pale and holds his stomach, and asks the pharmacist, who reaches for a small box on the shelf behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "Plasters",
+   "ja": "絆創膏はありますか？",
+   "pron": "Bansoukou wa arimasu ka?",
+   "ko": "Do you have adhesive bandages?",
+   "when": "Got a small cut? Ask for bandages like this.",
+   "tip": "Bansoukou means adhesive bandages. Convenience stores sell them too.",
+   "scene": "Minjun holds up one finger with a tiny cut; Jiwoo points at it and asks the pharmacist, who holds out a small plain box of adhesive bandages.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "Finding a clinic",
+  "ja": "近くに病院はありますか？",
+  "pron": "Chikaku ni byouin wa arimasu ka?",
+  "ko": "Is there a hospital or clinic nearby?",
+  "when": "Finally, if medicine is not enough, ask for a doctor nearby like this.",
+  "tip": "",
+  "scene": "Jiwoo, looking a little worried, asks the pharmacist, who points toward the store door with an open hand and a reassuring smile; Minjun holds the shopping bag.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "Recap: **9 phrases**",
+  "say": "All the phrases are in the description. Tell us in the comments how many you got right. Subscribe so you don't miss the next one."
+ },
+ "comic": {
+  "artFrom": "jp-pharmacy",
+  "hero": "Jiwoo",
+  "pageTitle": "Jiwoo at a Japanese pharmacy: **fill the bubbles**",
+  "introSay": "Jiwoo caught a cold on her trip. Join her at a Japanese pharmacy. In each scene, guess what to say first. At the end, there's a memory test with just the pictures.",
+  "outroSay": "How many did you get right? Tell us in the comments. Jiwoo's trip through Japan continues in the next episode. Subscribe so you get it.",
+  "title": "Japanese for the Pharmacy in 9 Comic Scenes | Guess, Listen, Say It (Travel Japanese)",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "staffIcon": "💊"
+ }
+}

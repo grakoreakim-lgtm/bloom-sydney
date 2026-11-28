@@ -1,0 +1,179 @@
+{
+ "id": "jp-convenience-comic",
+ "channel": "ko",
+ "country": "일본",
+ "topic": "편의점 회화",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "Phrasebook-level standard Japanese only. Each phrase: ja (shown + spoken), pron (Korean reading), ko (meaning), when (situation, spoken), tip (spoken after). Keep tips to facts that hold in Japan generally.",
+ "title": "일본 편의점 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+ "lead": "일본 편의점에서 물건 찾기부터 계산까지, 지우와 함께 9장면으로 배워요. 먼저 말해 보고, 두 번 듣고, 따라 말해 보세요.",
+ "thumb": [
+  "일본 편의점",
+  "만화 9장면",
+  "먼저 말해 보기"
+ ],
+ "tags": [
+  "일본어 회화",
+  "일본 편의점",
+  "일본 편의점 일본어",
+  "여행 일본어",
+  "만화 일본어",
+  "일본어 기초",
+  "일본 여행 준비",
+  "아타타메테 쿠다사이",
+  "한글 발음 일본어",
+  "일본 여행"
+ ],
+ "hashtags": [
+  "일본여행",
+  "일본편의점",
+  "여행일본어"
+ ],
+ "intro": {
+  "title": "일본 편의점\n**만화 9장면**",
+  "sub": "그림 보고 · 먼저 말하고 · 따라 말하기",
+  "say": "일본 편의점에서 꼭 쓰는 아홉 문장이에요. 장면마다 먼저 말해 보세요."
+ },
+ "phrases": [
+  {
+   "label": "이거 있어요?",
+   "ja": "これはありますか？",
+   "pron": "코레와 아리마스카?",
+   "ko": "이거 있어요?",
+   "when": "찾는 물건이 안 보이면 사진을 보여 주면서 이렇게 물어봐요.",
+   "tip": "휴대폰 사진을 보여 주면서 말하면 가장 빨라요.",
+   "scene": "In a snack aisle, Jiwoo holds up her phone with a photo of a snack bag on the screen and shows it to the clerk, who is stocking a shelf on the right; Minjun peers at the shelves behind Jiwoo.",
+   "bubble": "tl"
+  },
+  {
+   "label": "ATM 찾기",
+   "ja": "ATMはどこですか？",
+   "pron": "에-티-에무와 도코데스카?",
+   "ko": "ATM 어디예요?",
+   "when": "현금이 필요하면 ATM 위치를 물어봐요.",
+   "tip": "일본 편의점에는 해외 카드로 돈을 뽑을 수 있는 ATM이 있는 곳이 많아요.",
+   "scene": "Near the store entrance, Jiwoo opens an empty wallet with a worried face and asks the clerk; the clerk smiles and points with an open hand toward a plain grey machine in the corner.",
+   "bubble": "tl"
+  },
+  {
+   "label": "화장실",
+   "ja": "トイレを借りてもいいですか？",
+   "pron": "토이레오 카리테모 이이데스카?",
+   "ko": "화장실 써도 돼요?",
+   "when": "화장실을 쓰고 싶으면 먼저 이렇게 물어봐요.",
+   "tip": "편의점 화장실은 직원에게 한마디 하고 쓰는 게 예의예요. 손님용 화장실이 없는 곳도 있어요.",
+   "scene": "At the end of the counter, Jiwoo leans in politely with a slightly urgent smile and asks the clerk; the clerk nods and gestures toward a plain door at the back.",
+   "bubble": "tl"
+  },
+  {
+   "label": "포인트 카드 물으면",
+   "ja": "持っていません。",
+   "pron": "못테 이마셍",
+   "ko": "안 갖고 있어요",
+   "when": "계산대에서 직원이 포인트 카드가 있냐고 물어요. 없으면 이렇게 답해요.",
+   "tip": "일본 편의점 계산대에서 아주 자주 듣는 질문이에요. 손을 살짝 저으면서 말해도 돼요.",
+   "hear": "ポイントカードはお持ちですか？ (포인토카-도와 오모치데스카) = 포인트 카드 있으세요?",
+   "short": "일본 편의점에서 매번 듣는 이 질문",
+   "scene": "At the checkout counter, Jiwoo has put a bento box and a drink down; the clerk behind the register asks a question, and Jiwoo answers with a small apologetic wave of one hand; Minjun stands behind her holding a bottle of tea.",
+   "bubble": "tl"
+  },
+  {
+   "label": "데워 달라고 할 때",
+   "ja": "温めてください。",
+   "pron": "아타타메테 쿠다사이",
+   "ko": "데워 주세요",
+   "when": "도시락이나 빵을 데워 달라고 할 때 이렇게 말해요.",
+   "tip": "직원이 먼저 아타타메마스카, 데울까요, 하고 묻기도 해요. 그때는 하이, 오네가이시마스, 하면 돼요.",
+   "short": "일본 편의점 도시락 데워 달라고 할 때",
+   "scene": "At the counter, Jiwoo slides a bento box toward the clerk and points at a small microwave behind the counter; the clerk takes the bento with both hands.",
+   "bubble": "tl"
+  },
+  {
+   "label": "젓가락",
+   "ja": "お箸をください。",
+   "pron": "오하시오 쿠다사이",
+   "ko": "젓가락 주세요",
+   "when": "젓가락이 필요하면 이렇게 말해요.",
+   "tip": "숟가락은 스푸-은, 포크는 호-쿠. 오하시 자리에 바꿔 넣으면 돼요.",
+   "scene": "At the counter, Jiwoo mimes eating with chopsticks with one hand while the clerk reaches under the counter for a pair of wrapped wooden chopsticks.",
+   "bubble": "tl"
+  },
+  {
+   "label": "봉투 필요 없을 때",
+   "ja": "袋はいりません。",
+   "pron": "후쿠로와 이리마셍",
+   "ko": "봉투는 괜찮아요",
+   "when": "직원이 봉투가 필요하냐고 물어요. 필요 없으면 이렇게 답해요.",
+   "tip": "봉투가 필요하면 후쿠로오 쿠다사이, 하면 돼요. 일본 편의점 봉투는 보통 돈을 따로 받아요.",
+   "hear": "袋はご利用ですか？ (후쿠로와 고리요-데스카) = 봉투 필요하세요?",
+   "short": "일본 편의점에서 봉투 물어볼 때",
+   "scene": "At the counter, the clerk holds up a folded plastic bag with a questioning look; Jiwoo smiles, shakes her hand gently and opens her own cloth tote bag.",
+   "bubble": "tl"
+  },
+  {
+   "label": "카드로 낼게요",
+   "ja": "カードでお願いします。",
+   "pron": "카-도데 오네가이시마스",
+   "ko": "카드로 할게요",
+   "when": "카드로 내고 싶으면 이렇게 말해요.",
+   "tip": "편의점은 대부분 카드와 교통카드로 낼 수 있어요.",
+   "scene": "At the register, Jiwoo holds out a credit card toward a small card reader on the counter; the clerk gestures toward the reader with an open hand.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "나갈 때 한마디",
+  "ja": "ありがとうございます。",
+  "pron": "아리가토-고자이마스",
+  "ko": "감사합니다",
+  "when": "마지막으로, 계산이 끝나면 이렇게 인사해요.",
+  "tip": "",
+  "scene": "Jiwoo takes her tote bag and the warm bento, bowing slightly with a smile; Minjun waves; the clerk bows back behind the counter.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "정리: **이 9문장**",
+  "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 도움이 됐다면 구독해 두세요."
+ },
+ "comic": {
+  "style": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients. Single wide panel filling the whole frame (no panel borders, no split frames, no notebook).",
+  "setting": "A bright Japanese convenience store with shelves of snacks and drinks, a glass fridge wall of bottles, and a checkout counter with a small hot-food case. All packaging is plain, with no readable writing.",
+  "cast": [
+   {
+    "id": "me",
+    "name": "Jiwoo",
+    "look": "Korean woman in her twenties, short black bob haircut, mustard-yellow jacket over a white T-shirt, small brown crossbody bag"
+   },
+   {
+    "id": "friend",
+    "name": "Minjun",
+    "look": "Korean man in his twenties, short wavy brown hair, round glasses, navy hoodie"
+   },
+   {
+    "id": "staff",
+    "name": "Staff",
+    "look": "Japanese convenience-store clerk in her twenties, black hair in a low ponytail, blue-and-white striped uniform shirt, friendly smile"
+   }
+  ],
+  "castFrom": "jp-restaurant",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "heroKo": "지우",
+  "pageTitle": "지우의 일본 편의점, **말풍선을 채워 보세요**",
+  "introSay": "지우와 함께 일본 편의점에 가 볼게요. 장면마다 뭐라고 말할지 먼저 생각해 보고, 마지막엔 그림만 보고 말해 보는 테스트도 있어요.",
+  "outroSay": "몇 개나 맞혔는지 댓글로 알려 주세요. 다음 편에서도 지우와 함께 일본 여행을 이어 가요. 구독해 두시면 바로 받아 보실 수 있어요.",
+  "title": "일본 편의점 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+  "staffIcon": "🧑‍💼"
+ }
+}

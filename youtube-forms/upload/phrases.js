@@ -176,7 +176,7 @@ function comicPanel(p, i, state) {
   const bubble = hidden
     ? `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p)};font-size:84px;font-weight:900;padding:6px 46px">?</div>`
     : `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p)}"><div class="ja" lang="ja" style="font-size:${jaSize}px">${esc(p.ja)}</div><div style="font-size:40px;font-weight:900;color:#e0457b;margin-top:6px">${esc(p.pron)}</div></div>`;
-  const staff = p.hear && state !== 'quiz' && state !== 'answer' ? `<div class="bub staff ${(p.bubble || 'tl') === 'tr' ? 'tl' : 'tr'}" style="${staffPos(p)};max-width:42%">👩‍🍳 <span lang="ja" class="ja" style="font-weight:700">${esc(p.hear)}</span></div>` : '';
+  const staff = p.hear && state !== 'quiz' && state !== 'answer' ? `<div class="bub staff ${(p.bubble || 'tl') === 'tr' ? 'tl' : 'tr'}" style="${staffPos(p)};max-width:42%">${P.comic?.staffIcon || '👩‍🍳'} <span lang="ja" class="ja" style="font-weight:700">${esc(p.hear)}</span></div>` : '';
   const bar = {
     ask: ['#7a3cff', UI.ask(HERO)],
     listen: ['#2f6bff', `🔊 = ${esc(p.ko)}`],

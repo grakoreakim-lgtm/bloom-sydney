@@ -1,0 +1,177 @@
+{
+ "id": "jp-transport-comic",
+ "channel": "ko",
+ "country": "일본",
+ "topic": "전철 회화",
+ "flag": "🇯🇵",
+ "target": {
+  "lang": "ja",
+  "voice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Chirp3-HD-Leda"
+  },
+  "fallbackVoice": {
+   "languageCode": "ja-JP",
+   "name": "ja-JP-Neural2-B"
+  }
+ },
+ "checkedOn": "2026-11-28",
+ "_note": "Phrasebook-level standard Japanese only. Each phrase: ja (shown + spoken), pron (Korean reading), ko (meaning), when (situation, spoken), tip (spoken after). Keep tips to facts that hold in Japan generally.",
+ "title": "일본 전철 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+ "lead": "일본에서 역 찾기부터 표 사기, 갈아타기, 출구 찾기까지, 지우와 함께 9장면으로 배워요. 먼저 말해 보고, 두 번 듣고, 따라 말해 보세요.",
+ "thumb": [
+  "일본 전철",
+  "만화 9장면",
+  "먼저 말해 보기"
+ ],
+ "tags": [
+  "일본어 회화",
+  "일본 전철",
+  "일본 지하철 일본어",
+  "여행 일본어",
+  "만화 일본어",
+  "길 묻기 일본어",
+  "일본 여행 준비",
+  "도코데스카",
+  "한글 발음 일본어",
+  "일본 여행"
+ ],
+ "hashtags": [
+  "일본여행",
+  "일본어회화",
+  "여행일본어"
+ ],
+ "intro": {
+  "title": "일본 전철\n**만화 9장면**",
+  "sub": "그림 보고 · 먼저 말하고 · 따라 말하기",
+  "say": "일본에서 전철 탈 때 꼭 쓰는 아홉 문장이에요. 장면마다 먼저 말해 보세요."
+ },
+ "phrases": [
+  {
+   "label": "역 찾기",
+   "ja": "新宿駅はどこですか？",
+   "pron": "신주쿠에키와 도코데스카?",
+   "ko": "신주쿠역 어디예요?",
+   "when": "역을 찾을 때는 이렇게 물어봐요.",
+   "tip": "신주쿠 자리에 가려는 역 이름을 넣으면 돼요. 도코데스카는 어디예요, 라는 뜻이에요.",
+   "short": "일본에서 길 물을 때 이 한마디",
+   "scene": "On a city sidewalk near a station entrance, Jiwoo holds a folded paper map and asks the station attendant standing by the entrance; the attendant points down the street with a gloved hand; Minjun looks around behind Jiwoo.",
+   "bubble": "tl"
+  },
+  {
+   "label": "표 사는 곳",
+   "ja": "切符はどこで買えますか？",
+   "pron": "킷푸와 도코데 카에마스카?",
+   "ko": "표는 어디서 사요?",
+   "when": "표를 사야 하는데 매표기를 못 찾으면 이렇게 물어봐요.",
+   "tip": "스이카 같은 교통카드가 있으면 표를 살 필요 없이 찍고 타면 돼요.",
+   "scene": "In the station concourse, Jiwoo looks around, confused, and asks the attendant; the attendant gestures toward a row of ticket machines with blank glowing screens.",
+   "bubble": "tl"
+  },
+  {
+   "label": "몇 번 승강장",
+   "ja": "渋谷行きは何番線ですか？",
+   "pron": "시부야유키와 난반센데스카?",
+   "ko": "시부야행은 몇 번 승강장이에요?",
+   "when": "어느 승강장으로 가야 할지 모르겠으면 이렇게 물어봐요.",
+   "tip": "유키는 ~행, 반센은 몇 번 승강장이라는 뜻이에요. 3번 승강장은 산반센이에요.",
+   "scene": "Past the ticket gates, Jiwoo holds a small paper ticket and asks the attendant; the attendant holds up three fingers and points toward a staircase leading up to a platform.",
+   "bubble": "tl"
+  },
+  {
+   "label": "이 전철 가요?",
+   "ja": "この電車は渋谷に行きますか？",
+   "pron": "코노 덴샤와 시부야니 이키마스카?",
+   "ko": "이 전철 시부야 가요?",
+   "when": "맞는 전철인지 모르겠으면 타기 전에 이렇게 물어봐요.",
+   "tip": "버스는 덴샤 자리에 바스. 코노 바스와 시부야니 이키마스카.",
+   "short": "일본 전철 맞게 탔는지 물어볼 때",
+   "scene": "On the platform beside a silver commuter train with its doors open, Jiwoo points at the train and asks the attendant, who nods with a smile; Minjun waits by the door.",
+   "bubble": "tl"
+  },
+  {
+   "label": "몇 번째 역",
+   "ja": "渋谷はいくつ目の駅ですか？",
+   "pron": "시부야와 이쿠츠메노 에키데스카?",
+   "ko": "시부야는 몇 번째 역이에요?",
+   "when": "내릴 역이 몇 정거장 뒤인지 알고 싶으면 이렇게 물어봐요.",
+   "tip": "이쿠츠메는 몇 번째라는 뜻이에요. 대답은 밋츠메, 세 번째처럼 와요.",
+   "scene": "On the platform, Jiwoo counts on her fingers with a curious look and asks the attendant, who counts on her gloved fingers too.",
+   "bubble": "tl"
+  },
+  {
+   "label": "갈아타는 곳",
+   "ja": "乗り換えはどこですか？",
+   "pron": "노리카에와 도코데스카?",
+   "ko": "갈아타는 곳 어디예요?",
+   "when": "환승할 때 길을 모르겠으면 이렇게 물어봐요.",
+   "tip": "노리카에는 갈아타기라는 뜻이에요. 큰 역은 안내판에 영어도 함께 적혀 있어요.",
+   "scene": "In a wide underground passage, Jiwoo pulls a small suitcase and asks the attendant, who points toward a corridor with a pictogram arrow sign showing a train symbol.",
+   "bubble": "tl"
+  },
+  {
+   "label": "내릴 때",
+   "ja": "降ります！",
+   "pron": "오리마스!",
+   "ko": "내릴게요!",
+   "when": "사람이 많아서 못 내릴 것 같으면 이렇게 말해요.",
+   "tip": "스미마셍, 오리마스, 하고 말하면 사람들이 길을 비켜 줘요.",
+   "scene": "Inside a crowded train car, Jiwoo squeezes toward the open door with one hand raised politely; faceless commuters on the right step aside; Minjun follows close behind her.",
+   "bubble": "tl"
+  },
+  {
+   "label": "출구 찾기",
+   "ja": "東口はどこですか？",
+   "pron": "히가시구치와 도코데스카?",
+   "ko": "동쪽 출구 어디예요?",
+   "when": "큰 역에서 나갈 출구를 찾을 때 이렇게 물어봐요.",
+   "tip": "큰 역은 출구가 여러 개예요. 서쪽은 니시, 남쪽은 미나미, 북쪽은 키타예요.",
+   "short": "일본 큰 역에서 출구 찾을 때",
+   "scene": "In the station concourse after the gates, Jiwoo looks at a compass app on her phone (no writing) and asks the attendant, who points to the right with a gloved hand.",
+   "bubble": "tl"
+  }
+ ],
+ "bonus": {
+  "label": "도움 받았을 때",
+  "ja": "助かりました。",
+  "pron": "타스카리마시타",
+  "ko": "덕분에 살았어요",
+  "when": "마지막으로, 길을 알려 준 사람에게 이렇게 말하면 아주 좋아해요.",
+  "tip": "",
+  "scene": "Outside the station exit in daylight, Jiwoo bows slightly with a relieved smile and Minjun gives a thumbs-up; the attendant bows back.",
+  "bubble": "tl"
+ },
+ "outro": {
+  "title": "정리: **이 9문장**",
+  "say": "오늘 문장은 설명란에 모두 적어 뒀어요. 도움이 됐다면 구독해 두세요."
+ },
+ "comic": {
+  "style": "Korean essay-comic (life diary webtoon) look drawn with a black ink pen: confident but slightly wobbly hand-inked lines, simple flat fills in only three colours (warm grey, mustard, indigo) plus white, a little hatching for shadows, off-white paper. Like a travel diary comic, charming and minimal. No 3D shading, no gradients. Single wide panel filling the whole frame (no panel borders, no split frames, no notebook).",
+  "setting": "A Japanese city train station: a busy concourse with ticket machines, automatic ticket gates, platforms with a silver commuter train, and pictogram-only signs with no readable writing.",
+  "cast": [
+   {
+    "id": "me",
+    "name": "Jiwoo",
+    "look": "Korean woman in her twenties, short black bob haircut, mustard-yellow jacket over a white T-shirt, small brown crossbody bag"
+   },
+   {
+    "id": "friend",
+    "name": "Minjun",
+    "look": "Korean man in his twenties, short wavy brown hair, round glasses, navy hoodie"
+   },
+   {
+    "id": "staff",
+    "name": "Staff",
+    "look": "Japanese station attendant in her thirties, black hair in a neat bun, navy station uniform jacket and a navy cap, white gloves, kind smile"
+   }
+  ],
+  "castFrom": "jp-restaurant",
+  "layout": "Jiwoo (and Minjun) always stand or sit on the LEFT half of the panel; the staff member, when present, is always on the RIGHT half.",
+  "heroKo": "지우",
+  "pageTitle": "지우의 일본 전철, **말풍선을 채워 보세요**",
+  "introSay": "지우와 함께 일본 전철을 타 볼게요. 장면마다 뭐라고 말할지 먼저 생각해 보고, 마지막엔 그림만 보고 말해 보는 테스트도 있어요.",
+  "outroSay": "몇 개나 맞혔는지 댓글로 알려 주세요. 다음 편에서도 지우와 함께 일본 여행을 이어 가요. 구독해 두시면 바로 받아 보실 수 있어요.",
+  "title": "일본 전철 일본어, 만화로 9장면 | 그림 보고 먼저 말해 보기 (여행 회화)",
+  "staffIcon": "🚉"
+ }
+}
