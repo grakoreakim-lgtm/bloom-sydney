@@ -6,6 +6,7 @@ on:
     inputs:
       file: { description: 'phrases/<id>.json', required: true, default: 'phrases/jp-restaurant.json' }
       upload: { description: 'upload (private)', type: boolean, default: true }
+      shorts: { description: 'make Shorts too', type: boolean, default: true }
 
 permissions:
   contents: read
@@ -38,7 +39,8 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FILE: ${{ github.event.inputs.file }}
           UP: ${{ github.event.inputs.upload }}
-        run: node upload/phrases.js "$FILE" --config upload/config.ci.json $([ "$UP" = "true" ] && echo --upload) | tee -a $GITHUB_STEP_SUMMARY
+          SH: ${{ github.event.inputs.shorts }}
+        run: node upload/phrases.js "$FILE" --config upload/config.ci.json $([ "$UP" = "true" ] && echo --upload) $([ "$SH" = "false" ] && echo --no-shorts) | tee -a $GITHUB_STEP_SUMMARY
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: 'phrases-${{ github.run_id }}', path: 'youtube-forms/out/phrases/**', retention-days: 7, if-no-files-found: ignore }
