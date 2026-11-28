@@ -59,8 +59,9 @@ async function gen(prompt, ref, outFile) {
 
 (async () => {
   const log = fs.existsSync(path.join(OUT, 'art.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'art.json'), 'utf8')) : {};
-  const cast = path.join(OUT, 'cast.jpg');
-  if (!fs.existsSync(cast) || (force && !only)) {
+  // a series shares one cast: "castFrom": "jp-restaurant" reuses that episode's character sheet
+  const cast = C.castFrom ? path.join(OUT, '..', C.castFrom, 'cast.jpg') : path.join(OUT, 'cast.jpg');
+  if (!C.castFrom && (!fs.existsSync(cast) || (force && !only))) {
     const m = await gen(`${C.style}\nCharacter reference sheet on a plain light background: each character standing side by side, full body, front view, friendly neutral expression.\n${castText}\n${NO_TEXT}`, null, cast);
     log.cast = { model: m, at: new Date().toISOString() }; console.log(`✔ cast.jpg (${m})`);
   }

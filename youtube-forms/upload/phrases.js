@@ -123,7 +123,7 @@ const COMIC = !!P.comic && !flag('no-comic') && all.every((_, i) => fs.existsSyn
 const HERO = P.comic?.heroKo || '나';
 const img64 = (f) => `data:image/jpeg;base64,${fs.readFileSync(f).toString('base64')}`;
 const COMIC_CSS = `<style>
- .bub{position:absolute;background:#fff;color:#111;border:5px solid #111;border-radius:34px;padding:18px 30px;box-shadow:0 8px 0 rgba(0,0,0,.25);max-width:60%}
+ .bub{position:absolute;background:#fff;color:#111;border:5px solid #111;border-radius:34px;padding:18px 30px;box-shadow:0 8px 0 rgba(0,0,0,.25);max-width:76%}
  .bub:after{content:'';position:absolute;bottom:-34px;width:0;height:0;border:18px solid transparent;border-top:22px solid #111}
  .bub.tl:after{left:70px}.bub.tr:after{right:70px}.bub.tc:after{left:46%}
  .bub.staff{background:#e8f1ff;border-color:#2f6bff;font-size:26px;padding:10px 20px}
@@ -136,7 +136,7 @@ function staffPos(p) { return (p.bubble || 'tl') === 'tr' ? 'left:40px;top:40px'
 function comicPanel(p, i, state) {
   const W = 1280, H = 720; const n = p.bonus ? '보너스' : `${i + 1} / ${N}`;
   const hidden = state === 'ask' || state === 'quiz';
-  const jaSize = p.ja.length > 14 ? 46 : p.ja.length > 9 ? 56 : 70;
+  const jaSize = Math.min(70, Math.floor(860 / p.ja.length));   // one line in the bubble
   const bubble = hidden
     ? `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p)};font-size:84px;font-weight:900;padding:6px 46px">?</div>`
     : `<div class="bub ${p.bubble || 'tl'}" style="${bubblePos(p)}"><div class="ja" lang="ja" style="font-size:${jaSize}px">${esc(p.ja)}</div><div style="font-size:40px;font-weight:900;color:#e0457b;margin-top:6px">${esc(p.pron)}</div></div>`;
@@ -320,7 +320,7 @@ function comicShort(p, i, state) {
   }
   const opts = (k) => (sched ? { review: false, ...guard } : { review: true, ...guard });
   const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
-  const up = await upload(P.channel, { title: P.title.slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
+  const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: 'ko', ...when(0) }, main, thumb, opts(0));
   BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
   const res = { main: up.url, shorts: [] };
   if (sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
