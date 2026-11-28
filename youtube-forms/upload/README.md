@@ -61,6 +61,9 @@ Windows 작업 스케줄러 / macOS launchd / cron 에 아침 6시로 등록하�
 - **매일 대기열**: `config.ci.json → phraseQueue` 순서대로 밤마다 1편(`phrases.js --next`). 다 만든 편은 `plan/produced.json`.
   만화 편은 검수된 그림이 커밋될 때까지 기다립니다(`PHRASES waiting for art`) — 카드판으로 잘못 나가지 않게.
 - 수동 실행: `phrases` 워크플로. `shorts`(쇼츠도 만들기), `new_copy`(같은 제목이 이미 있어도 올리기 — 다시 그린 판 등).
+- **퀴즈 쇼츠(무료)**: 밤마다 회화 편 다음에 `phrases.js --quiz-next --max 2`가 남은 업로드 수 안에서 퀴즈 쇼츠를 1~2개 올립니다.
+  본편이 이미 올라가 있고 그림이 다 있는 만화 편에서, 아직 쇼츠가 없는 문장을 고릅니다(새 그림 없음). 손으로 올린 본편은 `comicMains`에 적습니다.
+- **재생목록**: `playlists`의 `"phrases:<id>"` 줄 순서대로 시리즈 재생목록을 만듭니다(`maintain`).
 - 쇼츠 → 본편 연결은 `plan/shorts.json`. `replace.js`로 본편을 교체하면 옛 본편을 가리키던 쇼츠도 새 본편으로 고쳐집니다.
 
 ## 비용 줄이는 장치 (`ops/OWNER-RULES.md` 6c)

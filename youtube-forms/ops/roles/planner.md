@@ -22,7 +22,8 @@ You decide what the channels make next week, from numbers, not taste.
 - **Next comic episodes:** which `phrases/*-comic*.json` come next in `phraseQueue` (Korean and English edition), which need
   art drawn (`comic-art` workflow; the nightly build waits until the reviewed art is committed). Keep the series order.
 - **Free growth formats (OWNER-RULES 6d), no new images or Gemini voice needed:** quiz Shorts from each comic episode
-  (1–2 a day within `uploadsPerDay`); once 4–5 comic episodes exist, plan a compilation video (all phrases + chapters +
+  (made nightly by `phrases.js --quiz-next`, 1–2 a day within `uploadsPerDay`; check they went out and add hand-made
+  mains to `comicMains`); series playlists (`playlists`, in episode order); once 4–5 comic episodes exist, plan a compilation video (all phrases + chapters +
   full memory test) and a listening video (Japanese only, repeated, with picture and meaning). Each must add something
   new (chapters, review test, order), never a plain re-upload. When a form changes, plan a "what changed" Short.
 
@@ -34,8 +35,8 @@ You decide what the channels make next week, from numbers, not taste.
 - Open a pull request `plan: <yyyy-Www>`, run the dry runs it touches, merge when they pass.
 
 ## 3b. Community quiz post
-Write `ops/community/<yyyy-Www>.md` in Korean: one quiz from this week's comic episode ("이 상황, 일본어로?", 3–4
-choices, answer and link to the episode in the next post or a comment). The owner posts it from the app (or asks the Mac to).
+Write `ops/community/<yyyy-Www>.md` (format: `ops/community/2026-W48.md`): 2–3 quiz posts per channel from the comic
+episodes ("이 상황, 일본어로?", 3 choices, the answer marked, a short explanation ending with the episode link). The owner posts it from the app (or asks the Mac to).
 
 ## 4. Write the plan
 `ops/plans/<yyyy-Www>.md` in Korean, plain words: 지난주 숫자 요약 / 잘 된 것·안 된 것 / 이번 주 순서 / 바꾼 것 3개와 기대 효과 /
