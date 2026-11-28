@@ -113,6 +113,19 @@ jobs:
           node upload/phrases.js --next --upload --date "$DATE" --budget "$LEFT" --config upload/config.ci.json | tee phrases.log
           grep '^VOICE_FALLBACK' phrases.log >> run.log || true
 
+      - name: Quiz Shorts from finished comic episodes (free, within the upload budget)
+        if: success() && steps.gate.outputs.work == 'true' && github.event.inputs.dry != 'true' && github.event.inputs.forms == ''
+        continue-on-error: true
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TZ: Asia/Seoul
+        run: |
+          DATE="${{ github.event.inputs.date }}"; [ -z "$DATE" ] && DATE=$(date -d tomorrow +%F)
+          USED=$(cat run.log phrases.log 2>/dev/null | grep -cE '✔ (https://youtu\.be|Shorts|main|short)' || true)
+          LEFT=$(( $(node -e "console.log(require('./upload/config.ci.json').uploadsPerDay||6)") - USED ))
+          node upload/phrases.js --quiz-next --upload --date "$DATE" --budget "$LEFT" --max 2 --config upload/config.ci.json | tee quiz.log
+
       - name: Alert when nothing was made
         if: success() && steps.gate.outputs.work == 'true' && github.event.inputs.dry != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }

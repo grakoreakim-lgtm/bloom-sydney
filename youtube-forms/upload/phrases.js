@@ -22,11 +22,36 @@ const ROOT = path.join(__dirname, '..');
 // (daily production; uploads are scheduled for that date's publish window instead of private)
 const PRODUCED = path.join(ROOT, 'plan', 'produced.json');
 const produced = fs.existsSync(PRODUCED) ? JSON.parse(fs.readFileSync(PRODUCED, 'utf8')) : {};
-let file = argv.find((a) => !a.startsWith('--') && ![opt('config'), opt('date'), opt('budget')].includes(a));
+let file = argv.find((a) => !a.startsWith('--') && ![opt('config'), opt('date'), opt('budget'), opt('max')].includes(a));
 if (flag('next')) {
   const id = (cfg.phraseQueue || []).find((x) => !produced[`phrases:${x}`]);
   if (!id) { console.log('PHRASES none left in config.phraseQueue'); process.exit(0); }
   file = path.join(ROOT, 'phrases', `${id}.json`);
+}
+// --quiz-next --date D --budget N [--max 2]: extra quiz Shorts from finished comic episodes (no new art, no Gemini voice
+// except the short hook line). Picks the first episode whose main video is on YouTube, whose art exists, and that still
+// has phrases without a Short. Each phrase gets at most one Short (plan/shorts.json records form + idx).
+const QUIZ = flag('quiz-next');
+const SHORTS_FILE = path.join(ROOT, 'plan', 'shorts.json');
+const shortsMap = fs.existsSync(SHORTS_FILE) ? JSON.parse(fs.readFileSync(SHORTS_FILE, 'utf8')) : {};
+const mainOf = (id) => cfg.comicMains?.[id] || produced[`phrases:${id}`]?.url || null;
+const doneIdx = (id, E) => {   // phrases that already have a Short (older card Shorts have no idx: they covered the phrases with a "short" line)
+  const mine = Object.values(shortsMap).filter((v) => v.form === `phrases:${id}`);
+  const set = new Set(mine.filter((v) => v.idx != null).map((v) => v.idx));
+  if (E && mine.some((v) => v.idx == null)) E.phrases.forEach((p, i) => { if (p.short) set.add(i); });
+  return set;
+};
+if (QUIZ) {
+  const ids = [...new Set([...Object.keys(cfg.comicMains || {}), ...(cfg.phraseQueue || [])])];
+  const pick = ids.find((id) => {
+    const fp = path.join(ROOT, 'phrases', `${id}.json`); if (!fs.existsSync(fp) || !mainOf(id)) return false;
+    const E = JSON.parse(fs.readFileSync(fp, 'utf8')); if (!E.comic) return false;
+    const art = path.join(ROOT, 'phrases', 'art', E.comic.artFrom || E.id);
+    if (!E.phrases.every((_, i) => fs.existsSync(path.join(art, `p${i + 1}.jpg`)))) return false;
+    return E.phrases.some((_, i) => !doneIdx(id, E).has(i));
+  });
+  if (!pick) { console.log('QUIZ none: no finished comic episode with phrases left'); process.exit(0); }
+  file = path.join(ROOT, 'phrases', `${pick}.json`);
 }
 const P = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
 // daily mode: a comic episode waits until its reviewed art is committed (never ship it as plain cards by accident)
@@ -38,7 +63,7 @@ if (flag('next') && P.comic) {
 }
 const DATE = opt('date');   // with --next: the publish date (KST)
 let BUDGET = opt('budget') != null ? Number(opt('budget')) : 99;   // uploads left today (shared YouTube quota)
-if (flag('next') && BUDGET < 1) { console.log(`PHRASES skipped ${P.id}: no upload budget left today`); process.exit(0); }
+if ((flag('next') || QUIZ) && BUDGET < 1) { console.log(`PHRASES skipped ${P.id}: no upload budget left today`); process.exit(0); }
 const OUT = path.join(ROOT, 'out', 'phrases', P.id); fs.mkdirSync(OUT, { recursive: true });
 const TMP = path.join(OUT, '_tmp'); fs.mkdirSync(TMP, { recursive: true });
 const sh = (c) => execSync(c, { stdio: ['ignore', 'pipe', 'pipe'], shell: '/bin/bash' }).toString();
@@ -101,21 +126,21 @@ const UI = {
   ko: { bonus: '보너스', topic: '식당 회화', listen: '들어 보세요', repeat: '따라 말해 보세요', tip: '알아 두면 좋아요', staffFirst: '직원이 먼저:',
     fullN: (n) => `▶ 전체 ${n}문장은 설명란 링크`, fullComic: '▶ 전체 만화 회화는 설명란 링크', subscribe: '🔔 구독하면 다음 회화도 받아 보세요',
     ask: (h) => `🤔 ${h}는 뭐라고 말할까요?`, askShort: '🤔 뭐라고 말할까요?', quiz: '⏱ 3초 안에 먼저 말해 보세요', inTarget: '일본어로?',
-    hookComic: (p) => `${p.short}. ${p.ko}, 일본어로 뭐라고 할까요?`, hookCard: (p) => `${p.short}. ${p.ko}는 이렇게 말해요.`, shortEnd: (n) => `전체 ${n}문장은 아래 링크에서 보세요.`,
+    hookComic: (p) => `${p.short || p.label}. ${p.ko}, 일본어로 뭐라고 할까요?`, hookCard: (p) => `${p.short || p.label}. ${p.ko}는 이렇게 말해요.`, shortEnd: (n) => `전체 ${n}문장은 아래 링크에서 보세요.`,
     recallSay: '이제 기억 테스트예요. 그림을 보고 먼저 말해 보세요. 정답은 3초 뒤에 나와요.', recallTitle: '기억 테스트: **먼저 말해 보세요**',
     start: '시작', recall: '기억 테스트', recap: '정리', brand: '따라하면 끝', heroDefault: '나',
     phrasesHead: '🗣 오늘의 문장 (한글 발음)', affNote: '※ 아래 링크로 구매하시면 채널에 수수료가 지급될 수 있습니다. 가격은 동일합니다.', esim: '📱 eSIM', tour: '🎟 투어·입장권',
     chapters: '⏱ 구간', ask4comments: '💬 이런 상황엔 뭐라고 해요? 궁금한 표현을 댓글로 남겨 주시면 답해 드려요.',
-    aiNote: '🎙 내레이션과 현지어 발음은 AI 음성입니다. 문장은 일반적인 여행 회화 표현으로 확인했습니다.', fullVideo: (n) => `▶ 전체 ${n}문장 영상`, category: '19' },
+    aiNote: '🎙 내레이션과 현지어 발음은 AI 음성입니다. 문장은 일반적인 여행 회화 표현으로 확인했습니다.', fullVideo: (n) => `▶ 전체 ${n}문장 영상`, quizTitle: (p) => `일본어로 "${p.ko}"는? | ${p.pron}`, category: '19' },
   en: { bonus: 'Bonus', topic: 'Restaurant phrases', listen: 'Listen', repeat: 'Say it with me', tip: 'Good to know', staffFirst: 'Staff says first:',
     fullN: (n) => `▶ All ${n} phrases: link in description`, fullComic: '▶ Full comic lesson: link in description', subscribe: '🔔 Subscribe for the next lesson',
     ask: (h) => `🤔 What would ${h} say?`, askShort: '🤔 What would you say?', quiz: '⏱ Say it before the answer (3 s)', inTarget: 'in Japanese?',
-    hookComic: (p) => `${p.short}. How do you say "${p.ko}" in Japanese?`, hookCard: (p) => `${p.short}. Here is how to say it.`, shortEnd: (n) => `All ${n} phrases are in the full video, link below.`,
+    hookComic: (p) => `${p.short || p.label}. How do you say "${p.ko}" in Japanese?`, hookCard: (p) => `${p.short || p.label}. Here is how to say it.`, shortEnd: (n) => `All ${n} phrases are in the full video, link below.`,
     recallSay: "Memory test time. Look at each picture and say the line first. The answer comes after three seconds.", recallTitle: 'Memory test: **say it first**',
     start: 'Start', recall: 'Memory test', recap: 'Recap', brand: 'Copy My Screen', heroDefault: 'you',
     phrasesHead: "🗣 Today's phrases (with romaji)", affNote: '※ Affiliate links: the channel may earn a commission at no extra cost to you.', esim: '📱 eSIM', tour: '🎟 Tours & tickets',
     chapters: '⏱ Chapters', ask4comments: '💬 What would you like to say in Japan? Ask in the comments and we will answer.',
-    aiNote: '🎙 Narration and Japanese audio are AI voices. Phrases are standard travel Japanese.', fullVideo: (n) => `▶ Full video (${n} phrases)`, category: '19' },
+    aiNote: '🎙 Narration and Japanese audio are AI voices. Phrases are standard travel Japanese.', fullVideo: (n) => `▶ Full video (${n} phrases)`, quizTitle: (p) => `"${p.ko}" in Japanese? | ${p.pron}`, category: '19' },
 }[LANG];
 const BRAND = LANG === 'ko' ? (cfg.brandsKo || '따라하면 끝 · 도착 후 가이드') : UI.brand;
 const STATE = { listen: ['🔊', UI.listen, '#2f6bff'], repeat: ['🗣', UI.repeat, '#ff2d2d'], tip: ['💡', UI.tip, '#11a36a'] };
@@ -233,17 +258,21 @@ function comicShort(p, i, state) {
   const introSay = COMIC && CM.introSay ? CM.introSay : P.intro.say, outroSay = COMIC && CM.outroSay ? CM.outroSay : P.outro.say;
   const recallSay = CM.recallSay || UI.recallSay;
   console.log(`  layout: ${COMIC ? 'comic (' + all.length + ' panels)' : 'cards'}`);
-  await prepareKo([introSay, outroSay, ...(COMIC ? [recallSay] : []), P.intro.say, ...all.flatMap((p) => [p.when, p.tip]), P.outro.say, ...(flag('no-shorts') ? [] : P.phrases.filter((p) => p.short).flatMap((p) => [shortHook(p), shortEnd]))]);
+  const MAXQ = Math.min(Number(opt('max') || 2), BUDGET);
+  const shortPhrases = QUIZ ? P.phrases.map((p, i) => [p, i]).filter(([, i]) => !doneIdx(P.id, P).has(i)).slice(0, MAXQ) : P.phrases.map((p, i) => [p, i]).filter(([p]) => p.short);
+  if (QUIZ) console.log(`QUIZ ${P.id}: phrases ${shortPhrases.map(([, i]) => i + 1).join(',')} (main ${mainOf(P.id)})`);
+  await prepareKo([introSay, outroSay, ...(COMIC ? [recallSay] : []), P.intro.say, ...all.flatMap((p) => [p.when, p.tip]), P.outro.say, ...(flag('no-shorts') ? [] : shortPhrases.flatMap(([p]) => [shortHook(p), shortEnd]))].filter((t) => !QUIZ || t === shortEnd || shortPhrases.some(([p]) => shortHook(p) === t)));
   const browser = await chromium.launch();
   const page = await browser.newPage();
   const render = async (html, w, h) => { const o = tmp('png'); await page.setViewportSize({ width: w, height: h }); await page.setContent(`<!doctype html><meta charset="utf-8">${html}`); await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: o }); return o; };
 
   // ---------- main video timeline: [{img, wav}] ----------
   const tl = []; const chapters = []; const at = () => tl.reduce((a, x) => a + dur(x.wav), 0);
+  let firstCard = null;
+  if (!QUIZ) {
   const push = (img, w) => tl.push({ img, wav: w });
   const intro = await render(COMIC ? comicPage(false, CM.pageTitle || P.intro.title.replace(/\n/g, ' ')) : titleCard(P.intro), 1280, 720);
   chapters.push({ t: 0, label: UI.start }); push(intro, await ko(introSay)); push(intro, silence(0.4));
-  let firstCard = null;
   for (const [i, p] of all.entries()) {
     const lab = p.bonus ? `${UI.bonus} · ${p.label}` : `${i + 1}. ${p.label}`;
     if (i === 0) chapters[0].label = lab; else chapters.push({ t: at(), label: lab });   // the short intro belongs to the first chapter
@@ -273,6 +302,7 @@ function comicShort(p, i, state) {
   }
   const recap = await render(COMIC ? comicPage(true, P.outro.title) : recapCard(), 1280, 720);
   chapters.push({ t: at(), label: UI.recap }); push(recap, await ko(outroSay)); push(recap, silence(1.5));
+  }
 
   async function build(items, outFile, musicKey) {
     const aList = tmp('txt'), vList = tmp('txt');
@@ -289,6 +319,8 @@ function comicShort(p, i, state) {
   }
 
   const main = path.join(OUT, `${P.id}.mp4`);
+  let qa = { ok: true }, thumb = null;
+  if (!QUIZ) {
   const m = await build(tl, main, P.id);
   // QA: picture and voice line up, every phrase was actually spoken, sensible length
   const qaP = [];
@@ -297,19 +329,18 @@ function comicShort(p, i, state) {
   for (const p of all) if (dur(jaCache[p.ja]) < 0.4) qaP.push(`"${p.ja}" audio is too short (${dur(jaCache[p.ja]).toFixed(2)} s)`);
   if (m.video < 90) qaP.push(`video is only ${Math.round(m.video)} s`);
   for (let i = 1; i < chapters.length; i++) if (chapters[i].t - chapters[i - 1].t < 10) qaP.push(`chapter "${chapters[i - 1].label}" is shorter than 10 s (YouTube ignores chapters then)`);
-  const qa = { ok: !qaP.length, problems: qaP, seconds: Math.round(m.video), phrases: all.length, voiceFallback: fellBack };
+  qa = { ok: !qaP.length, problems: qaP, seconds: Math.round(m.video), phrases: all.length, voiceFallback: fellBack };
   fs.writeFileSync(path.join(OUT, `${P.id}.qa.json`), JSON.stringify(qa, null, 1));
   console.log(`QA ${qa.ok ? 'PASS' : 'FAIL'} — ${all.length} phrases, ${Math.round(m.video)} s`); qaP.forEach((x) => console.log('  ✖ ' + x));
 
   // thumbnail
-  let thumb = null;
   try { const { thumbnail } = require('./thumbnail'); thumb = await thumbnail({ flag: P.flag, lang: LANG, year: P.checkedOn.slice(0, 4), shot: firstCard, lines: P.thumb, brand: UI.brand }, path.join(OUT, `${P.id}.png`)); } catch (e) { console.log('  thumbnail skipped:', e.message.split('\n')[0]); }
+  }
 
   // Shorts: one phrase each, vertical
   const shorts = [];
   const maxShorts = flag('next') && flag('upload') ? Math.max(0, BUDGET - 1) : 99;   // no point rendering Shorts that cannot be uploaded today
-  if (!flag('no-shorts')) for (const [i, p] of P.phrases.entries()) {
-    if (!p.short) continue;
+  if (!flag('no-shorts')) for (const [p, i] of shortPhrases) {
     if (shorts.length >= maxShorts) { console.log(`  ⏭ short ${i + 1}: no upload budget today`); continue; }
     const L = await render(COMIC ? comicShort(p, i, 'listen') : phraseCard(p, i, 'listen', true), 1080, 1920), R = await render(COMIC ? comicShort(p, i, 'repeat') : phraseCard(p, i, 'repeat', true), 1080, 1920);
     const items = [];
@@ -322,11 +353,11 @@ function comicShort(p, i, state) {
       { img: R, wav: silence(2.4) }, { img: R, wav: await target(p.ja) }, { img: R, wav: silence(0.6) }, { img: L, wav: await ko(shortEnd) }, { img: L, wav: silence(0.8) }]);
     const f = path.join(OUT, `${P.id}.short${i + 1}.mp4`); const r = await build(items, f, `${P.id}-s${i}`);
     if (r.video > 59) { console.log(`  ✖ short ${i + 1} is ${Math.round(r.video)} s — skipped`); continue; }
-    shorts.push({ file: f, p, seconds: Math.round(r.video) }); console.log(`  short ${i + 1}: ${Math.round(r.video)} s`);
+    shorts.push({ file: f, p, i, seconds: Math.round(r.video) }); console.log(`  short ${i + 1}: ${Math.round(r.video)} s`);
   }
   await browser.close();
   fs.rmSync(TMP, { recursive: true, force: true });
-  console.log(`✔ ${main}`);
+  if (!QUIZ) console.log(`✔ ${main}`);
 
   // ---------- metadata + upload (PRIVATE; publishing needs the owner's OK) ----------
   const { subLine } = require('./metadata');
@@ -349,7 +380,7 @@ function comicShort(p, i, state) {
   const { upload } = require('./upload');
   const guard = { expectChannel: cfg.channelIds?.[P.channel] || null };
   // scheduled (daily production) or private (one-off, owner reviews first)
-  const sched = flag('next') && DATE;
+  const sched = (flag('next') || QUIZ) && DATE;
   let pubAt = null;
   if (sched) {
     const { localToIso } = require('./metadata'); const win = cfg.publishWindow?.[LANG] || cfg.publishWindow?.default || { from: 6, to: 10 };
@@ -358,19 +389,19 @@ function comicShort(p, i, state) {
   }
   const opts = (k) => ({ review: !sched, ...guard, ...(flag('new-copy') ? { allowDuplicate: true } : {}) });   // --new-copy: upload even if a video with this title exists (e.g. a redrawn edition)
   const when = (k) => (sched ? { publishAt: new Date(pubAt + k * 90 * 60000).toISOString() } : {});
-  const up = await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(0) }, main, thumb, opts(0));
-  BUDGET--; console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
+  const up = QUIZ ? { url: mainOf(P.id) } : await upload(P.channel, { title: (COMIC && CM.title ? CM.title : P.title).slice(0, 100), description, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(0) }, main, thumb, opts(0));
+  if (!QUIZ) BUDGET--; if (!QUIZ) console.log(`✔ main (${sched ? 'scheduled ' + new Date(pubAt).toISOString() : 'private'}) ${up.url}`);
   const res = { main: up.url, shorts: [] };
-  if (sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
+  if (!QUIZ && sched && /youtu\.be\//.test(up.url)) { produced[`phrases:${P.id}`] = { date: DATE, url: up.url }; fs.writeFileSync(PRODUCED, JSON.stringify(produced, null, 1)); }
   for (const [k, s] of shorts.entries()) {
     if (BUDGET < 1) { console.log(`  ⏭ short ${s.p.label}: no upload budget left today`); continue; }
-    const t = `${s.p.short} | ${s.p.pron} #Shorts`.slice(0, 100);
+    const t = `${QUIZ || !s.p.short ? UI.quizTitle(s.p) : `${s.p.short} | ${s.p.pron}`} #Shorts`.slice(0, 100);
     const d = [`${UI.fullVideo(N)}: ${up.url}`, '', `${s.p.ja}  ${s.p.pron} — ${s.p.ko}`, '', subLine(cfg, P.channel, LANG), '', P.hashtags.map((h) => `#${h}`).join(' ')].filter(Boolean).join('\n');
     const u = await upload(P.channel, { title: t, description: d, tags: P.tags, categoryId: '19', defaultLanguage: LANG, ...when(k + 1) }, s.file, null, opts(k + 1));
     BUDGET--; console.log(`✔ short (${sched ? 'scheduled' : 'private'}) ${u.url}  ${t}`); res.shorts.push(u.url);
     if (sched && /youtu\.be\//.test(u.url)) {   // remember Short → main so the Mac helper can set the related-video link
       const SH = path.join(ROOT, 'plan', 'shorts.json'); const map = fs.existsSync(SH) ? JSON.parse(fs.readFileSync(SH, 'utf8')) : {};
-      map[u.url.split('youtu.be/')[1]] = { main: up.url.split('youtu.be/')[1], channel: P.channel, lang: LANG, form: `phrases:${P.id}`, date: DATE }; fs.writeFileSync(SH, JSON.stringify(map, null, 1));
+      map[u.url.split('youtu.be/')[1]] = { main: up.url.split('youtu.be/')[1], channel: P.channel, lang: LANG, form: `phrases:${P.id}`, idx: s.i, date: DATE }; fs.writeFileSync(SH, JSON.stringify(map, null, 1));
     }
   }
   fs.writeFileSync(path.join(OUT, `${P.id}.upload.json`), JSON.stringify(res, null, 1));
